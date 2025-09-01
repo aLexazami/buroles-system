@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* Custom animation class */
+.menu-link.show {
+  opacity: 1;
+  transform: translateY(0);
+}
