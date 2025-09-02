@@ -12,11 +12,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 99) {
   header("Location: ../index.php");
   exit();
 }
-
 $formMode = 'edit';       // Used by user-form.php to determine mode
 $userData = $user ?? [];  // Pass user data to the form
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +24,6 @@ $userData = $user ?? [];  // Pass user data to the form
   <title>Edit User</title>
   <link href="/src/styles.css" rel="stylesheet" />
 </head>
-
 <body class="bg-gray-100 min-h-screen flex flex-col">
   <!-- Header -->
   <?php include('../../includes/header.php'); ?>

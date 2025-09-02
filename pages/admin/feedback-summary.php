@@ -2,27 +2,21 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
 require_once  __DIR__ .'/../../auth/session.php';
 require_once  __DIR__ .'/../../config/database.php';
 require_once  __DIR__ .'/../../includes/functions.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="/src/styles.css" rel="stylesheet">
   <title>Feedback Summary</title>
 </head>
-
 <body class="bg-gray-200  min-h-screen flex flex-col">
-
   <!-- Header Section -->
   <?php include('../../includes/header.php'); ?>
-
 
   <!-- Feedback Summary Main Content Section -->
   <main class=" grid grid-cols-[248px_1fr]  m-h-screen">
@@ -453,17 +447,8 @@ require_once  __DIR__ .'/../../includes/functions.php';
   <!--Footer Section-->
   <?php include '../../includes/footer.php' ?>
 
-  <script>
-    function toggleLegend(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.classList.toggle('hidden');
-      }
-    }
-  </script>
   <script src="/assets/js/update-sumarry.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
 </body>
-
 </html>

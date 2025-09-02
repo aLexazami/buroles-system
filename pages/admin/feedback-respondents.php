@@ -6,7 +6,6 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,13 +14,11 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
   <meta name="robots" content="noindex" />
   <title>Feedback Respondents</title>
   <link href="/src/styles.css" rel="stylesheet" />
-
   <!-- DataTables CSS & JS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 </head>
-
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <!-- 🔹 Header -->
   <?php include('../../includes/header.php'); ?>

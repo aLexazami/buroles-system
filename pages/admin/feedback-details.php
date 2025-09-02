@@ -12,7 +12,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 2) {
   exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +20,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 2) {
   <meta name="robots" content="noindex" />
   <title>Feedback Respondents Details</title>
   <link href="/src/styles.css" rel="stylesheet" />
-
   <!-- DataTables CSS & JS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css" />

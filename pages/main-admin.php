@@ -8,7 +8,6 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +16,6 @@ require_once __DIR__ . '/../auth/session.php';
   <link href="../src/styles.css" rel="stylesheet">
   <title>Admin Dashboard</title>
 </head>
-
 <body class="bg-gray-200 min-h-screen">
   <!-- Header Section -->
   <?php include '../includes/header.php' ?>
@@ -70,5 +68,4 @@ require_once __DIR__ . '/../auth/session.php';
   <script type="module" src="/assets/js/app.js"></script>
   <script src="../assets/js/date-time.js"></script>
 </body>
-
 </html>

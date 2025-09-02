@@ -11,7 +11,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 99) {
   header("Location: ../index.php");
   exit();
 }
-
 $formMode = 'create'; // Used by user-form.php to determine mode
 ?>
 

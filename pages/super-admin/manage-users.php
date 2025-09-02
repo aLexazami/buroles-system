@@ -4,12 +4,10 @@ ini_set('display_errors', 1);
 
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/flash.php';
-
 if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 99) {
   header("Location: ../index.php");
   exit();
 }
-
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../controllers/get-users.php';
 
@@ -17,17 +15,14 @@ require_once __DIR__ . '/../../controllers/get-users.php';
 $title = "User Management";
 $showActions = true;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="/src/styles.css" rel="stylesheet" />
   <title><?= $title ?></title>
 </head>
-
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
@@ -74,5 +69,4 @@ $showActions = true;
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
 </body>
-
 </html>
