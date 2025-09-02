@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       INSERT INTO users (
         first_name, middle_name, last_name,
         username, password, email, role_id,
-        must_change_password, is_archived
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        must_change_password, is_archived, failed_attempts, is_locked
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $insert_stmt->execute([
@@ -52,7 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $email,
       $role_id,
       1, // must_change_password
-      0  // is_archived
+      0, // is_archived
+      0, // failed_attempts
+      0  // is_locked
     ]);
 
     setFlash('success', 'Account created successfully.');
