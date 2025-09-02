@@ -7,8 +7,6 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role_slug'])) {
 // 🔍 Current page and role context
 $currentPage = basename($_SERVER['PHP_SELF']);
 $roleSlug = $_SESSION['role_slug'];
-$allowedPages = defined('ROLE_ACCESS') && isset(ROLE_ACCESS[$roleSlug]) ? ROLE_ACCESS[$roleSlug] : [];
-$isAllowed = in_array($currentPage, $allowedPages);
 
 // 🧾 Available roles (IDs)
 $availableRoles = $_SESSION['available_roles'] ?? [];
@@ -30,5 +28,4 @@ $activeRoleName = $_SESSION['active_role_name'] ?? $originalRoleName;
   <span><strong>Role Switched:</strong> <?= !empty($_SESSION['role_switched']) ? '✅ Yes' : '❌ No' ?></span><br>
   <span><strong>Available Roles:</strong> <?= $availableRolesStr ?></span><br>
   <span><strong>Current Page:</strong> <?= $currentPage ?></span><br>
-  <span><strong>Access to Page:</strong> <?= $isAllowed ? '✅ Allowed' : '❌ Denied' ?></span>
 </div>

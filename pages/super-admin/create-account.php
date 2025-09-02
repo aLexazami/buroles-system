@@ -6,11 +6,6 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../config/database.php';
 
-// Access control: only super admins (role_id 99)
-if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 99) {
-  header("Location: ../index.php");
-  exit();
-}
 $formMode = 'create'; // Used by user-form.php to determine mode
 ?>
 <?php include __DIR__ . '/../../includes/debug-panel.php' ?>

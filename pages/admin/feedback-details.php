@@ -5,12 +5,6 @@ ini_set('display_errors', 1);
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
-
-// Restrict access to role ID 2 (Admin)
-if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 2) {
-  header("Location: ../index.php");
-  exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -4,10 +4,6 @@ ini_set('display_errors', 1);
 
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/flash.php';
-if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 99) {
-  header("Location: ../index.php");
-  exit();
-}
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../controllers/get-archived-users.php';
 
