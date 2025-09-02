@@ -14,7 +14,7 @@ const PUBLIC_PAGES = [
 
 // 🔧 Role-based access map
 const ROLE_ACCESS = [
-    'Admin'        => ['main-admin.php', 'feedback-details.php', 'feedback-report.php', 'feedback-respondents.php', 'feedback-summary.php'],
+    'admin'        => ['main-admin.php', 'feedback-details.php', 'feedback-report.php', 'feedback-respondents.php', 'feedback-summary.php'],
     'staff'        => ['main-staff.php', 'staff-dashboard.php'],
     'super_admin'  => ['main-super-admin.php', 'archived-users.php', 'create-account.php', 'edit-user.php', 'manage-users.php'],
 ];
@@ -45,10 +45,11 @@ if ($_SESSION['user_token'] !== $expectedToken) {
 }
 
 // ✅ Enforce role-based access
-$role = $_SESSION['role_name'];
-$allowedPages = ROLE_ACCESS[$role] ?? [];
+$roleSlug = $_SESSION['role_slug'] ?? '';
+$allowedPages = ROLE_ACCESS[$roleSlug] ?? [];
 
 if (!in_array($currentPage, $allowedPages, true)) {
-    header('Location: /includes/unauthorized.php'); // Create this page to show access denied
+    error_log("Access denied for role '{$roleSlug}' on page '{$currentPage}'");
+    header('Location: /includes/unauthorized.php');
     exit;
 }

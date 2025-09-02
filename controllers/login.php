@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $stmt = $pdo->prepare("
-            SELECT users.*, roles.name AS role_name
+            SELECT users.*, roles.name AS role_name, roles.slug AS role_slug
             FROM users
             JOIN roles ON users.role_id = roles.id
             WHERE users.username = :username
@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['firstName']  = $user['first_name'];
             $_SESSION['lastName']   = $user['last_name'];
             $_SESSION['role_name']  = $user['role_name'];
+            $_SESSION['role_slug'] = strtolower($user['role_slug']); // Normalize casing
 
             $defaultRole = $user['role_id']; // always available from users table
 
