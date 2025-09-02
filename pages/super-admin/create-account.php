@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 $formMode = 'create'; // Used by user-form.php to determine mode
 ?>
-<?php include __DIR__ . '/../../includes/debug-panel.php' ?>
+<?php //include __DIR__ . '/../../includes/debug-panel.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

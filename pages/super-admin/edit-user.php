@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../controllers/get-edit-user.php';
 $formMode = 'edit';       // Used by user-form.php to determine mode
 $userData = $user ?? [];  // Pass user data to the form
 ?>
-<?php include __DIR__ . '/../../includes/debug-panel.php' ?>
+<?php //include __DIR__ . '/../../includes/debug-panel.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

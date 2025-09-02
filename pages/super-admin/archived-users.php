@@ -11,7 +11,7 @@ require_once __DIR__ . '/../../controllers/get-archived-users.php';
 $title = "Archived Users";
 $showActions = true;
 ?>
-<?php include __DIR__ . '/../../includes/debug-panel.php' ?>
+<?php //include __DIR__ . '/../../includes/debug-panel.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
