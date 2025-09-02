@@ -1,0 +1,2 @@
+SHOW TABLES;
+DESCRIBE your_table;

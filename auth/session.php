@@ -14,9 +14,9 @@ const PUBLIC_PAGES = [
 
 // 🔧 Role-based access map
 const ROLE_ACCESS = [
-    'admin'        => ['main-admin.php', 'admin-tools.php'],
+    'Admin'        => ['main-admin.php', 'feedback-details.php', 'feedback-report.php', 'feedback-respondents.php', 'feedback-summary.php'],
     'staff'        => ['main-staff.php', 'staff-dashboard.php'],
-    'super_admin'  => ['main-super-admin.php', 'super-settings.php']
+    'super_admin'  => ['main-super-admin.php', 'archived-users.php', 'create-account.php', 'edit-user.php', 'manage-users.php'],
 ];
 
 // 🧠 Determine current page
@@ -49,6 +49,6 @@ $role = $_SESSION['role_name'];
 $allowedPages = ROLE_ACCESS[$role] ?? [];
 
 if (!in_array($currentPage, $allowedPages, true)) {
-    header('Location: /unauthorized.php'); // Create this page to show access denied
+    header('Location: /includes/unauthorized.php'); // Create this page to show access denied
     exit;
 }
