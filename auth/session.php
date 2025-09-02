@@ -16,7 +16,7 @@ const PUBLIC_PAGES = [
 const ROLE_ACCESS = [
     'admin'        => ['main-admin.php', 'feedback-details.php', 'feedback-report.php', 'feedback-respondents.php', 'feedback-summary.php'],
     'staff'        => ['main-staff.php', 'staff-dashboard.php'],
-    'super_admin'  => ['main-super-admin.php', 'archived-users.php', 'create-account.php', 'edit-user.php', 'manage-users.php'],
+    'super_admin'  => ['main-super-admin.php', 'archived-users.php', 'create-account.php', 'edit-user.php', 'manage-users.php','create-user.php', 'update-user.php'],
 ];
 
 // 🧠 Determine current page

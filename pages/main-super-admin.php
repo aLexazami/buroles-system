@@ -5,6 +5,7 @@ ini_set('display_errors', 1);
 require_once __DIR__.'/../auth/session.php';
 require_once __DIR__ . '/../config/database.php';
 ?>
+<?php include __DIR__ . '/../includes/debug-panel.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

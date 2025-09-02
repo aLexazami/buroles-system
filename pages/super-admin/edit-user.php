@@ -15,6 +15,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['active_role_id'] !== 99) {
 $formMode = 'edit';       // Used by user-form.php to determine mode
 $userData = $user ?? [];  // Pass user data to the form
 ?>
+<?php include __DIR__ . '/../../includes/debug-panel.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
