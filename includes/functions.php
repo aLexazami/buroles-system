@@ -7,7 +7,7 @@ function getRespondentCount($type, $pdo)
             $sql = "SELECT COUNT(*) FROM feedback_respondents WHERE DATE(submitted_at) = CURDATE()";
             break;
         case 'weekly':
-            $sql = "SELECT COUNT(*) FROM feedback_respondents WHERE submitted_at >= NOW() - INTERVAL 7 DAY";
+            $sql = "SELECT COUNT(*) FROM feedback_respondents WHERE YEAR(submitted_at) = YEAR(CURDATE()) AND WEEK(submitted_at, 1) = WEEK(CURDATE(), 1)";
             break;
         case 'annual':
             $sql = "SELECT COUNT(*) FROM feedback_respondents WHERE YEAR(submitted_at) = YEAR(CURDATE())";
@@ -87,7 +87,8 @@ function getCharterAwarenessCounts($pdo)
     return $counts;
 }
 
-function getCitizenCharterResponses($pdo) {
+function getCitizenCharterResponses($pdo)
+{
     $response = [];
 
     foreach (['cc1', 'cc2', 'cc3'] as $field) {
@@ -104,7 +105,8 @@ function getCitizenCharterResponses($pdo) {
     return $response;
 }
 
-function getSQDMatrixCounts($pdo) {
+function getSQDMatrixCounts($pdo)
+{
     $sqdItems = ['sqd1', 'sqd2', 'sqd3', 'sqd4', 'sqd5', 'sqd6', 'sqd7', 'sqd8'];
     $ratings = ['5', '4', '3', '2', '1', 'na'];
     $counts = [];
@@ -121,7 +123,8 @@ function getSQDMatrixCounts($pdo) {
     return $counts;
 }
 
-function getServicesByCustomerType($pdo, $type) {
+function getServicesByCustomerType($pdo, $type)
+{
     $sql = "SELECT id, name FROM services WHERE customer_type = :type ORDER BY name ASC";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['type' => $type]);
