@@ -63,17 +63,17 @@
           <!-- Actions -->
           <?php if ($showActions ?? true): ?>
             <td class="px-4 py-2">
-              <div class="flex gap-2 flex-wrap">
+              <div class="flex gap-2 flex-wrap items-center">
                 <?php if (!empty($user['is_archived'])): ?>
                   <a href="#" data-restore-user="<?= $user['id'] ?>" class="text-green-600 hover:underline text-sm">Restore</a>
-                  <button class="text-yellow-400 cursor-not-allowed text-sm" disabled aria-label="User is archived">Archived</button>
+                  <span class="text-yellow-400 text-sm">📦 Archived</span>
                 <?php else: ?>
-                  <a href="/pages/super-admin/edit-user.php?id=<?= $user['id'] ?>"
-                    class="text-blue-600 hover:underline text-sm">Edit</a>
+                  <a href="/pages/super-admin/edit-user.php?id=<?= $user['id'] ?>" class="text-blue-600 hover:underline text-sm">Edit</a>
                   <a href="#" data-archive-user="<?= $user['id'] ?>" class="text-yellow-600 hover:underline text-sm">Archive</a>
-                  <a href="#"
-                    data-delete-user="<?= $user['id'] ?>"
-                    class="text-red-600 hover:underline text-sm">Delete</a>
+                  <a href="#" data-delete-user="<?= $user['id'] ?>" class="text-red-600 hover:underline text-sm">Delete</a>
+                  <?php if ($user['is_locked'] == 1): ?>
+                  <a href="#" data-unlock-user="<?= $user['id'] ?>" class="text-red-700 hover:underline text-sm">🔓 Unlock</a>
+                  <?php endif; ?>
                 <?php endif; ?>
               </div>
             </td>

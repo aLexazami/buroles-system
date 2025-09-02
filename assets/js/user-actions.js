@@ -138,4 +138,44 @@ export function setupUserActions() {
         });
     });
   });
+
+  // UNLOCK USER
+  document.querySelectorAll('[data-unlock-user]').forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const userId = link.getAttribute('data-unlock-user');
+      if (!userId) return;
+
+      const confirmed = await showConfirm('Are you sure you want to unlock this account?');
+      if (!confirmed) return;
+
+      link.textContent = 'Unlocking...';
+      link.classList.add('opacity-50', 'pointer-events-none');
+
+      fetch('/controllers/unlock-user.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${encodeURIComponent(userId)}`
+      })
+        .then(res => res.json())
+        .then(data => {
+          showToast(data.message, data.success ? 'success' : 'error');
+
+         if (data.success) {
+            window.location.reload(); // ✅ triggers PHP flash rendering
+          } else {
+            showToast(data.message || 'Something went wrong.', 'error');
+            button.disabled = false;
+            button.textContent = 'Unlock';
+          }
+
+        })
+        .catch(error => {
+          console.error('Unlock error:', error);
+          showToast('Something went wrong.', 'error');
+          link.textContent = '🔓 Unlock';
+          link.classList.remove('opacity-50', 'pointer-events-none');
+        });
+    });
+  });
 }
