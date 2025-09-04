@@ -25,7 +25,7 @@ require_once __DIR__ . '/../config/database.php';
   <!-- Main Staff Section-->
   <main class=" grid grid-cols-[248px_1fr]  min-h-screen">
     <!-- Left Side Navigation -->
-    <?php include '../includes/side-nav-admin.php' ?>
+    <?php include '../includes/side-nav-staff.php' ?>
 
   </main>
 
