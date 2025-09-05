@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,6 +21,7 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 </head>
+
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <!-- 🔹 Header -->
   <?php include('../../includes/header.php'); ?>
@@ -39,8 +41,8 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
         </div>
         <div class="text-right">
           <button onclick="window.location.href='/pages/admin/feedback-details.php'"
-                  class="cursor-pointer hover:bg-emerald-600 rounded-md p-1 transition-transform duration-200 hover:scale-105"
-                  title="View full details">
+            class="cursor-pointer hover:bg-emerald-600 rounded-md p-1 transition-transform duration-200 hover:scale-105"
+            title="View full details">
             <img src="/assets/img/fullscreen.png" class="w-8 h-8" alt="Fullscreen icon">
           </button>
         </div>
@@ -48,6 +50,29 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 
       <!-- 📋 Feedback Table -->
       <div class="overflow-x-auto mt-6">
+        <div class="relative inline-block text-left">
+          <button id="exportToggle"
+            class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600 transition">
+            Export Feedback ▼
+          </button>
+          <div id="exportMenu"
+            class="hidden absolute z-10 mt-2 w-48 bg-white border rounded shadow-lg">
+            <form action="/controllers/export-feedback-csv.php" method="POST">
+              <input type="hidden" name="format" value="csv">
+              <button type="submit"
+                class="block w-full text-left px-4 py-2 hover:bg-emerald-100">
+                Export as CSV
+              </button>
+            </form>
+            <form action="/controllers/export-feedback-pdf.php" method="POST">
+              <input type="hidden" name="format" value="pdf">
+              <button type="submit"
+                class="block w-full text-left px-4 py-2 hover:bg-emerald-100">
+                Export as PDF
+              </button>
+            </form>
+          </div>
+        </div>
         <table id="feedbackTable" class="min-w-[900px] w-full table-auto text-sm border-separate border-spacing-y-2 bg-white">
           <thead class="bg-gray-300 text-left text-black">
             <tr class="shadow-lg">
@@ -87,14 +112,19 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
   <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
       $('#feedbackTable').DataTable({
         pageLength: 10,
         lengthChange: false,
-        order: [[0, 'desc']],
+        order: [
+          [0, 'desc']
+        ],
         deferRender: true
       });
     });
   </script>
+
+
 </body>
+
 </html>
