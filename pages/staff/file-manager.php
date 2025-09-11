@@ -146,57 +146,89 @@ function getFolderModifiedTime($folderPath)
               <a href="?path=<?= urlencode($currentPath) ?>&sort=name" class="hover:underline <?= $sortBy === 'name' ? 'font-bold' : '' ?>">Name</a>
               <a href="?path=<?= urlencode($currentPath) ?>&sort=modified" class="hover:underline <?= $sortBy === 'modified' ? 'font-bold' : '' ?>">Modified</a>
             </div>
-            <!-- Unified Folder + File List -->
-            <div class="flex flex-col gap-2" id="itemList">
-              <?php foreach ($folders as $folder): ?>
+
+            <!-- Folder Items -->
+            <?php foreach ($folders as $folder): ?>
+              <?php
+              $nextPath = trim($currentPath . '/' . $folder, '/');
+              $folderPath = $fullPath . $folder;
+              $fileCount = countFilesInFolder($folderPath);
+              $modified = getFolderModifiedTime($folderPath);
+              $menuId = 'menu-' . md5($folder);
+              ?>
+              <div class="relative py-2 hover:bg-gray-100 flex justify-between items-center item folder-item">
+                <a href="?path=<?= urlencode($nextPath) ?>" class="flex items-center gap-3">
+                  <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5">
+                  <span class="text-sm font-medium"><?= htmlspecialchars($folder) ?></span>
+                </a>
+                <div class="flex items-center gap-3 text-xs text-gray-500">
+                  <span class="bg-gray-200 px-2 py-1 rounded"><?= $fileCount ?> file<?= $fileCount !== 1 ? 's' : '' ?></span>
+                  <span><?= $modified ?></span>
+                  <button class="menu-toggle text-gray-500 hover:text-gray-700" data-target="<?= $menuId ?>">⋯</button>
+                </div>
+                <div id="<?= $menuId ?>" class="absolute right-4 top-10 bg-white border rounded shadow-md hidden z-10 text-sm">
+                  <button class="block px-4 py-2 hover:bg-gray-100 w-full text-left rename-btn" data-name="<?= htmlspecialchars($folder) ?>" data-type="folder">Rename</button>
+                  <button class="block px-4 py-2 hover:bg-gray-100 w-full text-left delete-btn" data-name="<?= htmlspecialchars($folder) ?>" data-type="folder">Delete</button>
+                </div>
+              </div>
+            <?php endforeach; ?>
+
+            <!-- File Items -->
+            <?php if (!empty($currentPath)): ?>
+              <?php foreach ($files as $file): ?>
                 <?php
-                $nextPath = trim($currentPath . '/' . $folder, '/');
-                $folderPath = $fullPath . $folder;
-                $fileCount = countFilesInFolder($folderPath);
-                $modified = getFolderModifiedTime($folderPath);
+                $icon = getFileIcon($file);
+                $fileUrl = "/uploads/staff/$userId/" . ($currentPath ? $currentPath . '/' : '') . $file;
+                $isImage = preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);
+                $modified = date("M d, Y H:i", filemtime($fullPath . $file));
+                $menuId = 'menu-' . md5($file);
                 ?>
-                <a href="?path=<?= urlencode($nextPath) ?>" class=" py-2 hover:bg-gray-100 flex justify-between items-center item folder-item">
+                <div class="relative py-2 hover:bg-gray-100 flex justify-between items-center item file-item">
                   <div class="flex items-center gap-3">
-                    <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5">
-                    <span class="text-sm font-medium"><?= htmlspecialchars($folder) ?></span>
+                    <img src="<?= $icon ?>" alt="File icon" class="w-5 h-5">
+                    <span class="text-sm"><?= htmlspecialchars($file) ?></span>
                   </div>
                   <div class="flex items-center gap-3 text-xs text-gray-500">
-                    <span class="bg-gray-200 px-2 py-1 rounded"><?= $fileCount ?> file<?= $fileCount !== 1 ? 's' : '' ?></span>
+                    <?php if ($isImage): ?>
+                      <a href="<?= $fileUrl ?>" target="_blank" class="text-blue-600 hover:underline">Preview</a>
+                    <?php endif; ?>
+                    <a href="<?= $fileUrl ?>" download class="text-blue-600 hover:underline">Download</a>
                     <span><?= $modified ?></span>
+                    <button class="menu-toggle text-gray-500 hover:text-gray-700" data-target="<?= $menuId ?>">⋯</button>
                   </div>
-                </a>
+                  <div id="<?= $menuId ?>" class="absolute right-4 top-10 bg-white border rounded shadow-md hidden z-10 text-sm">
+                    <button class="block px-4 py-2 hover:bg-gray-100 w-full text-left rename-btn" data-name="<?= htmlspecialchars($file) ?>" data-type="file">Rename</button>
+                    <button class="block px-4 py-2 hover:bg-gray-100 w-full text-left delete-btn" data-name="<?= htmlspecialchars($file) ?>" data-type="file">Delete</button>
+                  </div>
+                </div>
               <?php endforeach; ?>
-              <?php if (!empty($currentPath)): ?>
-                <?php foreach ($files as $file): ?>
-                  <?php
-                  $icon = getFileIcon($file);
-                  $fileUrl = "/uploads/staff/$userId/" . ($currentPath ? $currentPath . '/' : '') . $file;
-                  $isImage = preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);
-                  $modified = date("M d, Y H:i", filemtime($fullPath . $file));
-                  ?>
-                  <div class=" py-2 hover:bg-gray-100 flex justify-between items-center item file-item">
-                    <div class="flex items-center gap-3">
-                      <img src="<?= $icon ?>" alt="File icon" class="w-5 h-5">
-                      <span class="text-sm"><?= htmlspecialchars($file) ?></span>
-                    </div>
-                    <div class="flex items-center gap-3 text-xs text-gray-500">
-                      <?php if ($isImage): ?>
-                        <a href="<?= $fileUrl ?>" target="_blank" class="text-blue-600 hover:underline">Preview</a>
-                      <?php endif; ?>
-                      <a href="<?= $fileUrl ?>" download class="text-blue-600 hover:underline">Download</a>
-                      <span><?= $modified ?></span>
-                    </div>
-                  </div>
-                <?php endforeach; ?>
-                <?php if (empty($files)): ?>
-                  <p class="text-gray-500 text-sm">No files found.</p>
-                <?php endif; ?>
+              <?php if (empty($files)): ?>
+                <p class="text-gray-500 text-sm">No files found.</p>
               <?php endif; ?>
-            </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
     </section>
+    <!-- Rename Modal -->
+    <div id="renameModal" role="dialog" aria-labelledby="renameTypeLabel"
+      class="fixed inset-0  bg-opacity-50 z-50  items-center justify-center rename-modal hidden ">
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-sm">
+        <h2 class="text-lg font-semibold mb-4">
+          Rename <span id="renameTypeLabel"></span>
+        </h2>
+        <form id="renameForm" method="POST" action="/controllers/rename-item.php" class="flex flex-col gap-3">
+          <input type="hidden" name="type" id="renameType">
+          <input type="hidden" name="old_name" id="renameOldName">
+          <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
+          <input type="text" name="new_name" id="renameNewName" class="border px-3 py-2 rounded" required>
+          <div class="flex justify-end gap-2">
+            <button type="button" onclick="closeRenameModal()" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+            <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Rename</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 
   <?php include('../../includes/footer.php'); ?>
@@ -210,6 +242,78 @@ function getFolderModifiedTime($folderPath)
       items.forEach(item => {
         const name = item.querySelector('span').textContent.toLowerCase();
         item.style.display = name.includes(query) ? 'flex' : 'none';
+      });
+    });
+
+    document.querySelectorAll('.menu-toggle').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const targetId = btn.dataset.target;
+        document.querySelectorAll('.menu-toggle').forEach(b => {
+          const menu = document.getElementById(b.dataset.target);
+          if (menu && menu.id !== targetId) menu.classList.add('hidden');
+        });
+        const menu = document.getElementById(targetId);
+        if (menu) menu.classList.toggle('hidden');
+      });
+    });
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.menu-toggle').forEach(btn => {
+        const menu = document.getElementById(btn.dataset.target);
+        if (menu) menu.classList.add('hidden');
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeRenameModal();
+    });
+
+    function openRenameModal(name, type) {
+      const modal = document.getElementById('renameModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('modal-visible');
+      document.body.classList.add('overflow-hidden');
+
+      document.getElementById('renameType').value = type;
+      document.getElementById('renameOldName').value = name;
+      document.getElementById('renameNewName').value = name;
+      document.getElementById('renameTypeLabel').textContent = type;
+    }
+
+    function closeRenameModal() {
+      const modal = document.getElementById('renameModal');
+      modal.classList.remove('modal-visible');
+      modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    document.querySelectorAll('.rename-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        openRenameModal(btn.dataset.name, btn.dataset.type);
+      });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.name;
+        const type = btn.dataset.type;
+        if (!confirm(`Are you sure you want to delete this ${type}?`)) return;
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/controllers/delete-item.php';
+
+        ['type', 'name', 'path'].forEach(field => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = field;
+          input.value = field === 'type' ? type : field === 'name' ? name : "<?= htmlspecialchars($currentPath) ?>";
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
       });
     });
   </script>

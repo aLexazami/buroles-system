@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
-/* Custom animation class */
+/* Custom styles */
+.rename-modal.hidden {
+  display: none;
+}
+
+.modal-visible {
+  display: flex;
+}
+
 .menu-link.show {
   opacity: 1;
   transform: translateY(0);
