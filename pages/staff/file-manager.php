@@ -103,19 +103,61 @@ function getFolderModifiedTime($folderPath)
 
       <div class="flex flex-col gap-4">
         <!-- Folder Creation + Upload -->
-        <div class="flex gap-2 py-4">
-          <form method="POST" class="flex gap-2">
-            <input type="text" name="folder_name" placeholder="New Folder" class="border px-2 py-1 rounded" required>
-            <button type="submit" class="bg-emerald-600 text-white px-3 py-1 rounded hover:bg-emerald-700">+ Create Folder</button>
-          </form>
+        <!-- New Button + Dropdown -->
+        <div class="relative inline-block text-left py-4">
+          <button type="button" id="newDropdownToggle"
+            class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">
+            + New
+          </button>
 
-          <?php if (!empty($currentPath)): ?>
-            <form action="/controllers/upload-file.php" method="POST" enctype="multipart/form-data" class="flex gap-2">
+          <div id="newDropdownMenu"
+            class="absolute mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
+            <button type="button" id="openCreateFolderModal"
+              class="block w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm">
+              📁 Create Folder
+            </button>
+
+            <!-- Upload Folder -->
+            <form action="/controllers/upload-folder.php" method="POST" enctype="multipart/form-data" id="uploadFolderForm">
               <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
-              <input type="file" name="file" required class="border px-2 py-1 rounded" accept=".pdf,.doc,.docx,.jpg,.png">
-              <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Upload File</button>
+              <input type="file" name="folder[]" id="uploadFolderInput" class="hidden" webkitdirectory directory multiple>
+              <button type="button" id="uploadFolderTrigger"
+                class="block w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm">
+                🗂️ Upload Folder
+              </button>
             </form>
-          <?php endif; ?>
+
+            <?php if (!empty($currentPath)): ?>
+              <!-- Upload File -->
+              <form action="/controllers/upload-file.php" method="POST" enctype="multipart/form-data" id="uploadForm">
+                <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
+                <input type="file" name="file" id="uploadInput" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png" required>
+                <button type="button" id="uploadTrigger"
+                  class="block w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm">
+                  📄 Upload File
+                </button>
+              </form>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <!-- Create Folder Modal -->
+        <div id="createFolderModal"
+          class="fixed inset-0  z-50 hidden items-center justify-center">
+          <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+          <div class="relative z-10 bg-white p-6 rounded-4xl shadow-md w-full max-w-md border border-emerald-500">
+            <h2 class="text-2xl  mb-4">New Folder</h2>
+            <form method="POST" action="/controllers/create-folder.php" class="flex flex-col gap-3">
+              <input type="text" name="folder_name" placeholder="Folder name"
+                class="border px-3 py-4 rounded" required>
+              <div class="flex justify-end gap-2 mt-5">
+                <button type="button" id="cancelCreateFolder"
+                  class="px-3 py-1 text-emerald-700  rounded hover:bg-emerald-100">Cancel</button>
+                <button type="submit"
+                  class="px-3 py-1  text-emerald-700 rounded hover:bg-emerald-100">Create</button>
+              </div>
+            </form>
+          </div>
         </div>
 
 
@@ -184,7 +226,7 @@ function getFolderModifiedTime($folderPath)
                   <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">⋯</button>
                   <div id="<?= $menuId ?>" class="absolute right-17 bg-white  rounded shadow-lg hidden text-sm w-44">
                     <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn" data-name="<?= htmlspecialchars($folder) ?>" data-type="folder">Rename</button>
-                    <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn" data-name="<?= htmlspecialchars($folder) ?>" data-type="folder">Delete</button>
+                    <button class="block px-4 py-2  hover:bg-emerald-100 w-full text-left delete-btn" data-name="<?= htmlspecialchars($folder) ?>" data-type="folder">Delete</button>
                   </div>
                 </div>
               </div>
@@ -235,28 +277,65 @@ function getFolderModifiedTime($folderPath)
         </div>
       </div>
     </section>
-    
+
     <!-- Rename Modal -->
     <div id="renameModal" role="dialog" aria-labelledby="renameTypeLabel"
-      class="fixed inset-0  bg-opacity-50 z-50  items-center justify-center rename-modal hidden ">
-      <div class="bg-white p-6 rounded shadow-md w-full max-w-sm">
-        <h2 class="text-lg font-semibold mb-4">
+      class="fixed inset-0 bg-opacity-50 z-50 hidden items-center justify-center">
+      <!-- Background overlay -->
+      <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+
+      <!-- Modal content -->
+      <div class="relative bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 border border-emerald-500">
+        <h2 class="text-2xl  mb-4">
           Rename <span id="renameTypeLabel"></span>
         </h2>
-        <form id="renameForm" method="POST" action="/controllers/rename-item.php" class="flex flex-col gap-3">
+
+        <form id="renameForm" method="POST" action="/controllers/rename-item.php" class="flex flex-col gap-3 ">
           <input type="hidden" name="type" id="renameType">
           <input type="hidden" name="old_name" id="renameOldName">
           <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
-          <input type="text" name="new_name" id="renameNewName" class="border px-3 py-2 rounded" required>
+
+          <input type="text" name="new_name" id="renameNewName"
+            class="border px-3 py-4 rounded" required>
+
           <small id="renameExtensionHint" class="text-xs text-gray-500 hidden"></small>
-          <div class="flex justify-end gap-2">
-            <button type="button" onclick="closeRenameModal()" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-            <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Rename</button>
+
+          <div class="flex justify-end gap-2 mt-5">
+            <button type="button" id="cancelRename"
+              class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</button>
+            <button type="submit"
+              class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Rename</button>
           </div>
         </form>
       </div>
     </div>
-    
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-opacity-50 z-50 hidden items-center justify-center">
+      <!-- Background overlay -->
+      <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+
+      <div class="bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 relative border border-emerald-500">
+        <h2 class="text-2xl  mb-4">
+          Delete <span id="deleteTypeLabel"></span>?
+        </h2>
+        <p class="text-md mb-4">
+          Are you sure you want to delete <strong id="deleteItemName" class="text-red-700"></strong>? This action cannot be undone.
+        </p>
+        <form id="deleteForm" method="POST" action="/controllers/delete-item.php" class="flex flex-col gap-3">
+          <input type="hidden" name="type" id="deleteType">
+          <input type="hidden" name="name" id="deleteName">
+          <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
+          <div class="flex justify-end gap-2 mt-5">
+            <button type="button" id="cancelDelete"
+              class="px-3 py-1 text-emerald-700  rounded hover:bg-emerald-100">Cancel</button>
+            <button type="submit"
+              class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </main>
 
   <?php include('../../includes/footer.php'); ?>

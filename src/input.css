@@ -1,13 +1,6 @@
 @import "tailwindcss";
 
 /* Custom styles */
-.rename-modal.hidden {
-  display: none;
-}
-
-.modal-visible {
-  display: flex;
-}
 
 .menu-link.show {
   opacity: 1;
