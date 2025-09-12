@@ -13,10 +13,6 @@
   $navItems = [
     ['label' => 'Dashboard', 'href' => '/pages/main-staff.php', 'icon' => 'home.png'],
     ['label' => 'Manage File', 'href' => '/pages/staff/file-manager.php', 'icon' => 'manage-file.png'],
-    ['label' => 'Submit Feedback', 'href' => '/pages/staff/submit-feedback.php', 'icon' => 'submit-feedback.png'],
-    ['label' => 'My Feedback History', 'href' => '/pages/staff/feedback-history.php', 'icon' => 'history.png'],
-    ['label' => 'Client Feedback Overview', 'href' => '/pages/staff/client-feedback.php', 'icon' => 'client-feedback.png'],
-    ['label' => 'Annual Summary Viewer', 'href' => '/pages/staff/annual-summary.php', 'icon' => 'summary.png'],
   ];
   ?>
 

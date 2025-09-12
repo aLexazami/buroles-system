@@ -94,8 +94,9 @@ function getFileIcon(string $filename): string
         <!-- New Button + Dropdown -->
         <div class="relative inline-block text-left py-4">
           <button type="button" id="newDropdownToggle"
-            class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">
-            + New
+            class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">
+            <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4  mr-2">
+            <span>New</span>
           </button>
 
           <div id="newDropdownMenu"
