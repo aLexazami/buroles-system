@@ -1,39 +1,86 @@
 <?php
-$targetPath = $_POST['path'] ?? '';
+session_start();
+require_once __DIR__ . '/../helpers/flash.php';
+require_once __DIR__ . '/../helpers/path.php';
+
+define('FILE_MANAGER_PATH', '/pages/staff/file-manager.php');
+
+$userId = $_SESSION['user_id'] ?? '';
+$targetPath = trim($_POST['path'] ?? '', '/');
 $files = $_FILES['folder'] ?? [];
 
-if (trim($targetPath) === '') {
-  die('Missing target path.');
+if (!$userId) {
+  setFlash('error', 'Unauthorized access.');
+  redirectToManager();
 }
 
 if (empty($files['name']) || !is_array($files['name']) || count($files['name']) === 0) {
-  die('No files detected in the uploaded folder.');
+  setFlash('error', 'The folder is empty. Please select a folder with files.');
+  redirectToManager($targetPath);
 }
 
-// Optional: log the structure for debugging
-// file_put_contents('upload-log.txt', print_r($files, true), FILE_APPEND);
+// ✅ Create folder structure
+$folderPaths = array_unique(array_filter(array_map(function ($name) {
+  $clean = ltrim(str_replace(['../', './'], '', $name), '/');
+  $folder = dirname($clean);
+  return $folder !== '.' ? $folder : null;
+}, $files['name'])));
+
+foreach ($folderPaths as $folderPath) {
+  try {
+    $fullFolderPath = resolveUploadPath($userId, $targetPath, $folderPath);
+    if (!is_dir($fullFolderPath)) {
+      mkdir($fullFolderPath, 0755, true);
+    }
+  } catch (RuntimeException $e) {
+    error_log("Folder creation error: " . $e->getMessage());
+  }
+}
+
+// ✅ Save files
+$validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain'];
+$validFileCount = 0;
 
 foreach ($files['name'] as $index => $name) {
   $tmpName = $files['tmp_name'][$index];
   $error = $files['error'][$index];
+  $type = $files['type'][$index];
 
   if ($error !== UPLOAD_ERR_OK) continue;
 
-  // Try to use full_path if available
-  $relativePath = isset($files['full_path'][$index]) ? $files['full_path'][$index] : $name;
+  $cleanName = ltrim(str_replace(['../', './'], '', $name), '/');
 
-  // Sanitize path to prevent traversal
-  $relativePath = str_replace(['../', './'], '', $relativePath);
+  try {
+    $destination = resolveUploadPath($userId, $targetPath, $cleanName);
+    $destinationDir = dirname($destination);
 
-  $destination = rtrim($targetPath, '/') . '/' . $relativePath;
-  $destinationDir = dirname($destination);
+    if (!is_dir($destinationDir)) {
+      mkdir($destinationDir, 0755, true);
+    }
 
-  if (!is_dir($destinationDir)) {
-    mkdir($destinationDir, 0777, true);
+    if (in_array($type, $validTypes)) {
+      move_uploaded_file($tmpName, $destination);
+      $validFileCount++;
+    }
+  } catch (RuntimeException $e) {
+    error_log("Upload path error: " . $e->getMessage());
   }
-
-  move_uploaded_file($tmpName, $destination);
 }
 
-header("Location: /file-manager.php?path=" . urlencode($targetPath));
-exit;
+// ✅ Flash message
+if ($validFileCount > 0) {
+  setFlash('success', "Folder uploaded with $validFileCount valid file" . ($validFileCount > 1 ? 's' : '') . '.');
+} else {
+  setFlash('warning', 'Folder structure created, but no valid files were uploaded.');
+}
+
+redirectToManager($targetPath);
+
+// ✅ Redirect helper
+function redirectToManager(string $path = ''): void {
+  $url = FILE_MANAGER_PATH;
+  if ($path !== '') $url .= '?path=' . urlencode($path);
+  header("Location: $url");
+  exit;
+}
+?>

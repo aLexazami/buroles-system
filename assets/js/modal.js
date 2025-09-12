@@ -1,12 +1,17 @@
+// 📁 Modal Helpers
+function toggleModal(modalId, show) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.classList.toggle('hidden', !show);
+  modal.classList.toggle('flex', show);
+  document.body.classList.toggle('overflow-hidden', show);
+}
+
 // 📁 Rename Modal Logic
 export function openRenameModal(name, type) {
+  toggleModal('renameModal', true);
+
   const modal = document.getElementById('renameModal');
-  if (!modal) return;
-
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  document.body.classList.add('overflow-hidden');
-
   const extension = name.includes('.') ? name.split('.').pop() : '';
   modal.dataset.extension = extension;
 
@@ -26,12 +31,7 @@ export function openRenameModal(name, type) {
 }
 
 export function closeRenameModal() {
-  const modal = document.getElementById('renameModal');
-  if (!modal) return;
-
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
-  document.body.classList.remove('overflow-hidden');
+  toggleModal('renameModal', false);
 }
 
 export function initRenameButtons() {
@@ -54,7 +54,11 @@ export function initRenameButtons() {
       const extension = modal?.dataset.extension;
       const input = document.getElementById('renameNewName');
 
-      if (extension && input && !input.value.toLowerCase().endsWith(`.${extension.toLowerCase()}`)) {
+      if (
+        extension &&
+        input &&
+        !input.value.toLowerCase().endsWith(`.${extension.toLowerCase()}`)
+      ) {
         input.value += `.${extension}`;
       }
     });
@@ -63,26 +67,19 @@ export function initRenameButtons() {
 
 // 🗑️ Delete Modal Logic
 export function openDeleteModal(name, type) {
-  const modal = document.getElementById('deleteModal');
-  if (!modal) return;
+  toggleModal('deleteModal', true);
 
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  document.body.classList.add('overflow-hidden');
+  const currentPath = new URLSearchParams(window.location.search).get('path') || '';
 
   document.getElementById('deleteType').value = type;
   document.getElementById('deleteName').value = name;
+  document.getElementById('deletePath').value = currentPath;
   document.getElementById('deleteTypeLabel').textContent = type;
   document.getElementById('deleteItemName').textContent = name;
 }
 
 export function closeDeleteModal() {
-  const modal = document.getElementById('deleteModal');
-  if (!modal) return;
-
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
-  document.body.classList.remove('overflow-hidden');
+  toggleModal('deleteModal', false);
 }
 
 export function initDeleteButtons() {

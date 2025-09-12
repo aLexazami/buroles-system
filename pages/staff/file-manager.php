@@ -1,80 +1,67 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('log_errors', 1);
-error_reporting(E_ALL);
-
+session_start();
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/flash.php';
+require_once __DIR__ . '/../../helpers/path.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php';
 
-define('UPLOAD_BASE', __DIR__ . '/../../uploads/staff/');
-
-$userId = $_SESSION['user_id'];
-$currentPath = isset($_GET['path']) ? trim($_GET['path'], '/') : '';
+$userId = $_SESSION['user_id'] ?? '';
+$currentPath = trim($_GET['path'] ?? '', '/');
 $sortBy = $_GET['sort'] ?? 'name'; // 'name' or 'modified'
 
-$userRoot = UPLOAD_BASE . $userId . '/';
-$fullPath = $userRoot . ($currentPath ? $currentPath . '/' : '');
-
+// ✅ Ensure user root folder exists
+$userRoot = getUserUploadBase($userId);
 if (!file_exists($userRoot)) {
   mkdir($userRoot, 0755, true);
 }
 
+// ✅ Resolve full folder path
+$fullPath = resolveFolderPath($userId, $currentPath);
+
+// ✅ Handle folder creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['folder_name'])) {
-  createFolder($fullPath, $_POST['folder_name']);
+  createFolder($userRoot, $currentPath . '/' . $_POST['folder_name']);
   header("Location: file-manager.php?path=" . urlencode($currentPath));
   exit;
 }
 
+// ✅ Get folder contents
 $contents = listFolderItems($fullPath);
 $folders = $contents['folders'];
 $files = $contents['files'];
 
-// Sort folders
-usort($folders, function ($a, $b) use ($fullPath, $sortBy) {
-  if ($sortBy === 'modified') {
-    return filemtime($fullPath . $b) <=> filemtime($fullPath . $a);
-  }
-  return strcasecmp($a, $b);
+// ✅ Sort folders
+usort($folders, function ($a, $b) use ($sortBy) {
+  return $sortBy === 'modified'
+    ? strtotime($b['modified']) <=> strtotime($a['modified'])
+    : strcasecmp($a['name'], $b['name']);
 });
 
-// Sort files
-usort($files, function ($a, $b) use ($fullPath, $sortBy) {
-  if ($sortBy === 'modified') {
-    return filemtime($fullPath . $b) <=> filemtime($fullPath . $a);
-  }
-  return strcasecmp($a, $b);
+// ✅ Sort files
+usort($files, function ($a, $b) use ($sortBy) {
+  return $sortBy === 'modified'
+    ? strtotime($b['modified']) <=> strtotime($a['modified'])
+    : strcasecmp($a['name'], $b['name']);
 });
 
-function getFileIcon($filename)
-{
+/**
+ * Get icon filename for a given file extension.
+ */
+function getFileIcon(string $filename): string {
   $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-  return match ($ext) {
-    'pdf' => '/assets/img/icons/pdf.png',
-    'doc', 'docx' => '/assets/img/icons/doc.png',
-    'jpg', 'jpeg', 'png', 'gif' => '/assets/img/icons/image.png',
-    'zip', 'rar' => '/assets/img/icons/zip.png',
-    default => '/assets/img/icons/file.png',
-  };
-}
-
-function countFilesInFolder($folderPath)
-{
-  if (!is_dir($folderPath)) return 0;
-  $items = scandir($folderPath);
-  $files = array_filter(
-    $items,
-    fn($item) =>
-    is_file($folderPath . '/' . $item) && $item !== '.' && $item !== '..'
-  );
-  return count($files);
-}
-
-function getFolderModifiedTime($folderPath)
-{
-  if (!is_dir($folderPath)) return null;
-  return date("M d, Y H:i", filemtime($folderPath));
+  $iconMap = [
+    'pdf'   => 'pdf.png',
+    'doc'   => 'doc.png',
+    'docx'  => 'doc.png',
+    'jpg'   => 'image.png',
+    'jpeg'  => 'image.png',
+    'png'   => 'image.png',
+    'gif'   => 'image.png',
+    'zip'   => 'zip.png',
+    'rar'   => 'zip.png',
+  ];
+  return "/assets/img/icons/" . ($iconMap[$ext] ?? 'file.png');
 }
 ?>
 <!DOCTYPE html>
@@ -98,7 +85,7 @@ function getFolderModifiedTime($folderPath)
         <img src="/assets/img/archive-user.png" class="w-5 h-5" alt="Archive icon">
         <h1 class="font-bold text-lg">Manage File</h1>
       </div>
-
+      <!-- Flash Messages -->
       <?php showFlash(); ?>
 
       <div class="flex flex-col gap-4">
@@ -147,14 +134,12 @@ function getFolderModifiedTime($folderPath)
           <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
           <div class="relative z-10 bg-white p-6 rounded-4xl shadow-md w-full max-w-md border border-emerald-500">
             <h2 class="text-2xl  mb-4">New Folder</h2>
-            <form method="POST" action="/controllers/create-folder.php" class="flex flex-col gap-3">
-              <input type="text" name="folder_name" placeholder="Folder name"
-                class="border px-3 py-4 rounded" required>
+            <form method="POST" action="/controllers/create-folder.php" class="flex flex-col gap-3" id="createFolderForm">
+              <input type="text" name="folder_name" placeholder="Folder name" class="border px-3 py-4 rounded" required>
+              <input type="hidden" name="path" id="createFolderPath"> <!-- ✅ Inject current path here -->
               <div class="flex justify-end gap-2 mt-5">
-                <button type="button" id="cancelCreateFolder"
-                  class="px-3 py-1 text-emerald-700  rounded hover:bg-emerald-100">Cancel</button>
-                <button type="submit"
-                  class="px-3 py-1  text-emerald-700 rounded hover:bg-emerald-100">Create</button>
+                <button type="button" id="cancelCreateFolder" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</button>
+                <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Create</button>
               </div>
             </form>
           </div>
@@ -205,28 +190,42 @@ function getFolderModifiedTime($folderPath)
             <!-- Folder Items -->
             <?php foreach ($folders as $folder): ?>
               <?php
-              $nextPath = trim($currentPath . '/' . $folder, '/');
-              $folderPath = $fullPath . $folder;
-              $fileCount = countFilesInFolder($folderPath);
-              $modified = getFolderModifiedTime($folderPath);
-              $menuId = 'menu-' . md5($folder);
+              $nextPath = trim($currentPath . '/' . $folder['name'], '/');
+              $menuId = 'menu-' . md5($folder['name']);
               ?>
               <div class="flex gap-2 item folder-item hover:bg-emerald-50 px-2  py-2 ">
-                <a href="?path=<?= urlencode($nextPath) ?>" class="cursor-default flex justify-between items-center w-full">
+                <a href="?path=<?= urlencode($nextPath) ?>" class="flex justify-between items-center w-full">
                   <div class="flex items-center gap-3">
                     <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5">
-                    <span class="text-sm font-medium"><?= htmlspecialchars($folder) ?></span>
+                    <span class="text-sm font-medium"><?= htmlspecialchars($folder['name']) ?></span>
                   </div>
                   <div class="flex items-center gap-3 text-xs text-gray-500">
-                    <span class="bg-gray-200 px-2 py-1 rounded"><?= $fileCount ?> file<?= $fileCount !== 1 ? 's' : '' ?></span>
-                    <span><?= $modified ?></span>
+                    <span class="bg-gray-200 px-2 py-1 rounded">
+                      <?= $folder['fileCount'] ?> file<?= $folder['fileCount'] !== 1 ? 's' : '' ?>
+                      <?php if ($folder['fileCount'] === 0): ?>
+                        <span class="text-gray-400 italic ml-1">(empty)</span>
+                      <?php endif; ?>
+                    </span>
+                    <span><?= $folder['modified'] ?></span>
                   </div>
                 </a>
+
+                <!-- Menu dot and dropdown -->
                 <div class="flex items-center gap-2">
                   <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">⋯</button>
                   <div id="<?= $menuId ?>" class="absolute right-17 bg-white  rounded shadow-lg hidden text-sm w-44">
-                    <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn" data-name="<?= htmlspecialchars($folder) ?>" data-type="folder">Rename</button>
-                    <button class="block px-4 py-2  hover:bg-emerald-100 w-full text-left delete-btn" data-name="<?= htmlspecialchars($folder) ?>" data-type="folder">Delete</button>
+                    <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
+                      data-name="<?= htmlspecialchars($folder['name']) ?>"
+                      data-type="folder"
+                      data-path="<?= htmlspecialchars($currentPath) ?>">
+                      Rename
+                    </button>
+                    <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn"
+                      data-name="<?= htmlspecialchars($folder['name']) ?>"
+                      data-type="folder"
+                      data-path="<?= htmlspecialchars($currentPath) ?>">
+                      Delete
+                    </button>
                   </div>
                 </div>
               </div>
@@ -236,18 +235,20 @@ function getFolderModifiedTime($folderPath)
             <?php if (!empty($currentPath)): ?>
               <?php foreach ($files as $file): ?>
                 <?php
-                $icon = getFileIcon($file);
-                $fileUrl = "/uploads/staff/$userId/" . ($currentPath ? $currentPath . '/' : '') . $file;
-                $isImage = preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);
-                $modified = date("M d, Y H:i", filemtime($fullPath . $file));
-                $menuId = 'menu-' . md5($file);
+                $filename = $file['name'];
+                $filepath = $file['path'];
+                $modified = $file['modified'];
+                $icon = getFileIcon($filename);
+                $fileUrl = "/uploads/staff/$userId/" . ($currentPath ? $currentPath . '/' : '') . rawurlencode($filename);
+                $isImage = preg_match('/\.(jpg|jpeg|png|gif)$/i', $filename);
+                $menuId = 'menu-' . md5($filename);
                 ?>
-                <div class="flex item file-item hover:bg-emerald-50 px-2 gap-2 py-2 ">
+                <div class="flex item file-item hover:bg-emerald-50 px-2 gap-2 py-2">
                   <!-- Clickable row -->
                   <a href="<?= $fileUrl ?>" target="_blank" class="font-medium flex justify-between items-center w-full cursor-default">
                     <div class="flex items-center gap-3">
                       <img src="<?= $icon ?>" alt="File icon" class="w-5 h-5">
-                      <span class="text-sm"><?= htmlspecialchars($file) ?></span>
+                      <span class="text-sm"><?= htmlspecialchars($filename) ?></span>
                     </div>
                     <div class="flex items-center gap-3 text-xs text-gray-500">
                       <span><?= $modified ?></span>
@@ -255,51 +256,44 @@ function getFolderModifiedTime($folderPath)
                   </a>
 
                   <!-- Menu dot and dropdown -->
-                  <div class="flex items-center">
+                  <div class="flex items-center gap-2">
                     <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">⋯</button>
-                    <div id="<?= $menuId ?>" class="absolute right-17 bg-white  rounded shadow-lg hidden text-sm w-44">
+                    <div id="<?= $menuId ?>" class="absolute right-17 bg-white rounded shadow-lg hidden text-sm w-44">
                       <?php if ($isImage): ?>
                         <a href="<?= $fileUrl ?>" target="_blank" class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Preview</a>
                       <?php endif; ?>
                       <a href="<?= $fileUrl ?>" download class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Download</a>
-                      <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn" data-name="<?= htmlspecialchars($file) ?>" data-type="file">Rename</button>
-                      <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn" data-name="<?= htmlspecialchars($file) ?>" data-type="file">Delete</button>
+                      <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn" data-name="<?= htmlspecialchars($filename) ?>" data-type="file">Rename</button>
+                      <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn" data-name="<?= htmlspecialchars($filename) ?>" data-type="file">Delete</button>
                     </div>
                   </div>
                 </div>
               <?php endforeach; ?>
+
               <?php if (empty($files)): ?>
                 <p class="text-gray-500 text-sm py-5">No files found.</p>
               <?php endif; ?>
             <?php endif; ?>
-          </div>
 
+          </div>
         </div>
-      </div>
     </section>
 
     <!-- Rename Modal -->
     <div id="renameModal" role="dialog" aria-labelledby="renameTypeLabel"
       class="fixed inset-0 bg-opacity-50 z-50 hidden items-center justify-center">
-      <!-- Background overlay -->
       <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-
-      <!-- Modal content -->
       <div class="relative bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 border border-emerald-500">
         <h2 class="text-2xl  mb-4">
           Rename <span id="renameTypeLabel"></span>
         </h2>
-
         <form id="renameForm" method="POST" action="/controllers/rename-item.php" class="flex flex-col gap-3 ">
           <input type="hidden" name="type" id="renameType">
           <input type="hidden" name="old_name" id="renameOldName">
           <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
-
           <input type="text" name="new_name" id="renameNewName"
             class="border px-3 py-4 rounded" required>
-
           <small id="renameExtensionHint" class="text-xs text-gray-500 hidden"></small>
-
           <div class="flex justify-end gap-2 mt-5">
             <button type="button" id="cancelRename"
               class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</button>
@@ -312,9 +306,7 @@ function getFolderModifiedTime($folderPath)
 
     <!-- Delete Modal -->
     <div id="deleteModal" class="fixed inset-0 bg-opacity-50 z-50 hidden items-center justify-center">
-      <!-- Background overlay -->
       <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-
       <div class="bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 relative border border-emerald-500">
         <h2 class="text-2xl  mb-4">
           Delete <span id="deleteTypeLabel"></span>?

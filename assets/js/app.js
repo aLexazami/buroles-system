@@ -7,7 +7,7 @@ import { setupListSearch } from './search-filter.js';
 import { initDropdownMenus } from './dropdown.js';
 import { initRenameButtons } from './modal.js';
 import { initDeleteButtons } from './modal.js';
-import { initCreateFolderModal, initUploadTrigger } from './folder-upload.js';
+import { initCreateFolderModal} from './folder-creation.js';
 import { initUploadActions } from './upload.js';
 
 
@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initDropdownMenus();
   initRenameButtons();
   initCreateFolderModal();
-  initUploadTrigger();
   initDeleteButtons();
   initUploadActions();
 
