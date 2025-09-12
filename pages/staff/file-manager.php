@@ -266,8 +266,10 @@ function getFileIcon(string $filename): string
                 </div>
               <?php endforeach; ?>
 
-              <?php if (empty($files)): ?>
-                <p class="text-gray-500 text-sm py-5">No files found.</p>
+              <?php if (empty($files) && empty($folders)): ?>
+                <p class="text-gray-500 text-sm py-5">This folder is empty.</p>
+              <?php elseif (empty($files)): ?>
+                <p class="text-gray-400 text-sm italic py-3">No files found, but subfolders are present.</p>
               <?php endif; ?>
             <?php endif; ?>
 
