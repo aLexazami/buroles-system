@@ -48,7 +48,8 @@ usort($files, function ($a, $b) use ($sortBy) {
 /**
  * Get icon filename for a given file extension.
  */
-function getFileIcon(string $filename): string {
+function getFileIcon(string $filename): string
+{
   $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
   $iconMap = [
     'pdf'   => 'pdf.png',
@@ -104,16 +105,6 @@ function getFileIcon(string $filename): string {
               📁 Create Folder
             </button>
 
-            <!-- Upload Folder -->
-            <form action="/controllers/upload-folder.php" method="POST" enctype="multipart/form-data" id="uploadFolderForm">
-              <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
-              <input type="file" name="folder[]" id="uploadFolderInput" class="hidden" webkitdirectory directory multiple>
-              <button type="button" id="uploadFolderTrigger"
-                class="block w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm">
-                🗂️ Upload Folder
-              </button>
-            </form>
-
             <?php if (!empty($currentPath)): ?>
               <!-- Upload File -->
               <form action="/controllers/upload-file.php" method="POST" enctype="multipart/form-data" id="uploadForm">
@@ -144,7 +135,6 @@ function getFileIcon(string $filename): string {
             </form>
           </div>
         </div>
-
 
         <div class="bg-white shadow-2xl rounded-md p-4">
           <!-- Breadcrumb -->
@@ -193,27 +183,30 @@ function getFileIcon(string $filename): string {
               $nextPath = trim($currentPath . '/' . $folder['name'], '/');
               $menuId = 'menu-' . md5($folder['name']);
               ?>
-              <div class="flex gap-2 item folder-item hover:bg-emerald-50 px-2  py-2 ">
-                <a href="?path=<?= urlencode($nextPath) ?>" class="flex justify-between items-center w-full">
-                  <div class="flex items-center gap-3">
+              <div class="flex item folder-item hover:bg-emerald-50 px-2 gap-2 py-2">
+                <a href="?path=<?= urlencode($nextPath) ?>" class="flex justify-between font-medium cursor-default items-center w-full">
+                  <div class="flex items-center mr-10 gap-3">
                     <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5">
                     <span class="text-sm font-medium"><?= htmlspecialchars($folder['name']) ?></span>
                   </div>
-                  <div class="flex items-center gap-3 text-xs text-gray-500">
-                    <span class="bg-gray-200 px-2 py-1 rounded">
+                  <div class="grid grid-cols-3 items-center text-center text-xs text-gray-500">
+                    <span class="px-2 bg-gray-200 mr-2 py-1 rounded">
                       <?= $folder['fileCount'] ?> file<?= $folder['fileCount'] !== 1 ? 's' : '' ?>
                       <?php if ($folder['fileCount'] === 0): ?>
                         <span class="text-gray-400 italic ml-1">(empty)</span>
                       <?php endif; ?>
                     </span>
-                    <span><?= $folder['modified'] ?></span>
+                    <span class="mr-2"><?= $folder['modified'] ?></span>
+                    <span><?= formatSize($folder['size']) ?></span>
                   </div>
                 </a>
 
                 <!-- Menu dot and dropdown -->
                 <div class="flex items-center gap-2">
-                  <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">⋯</button>
-                  <div id="<?= $menuId ?>" class="absolute right-17 bg-white  rounded shadow-lg hidden text-sm w-44">
+                  <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">
+                    <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
+                  </button>
+                  <div id="<?= $menuId ?>" class="absolute right-18 bg-white  rounded shadow-lg hidden text-sm w-44">
                     <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
                       data-name="<?= htmlspecialchars($folder['name']) ?>"
                       data-type="folder"
@@ -250,15 +243,18 @@ function getFileIcon(string $filename): string {
                       <img src="<?= $icon ?>" alt="File icon" class="w-5 h-5">
                       <span class="text-sm"><?= htmlspecialchars($filename) ?></span>
                     </div>
-                    <div class="flex items-center gap-3 text-xs text-gray-500">
+                    <div class="grid grid-cols-2 items-center gap-3 text-xs text-gray-500">
                       <span><?= $modified ?></span>
+                      <span><?= formatSize($file['size']) ?></span>
                     </div>
                   </a>
 
                   <!-- Menu dot and dropdown -->
                   <div class="flex items-center gap-2">
-                    <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">⋯</button>
-                    <div id="<?= $menuId ?>" class="absolute right-17 bg-white rounded shadow-lg hidden text-sm w-44">
+                    <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">
+                      <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
+                    </button>
+                    <div id="<?= $menuId ?>" class="absolute right-18 bg-white rounded shadow-lg hidden text-sm w-44">
                       <?php if ($isImage): ?>
                         <a href="<?= $fileUrl ?>" target="_blank" class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Preview</a>
                       <?php endif; ?>

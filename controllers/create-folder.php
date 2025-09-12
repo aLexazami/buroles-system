@@ -23,11 +23,13 @@ if ($folderName === '') {
   exit;
 }
 
-if (!preg_match('/^[a-zA-Z0-9_\-\/ ]+$/', $folderName)) {
-  setFlash('error', 'Invalid folder name. Use only letters, numbers, slashes, dashes, and spaces.');
+// ✅ Validate folder name format
+if (!preg_match('/^[a-zA-Z0-9_\- ]+$/', $folderName)) {
+  setFlash('error', 'Invalid folder name. Use only letters, numbers, dashes, and spaces.');
   header("Location: /pages/staff/file-manager.php?path=" . urlencode($currentPath));
   exit;
 }
+
 
 // ✅ Build full relative path
 $fullRelativePath = $currentPath !== '' ? $currentPath . '/' . $folderName : $folderName;
