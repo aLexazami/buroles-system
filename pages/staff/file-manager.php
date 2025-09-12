@@ -180,32 +180,47 @@ function getFileIcon(string $filename): string
               <a href="?path=<?= urlencode($currentPath) ?>&sort=modified" class="hover:underline <?= $sortBy === 'modified' ? 'font-bold' : '' ?>">Modified</a>
             </div>
 
+            <!-- Header Row -->
+            <div class="flex px-2 py-2 items-center w-full text-sm text-gray-600 border-b ">
+              <div class="flex items-center w-full justify-between">
+                <div class="flex items-center gap-3 flex-grow">
+                  <span class="font-medium">Name</span>
+                </div>
+                <div class="flex items-center text-center font-medium gap-3">
+                  <span class="w-24">Files</span>
+                  <span class="w-32">Modified</span>
+                  <span class="w-24">Size</span>
+                </div>
+                <div class="w-10"></div>
+              </div>
+            </div>
+
             <!-- Folder Items -->
             <?php foreach ($folders as $folder): ?>
               <?php
               $nextPath = trim($currentPath . '/' . $folder['name'], '/');
               $menuId = 'menu-' . md5($folder['name']);
               ?>
-              <div class="flex item folder-item hover:bg-emerald-50 px-2 gap-2 py-2">
-                <a href="?path=<?= urlencode($nextPath) ?>" class="flex justify-between font-medium cursor-default items-center w-full">
-                  <div class="flex items-center mr-10 gap-3">
+              <div class="flex item folder-item hover:bg-emerald-50 px-2 gap-2 py-2 ">
+                <a href="?path=<?= urlencode($nextPath) ?>" class="flex justify-between items-center w-full">
+                  <div class="flex items-center gap-3 flex-grow">
                     <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5">
                     <span class="text-sm font-medium"><?= htmlspecialchars($folder['name']) ?></span>
                   </div>
-                  <div class="grid grid-cols-3 items-center text-center text-xs text-gray-500">
-                    <span class="px-2 bg-gray-200 mr-2 py-1 rounded">
+                  <div class="flex items-center justify-between text-xs text-gray-500 gap-3">
+                    <span class="w-24 text-center px-2 bg-gray-200 py-1 rounded">
                       <?= $folder['fileCount'] ?> file<?= $folder['fileCount'] !== 1 ? 's' : '' ?>
                       <?php if ($folder['fileCount'] === 0): ?>
                         <span class="text-gray-400 italic ml-1">(empty)</span>
                       <?php endif; ?>
                     </span>
-                    <span class="mr-2"><?= $folder['modified'] ?></span>
-                    <span><?= formatSize($folder['size']) ?></span>
+                    <span class="w-32 text-center"><?= $folder['modified'] ?></span>
+                    <span class="w-24 text-center"><?= formatSize($folder['size']) ?></span>
                   </div>
                 </a>
 
                 <!-- Menu dot and dropdown -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 w-10 justify-end">
                   <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">
                     <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
                   </button>
@@ -241,19 +256,23 @@ function getFileIcon(string $filename): string
                 ?>
                 <div class="flex item file-item hover:bg-emerald-50 px-2 gap-2 py-2">
                   <!-- Clickable row -->
-                  <a href="<?= $fileUrl ?>" target="_blank" class="font-medium flex justify-between items-center w-full cursor-default">
-                    <div class="flex items-center gap-3">
+                  <a href="<?= $fileUrl ?>" target="_blank" class="flex justify-between items-center w-full cursor-default">
+                    <!-- Name column -->
+                    <div class="flex items-center gap-3 flex-grow">
                       <img src="<?= $icon ?>" alt="File icon" class="w-5 h-5">
-                      <span class="text-sm"><?= htmlspecialchars($filename) ?></span>
+                      <span class="text-sm font-medium"><?= htmlspecialchars($filename) ?></span>
                     </div>
-                    <div class="grid grid-cols-2 items-center gap-3 text-xs text-gray-500">
-                      <span><?= $modified ?></span>
-                      <span><?= formatSize($file['size']) ?></span>
+
+                    <!-- Metadata columns -->
+                    <div class="flex items-center text-xs text-gray-500 gap-3">
+                      <span class="w-24 text-center text-gray-400 italic"></span> <!-- Placeholder for "Files" column -->
+                      <span class="w-32 text-center"><?= $modified ?></span>
+                      <span class="w-24 text-center"><?= formatSize($file['size']) ?></span>
                     </div>
                   </a>
 
-                  <!-- Menu dot and dropdown -->
-                  <div class="flex items-center gap-2">
+                  <!-- Menu dot -->
+                  <div class="flex items-center gap-2 w-10 justify-end">
                     <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out" data-target="<?= $menuId ?>">
                       <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
                     </button>
@@ -275,9 +294,9 @@ function getFileIcon(string $filename): string
                 <p class="text-gray-400 text-sm italic py-3">No files found, but subfolders are present.</p>
               <?php endif; ?>
             <?php endif; ?>
-
           </div>
         </div>
+      </div>
     </section>
 
     <!-- Rename Modal -->
