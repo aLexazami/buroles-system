@@ -51,12 +51,21 @@ function buildFileMetadata(string $name, string $fullPath): array {
 
 function getFolderSize(string $folderPath): int {
   $size = 0;
+
+  if (!is_dir($folderPath)) return 0;
+
   foreach (scandir($folderPath) as $item) {
+    if ($item === '.' || $item === '..') continue;
+
     $fullPath = $folderPath . '/' . $item;
+
     if (is_file($fullPath)) {
       $size += filesize($fullPath);
+    } elseif (is_dir($fullPath)) {
+      $size += getFolderSize($fullPath);
     }
   }
+
   return $size;
 }
 
@@ -78,11 +87,23 @@ function formatModifiedTime(string $path): string {
  * Count only files inside a folder (excluding subfolders).
  */
 function countFilesInFolder(string $folderPath): int {
+  $count = 0;
+
   if (!is_dir($folderPath)) return 0;
 
-  return count(array_filter(scandir($folderPath), fn($item) =>
-    is_file($folderPath . '/' . $item) && $item !== '.' && $item !== '..'
-  ));
+  foreach (scandir($folderPath) as $item) {
+    if ($item === '.' || $item === '..') continue;
+
+    $fullPath = $folderPath . '/' . $item;
+
+    if (is_file($fullPath)) {
+      $count++;
+    } elseif (is_dir($fullPath)) {
+      $count += countFilesInFolder($fullPath);
+    }
+  }
+
+  return $count;
 }
 
 /**
