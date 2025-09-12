@@ -99,10 +99,11 @@ function getFileIcon(string $filename): string
           </button>
 
           <div id="newDropdownMenu"
-            class="absolute mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
+            class="absolute mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
             <button type="button" id="openCreateFolderModal"
-              class="block w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm">
-              📁 Create Folder
+              class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md">
+              <img src="/assets/img/new-folder.png" alt="New Folder" class="w-5 h-5">
+              <span>New Folder</span>
             </button>
 
             <?php if (!empty($currentPath)): ?>
@@ -111,8 +112,9 @@ function getFileIcon(string $filename): string
                 <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
                 <input type="file" name="file" id="uploadInput" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png" required>
                 <button type="button" id="uploadTrigger"
-                  class="block w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm">
-                  📄 Upload File
+                  class="flex justify-center items-center  gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md">
+                  <img src="/assets/img/file-upload.png" alt="Upload" class="w-5 h-5">
+                  <span>File Upload</span>
                 </button>
               </form>
             <?php endif; ?>
