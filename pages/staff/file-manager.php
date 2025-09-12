@@ -315,7 +315,7 @@ function getFileIcon(string $filename): string
         <form id="deleteForm" method="POST" action="/controllers/delete-item.php" class="flex flex-col gap-3">
           <input type="hidden" name="type" id="deleteType">
           <input type="hidden" name="name" id="deleteName">
-          <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
+          <input type="hidden" name="path" id="deletePath" value="<?= htmlspecialchars($currentPath) ?>">
           <div class="flex justify-end gap-2 mt-5">
             <button type="button" id="cancelDelete"
               class="px-3 py-1 text-emerald-700  rounded hover:bg-emerald-100">Cancel</button>
