@@ -1,29 +1,47 @@
 <?php
 session_start();
+
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/folder-utils.php';
 require_once __DIR__ . '/../helpers/path.php';
 
-$userId = $_SESSION['user_id'] ?? '';
-$type = $_POST['type'] ?? '';
-$name = $_POST['name'] ?? '';
-$path = trim($_POST['path'] ?? '', '/');
+$userId     = $_SESSION['user_id'] ?? '';
+$activeRole = $_SESSION['active_role_id'] ?? '';
+$targetId   = $_POST['user_id'] ?? $userId;
+$type       = $_POST['type'] ?? '';
+$name       = $_POST['name'] ?? '';
+$path       = sanitizePath($_POST['path'] ?? '');
 
 // ✅ Validate request
-if (!$userId || !$type || !$name) {
+if (!$userId || !$activeRole || !$type || !$name) {
   setFlash('error', 'Invalid deletion request.');
-  redirectToManager($path);
+  redirectToManager($targetId, $path);
+}
+
+// 🔐 Staff can only delete their own items
+if ($activeRole == 1 && $targetId !== $userId) {
+  setFlash('error', 'Access denied. You can only manage your own files.');
+  redirectToManager($userId, $path);
 }
 
 try {
-  $targetPath = resolveUploadPath($userId, $path, $name);
+  // ✅ Resolve base path using role-first logic
+  $baseDir    = getUploadBaseByRoleUser('1', $targetId);
+  $targetPath = resolveUploadPathFromBase($baseDir, $path, $name);
+
+  if (!$targetPath || !file_exists($targetPath)) {
+    error_log("Deletion failed: path not found → $targetPath");
+    setFlash('error', "Item '$name' could not be found.");
+    redirectToManager($targetId, $path);
+  }
 
   if ($type === 'file') {
     handleFileDeletion($targetPath, $name);
   } elseif ($type === 'folder') {
     handleFolderDeletion($targetPath, $name);
   } else {
+    error_log("Unknown deletion type: $type");
     setFlash('error', 'Unknown item type.');
   }
 } catch (RuntimeException $e) {
@@ -31,7 +49,7 @@ try {
   setFlash('error', 'An error occurred while deleting the item.');
 }
 
-redirectToManager($path);
+redirectToManager($targetId, $path);
 
 // ✅ Helpers
 function handleFileDeletion(string $targetPath, string $name): void {
@@ -52,8 +70,10 @@ function handleFolderDeletion(string $targetPath, string $name): void {
   }
 }
 
-function redirectToManager(string $path): void {
-  header("Location: /pages/staff/file-manager.php?path=" . urlencode($path));
+function redirectToManager(string $userId, string $path): void {
+  $url = "/pages/staff/file-manager.php?user_id=$userId";
+  if ($path !== '') $url .= '&path=' . urlencode($path);
+  header("Location: $url");
   exit;
 }
 ?>

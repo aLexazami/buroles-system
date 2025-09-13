@@ -49,6 +49,9 @@ function buildFileMetadata(string $name, string $fullPath): array {
   ];
 }
 
+/**
+ * Get total size of a folder including nested contents.
+ */
 function getFolderSize(string $folderPath): int {
   $size = 0;
 
@@ -69,6 +72,9 @@ function getFolderSize(string $folderPath): int {
   return $size;
 }
 
+/**
+ * Format bytes into human-readable size.
+ */
 function formatSize(int $bytes): string {
   if ($bytes >= 1073741824) return round($bytes / 1073741824, 2) . ' GB';
   if ($bytes >= 1048576) return round($bytes / 1048576, 2) . ' MB';
@@ -84,7 +90,7 @@ function formatModifiedTime(string $path): string {
 }
 
 /**
- * Count only files inside a folder (excluding subfolders).
+ * Count only files inside a folder (including nested).
  */
 function countFilesInFolder(string $folderPath): int {
   $count = 0;
@@ -117,7 +123,15 @@ function createFolder(string $basePath, string $folderPath): bool {
   if (empty($safeSegments)) return false;
 
   $target = rtrim($basePath, '/') . '/' . implode('/', $safeSegments);
-  return !file_exists($target) ? mkdir($target, 0755, true) : false;
+
+  if (!file_exists($target)) {
+    if (!mkdir($target, 0755, true)) {
+      error_log("createFolder: failed to create → $target");
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -138,4 +152,33 @@ function deleteFolderRecursive(string $folderPath): bool {
   return rmdir($folderPath);
 }
 
+/**
+ * Recursively move a folder and its contents to a new location.
+ * Used as a fallback when rename() fails on non-empty directories.
+ */
+function moveFolderRecursively(string $source, string $destination): bool {
+  if (!is_dir($source)) return false;
+  if (!mkdir($destination, 0755, true)) {
+    error_log("moveFolderRecursively: failed to create destination → $destination");
+    return false;
+  }
+
+  foreach (scandir($source) as $item) {
+    if ($item === '.' || $item === '..') continue;
+
+    $src = $source . '/' . $item;
+    $dst = $destination . '/' . $item;
+
+    if (is_dir($src)) {
+      if (!moveFolderRecursively($src, $dst)) return false;
+    } else {
+      if (!rename($src, $dst)) {
+        error_log("moveFolderRecursively: failed to move file → $src to $dst");
+        return false;
+      }
+    }
+  }
+
+  return rmdir($source);
+}
 ?>

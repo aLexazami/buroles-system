@@ -1,57 +1,34 @@
-export function setupTableSearch(inputId, clearId, tableSelector) {
+export function setupSearchFilter({ inputId, clearId, selector, scope = 'textContent' }) {
   const searchInput = document.getElementById(inputId);
   const clearButton = document.getElementById(clearId);
-  const rows = document.querySelectorAll(`${tableSelector} tbody tr`);
+  const elements = document.querySelectorAll(selector);
 
-  if (searchInput && clearButton && rows.length > 0) {
-    let debounceTimer;
+  if (!searchInput || !clearButton || elements.length === 0) return;
 
-    function filterRows(query) {
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-      });
-    }
+  let debounceTimer;
 
-    searchInput.addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        filterRows(searchInput.value.toLowerCase());
-      }, 300);
-    });
+  function getSearchText(el) {
+    return scope === 'dataset'
+      ? el.dataset.name?.toLowerCase() || ''
+      : el.textContent.toLowerCase();
+  }
 
-    clearButton.addEventListener('click', () => {
-      searchInput.value = '';
-      filterRows('');
+  function filterElements(query) {
+    elements.forEach(el => {
+      const text = getSearchText(el);
+      el.style.display = text.includes(query) ? '' : 'none';
     });
   }
-}
 
-export function setupListSearch(inputId, clearId, itemSelector) {
-  const searchInput = document.getElementById(inputId);
-  const clearButton = document.getElementById(clearId);
-  const items = document.querySelectorAll(itemSelector);
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      filterElements(searchInput.value.toLowerCase());
+    }, 300);
+  });
 
-  if (searchInput && clearButton && items.length > 0) {
-    let debounceTimer;
-
-    function filterItems(query) {
-      items.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        item.style.display = text.includes(query) ? '' : 'none';
-      });
-    }
-
-    searchInput.addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        filterItems(searchInput.value.toLowerCase());
-      }, 300);
-    });
-
-    clearButton.addEventListener('click', () => {
-      searchInput.value = '';
-      filterItems('');
-    });
-  }
+  clearButton.addEventListener('click', () => {
+    searchInput.value = '';
+    filterElements('');
+  });
 }

@@ -8,7 +8,7 @@ function toggleModal(modalId, show) {
 }
 
 // 📁 Rename Modal Logic
-export function openRenameModal(name, type) {
+export function openRenameModal(name, type, userId, path) {
   toggleModal('renameModal', true);
 
   const modal = document.getElementById('renameModal');
@@ -19,14 +19,16 @@ export function openRenameModal(name, type) {
   document.getElementById('renameOldName').value = name;
   document.getElementById('renameNewName').value = name;
   document.getElementById('renameTypeLabel').textContent = type;
+  document.getElementById('renameUserId').value = userId;
+  document.getElementById('renamePath').value = path;
 
   const hint = document.getElementById('renameExtensionHint');
   if (type === 'file' && extension) {
     hint.textContent = `If you omit the extension, it will be preserved as ".${extension}"`;
     hint.classList.remove('hidden');
   } else {
-    hint.textContent = '';
     hint.classList.add('hidden');
+    hint.textContent = '';
   }
 }
 
@@ -37,7 +39,12 @@ export function closeRenameModal() {
 export function initRenameButtons() {
   document.querySelectorAll('.rename-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      openRenameModal(btn.dataset.name, btn.dataset.type);
+      openRenameModal(
+        btn.dataset.name,
+        btn.dataset.type,
+        btn.dataset.userId,
+        btn.dataset.path
+      );
     });
   });
 
@@ -57,6 +64,7 @@ export function initRenameButtons() {
       if (
         extension &&
         input &&
+        !input.value.includes('.') &&
         !input.value.toLowerCase().endsWith(`.${extension.toLowerCase()}`)
       ) {
         input.value += `.${extension}`;
@@ -66,16 +74,15 @@ export function initRenameButtons() {
 }
 
 // 🗑️ Delete Modal Logic
-export function openDeleteModal(name, type) {
+export function openDeleteModal(name, type, userId, path) {
   toggleModal('deleteModal', true);
-
-  const currentPath = new URLSearchParams(window.location.search).get('path') || '';
 
   document.getElementById('deleteType').value = type;
   document.getElementById('deleteName').value = name;
-  document.getElementById('deletePath').value = currentPath;
+  document.getElementById('deletePath').value = path;
   document.getElementById('deleteTypeLabel').textContent = type;
   document.getElementById('deleteItemName').textContent = name;
+  document.getElementById('deleteUserId').value = userId;
 }
 
 export function closeDeleteModal() {
@@ -85,7 +92,12 @@ export function closeDeleteModal() {
 export function initDeleteButtons() {
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      openDeleteModal(btn.dataset.name, btn.dataset.type);
+      openDeleteModal(
+        btn.dataset.name,
+        btn.dataset.type,
+        btn.dataset.userId,
+        btn.dataset.path
+      );
     });
   });
 

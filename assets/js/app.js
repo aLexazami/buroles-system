@@ -1,35 +1,51 @@
+// UI & Role Toggles
 import { setupMenuToggle } from './menu-toggle.js';
 import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
-import { setupTableSearch } from './search-filter.js';
-import { initExportDropdown } from '/assets/js/export-button.js';
-import { setupListSearch } from './search-filter.js';
-import { initDropdownMenus } from './dropdown.js';
-import { initRenameButtons } from './modal.js';
-import { initDeleteButtons } from './modal.js';
-import { initCreateFolderModal} from './folder-creation.js';
+
+// File Manager Actions
+import { initRenameButtons, initDeleteButtons } from './modal.js';
+import { initCreateFolderModal } from './folder-creation.js';
 import { initUploadActions } from './upload.js';
+import { initExportDropdown } from '/assets/js/export-button.js';
+import { initDropdownMenus } from './dropdown.js';
 
-
-
-
+// Search Filters (Unified)
+import { setupSearchFilter } from './search-filter.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 🧭 UI & Role Toggles
   setupMenuToggle();
   setupRoleSwitcher();
   setupUserActions();
-  initExportDropdown();
   initDropdownMenus();
+
+  // 📁 File Manager Actions
   initRenameButtons();
-  initCreateFolderModal();
   initDeleteButtons();
+  initCreateFolderModal();
   initUploadActions();
+  initExportDropdown();
 
+  // 🔍 Search Filters
+  setupSearchFilter({
+    inputId: 'folderSearch',
+    clearId: 'clearFolderSearch',
+    selector: '#itemList .item'
+  });
 
-
-  setupListSearch('folderSearch', 'clearFolderSearch', '#itemList .item');
+  setupSearchFilter({
+    inputId: 'staffSearch',
+    clearId: 'clearStaffSearch',
+    selector: '.staff-item',
+    scope: 'dataset' // uses data-name attribute
+  });
 
   if (document.getElementById('userSearch') && document.getElementById('clearSearch')) {
-    setupTableSearch('userSearch', 'clearSearch', 'table');
+    setupSearchFilter({
+      inputId: 'userSearch',
+      clearId: 'clearSearch',
+      selector: 'table tbody tr'
+    });
   }
 });
