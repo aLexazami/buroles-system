@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Get icon filename for a given file extension.
  */
@@ -15,16 +16,23 @@ function getFileIcon(string $filename): string {
     'zip'   => 'zip.png',
     'rar'   => 'zip.png',
   ];
-  return "/assets/img/icons/" . ($iconMap[$ext] ?? 'file.png');
+
+  return "/assets/img/icons/" . ($ext ? ($iconMap[$ext] ?? 'file.png') : 'file.png');
 }
 
-function countUserFiles($basePath): int {
+/**
+ * Count all files inside a directory recursively.
+ */
+function countUserFiles(string $basePath): int {
   if (!is_dir($basePath)) return 0;
-  $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basePath));
+
   $count = 0;
+  $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basePath));
+
   foreach ($rii as $file) {
     if ($file->isFile()) $count++;
   }
+
   return $count;
 }
 ?>

@@ -5,12 +5,13 @@
  * Creates the directory if it doesn't exist.
  */
 function getUploadBaseByRoleUser(string $roleId, string $userId): string {
-  $baseDir = __DIR__ . "/../uploads/staff/$roleId/$userId";
+  $roleSlug = getRoleSlug($roleId);
+  $baseDir = __DIR__ . "/../uploads/$roleSlug/$userId";
 
   if (!is_dir($baseDir)) {
     if (!mkdir($baseDir, 0755, true)) {
-      logUploadError("Failed to create upload directory for role $roleId and user $userId");
-      throw new RuntimeException("Upload base directory not found for role $roleId and user $userId");
+      logUploadError("Failed to create upload directory for role $roleSlug and user $userId");
+      throw new RuntimeException("Upload base directory not found for role $roleSlug and user $userId");
     }
   }
 
@@ -45,7 +46,7 @@ function logUploadError(string $message): void {
 
 /**
  * Sanitize a path segment to prevent traversal and injection.
- * Now allows dots for versioned folder names like "v1.2".
+ * Allows dots for versioned folder names like "v1.2".
  */
 function sanitizeSegment(string $segment): string {
   return preg_replace('/[^a-zA-Z0-9_\-\. ]+/', '', $segment);
@@ -64,8 +65,8 @@ function sanitizePath(string $path): string {
  */
 function resolveUploadPathFromBase(string $baseDir, string $parentPath, string $itemName): string {
   $safeParent = sanitizePath($parentPath);
-  $safeItem   = ltrim(str_replace(['../', './'], '', $itemName), '/');
-  $subPath    = $safeParent !== '' ? $safeParent . '/' . $safeItem : $safeItem;
+  $safeItem   = sanitizeSegment($itemName);
+  $subPath    = $safeParent !== '' ? "$safeParent/$safeItem" : $safeItem;
   $fullPath   = $baseDir . '/' . $subPath;
 
   if (!file_exists($fullPath)) {
@@ -76,22 +77,41 @@ function resolveUploadPathFromBase(string $baseDir, string $parentPath, string $
 }
 
 /**
+ * Resolve full path using role and user ID.
+ */
+function resolveUploadPath(string $roleId, string $userId, string $parentPath, string $itemName): string {
+  $baseDir = getUploadBaseByRoleUser($roleId, $userId);
+  return resolveUploadPathFromBase($baseDir, $parentPath, $itemName);
+}
+
+/**
  * Generate a public-facing preview URL for a file.
  */
 function resolvePreviewUrl(string $roleId, string $userId, string $folderPath, string $fileName): string {
-  $safeFile = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $fileName);
-  $safePath = trim($folderPath, '/');
-  $subPath  = $safePath !== '' ? $safePath . '/' . $safeFile : $safeFile;
+  $roleSlug = getRoleSlug($roleId);
+  $safeFile = sanitizeSegment($fileName);
+  $safePath = sanitizePath($folderPath);
+  $subPath  = $safePath !== '' ? "$safePath/$safeFile" : $safeFile;
 
-  return "/uploads/staff/$roleId/$userId/" . rawurlencode($subPath);
+  return "/uploads/$roleSlug/$userId/" . rawurlencode($subPath);
 }
 
 /**
  * Generate a preview URL for a user's file using their active role and ID.
- * Centralized for frontend use.
  */
-function getUserUploadUrl(string $userId, string $folderPath, string $fileName): string {
-  $roleId = '1'; // Default to staff role
+function getUserUploadUrl(string $roleId, string $userId, string $folderPath, string $fileName): string {
   return resolvePreviewUrl($roleId, $userId, $folderPath, $fileName);
+}
+
+/**
+ * Map role ID to folder slug.
+ */
+function getRoleSlug(string $roleId): string {
+  return match ($roleId) {
+    '1' => 'staff',
+    '2' => 'admin',
+    '3' => 'super-admin',
+    default => 'unknown'
+  };
 }
 ?>

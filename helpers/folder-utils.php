@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Scan a directory and return structured metadata for folders and files.
+ * Safely scan a directory and return structured metadata for folders and files.
  */
 function listFolderItems(string $path): array {
   if (!is_dir($path)) return ['folders' => [], 'files' => []];
@@ -9,10 +9,8 @@ function listFolderItems(string $path): array {
   $folders = [];
   $files = [];
 
-  foreach (scandir($path) as $item) {
-    if ($item === '.' || $item === '..') continue;
-
-    $fullPath = $path . '/' . $item;
+  foreach (getDirectoryItems($path) as $item) {
+    $fullPath = $path . DIRECTORY_SEPARATOR . $item;
 
     if (is_dir($fullPath)) {
       $folders[] = buildFolderMetadata($item, $fullPath);
@@ -25,15 +23,56 @@ function listFolderItems(string $path): array {
 }
 
 /**
+ * Recursively scan a folder and return a tree structure.
+ */
+function listFolderItemsRecursive(string $path): array {
+  if (!is_dir($path)) return [];
+
+  $tree = [];
+
+  foreach (getDirectoryItems($path) as $item) {
+    $fullPath = $path . DIRECTORY_SEPARATOR . $item;
+
+    if (is_dir($fullPath)) {
+      $tree[] = [
+        'type' => 'folder',
+        'name' => $item,
+        'path' => $fullPath,
+        'children' => listFolderItemsRecursive($fullPath)
+      ];
+    } elseif (is_file($fullPath)) {
+      $tree[] = [
+        'type' => 'file',
+        'name' => $item,
+        'path' => $fullPath,
+        'size' => filesize($fullPath),
+        'modified' => formatModifiedTime($fullPath)
+      ];
+    }
+  }
+
+  return $tree;
+}
+
+/**
+ * Return filtered directory items (excluding . and ..).
+ */
+function getDirectoryItems(string $path): array {
+  return array_filter(scandir($path), fn($item) => $item !== '.' && $item !== '..');
+}
+
+/**
  * Build metadata for a folder.
  */
 function buildFolderMetadata(string $name, string $fullPath): array {
+  $size = getFolderSize($fullPath);
   return [
     'name' => $name,
     'path' => $fullPath,
     'modified' => formatModifiedTime($fullPath),
     'fileCount' => countFilesInFolder($fullPath),
-    'size' => getFolderSize($fullPath)
+    'size' => $size,
+    'readableSize' => formatSize($size)
   ];
 }
 
@@ -41,11 +80,13 @@ function buildFolderMetadata(string $name, string $fullPath): array {
  * Build metadata for a file.
  */
 function buildFileMetadata(string $name, string $fullPath): array {
+  $size = filesize($fullPath);
   return [
     'name' => $name,
     'path' => $fullPath,
     'modified' => formatModifiedTime($fullPath),
-    'size' => filesize($fullPath)
+    'size' => $size,
+    'readableSize' => formatSize($size)
   ];
 }
 
@@ -54,13 +95,10 @@ function buildFileMetadata(string $name, string $fullPath): array {
  */
 function getFolderSize(string $folderPath): int {
   $size = 0;
-
   if (!is_dir($folderPath)) return 0;
 
-  foreach (scandir($folderPath) as $item) {
-    if ($item === '.' || $item === '..') continue;
-
-    $fullPath = $folderPath . '/' . $item;
+  foreach (getDirectoryItems($folderPath) as $item) {
+    $fullPath = $folderPath . DIRECTORY_SEPARATOR . $item;
 
     if (is_file($fullPath)) {
       $size += filesize($fullPath);
@@ -70,6 +108,37 @@ function getFolderSize(string $folderPath): int {
   }
 
   return $size;
+}
+
+/**
+ * Count only files inside a folder (including nested).
+ */
+function countFilesInFolder(string $folderPath): int {
+  $count = 0;
+  if (!is_dir($folderPath)) return 0;
+
+  foreach (getDirectoryItems($folderPath) as $item) {
+    $fullPath = $folderPath . DIRECTORY_SEPARATOR . $item;
+
+    if (is_file($fullPath)) {
+      $count++;
+    } elseif (is_dir($fullPath)) {
+      $count += countFilesInFolder($fullPath);
+    }
+  }
+
+  return $count;
+}
+
+/**
+ * Get folder stats in one call.
+ */
+function getFolderStats(string $folderPath): array {
+  return [
+    'size' => getFolderSize($folderPath),
+    'fileCount' => countFilesInFolder($folderPath),
+    'modified' => formatModifiedTime($folderPath)
+  ];
 }
 
 /**
@@ -86,30 +155,17 @@ function formatSize(int $bytes): string {
  * Format last modified time of a file or folder.
  */
 function formatModifiedTime(string $path): string {
-  return date("M d, Y H:i", filemtime($path));
+  return file_exists($path) ? date("M d, Y H:i", filemtime($path)) : 'Unknown';
 }
 
 /**
- * Count only files inside a folder (including nested).
+ * Validate a path before performing destructive operations.
  */
-function countFilesInFolder(string $folderPath): int {
-  $count = 0;
+function isSafePath(string $path): bool {
+  $realBase = realpath(__DIR__ . '/../uploads');
+  $realPath = realpath($path);
 
-  if (!is_dir($folderPath)) return 0;
-
-  foreach (scandir($folderPath) as $item) {
-    if ($item === '.' || $item === '..') continue;
-
-    $fullPath = $folderPath . '/' . $item;
-
-    if (is_file($fullPath)) {
-      $count++;
-    } elseif (is_dir($fullPath)) {
-      $count += countFilesInFolder($fullPath);
-    }
-  }
-
-  return $count;
+  return $realPath !== false && str_starts_with($realPath, $realBase);
 }
 
 /**
@@ -122,7 +178,7 @@ function createFolder(string $basePath, string $folderPath): bool {
 
   if (empty($safeSegments)) return false;
 
-  $target = rtrim($basePath, '/') . '/' . implode('/', $safeSegments);
+  $target = rtrim($basePath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $safeSegments);
 
   if (!file_exists($target)) {
     if (!mkdir($target, 0755, true)) {
@@ -138,15 +194,19 @@ function createFolder(string $basePath, string $folderPath): bool {
  * Recursively delete a folder and its contents.
  */
 function deleteFolderRecursive(string $folderPath): bool {
-  if (!is_dir($folderPath)) return false;
+  if (!isSafePath($folderPath) || !is_dir($folderPath)) return false;
 
-  foreach (scandir($folderPath) as $item) {
-    if ($item === '.' || $item === '..') continue;
+  foreach (getDirectoryItems($folderPath) as $item) {
+    $fullItem = $folderPath . DIRECTORY_SEPARATOR . $item;
 
-    $fullItem = $folderPath . '/' . $item;
-    is_dir($fullItem)
-      ? deleteFolderRecursive($fullItem)
-      : unlink($fullItem);
+    if (is_dir($fullItem)) {
+      if (!deleteFolderRecursive($fullItem)) return false;
+    } else {
+      if (!unlink($fullItem)) {
+        error_log("deleteFolderRecursive: failed to delete file → $fullItem");
+        return false;
+      }
+    }
   }
 
   return rmdir($folderPath);
@@ -157,17 +217,16 @@ function deleteFolderRecursive(string $folderPath): bool {
  * Used as a fallback when rename() fails on non-empty directories.
  */
 function moveFolderRecursively(string $source, string $destination): bool {
-  if (!is_dir($source)) return false;
+  if (!isSafePath($source) || !is_dir($source)) return false;
+
   if (!mkdir($destination, 0755, true)) {
     error_log("moveFolderRecursively: failed to create destination → $destination");
     return false;
   }
 
-  foreach (scandir($source) as $item) {
-    if ($item === '.' || $item === '..') continue;
-
-    $src = $source . '/' . $item;
-    $dst = $destination . '/' . $item;
+  foreach (getDirectoryItems($source) as $item) {
+    $src = $source . DIRECTORY_SEPARATOR . $item;
+    $dst = $destination . DIRECTORY_SEPARATOR . $item;
 
     if (is_dir($src)) {
       if (!moveFolderRecursively($src, $dst)) return false;
