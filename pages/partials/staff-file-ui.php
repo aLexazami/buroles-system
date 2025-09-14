@@ -5,43 +5,51 @@
 <!-- Flash Messages -->
 <?php showFlash(); ?>
 
+<?php
+$trueRoleId = $_SESSION['original_role_id'] ?? null;
+$activeRoleId = $_SESSION['active_role_id'] ?? null;
+$userId = $_SESSION['user_id'] ?? null;
+?>
+
 <div class="flex flex-col gap-4">
   <!-- Folder Creation + Upload -->
   <!-- New Button + Dropdown -->
-  <div class="relative inline-block text-left py-4">
-    <button type="button" id="newDropdownToggle"
-      class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
-      aria-label="Open new item menu" title="Create new folder or upload file">
-      <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4 mr-2">
-      <span>New</span>
-    </button>
-
-    <div id="newDropdownMenu"
-      class="absolute mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
-      <!-- New Folder Button -->
-      <button type="button" id="openCreateFolderModal"
-        class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md"
-        aria-label="Create new folder">
-        <img src="/assets/img/new-folder.png" alt="New Folder" class="w-5 h-5">
-        <span>New Folder</span>
+  <?php if ($activeRoleId === '1' && $userId === $targetId): ?>
+    <div class="relative inline-block text-left py-4">
+      <button type="button" id="newDropdownToggle"
+        class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
+        aria-label="Open new item menu" title="Create new folder or upload file">
+        <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4 mr-2">
+        <span>New</span>
       </button>
 
-      <?php if (!empty($currentPath)): ?>
-        <!-- Upload File -->
-        <form action="/controllers/upload-file.php" method="POST" enctype="multipart/form-data" id="uploadForm">
-          <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
-          <input type="hidden" name="user_id" value="<?= $targetId ?>">
-          <input type="file" name="file" id="uploadInput" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png" required>
-          <button type="button" id="uploadTrigger"
-            class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md"
-            aria-label="Upload file to <?= htmlspecialchars($currentPath) ?>" title="Upload file">
-            <img src="/assets/img/file-upload.png" alt="Upload" class="w-5 h-5">
-            <span>File Upload</span>
-          </button>
-        </form>
-      <?php endif; ?>
+      <div id="newDropdownMenu"
+        class="absolute mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
+        <!-- New Folder Button -->
+        <button type="button" id="openCreateFolderModal"
+          class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md"
+          aria-label="Create new folder">
+          <img src="/assets/img/new-folder.png" alt="New Folder" class="w-5 h-5">
+          <span>New Folder</span>
+        </button>
+
+        <?php if (!empty($currentPath)): ?>
+          <!-- Upload File -->
+          <form action="/controllers/upload-file.php" method="POST" enctype="multipart/form-data" id="uploadForm">
+            <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
+            <input type="hidden" name="user_id" value="<?= $targetId ?>">
+            <input type="file" name="file" id="uploadInput" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png" required>
+            <button type="button" id="uploadTrigger"
+              class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md"
+              aria-label="Upload file to <?= htmlspecialchars($currentPath) ?>" title="Upload file">
+              <img src="/assets/img/file-upload.png" alt="Upload" class="w-5 h-5">
+              <span>File Upload</span>
+            </button>
+          </form>
+        <?php endif; ?>
+      </div>
     </div>
-  </div>
+  <?php endif; ?>
 
 
   <!-- Create Folder Modal -->
