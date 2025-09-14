@@ -6,11 +6,17 @@
 <?php showFlash(); ?>
 
 <?php
-$trueRoleId = $_SESSION['original_role_id'] ?? null;
-$activeRoleId = $_SESSION['active_role_id'] ?? null;
-$userId = $_SESSION['user_id'] ?? null;
-$targetId = $_GET['user_id'] ?? $userId;
+$trueRoleId   = (int)($_SESSION['original_role_id'] ?? 0);
+$activeRoleId = (int)($_SESSION['active_role_id'] ?? 1);
+$roleId       = (string)$activeRoleId;
+$userId       = (int)($_SESSION['user_id'] ?? 0);
+$targetId     = (int)($_GET['user_id'] ?? $userId);
+$currentPath  = sanitizePath($_GET['path'] ?? '');
+$safePath    = htmlspecialchars(trim($currentPath, '/'));
+$segments     = explode('/', $currentPath);
+$breadcrumbPath = '';
 ?>
+
 
 <div class="flex flex-col gap-4">
   <!-- Folder Creation + Upload -->
@@ -74,20 +80,20 @@ $targetId = $_GET['user_id'] ?? $userId;
   <div class="bg-white shadow-2xl rounded-md p-4">
     <!-- Breadcrumb -->
     <div class="text-sm text-gray-500 flex items-center pb-3 gap-2">
-      <a href="?path=" class="text-emerald-600 hover:underline">Home</a>
-      <?php
-      $segments = explode('/', $currentPath);
-      $breadcrumbPath = '';
-      foreach ($segments as $index => $segment):
+      <a href="?user_id=<?= $targetId ?>&path=" class="text-emerald-600 hover:underline">Home</a>
+
+      <?php foreach ($segments as $index => $segment): ?>
+        <?php
         if ($segment === '') continue;
         $breadcrumbPath .= ($index > 0 ? '/' : '') . $segment;
-      ?>
+        ?>
         <span>/</span>
-        <a href="?path=<?= urlencode($breadcrumbPath) ?>" class="text-emerald-600 hover:underline">
+        <a href="?user_id=<?= $targetId ?>&path=<?= urlencode($breadcrumbPath) ?>" class="text-emerald-600 hover:underline">
           <?= htmlspecialchars($segment) ?>
         </a>
       <?php endforeach; ?>
     </div>
+
 
     <!-- Search -->
     <div class="flex items-center gap-2 mb-4">
@@ -127,18 +133,19 @@ $targetId = $_GET['user_id'] ?? $userId;
         </div>
       </div>
 
-      <!-- Folder Items -->
       <?php foreach ($folders as $folder): ?>
         <?php
-        $nextPath = trim($currentPath . '/' . $folder['name'], '/');
-        $menuId   = 'menu-' . md5($folder['name']);
-        $safePath = htmlspecialchars(trim($currentPath, '/'));
+        $folderName = $folder['name'];
+        $nextPath   = trim($currentPath . '/' . $folderName, '/');
+        $menuId     = 'menu-' . md5($folderName);
         ?>
         <div class="flex item folder-item hover:bg-emerald-50 px-2 gap-2 py-2">
-          <a href="?path=<?= urlencode($nextPath) ?>" class="flex justify-between items-center w-full" title="Open folder <?= htmlspecialchars($folder['name']) ?>">
+          <a href="?user_id=<?= $targetId ?>&path=<?= urlencode($nextPath) ?>"
+            class="flex justify-between items-center w-full"
+            title="Open folder <?= htmlspecialchars($folderName) ?>">
             <div class="flex items-center gap-3 flex-grow">
-              <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5" title="<?= htmlspecialchars($folder['name']) ?>">
-              <span class="text-sm font-medium"><?= htmlspecialchars($folder['name']) ?></span>
+              <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5" title="<?= htmlspecialchars($folderName) ?>">
+              <span class="text-sm font-medium"><?= htmlspecialchars($folderName) ?></span>
             </div>
             <div class="flex items-center justify-between text-xs text-gray-500 gap-3">
               <span class="w-24 text-center px-2 bg-gray-200 py-1 rounded">
@@ -152,23 +159,23 @@ $targetId = $_GET['user_id'] ?? $userId;
             </div>
           </a>
 
-          <!-- Menu dot and dropdown -->
+          <!-- Folder Menu -->
           <div class="flex items-center gap-2 w-10 justify-end">
-            <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out"
+            <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
               data-target="<?= $menuId ?>"
-              aria-label="Open folder options for <?= htmlspecialchars($folder['name']) ?>">
+              aria-label="Open folder options for <?= htmlspecialchars($folderName) ?>">
               <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
             </button>
             <div id="<?= $menuId ?>" class="absolute right-18 bg-white rounded shadow-lg hidden text-sm w-44">
               <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
-                data-name="<?= htmlspecialchars($folder['name']) ?>"
+                data-name="<?= htmlspecialchars($folderName) ?>"
                 data-type="folder"
                 data-path="<?= $safePath ?>"
                 data-user-id="<?= $targetId ?>">
                 Rename
               </button>
               <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn"
-                data-name="<?= htmlspecialchars($folder['name']) ?>"
+                data-name="<?= htmlspecialchars($folderName) ?>"
                 data-type="folder"
                 data-path="<?= $safePath ?>"
                 data-user-id="<?= $targetId ?>">
@@ -179,39 +186,32 @@ $targetId = $_GET['user_id'] ?? $userId;
         </div>
       <?php endforeach; ?>
 
-      <!-- File Items -->
       <?php if (!empty($currentPath)): ?>
         <?php foreach ($files as $file): ?>
           <?php
           $filename = $file['name'];
-          $filepath = $file['path'];
-          $modified = $file['modified'];
-          $icon     = getFileIcon($filename);
-          $fileUrl  = resolvePreviewUrl('1', $targetId, $currentPath, $filename);
+          $fileUrl  = getUserUploadUrl($roleId, (string)$targetId, $currentPath, $filename);
           $isImage  = preg_match('/\.(jpg|jpeg|png|gif)$/i', $filename);
           $menuId   = 'menu-' . md5($filename);
-          $safePath = htmlspecialchars(trim($currentPath, '/'));
           ?>
           <div class="flex item file-item hover:bg-emerald-50 px-2 gap-2 py-2">
-            <!-- Clickable row -->
-            <a href="<?= $fileUrl ?>" target="_blank" class="flex justify-between items-center w-full cursor-default" title="Open <?= htmlspecialchars($filename) ?>">
-              <!-- Name column -->
+            <a href="<?= $fileUrl ?>" target="_blank"
+              class="flex justify-between items-center w-full cursor-default"
+              title="Open <?= htmlspecialchars($filename) ?>">
               <div class="flex items-center gap-3 flex-grow">
-                <img src="<?= $icon ?>" alt="File icon" class="w-5 h-5" title="<?= htmlspecialchars($filename) ?>">
+                <img src="<?= getFileIcon($filename) ?>" alt="File icon" class="w-5 h-5" title="<?= htmlspecialchars($filename) ?>">
                 <span class="text-sm font-medium"><?= htmlspecialchars($filename) ?></span>
               </div>
-
-              <!-- Metadata columns -->
               <div class="flex items-center text-xs text-gray-500 gap-3">
-                <span class="w-24 text-center text-gray-400 italic"></span> <!-- Placeholder for "Files" column -->
-                <span class="w-32 text-center"><?= $modified ?></span>
+                <span class="w-24 text-center text-gray-400 italic"></span>
+                <span class="w-32 text-center"><?= $file['modified'] ?></span>
                 <span class="w-24 text-center"><?= formatSize($file['size']) ?></span>
               </div>
             </a>
 
-            <!-- Menu dot -->
+            <!-- File Menu -->
             <div class="flex items-center gap-2 w-10 justify-end">
-              <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2 transition duration-200 ease-in-out"
+              <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
                 data-target="<?= $menuId ?>"
                 aria-label="Open file options for <?= htmlspecialchars($filename) ?>">
                 <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
@@ -239,7 +239,6 @@ $targetId = $_GET['user_id'] ?? $userId;
             </div>
           </div>
         <?php endforeach; ?>
-
 
         <?php if (empty($files) && empty($folders)): ?>
           <p class="text-gray-500 text-sm py-5">This folder is empty.</p>

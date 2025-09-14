@@ -8,10 +8,10 @@ require_once __DIR__ . '/../../helpers/path.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php';
 require_once __DIR__ . '/../../helpers/file-utils.php';
 
-$userId         = $_SESSION['user_id'] ?? '';
-$activeRoleId   = $_SESSION['active_role_id'] ?? '';
+$userId       = (int)($_SESSION['user_id'] ?? 0);
+$activeRoleId = (int)($_SESSION['active_role_id'] ?? 0);
+$targetId     = (int)($_GET['user_id'] ?? $userId);
 $originalRoleId = $_SESSION['original_role_id'] ?? '';
-$targetId       = $_GET['user_id'] ?? $userId;
 $currentPath    = sanitizePath($_GET['path'] ?? '');
 $sortBy         = $_GET['sort'] ?? 'name';
 
