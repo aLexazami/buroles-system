@@ -7,30 +7,37 @@ require_once __DIR__ . '/../helpers/path.php';
 require_once __DIR__ . '/../helpers/folder-utils.php';
 
 // 🧠 Extract session and POST data
-$userId     = $_SESSION['user_id'] ?? '';
-$activeRole = $_SESSION['active_role_id'] ?? '';
-$targetId   = $_POST['user_id'] ?? $userId;
-$type       = $_POST['type'] ?? '';
-$rawOldName = $_POST['old_name'] ?? '';
-$rawNewName = $_POST['new_name'] ?? '';
-$path       = sanitizePath($_POST['path'] ?? '');
+$userId         = $_SESSION['user_id'] ?? '';
+$activeRoleId   = $_SESSION['active_role_id'] ?? '';
+$originalRoleId = $_SESSION['original_role_id'] ?? '';
+$targetId       = $_POST['user_id'] ?? $userId;
+$type           = $_POST['type'] ?? '';
+$rawOldName     = $_POST['old_name'] ?? '';
+$rawNewName     = $_POST['new_name'] ?? '';
+$currentPath    = sanitizePath($_POST['path'] ?? '');
 
-// 🔐 Validate session and input
-if (!$userId || !$activeRole || !$type || !$rawOldName || !$rawNewName) {
+// 🔐 Validate session
+if (!$userId || !$activeRoleId || !$originalRoleId || !$type || !$rawOldName || !$rawNewName) {
   setFlash('error', 'Invalid rename request.');
-  return redirectToManager($targetId, $path);
+  return redirectToManager($userId, $currentPath);
 }
 
-// 🔐 Enforce staff-only self-management
-if ($activeRole === '1') {
-  $targetId = $userId;
+// 🔐 Access control: only true staff or elevated roles can rename
+function canRenameItem(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool {
+  if (in_array($originalRoleId, [2, 99])) return true;
+  return $activeRoleId === 1 && $userId === $targetId;
+}
+
+if (!canRenameItem($userId, $targetId, $activeRoleId, $originalRoleId)) {
+  setFlash('error', 'Access denied. You do not have permission to rename items here.');
+  return redirectToManager($userId, $currentPath);
 }
 
 try {
-  // 📁 Resolve base path using role and target
-  $baseDir = getUploadBaseByRoleUser($activeRole, $targetId);
+  // 📁 Resolve base path
+  $baseDir = getUploadBaseByRoleUser($activeRoleId, $targetId);
 
-  // 🧼 Sanitize and prepare filenames
+  // 🧼 Sanitize filenames
   $oldName      = trim($rawOldName, '/');
   $newExtension = pathinfo($rawNewName, PATHINFO_EXTENSION);
   $newBaseName  = sanitizeSegment(pathinfo($rawNewName, PATHINFO_FILENAME));
@@ -43,20 +50,18 @@ try {
   }
 
   // 📍 Resolve full paths
-  $oldPath = resolveUploadPathFromBase($baseDir, $path, $oldName);
-  $newPath = resolveUploadPathFromBase($baseDir, $path, $newName);
+  $oldPath = resolveUploadPathFromBase($baseDir, $currentPath, $oldName);
+  $newPath = resolveUploadPathFromBase($baseDir, $currentPath, $newName);
 
   if (!$oldPath || !$newPath) {
-    error_log("Path resolution failed: oldPath=$oldPath, newPath=$newPath");
+    error_log("Rename failed: path resolution → old=$oldPath, new=$newPath");
     setFlash('error', 'Unable to resolve file paths for renaming.');
-    return redirectToManager($targetId, $path);
+    return redirectToManager($targetId, $currentPath);
   }
-
-  error_log("Renaming from: $oldPath to: $newPath");
 
   // 🔄 Perform rename
   if (!handleRename($type, $oldPath, $newPath, $oldName, $newName)) {
-    return redirectToManager($targetId, $path);
+    return redirectToManager($targetId, $currentPath);
   }
 
 } catch (RuntimeException $e) {
@@ -64,12 +69,11 @@ try {
   setFlash('error', 'An error occurred while renaming.');
 }
 
-redirectToManager($targetId, $path);
+redirectToManager($targetId, $currentPath);
 
 // 🔧 Rename logic
 function handleRename(string $type, string $oldPath, string $newPath, string $oldName, string $newName): bool {
   if (!file_exists($oldPath)) {
-    error_log("handleRename: '$oldPath' not found.");
     setFlash('error', ucfirst($type) . " '$oldName' not found.");
     return false;
   }
@@ -87,7 +91,7 @@ function handleRename(string $type, string $oldPath, string $newPath, string $ol
     setFlash('success', ucfirst($type) . " renamed to '$newName'.");
     return true;
   } else {
-    error_log("handleRename: failed to rename '$oldPath' to '$newPath'");
+    error_log("Rename failed: $oldPath → $newPath");
     setFlash('error', "Failed to rename $type '$oldName'.");
     return false;
   }

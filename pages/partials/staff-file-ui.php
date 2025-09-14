@@ -9,12 +9,14 @@
 $trueRoleId = $_SESSION['original_role_id'] ?? null;
 $activeRoleId = $_SESSION['active_role_id'] ?? null;
 $userId = $_SESSION['user_id'] ?? null;
+$targetId = $_GET['user_id'] ?? $userId;
 ?>
 
 <div class="flex flex-col gap-4">
   <!-- Folder Creation + Upload -->
   <!-- New Button + Dropdown -->
-  <?php if ($activeRoleId === '1' && $userId === $targetId): ?>
+  <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+
     <div class="relative inline-block text-left py-4">
       <button type="button" id="newDropdownToggle"
         class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"

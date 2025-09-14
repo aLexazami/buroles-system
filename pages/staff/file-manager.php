@@ -8,36 +8,31 @@ require_once __DIR__ . '/../../helpers/path.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php';
 require_once __DIR__ . '/../../helpers/file-utils.php';
 
-$viewerId    = $_SESSION['user_id'] ?? '';
-$activeRole  = $_SESSION['active_role_id'] ?? '';
-$targetId = $_GET['user_id'] ?? $_SESSION['user_id'];
-$currentPath = sanitizePath($_GET['path'] ?? '');
-$sortBy      = $_GET['sort'] ?? 'name'; // 'name' or 'modified'
+$userId         = $_SESSION['user_id'] ?? '';
+$activeRoleId   = $_SESSION['active_role_id'] ?? '';
+$originalRoleId = $_SESSION['original_role_id'] ?? '';
+$targetId       = $_GET['user_id'] ?? $userId;
+$currentPath    = sanitizePath($_GET['path'] ?? '');
+$sortBy         = $_GET['sort'] ?? 'name';
 
+$isElevatedViewer   = in_array($originalRoleId, [2, 99]);
+$isSwitchedToStaff  = $activeRoleId === 1;
+$showMultiUserView  = $isElevatedViewer && $isSwitchedToStaff;
 
-$isElevatedViewer = in_array($_SESSION['original_role_id'], [2, 99]);
-$isSwitchedToStaff = $_SESSION['active_role_id'] == 1;
-$showMultiUserView = $isElevatedViewer && $isSwitchedToStaff;
-
-
-
-function canManageFolder($viewerId, $targetId, $activeRole, $originalRoleId): bool
-{
-  if (in_array($originalRoleId, [2, 99])) return true; // Admin/Superadmin
-  return $activeRole == 1 && $viewerId == $targetId;   // Staff can manage their own
+function canManageFolder(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool {
+  if (in_array($originalRoleId, [2, 99])) return true;
+  return $activeRoleId === 1 && $userId === $targetId;
 }
 
-if (!canManageFolder($viewerId, $targetId, $activeRole, $_SESSION['original_role_id'])) {
+if (!canManageFolder($userId, $targetId, $activeRoleId, $originalRoleId)) {
   setFlash('error', 'Access denied. You do not have permission to manage this folder.');
-  header("Location: file-manager.php?user_id=$viewerId");
+  header("Location: file-manager.php?user_id=$userId");
   exit;
 }
 
 // ✅ Resolve upload base using role-first folder logic
-$uploadBase = getUploadBaseByRoleUser('1', $targetId);
-
-// ✅ Resolve full folder path
-$fullPath = $uploadBase . '/' . $currentPath;
+$uploadBase = getUploadBaseByRoleUser($activeRoleId, $targetId);
+$fullPath   = $uploadBase . '/' . $currentPath;
 
 // ✅ Handle folder creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['folder_name'])) {

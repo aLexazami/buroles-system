@@ -6,26 +6,34 @@ require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/path.php';
 
 // 🧠 Extract session and POST data
-$userId     = $_SESSION['user_id'] ?? '';
-$activeRole = $_SESSION['active_role_id'] ?? '';
-$targetId   = $_POST['user_id'] ?? $userId;
-$path       = sanitizePath($_POST['path'] ?? '');
-$file       = $_FILES['file'] ?? null;
+$userId         = $_SESSION['user_id'] ?? '';
+$activeRoleId   = $_SESSION['active_role_id'] ?? '';
+$originalRoleId = $_SESSION['original_role_id'] ?? '';
+$targetId       = $_POST['user_id'] ?? $userId;
+$currentPath    = sanitizePath($_POST['path'] ?? '');
+$file           = $_FILES['file'] ?? null;
 
-// 🔐 Validate session and file input
-if (!$userId || !$activeRole) {
+// 🔐 Validate session
+if (!$userId || !$activeRoleId || !$originalRoleId) {
   setFlash('error', 'Unauthorized access.');
-  return redirectToManager($targetId, $path);
+  return redirectToManager($userId, $currentPath);
 }
 
+// 🔐 Access control: only true staff or elevated roles can upload files
+function canUploadFile(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool {
+  if (in_array($originalRoleId, [2, 99])) return true; // Admin/Superadmin
+  return $activeRoleId === 1 && $userId === $targetId; // Staff managing their own folder
+}
+
+if (!canUploadFile($userId, $targetId, $activeRoleId, $originalRoleId)) {
+  setFlash('error', 'Access denied. You do not have permission to upload files here.');
+  return redirectToManager($userId, $currentPath);
+}
+
+// ✅ Validate file input
 if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
   setFlash('error', 'File upload failed.');
-  return redirectToManager($targetId, $path);
-}
-
-// 🔐 Staff can only upload to their own folder
-if ($activeRole === '1') {
-  $targetId = $userId;
+  return redirectToManager($targetId, $currentPath);
 }
 
 // ✅ Validate MIME type
@@ -46,43 +54,38 @@ $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
 $finalName = $extension ? "$filename.$extension" : $filename;
 
 if (!in_array($mimeType, $allowedTypes)) {
-  error_log("Upload rejected: user=$userId role=$activeRole MIME=$mimeType");
+  error_log("Upload rejected: user=$userId role=$activeRoleId MIME=$mimeType");
   setFlash('error', 'Unsupported file type.');
-  return redirectToManager($targetId, $path);
+  return redirectToManager($targetId, $currentPath);
 }
 
-// 📁 Handle upload
-try {
-  $baseDir    = getUploadBaseByRoleUser($activeRole, $targetId);
-  $targetPath = resolveUploadPathFromBase($baseDir, $path, $finalName);
+// 📁 Resolve upload path
+$baseDir    = getUploadBaseByRoleUser($activeRoleId, $targetId);
+$targetPath = resolveUploadPathFromBase($baseDir, $currentPath, $finalName);
 
-  if (!is_dir(dirname($targetPath))) {
-    error_log("Upload failed: missing folder → " . dirname($targetPath));
-    setFlash('error', 'Target folder does not exist.');
-    return redirectToManager($targetId, $path);
-  }
-
-  if (file_exists($targetPath)) {
-    setFlash('warning', "File '$finalName' already exists.");
-    return redirectToManager($targetId, $path);
-  }
-
-  if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-    setFlash('success', "File '$finalName' uploaded successfully.");
-  } else {
-    error_log("Upload failed: move_uploaded_file() failed for $targetPath");
-    setFlash('error', 'Failed to move uploaded file.');
-  }
-
-} catch (RuntimeException $e) {
-  error_log("Upload error: " . $e->getMessage());
-  setFlash('error', 'Upload failed due to server error.');
+if (!is_dir(dirname($targetPath))) {
+  error_log("Upload failed: missing folder → " . dirname($targetPath));
+  setFlash('error', 'Target folder does not exist.');
+  return redirectToManager($targetId, $currentPath);
 }
 
-redirectToManager($targetId, $path);
+if (file_exists($targetPath)) {
+  setFlash('warning', "File '$finalName' already exists.");
+  return redirectToManager($targetId, $currentPath);
+}
+
+// 🔄 Move file
+if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+  setFlash('success', "File '$finalName' uploaded successfully.");
+} else {
+  error_log("Upload failed: move_uploaded_file() failed for $targetPath");
+  setFlash('error', 'Failed to move uploaded file.');
+}
+
+redirectToManager($targetId, $currentPath);
 
 // 🔁 Redirect helper
-function redirectToManager(string $userId, string $path = ''): void {
+function redirectToManager(string $userId, string $path): void {
   $url = "/pages/staff/file-manager.php?user_id=$userId";
   if ($path !== '') $url .= '&path=' . urlencode($path);
   header("Location: $url");
