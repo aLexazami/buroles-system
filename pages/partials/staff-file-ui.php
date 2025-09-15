@@ -22,7 +22,6 @@ $breadcrumbPath = '';
   <!-- Folder Creation + Upload -->
   <!-- New Button + Dropdown -->
   <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
-
     <div class="relative inline-block text-left py-4">
       <button type="button" id="newDropdownToggle"
         class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
@@ -159,29 +158,32 @@ $breadcrumbPath = '';
             </div>
           </a>
 
+
           <!-- Folder Menu -->
           <div class="flex items-center gap-2 w-10 justify-end">
-            <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
-              data-target="<?= $menuId ?>"
-              aria-label="Open folder options for <?= htmlspecialchars($folderName) ?>">
-              <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
-            </button>
-            <div id="<?= $menuId ?>" class="absolute right-18 bg-white rounded shadow-lg hidden text-sm w-44">
-              <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
-                data-name="<?= htmlspecialchars($folderName) ?>"
-                data-type="folder"
-                data-path="<?= $safePath ?>"
-                data-user-id="<?= $targetId ?>">
-                Rename
+            <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+              <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
+                data-target="<?= $menuId ?>"
+                aria-label="Open folder options for <?= htmlspecialchars($folderName) ?>">
+                <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
               </button>
-              <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn"
-                data-name="<?= htmlspecialchars($folderName) ?>"
-                data-type="folder"
-                data-path="<?= $safePath ?>"
-                data-user-id="<?= $targetId ?>">
-                Delete
-              </button>
-            </div>
+              <div id="<?= $menuId ?>" class="absolute right-18 bg-white rounded shadow-lg hidden text-sm w-44">
+                <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
+                  data-name="<?= htmlspecialchars($folderName) ?>"
+                  data-type="folder"
+                  data-path="<?= $safePath ?>"
+                  data-user-id="<?= $targetId ?>">
+                  Rename
+                </button>
+                <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn"
+                  data-name="<?= htmlspecialchars($folderName) ?>"
+                  data-type="folder"
+                  data-path="<?= $safePath ?>"
+                  data-user-id="<?= $targetId ?>">
+                  Delete
+                </button>
+              </div>
+            <?php endif; ?>
           </div>
         </div>
       <?php endforeach; ?>
@@ -211,31 +213,33 @@ $breadcrumbPath = '';
 
             <!-- File Menu -->
             <div class="flex items-center gap-2 w-10 justify-end">
-              <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
-                data-target="<?= $menuId ?>"
-                aria-label="Open file options for <?= htmlspecialchars($filename) ?>">
-                <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
-              </button>
-              <div id="<?= $menuId ?>" class="absolute right-18 bg-white rounded shadow-lg hidden text-sm w-44">
-                <?php if ($isImage): ?>
-                  <a href="<?= $fileUrl ?>" target="_blank" class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Preview</a>
-                <?php endif; ?>
-                <a href="<?= $fileUrl ?>" download class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Download</a>
-                <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
-                  data-name="<?= htmlspecialchars($filename) ?>"
-                  data-type="file"
-                  data-path="<?= $safePath ?>"
-                  data-user-id="<?= $targetId ?>">
-                  Rename
+              <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+                <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
+                  data-target="<?= $menuId ?>"
+                  aria-label="Open file options for <?= htmlspecialchars($filename) ?>">
+                  <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
                 </button>
-                <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn"
-                  data-name="<?= htmlspecialchars($filename) ?>"
-                  data-type="file"
-                  data-path="<?= $safePath ?>"
-                  data-user-id="<?= $targetId ?>">
-                  Delete
-                </button>
-              </div>
+                <div id="<?= $menuId ?>" class="absolute right-18 bg-white rounded shadow-lg hidden text-sm w-44">
+                  <?php if ($isImage): ?>
+                    <a href="<?= $fileUrl ?>" target="_blank" class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Preview</a>
+                  <?php endif; ?>
+                  <a href="<?= $fileUrl ?>" download class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Download</a>
+                  <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
+                    data-name="<?= htmlspecialchars($filename) ?>"
+                    data-type="file"
+                    data-path="<?= $safePath ?>"
+                    data-user-id="<?= $targetId ?>">
+                    Rename
+                  </button>
+                  <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn"
+                    data-name="<?= htmlspecialchars($filename) ?>"
+                    data-type="file"
+                    data-path="<?= $safePath ?>"
+                    data-user-id="<?= $targetId ?>">
+                    Delete
+                  </button>
+                </div>
+              <?php endif; ?>
             </div>
           </div>
         <?php endforeach; ?>
