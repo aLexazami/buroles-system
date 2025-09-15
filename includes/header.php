@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . '/role-nav-map.php';
+?>
 <header class=" shadow-md sticky-top-0 z-10 bg-emerald-950 text-white p-1">
   <section class=" max-w-7xl m-auto flex justify-between px-10 items-center">
     <div class="flex items-center py-2 ">
@@ -44,30 +47,16 @@
             </div>
           <?php endif; ?>
         </div>
-        <div class=" flex items-center">
-          <a href="" class="group relative flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
-            <img src="/assets/img/profile.png" alt="Profile" class="h-5 w-5 invert">
-            <span class="absolute top-10 w-23 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">
-              My Account
-            </span>
-          </a>
-        </div>
-        <div class=" flex items-center">
-          <a href="" class="group relative flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
-            <img src="/assets/img/message.png" alt="Profile" class="h-5 w-5 invert">
-            <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">
-              Message
-            </span>
-          </a>
-        </div>
-        <div class=" flex items-center">
-          <a href="" class="group relative flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
-            <img src="/assets/img/notif.png" alt="Profile" class="h-5 w-5 invert">
-            <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">
-              Notification
-            </span>
-          </a>
-        </div>
+        <?php foreach ($navItems as $item): ?>
+          <div class="flex items-center">
+            <a href="<?= $item['link'] ?>" class="group relative flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
+              <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 invert">
+              <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">
+                <?= $item['label'] ?>
+              </span>
+            </a>
+          </div>
+        <?php endforeach; ?>
         <div class=" flex items-center">
           <a href="/controllers/log-out.php" class="group relative flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
             <img src="/assets/img/logout.png" alt="Profile" class="h-5 w-5 ">
@@ -88,15 +77,12 @@
           </div>
         </button>
         <div id="menu-links" class="hidden md:hidden absolute top-17 max-md:top-20   p-3 bg-white shadow-lg rounded-sm ">
-          <a href="" class="menu-link flex items-center  p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600 ">
-            <img src="/assets/img/profile.png" alt="Profile" class="h-5 w-5 rounded-full mr-3">My Account
-          </a>
-          <a href="" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600 ">
-            <img src="/assets/img/message.png" alt="Profile" class="h-5 w-5 rounded-full mr-3">Message
-          </a>
-          <a href="" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600 ">
-            <img src="/assets/img/notif.png" alt="Profile" class="h-5 w-5 rounded-full mr-3">Notification
-          </a>
+          <?php foreach ($navItems as $item): ?>
+            <a href="<?= $item['link'] ?>" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
+              <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 rounded-full mr-3">
+              <?= $item['label'] ?>
+            </a>
+          <?php endforeach; ?>
           <a href="/controllers/log-out.php" class="menu-link flex items-center  p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
             <img src="/assets/img/logout.png" alt="Profile" class="h-5 w-5 rounded-full mr-3">Logout
           </a>
@@ -107,5 +93,5 @@
 </header>
 <div>
   <!-- Role Welcome-->
-  <?php include __DIR__ .'/../includes/role-welcome.php'?>
+  <?php include __DIR__ . '/../includes/role-welcome.php' ?>
 </div>
