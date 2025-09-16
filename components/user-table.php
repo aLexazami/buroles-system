@@ -19,6 +19,7 @@
   <table class="min-w-full table-auto border border-gray-200">
     <thead class="bg-emerald-600 text-white">
       <tr>
+        <th scope="col" class="px-4 py-2 text-center">ID</th>
         <th scope="col" class="px-4 py-2 text-left">Full Name</th>
         <th scope="col" class="px-4 py-2 text-left">Username</th>
         <th scope="col" class="px-4 py-2 text-left">Email</th>
@@ -33,6 +34,9 @@
     <tbody>
       <?php foreach ($users as $user): ?>
         <tr class="border-b hover:bg-emerald-50">
+          <!-- User ID -->
+          <td class="px-4 py-2 text-red-500 text-center font-medium"><?= htmlspecialchars($user['id']) ?></td>
+
           <!--  Full Name -->
           <td class="px-4 py-2">
             <?= htmlspecialchars(trim($user['last_name'] . ', ' . $user['first_name'] . ' ' . ($user['middle_name'] ?? ''))) ?>

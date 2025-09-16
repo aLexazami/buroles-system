@@ -507,6 +507,9 @@
   .min-h-screen {
     min-height: 100vh;
   }
+  .w-1 {
+    width: calc(var(--spacing) * 1);
+  }
   .w-1\/2 {
     width: calc(1/2 * 100%);
   }
@@ -587,6 +590,9 @@
   }
   .min-w-full {
     min-width: 100%;
+  }
+  .flex-shrink {
+    flex-shrink: 1;
   }
   .shrink {
     flex-shrink: 1;
@@ -1068,6 +1074,9 @@
   }
   .text-green-800 {
     color: var(--color-green-800);
+  }
+  .text-red-300 {
+    color: var(--color-red-300);
   }
   .text-red-400 {
     color: var(--color-red-400);
