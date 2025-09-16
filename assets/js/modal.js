@@ -2,8 +2,15 @@
 function toggleModal(modalId, show) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
-  modal.classList.toggle('hidden', !show);
-  modal.classList.toggle('flex', show);
+
+  if (show) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  } else {
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
+  }
+
   document.body.classList.toggle('overflow-hidden', show);
 }
 
@@ -106,4 +113,85 @@ export function initDeleteButtons() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeDeleteModal();
   });
+}
+
+
+// 🔐 Password Modal Logic
+let pendingPasswordHref = '';
+
+export function openPasswordModal(userId) {
+  document.getElementById('targetUserId').value = userId;
+  toggleModal('passwordModal', true);
+}
+
+export function closePasswordModal() {
+  toggleModal('passwordModal', false);
+  document.getElementById('superAdminPasswordInput').value = '';
+  document.getElementById('targetUserId').value = '';
+  pendingPasswordHref = '';
+}
+
+export function initPasswordButtons() {
+  // 🔘 Trigger modal from table
+
+  document.querySelectorAll('[data-manage-password]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const userId = link.dataset.managePassword;
+      pendingPasswordHref = link.getAttribute('href');
+      openPasswordModal(userId);
+    });
+  });
+
+
+
+  // ⏎ Submit on Enter key
+  document.getElementById('superAdminPasswordInput')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitSuperAdminPassword();
+  });
+
+  // ⎋ Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePasswordModal();
+  });
+
+  // ✅ Verify button
+  document.getElementById('submitSuperAdminPassword')?.addEventListener('click', submitSuperAdminPassword);
+
+  // ❌ Cancel button
+  document.getElementById('cancelSuperAdminPassword')?.addEventListener('click', closePasswordModal);
+}
+
+function submitSuperAdminPassword() {
+  const password = document.getElementById('superAdminPasswordInput').value;
+  const userId = document.getElementById('targetUserId').value;
+  const verifyBtn = document.getElementById('submitSuperAdminPassword');
+  verifyBtn.disabled = true;
+
+  if (!password || !userId || !pendingPasswordHref) {
+    alert('Missing credentials.');
+    return;
+  }
+
+  fetch('/api/verify-superadmin.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password, user_id: userId })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = pendingPasswordHref;
+      } else {
+        alert('Verification failed.');
+      }
+      closePasswordModal();
+    })
+    .catch(() => {
+      alert('Server error. Please try again.');
+      closePasswordModal();
+    })
+    .finally(() => {
+      verifyBtn.disabled = false;
+    });
 }

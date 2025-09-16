@@ -14,17 +14,22 @@
       Clear
     </button>
   </div>
-
+  <?php
+  $isSuperAdmin = ($_SESSION['role_id'] ?? 0) === 99;
+  ?>
   <!-- User Table -->
   <table class="min-w-full table-auto border border-gray-200">
     <thead class="bg-emerald-600 text-white">
       <tr>
-        <th scope="col" class="px-4 py-2 text-center">ID</th>
+        <th scope="col" class="px-4 py-2 text-left">ID</th>
         <th scope="col" class="px-4 py-2 text-left">Full Name</th>
         <th scope="col" class="px-4 py-2 text-left">Username</th>
         <th scope="col" class="px-4 py-2 text-left">Email</th>
         <th scope="col" class="px-4 py-2 text-left">Role</th>
         <th scope="col" class="px-4 py-2 text-left">Password Status</th>
+        <?php if ($isSuperAdmin): ?>
+          <th scope="col" class="px-4 py-2 text-left">Password</th>
+        <?php endif; ?>
         <?php if ($showActions ?? true): ?>
           <th scope="col" class="px-4 py-2 text-left">Actions</th>
         <?php endif; ?>
@@ -35,7 +40,7 @@
       <?php foreach ($users as $user): ?>
         <tr class="border-b hover:bg-emerald-50">
           <!-- User ID -->
-          <td class="px-4 py-2 text-red-500 text-center font-medium"><?= htmlspecialchars($user['id']) ?></td>
+          <td class="px-4 py-2 text-red-500 text-left font-medium"><?= htmlspecialchars($user['id']) ?></td>
 
           <!--  Full Name -->
           <td class="px-4 py-2">
@@ -64,6 +69,17 @@
             <?php endif; ?>
           </td>
 
+          <!-- Password (Super Admin Only) -->
+          <?php if ($isSuperAdmin): ?>
+            <td class="px-4 py-2">
+              <a href="/pages/super-admin/manage-password.php?id=<?= $user['id'] ?>"
+                data-manage-password="<?= $user['id'] ?>"
+                class="text-blue-600 hover:underline text-sm">
+                🔐 Manage Password
+              </a>
+            </td>
+          <?php endif; ?>
+
           <!-- Actions -->
           <?php if ($showActions ?? true): ?>
             <td class="px-4 py-2">
@@ -76,7 +92,7 @@
                   <a href="#" data-archive-user="<?= $user['id'] ?>" class="text-yellow-600 hover:underline text-sm">Archive</a>
                   <a href="#" data-delete-user="<?= $user['id'] ?>" class="text-red-600 hover:underline text-sm">Delete</a>
                   <?php if ($user['is_locked'] == 1): ?>
-                  <a href="#" data-unlock-user="<?= $user['id'] ?>" class="text-red-700 hover:underline text-sm">🔓 Unlock</a>
+                    <a href="#" data-unlock-user="<?= $user['id'] ?>" class="text-red-700 hover:underline text-sm">🔓 Unlock</a>
                   <?php endif; ?>
                 <?php endif; ?>
               </div>

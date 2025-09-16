@@ -11,15 +11,18 @@ require_once __DIR__ . '/../../controllers/get-users.php';
 $title = "User Management";
 $showActions = true;
 ?>
-<?php //include __DIR__ . '/../../includes/debug-panel.php' ?>
+<?php //include __DIR__ . '/../../includes/debug-panel.php' 
+?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="/src/styles.css" rel="stylesheet" />
   <title><?= $title ?></title>
 </head>
+
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
@@ -57,6 +60,21 @@ $showActions = true;
       <div class="p-6 bg-white rounded-lg shadow-md">
         <?php include(__DIR__ . '/../../components/user-table.php'); ?>
       </div>
+
+      <!-- 🔐 Super Admin Password Modal -->
+      <div id="passwordModal" class="hidden fixed inset-0  bg-opacity-50 items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+        <div class="relative bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 border border-emerald-500">
+          <h2 class="text-2xl font-semibold mb-8">Super Admin Verification</h2>
+          <input type="password" id="superAdminPasswordInput" class="w-full border px-3 py-2 rounded mb-4" placeholder="Enter your password">
+          <input type="hidden" id="targetUserId">
+          <div class="flex justify-end gap-2">
+            <button id="cancelSuperAdminPassword" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</button>
+            <button id="submitSuperAdminPassword" class="px-3 py-1 bg-emerald-700 text-white rounded hover:bg-emerald-500">Verify</button>
+          </div>
+        </div>
+      </div>
+      </div>
     </section>
   </main>
 
@@ -66,4 +84,5 @@ $showActions = true;
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
 </body>
+
 </html>
