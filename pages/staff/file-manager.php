@@ -30,12 +30,14 @@ if (!canManageFolder($userId, $targetId, $activeRoleId, $originalRoleId)) {
   exit;
 }
 
-// ✅ Resolve upload base using role-first folder logic
-$uploadBase = getUploadBaseByRoleUser($activeRoleId, $targetId);
+// ✅ Resolve upload base path without creating folder
+$uploadBase = getUploadBasePathOnly($activeRoleId, $targetId);
 $fullPath   = $uploadBase . '/' . $currentPath;
 
-// ✅ Handle folder creation
+// ✅ Explicitly create folder only during POST (upload or folder creation)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['folder_name'])) {
+  ensureUploadBaseExists($activeRoleId, $targetId); // 👈 Create base folder if needed
+
   $newFolderName = sanitizeSegment($_POST['folder_name']);
   $newFolderPath = $currentPath !== '' ? $currentPath . '/' . $newFolderName : $newFolderName;
 
@@ -48,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['folder_name'])) {
   header("Location: file-manager.php?user_id=$targetId&path=" . urlencode($currentPath));
   exit;
 }
+
 
 // ✅ Get folder contents
 $contents = listFolderItems($fullPath);

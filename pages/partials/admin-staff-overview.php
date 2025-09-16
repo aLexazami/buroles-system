@@ -32,7 +32,7 @@ $staffUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <div class="flex flex-col divide-y divide-black-200">
     <?php foreach ($staffUsers as $index => $user): ?>
       <?php
-      $userPath = getUploadBaseByRoleUser('1', $user['id']);
+      $userPath = getUploadBasePathOnly('1', $user['id']);
       $fileCount = function_exists('countUserFiles') ? countUserFiles($userPath) : 0;
       ?>
       <a href="file-manager.php?user_id=<?= $user['id'] ?>"
