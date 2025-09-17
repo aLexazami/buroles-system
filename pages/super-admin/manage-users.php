@@ -11,7 +11,7 @@ require_once __DIR__ . '/../../controllers/get-users.php';
 $title = "User Management";
 $showActions = true;
 ?>
-<?php //include __DIR__ . '/../../includes/debug-panel.php' 
+<?php //include __DIR__ . '/../../includes/debug-panel.php'
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +19,7 @@ $showActions = true;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <link href="/src/styles.css" rel="stylesheet" />
   <title><?= $title ?></title>
 </head>
@@ -57,7 +58,7 @@ $showActions = true;
       <!-- Flash Messages -->
       <?php showFlash(); ?>
 
-      <div class="p-6 bg-white rounded-lg shadow-md">
+      <div class="px-6 py-10 bg-white rounded-lg shadow-md">
         <?php include(__DIR__ . '/../../components/user-table.php'); ?>
       </div>
 
