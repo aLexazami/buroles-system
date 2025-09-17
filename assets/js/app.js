@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initRenameButtons, initDeleteButtons, initPasswordButtons } from './modal.js';
+import { initRenameButtons, initDeleteButtons, initPasswordButtons, initUnlockButtons } from './modal.js';
 import { initCreateFolderModal } from './folder-creation.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initUploadActions();
   initExportDropdown();
   initPasswordButtons();
+  initUnlockButtons();
 
   // 🔍 Search Filters
   setupSearchFilter({

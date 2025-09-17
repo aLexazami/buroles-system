@@ -129,6 +129,7 @@ export function closePasswordModal() {
   document.getElementById('superAdminPasswordInput').value = '';
   document.getElementById('targetUserId').value = '';
   pendingPasswordHref = '';
+  pendingChainedRedirect = '';
 }
 
 export function initPasswordButtons() {
@@ -194,4 +195,75 @@ function submitSuperAdminPassword() {
     .finally(() => {
       verifyBtn.disabled = false;
     });
+}
+
+
+
+// 🔓 Unlock Modal Logic
+let pendingUnlockUserId = '';
+let pendingManagePasswordUrl = '';
+let pendingChainedRedirect = '';
+
+export function openUnlockModal(userId, manageUrl) {
+  pendingUnlockUserId = userId;
+  pendingManagePasswordUrl = manageUrl;
+  toggleModal('unlockModal', true);
+}
+
+export function closeUnlockModal() {
+  toggleModal('unlockModal', false);
+  pendingUnlockUserId = '';
+  pendingManagePasswordUrl = '';
+  pendingChainedRedirect = '';
+}
+
+export function initUnlockButtons() {
+  document.querySelectorAll('.open-unlock-modal').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const userId = btn.dataset.userId;
+      const manageUrl = btn.dataset.manageUrl;
+      openUnlockModal(userId, manageUrl);
+    });
+  });
+
+  document.getElementById('cancelUnlockModal')?.addEventListener('click', closeUnlockModal);
+
+  document.getElementById('justUnlockBtn')?.addEventListener('click', () => {
+    if (!pendingUnlockUserId) return;
+
+    fetch('/api/unlock-user.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: pendingUnlockUserId })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert('Unlock failed.');
+        }
+      })
+      .catch(() => alert('Server error.'))
+      .finally(closeUnlockModal);
+  });
+
+  document.getElementById('unlockAndResetBtn')?.addEventListener('click', () => {
+    if (!pendingUnlockUserId || !pendingManagePasswordUrl) return;
+
+    pendingPasswordHref = pendingManagePasswordUrl.includes('?')
+      ? pendingManagePasswordUrl + '&unlock=1'
+      : pendingManagePasswordUrl + '?unlock=1';
+
+    document.getElementById('targetUserId').value = pendingUnlockUserId;
+    pendingChainedRedirect = 'manage-password';
+
+    closeUnlockModal();
+    toggleModal('passwordModal', true);
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeUnlockModal();
+  });
 }

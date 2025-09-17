@@ -19,7 +19,7 @@ $showActions = true;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <link href="/src/styles.css" rel="stylesheet" />
   <title><?= $title ?></title>
 </head>
@@ -62,7 +62,7 @@ $showActions = true;
         <?php include(__DIR__ . '/../../components/user-table.php'); ?>
       </div>
 
-      <!-- 🔐 Super Admin Password Modal -->
+      <!-- Super Admin Password Modal -->
       <div id="passwordModal" class="hidden fixed inset-0  bg-opacity-50 items-center justify-center z-50">
         <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
         <div class="relative bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 border border-emerald-500">
@@ -72,6 +72,26 @@ $showActions = true;
           <div class="flex justify-end gap-2">
             <button id="cancelSuperAdminPassword" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</button>
             <button id="submitSuperAdminPassword" class="px-3 py-1 bg-emerald-700 text-white rounded hover:bg-emerald-500">Verify</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unlock User Modal -->
+      <div id="unlockModal" class="hidden fixed inset-0 z-50  items-center justify-center">
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 relative border border-emerald-500 transition-opacity duration-200">
+          <h2 class="text-2xl font-semibold mb-8">Unlock User Account</h2>
+          <p class="mb-10 text-md text-gray-600 text-center">Do you also want to reset the password?</p>
+          <input type="hidden" id="unlockUserId">
+          <input type="hidden" id="managePasswordUrl">
+          <div>
+            <div class="flex justify-between  gap-4">
+              <button id="unlockAndResetBtn" class="px-4 py-2 bg-emerald-700 text-white  rounded hover:bg-emerald-500 w-full cursor-pointer">Yes</button>
+              <button id="justUnlockBtn" class="px-4 py-2 bg-emerald-700 text-white  rounded hover:bg-emerald-500 w-full cursor-pointer">No</button>
+            </div>
+            <div class="mt-5 flex justify-end">
+              <button id="cancelUnlockModal" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 transition duration-150 cursor-pointer">Cancel</button>
+            </div>
           </div>
         </div>
       </div>

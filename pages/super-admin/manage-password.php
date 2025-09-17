@@ -80,8 +80,17 @@ $fullName = trim("{$user['first_name']} {$middleInitial} {$user['last_name']}");
               <label for="reason" class="block text-sm font-medium text-gray-700">Reason for Password Change</label>
               <textarea name="reason" id="reason" rows="8"
                 class="mt-1 block w-full border px-3 py-2 rounded shadow-sm focus:ring focus:border-blue-300 resize-none"
-                placeholder="Specify your reason"></textarea>
-            </div>
+                placeholder="Specify your reason"></textarea></div>
+            <?php
+            $shouldUnlock = isset($_GET['unlock']) && $_GET['unlock'] == '1';
+            ?>
+            <?php if ($shouldUnlock): ?>
+              <label class="flex items-center gap-2 mt-4">
+                <input type="checkbox" class="form-checkbox" checked disabled>
+                <span class="text-sm text-gray-700">Unlock account after password reset</span>
+              </label>
+              <input type="hidden" name="unlock_user" value="1">
+            <?php endif; ?>
             <div class="flex justify-end gap-2">
               <a href="/pages/super-admin/manage-users.php" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</a>
               <button type="submit" class="px-3 py-1 bg-emerald-700 text-white rounded hover:bg-emerald-500 cursor-pointer">Update</button>

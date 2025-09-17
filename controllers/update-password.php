@@ -36,13 +36,23 @@ if ($newPassword !== $confirmPassword) {
 $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
 $adminId = $_SESSION['user_id'];
 $timestamp = date('Y-m-d H:i:s');
+$unlockUser = isset($_POST['unlock_user']) && $_POST['unlock_user'] == '1';
 
-$stmt = $pdo->prepare("
+if ($unlockUser) {
+  $stmt = $pdo->prepare("
     UPDATE users
-    SET password = ?, updated_by = ?, updated_at = ?
+    SET password = ?, must_change_password = 1, is_locked = 0, updated_by = ?, updated_at = ?
     WHERE id = ?
-");
-$stmt->execute([$hashed, $adminId, $timestamp, $userId]);
+  ");
+  $stmt->execute([$hashed, $adminId, $timestamp, $userId]);
+} else {
+  $stmt = $pdo->prepare("
+    UPDATE users
+    SET password = ?, must_change_password = 1, updated_by = ?, updated_at = ?
+    WHERE id = ?
+  ");
+  $stmt->execute([$hashed, $adminId, $timestamp, $userId]);
+}
 
 if ($stmt->rowCount() === 0) {
     setFlash('error', 'No changes made. User may not exist.');

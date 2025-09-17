@@ -126,7 +126,10 @@
                       </li>
                       <?php if ($user['is_locked'] == 1): ?>
                         <li>
-                          <a href="#" data-unlock-user="<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 text-red-700">
+                          <a href="#" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 text-yellow-700 open-unlock-modal"
+                            data-user-id="<?= $user['id'] ?>"
+                            data-manage-url="/pages/super-admin/manage-password.php?id=<?= $user['id'] ?>">
+                            <img src="/assets/img/unlock-icon.png" alt="Unlock" class="w-4 h-4">
                             Unlock
                           </a>
                         </li>
