@@ -26,7 +26,7 @@
         <th scope="col" class="px-4 py-2 text-left">Username</th>
         <th scope="col" class="px-4 py-2 text-left">Email</th>
         <th scope="col" class="px-4 py-2 text-left">Role</th>
-        <th scope="col" class="px-4 py-2 text-center">Status</th>
+        <th scope="col" class="px-4 py-2 text-left">Status</th>
         <th scope="col" class="px-4 py-2 text-right"></th>
       </tr>
     </thead>
@@ -56,7 +56,7 @@
           </td>
 
           <!-- Status -->
-          <td class="px-4 py-2 text-center space-x-1">
+          <td class="px-4 py-2 text-left space-x-1">
             <?php if (!empty($user['is_archived'])): ?>
               <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Archived</span>
             <?php endif; ?>
@@ -76,7 +76,7 @@
 
           <!-- Unified Actions Column -->
           <?php if ($showActions ?? true): ?>
-            <td class="px-4 py-2 text-right">
+            <td class="px-4 py-2 text-left">
               <div class="relative inline-block">
                 <button class="menu-toggle p-2 cursor-pointer hover:bg-emerald-300 rounded-full  focus:outline-none"
                   data-target="menu-<?= $user['id'] ?>" aria-haspopup="true" aria-expanded="false">
