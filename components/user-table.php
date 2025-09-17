@@ -1,3 +1,20 @@
+<?php
+function sortLink($label, $column) {
+  $currentSort = $_GET['sort_by'] ?? '';
+  $currentOrder = $_GET['sort_order'] ?? 'asc';
+  $nextOrder = ($currentSort === $column && $currentOrder === 'asc') ? 'desc' : 'asc';
+
+  // Choose icon
+  if ($currentSort === $column) {
+    $arrow = $currentOrder === 'asc' ? '▲' : '▼'; // Active sort
+  } else {
+    $arrow = '⇅'; // Neutral sort indicator
+  }
+
+  $url = "?sort_by=$column&sort_order=$nextOrder";
+  return "<a href=\"$url\"> $label <span class=\"ml-1\">$arrow</span></a>";
+}
+?>
 <?php if (!isset($users) || !is_array($users) || empty($users)): ?>
   <p class="text-red-600">No user data available.</p>
 <?php else: ?>
@@ -21,11 +38,11 @@
   <table class="min-w-full table-auto border-transparent">
     <thead class="bg-emerald-600 text-white">
       <tr>
-        <th scope="col" class="px-4 py-2 text-left">ID</th>
-        <th scope="col" class="px-4 py-2 text-left">Full Name</th>
-        <th scope="col" class="px-4 py-2 text-left">Username</th>
-        <th scope="col" class="px-4 py-2 text-left">Email</th>
-        <th scope="col" class="px-4 py-2 text-left">Role</th>
+        <th class="px-4 py-2 text-left"><?= sortLink('ID', 'id') ?></th>
+        <th class="px-4 py-2 text-left"><?= sortLink('Full Name', 'last_name') ?></th>
+        <th class="px-4 py-2 text-left"><?= sortLink('Username', 'username') ?></th>
+        <th class="px-4 py-2 text-left"><?= sortLink('Email', 'email') ?></th>
+        <th class="px-4 py-2 text-left"><?= sortLink('Role', 'role_name') ?></th>
         <th scope="col" class="px-4 py-2 text-left">Status</th>
         <th scope="col" class="px-4 py-2 text-right"></th>
       </tr>
