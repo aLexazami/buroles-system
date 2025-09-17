@@ -12,6 +12,10 @@ function getRoleSlug(string $roleId): string {
   };
 }
 
+function getUploadBaseByRoleUser(string $roleId, string $userId): string {
+  return getUploadBasePathOnly($roleId, $userId);
+}
+
 /**
  * Get the absolute base path for a user's uploads under a specific role.
  * Does NOT create the directory.
