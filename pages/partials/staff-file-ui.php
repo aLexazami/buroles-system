@@ -168,18 +168,20 @@ $breadcrumbPath = '';
                 <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
               </button>
               <div id="<?= $menuId ?>" class="absolute right-18 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150  font-semibold">
-                <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
+                <button class="flex items-center gap-3 cursor-pointer px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
                   data-name="<?= htmlspecialchars($folderName) ?>"
                   data-type="folder"
                   data-path="<?= $safePath ?>"
                   data-user-id="<?= $targetId ?>">
+                  <img src="/assets/img/edit-icon.png" alt="Key" class="w-4 h-4">
                   Rename
                 </button>
-                <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn text-red-600"
+                <button class="flex items-center gap-3 cursor-pointer px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn text-red-600"
                   data-name="<?= htmlspecialchars($folderName) ?>"
                   data-type="folder"
                   data-path="<?= $safePath ?>"
                   data-user-id="<?= $targetId ?>">
+                  <img src="/assets/img/delete-icon.png" alt="Key" class="w-4 h-4">
                   Delete
                 </button>
               </div>
@@ -221,21 +223,29 @@ $breadcrumbPath = '';
                 </button>
                 <div id="<?= $menuId ?>" class="absolute  right-18 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150  font-semibold ">
                   <?php if ($isImage): ?>
-                    <a href="<?= $fileUrl ?>" target="_blank" class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Preview</a>
+                    <a href="<?= $fileUrl ?>" target="_blank" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left">
+                      <img src="/assets/img/preview-icon.png" alt="Key" class="w-4 h-4">
+                      Preview
+                    </a>
                   <?php endif; ?>
-                  <a href="<?= $fileUrl ?>" download class="block px-4 py-2 hover:bg-emerald-100 w-full text-left">Download</a>
-                  <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
+                  <a href="<?= $fileUrl ?>" download class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left">
+                    <img src="/assets/img/download-icon.png" alt="Key" class="w-4 h-4">
+                    Download
+                  </a>
+                  <button class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn cursor-pointer"
                     data-name="<?= htmlspecialchars($filename) ?>"
                     data-type="file"
                     data-path="<?= $safePath ?>"
                     data-user-id="<?= $targetId ?>">
+                    <img src="/assets/img/edit-icon.png" alt="Key" class="w-4 h-4">
                     Rename
                   </button>
-                  <button class="block px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn text-red-600"
+                  <button class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn text-red-600 cursor-pointer"
                     data-name="<?= htmlspecialchars($filename) ?>"
                     data-type="file"
                     data-path="<?= $safePath ?>"
                     data-user-id="<?= $targetId ?>">
+                    <img src="/assets/img/delete-icon.png" alt="Key" class="w-4 h-4">
                     Delete
                   </button>
                 </div>

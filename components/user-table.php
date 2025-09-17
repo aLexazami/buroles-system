@@ -78,41 +78,46 @@
                     <?php if ($isSuperAdmin): ?>
                       <li>
                         <a href="/pages/super-admin/manage-password.php?id=<?= $user['id'] ?>"
-                          class="block px-4 py-2 hover:bg-emerald-100"
+                          class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100"
                           data-manage-password="<?= $user['id'] ?>">
+                          <img src="/assets/img/manage-password-icon.png" alt="Key" class="w-4 h-4">
                           Manage Password
                         </a>
                       </li>
                     <?php endif; ?>
                     <?php if (!empty($user['is_archived'])): ?>
                       <li>
-                        <a href="#" data-restore-user="<?= $user['id'] ?>" class="block px-4 py-2 hover:bg-emerald-100">
+                        <a href="#" data-restore-user="<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100">
+                          <img src="/assets/img/restore-icon.png" alt="Key" class="w-4 h-4">
                           Restore
                         </a>
                       </li>
                       <li>
-                        <span class="block px-4 py-2 text-yellow-500">📦 Archived</span>
+                        <span class="flex items-center gap-3 px-4 py-2 text-yellow-500">Archived</span>
                       </li>
                     <?php else: ?>
                       <li>
-                        <a href="/pages/super-admin/edit-user.php?id=<?= $user['id'] ?>" class="block px-4 py-2 hover:bg-emerald-100">
+                        <a href="/pages/super-admin/edit-user.php?id=<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100">
+                          <img src="/assets/img/edit-icon.png" alt="Key" class="w-4 h-4">
                           Edit
                         </a>
                       </li>
                       <li>
-                        <a href="#" data-archive-user="<?= $user['id'] ?>" class="block px-4 py-2 hover:bg-emerald-100">
+                        <a href="#" data-archive-user="<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100">
+                          <img src="/assets/img/archive-icon.png" alt="Key" class="w-4 h-4">
                           Archive
                         </a>
                       </li>
                       <li>
-                        <a href="#" data-delete-user="<?= $user['id'] ?>" class="block px-4 py-2 hover:bg-emerald-100 text-red-600">
+                        <a href="#" data-delete-user="<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 text-red-600">
+                          <img src="/assets/img/delete-icon.png" alt="Key" class="w-4 h-4">
                           Delete
                         </a>
                       </li>
                       <?php if ($user['is_locked'] == 1): ?>
                         <li>
-                          <a href="#" data-unlock-user="<?= $user['id'] ?>" class="block px-4 py-2 hover:bg-emerald-100 text-red-700">
-                            🔓 Unlock
+                          <a href="#" data-unlock-user="<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 text-red-700">
+                           Unlock
                           </a>
                         </li>
                       <?php endif; ?>
