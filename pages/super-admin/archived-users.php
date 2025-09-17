@@ -11,9 +11,11 @@ require_once __DIR__ . '/../../controllers/get-archived-users.php';
 $title = "Archived Users";
 $showActions = true;
 ?>
-<?php //include __DIR__ . '/../../includes/debug-panel.php' ?>
+<?php //include __DIR__ . '/../../includes/debug-panel.php' 
+?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,6 +23,7 @@ $showActions = true;
   <link href="/src/styles.css" rel="stylesheet" />
   <title><?= htmlspecialchars($title) ?></title>
 </head>
+
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
@@ -35,24 +38,25 @@ $showActions = true;
       </div>
 
       <!-- Confirmation Modal -->
-      <div id="confirm-modal" class="hidden fixed inset-0 z-50 items-center justify-center bg-opacity-50">
-        <div class="bg-amber-100 rounded-lg shadow-lg p-6 w-full max-w-sm text-center animate-fade-in">
-          <p id="confirm-modal-message" class="text-gray-800 text-lg mb-4 font-medium">
+      <div id="confirm-modal" class="hidden fixed inset-0 z-50 items-center justify-center">
+        <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+        <div class="relative bg-white p-6  rounded-4xl shadow-md w-full max-w-md z-10 border border-emerald-500">
+          <p id="confirm-modal-message" class="text-lg mb-10 mt-5 font-semibold text-center">
             Are you sure you want to proceed?
           </p>
-          <div class="flex justify-center gap-4">
+          <div class="flex justify-between gap-4 px-8 mb-5">
             <button id="confirm-modal-yes"
-              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 transition">
+              class="px-3 py-1 bg-emerald-700 cursor-pointer rounded text-white w-full  hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-green-300 transition">
               Yes
             </button>
             <button id="confirm-modal-no"
-              class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition">
+              class="px-3 py-1  bg-emerald-700 cursor-pointer rounded text-white w-full hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-red-300 transition">
               No
             </button>
           </div>
         </div>
       </div>
-      
+
       <!-- Flash Message -->
       <?php showFlash(); ?>
 
@@ -69,4 +73,5 @@ $showActions = true;
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
 </body>
+
 </html>

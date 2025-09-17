@@ -83,18 +83,8 @@
                   <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
                 </button>
 
-                <div id="menu-<?= $user['id'] ?>" class="dropdown-menu hidden absolute top-[-50px] z-10 right-8 w-52 bg-white rounded shadow-lg transition ease-out duration-150">
+                <div id="menu-<?= $user['id'] ?>" class="dropdown-menu hidden absolute top-[-1px] z-10 right-8 w-52 bg-white rounded shadow-lg transition ease-out duration-150">
                   <ul class=" text-sm text-gray-700 text-left font-semibold">
-                    <?php if ($isSuperAdmin): ?>
-                      <li>
-                        <a href="/pages/super-admin/manage-password.php?id=<?= $user['id'] ?>"
-                          class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100"
-                          data-manage-password="<?= $user['id'] ?>">
-                          <img src="/assets/img/manage-password-icon.png" alt="Key" class="w-4 h-4">
-                          Manage Password
-                        </a>
-                      </li>
-                    <?php endif; ?>
                     <?php if (!empty($user['is_archived'])): ?>
                       <li>
                         <a href="#" data-restore-user="<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100">
@@ -103,6 +93,16 @@
                         </a>
                       </li>
                     <?php else: ?>
+                      <?php if ($isSuperAdmin): ?>
+                        <li>
+                          <a href="/pages/super-admin/manage-password.php?id=<?= $user['id'] ?>"
+                            class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100"
+                            data-manage-password="<?= $user['id'] ?>">
+                            <img src="/assets/img/manage-password-icon.png" alt="Key" class="w-4 h-4">
+                            Manage Password
+                          </a>
+                        </li>
+                      <?php endif; ?>
                       <li>
                         <a href="/pages/super-admin/edit-user.php?id=<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100">
                           <img src="/assets/img/edit-icon.png" alt="Key" class="w-4 h-4">

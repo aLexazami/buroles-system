@@ -286,6 +286,9 @@
   .top-17 {
     top: calc(var(--spacing) * 17);
   }
+  .top-\[-1px\] {
+    top: -1px;
+  }
   .top-\[-2\] {
     top: -2;
   }
