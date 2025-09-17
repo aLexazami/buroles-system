@@ -102,9 +102,6 @@
                           Restore
                         </a>
                       </li>
-                      <li>
-                        <span class="flex items-center gap-3 px-4 py-2 text-yellow-500">Archived</span>
-                      </li>
                     <?php else: ?>
                       <li>
                         <a href="/pages/super-admin/edit-user.php?id=<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100">
