@@ -26,7 +26,7 @@
         <th scope="col" class="px-4 py-2 text-left">Username</th>
         <th scope="col" class="px-4 py-2 text-left">Email</th>
         <th scope="col" class="px-4 py-2 text-left">Role</th>
-        <th scope="col" class="px-4 py-2 text-center">Password Status</th>
+        <th scope="col" class="px-4 py-2 text-center">Status</th>
         <th scope="col" class="px-4 py-2 text-right"></th>
       </tr>
     </thead>
@@ -55,12 +55,22 @@
             </span>
           </td>
 
-          <!-- Password Status -->
-          <td class="px-4 py-2 text-center">
+          <!-- Status -->
+          <td class="px-4 py-2 text-center space-x-1">
+            <?php if (!empty($user['is_archived'])): ?>
+              <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Archived</span>
+            <?php endif; ?>
+
             <?php if ($user['must_change_password']): ?>
-              <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Must Change</span>
-            <?php else: ?>
-              <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">OK</span>
+              <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Must Change Password</span>
+            <?php endif; ?>
+
+            <?php if (!empty($user['is_locked'])): ?>
+              <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">Locked</span>
+            <?php endif; ?>
+
+            <?php if (empty($user['is_archived']) && !$user['must_change_password'] && empty($user['is_locked'])): ?>
+              <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Active</span>
             <?php endif; ?>
           </td>
 
@@ -117,7 +127,7 @@
                       <?php if ($user['is_locked'] == 1): ?>
                         <li>
                           <a href="#" data-unlock-user="<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 text-red-700">
-                           Unlock
+                            Unlock
                           </a>
                         </li>
                       <?php endif; ?>
