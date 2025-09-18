@@ -409,7 +409,7 @@ require_once  __DIR__ .'/../../includes/functions.php';
             </div>
             <div class="grid grid-cols-2 py-2 hover:bg-gray-100">
               <span class="font-medium">Region IX - Zamboanga Peninsula:</span>
-              <span id="region_viii_eastern_visayas" class="text-red-400 font-bold text-right">0</span>
+              <span id="region_ix_zamboanga_peninsula" class="text-red-400 font-bold text-right">0</span>
             </div>
             <div class="grid grid-cols-2 py-2 hover:bg-gray-100">
               <span class="font-medium">Region X - Northern Mindanao:</span>
