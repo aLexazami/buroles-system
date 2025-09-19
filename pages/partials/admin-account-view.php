@@ -112,6 +112,15 @@
              data-toggle-password="new_password"
              class="absolute right-3 top-3 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100" />
          </div>
+         <div id="strengthBar" class="mt-2 h-2 bg-gray-200 rounded overflow-hidden">
+           <div class="h-full transition-all duration-300 w-0"></div>
+         </div>
+         <ul class="text-xs text-gray-500 space-y-1 mt-2 ml-1">
+           <li>• Minimum 8 characters</li>
+           <li>• At least one uppercase letter</li>
+           <li>• At least one number</li>
+           <li>• At least one special character (e.g. !@#$%)</li>
+         </ul>
        </div>
 
        <!-- 🔒 Confirm Password -->
