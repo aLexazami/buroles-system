@@ -15,6 +15,7 @@ import { setupSearchFilter } from './search-filter.js';
 
 // Preview
 import { setupAvatarPreview } from './avatar-preview.js';
+import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 🧭 UI & Role Toggles
@@ -33,7 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initUnlockButtons();
 
   setupAvatarPreview();
-
+  initPasswordStrength();
+  setupPasswordVisibilityToggles();
 
   // 🔍 Search Filters
   setupSearchFilter({
@@ -57,5 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-
 });
+
+function setupPasswordVisibilityToggles() {
+  document.querySelectorAll('[data-toggle-password]').forEach(icon => {
+    icon.addEventListener('click', () => {
+      const fieldId = icon.getAttribute('data-toggle-password');
+      toggleVisibility(fieldId, icon);
+    });
+  });
+}

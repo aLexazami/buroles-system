@@ -59,15 +59,15 @@
      <div class="bg-emerald-700 text-white p-2">
        <h2 class="text-sm font-semibold">Update Email Address</h2>
      </div>
-     <form action="/controllers/update-email.php" method="POST" class="space-y-4 p-2">
+     <form action="/controllers/account-settings/update-email.php" method="POST" class="space-y-4 p-2">
        <div class="pt-5">
-         <label for="current_email" class="block text-sm font-bold text-gray-700">Current Email Address</label>
+         <label for="current_email" class="block text-sm font-bold text-gray-700">Current Email Address (For Recovery)</label>
          <input type="email" name="current_email" id="current_email"
            class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2"
            value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>">
        </div>
        <div>
-         <label for="new_email" class="block text-sm font-bold text-gray-700">New Email Address</label>
+         <label for="new_email" class="block text-sm font-bold text-gray-700">New Email Address (For Recovery)</label>
          <input type="email" name="new_email" id="new_email"
            class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2">
        </div>
@@ -79,24 +79,55 @@
      </form>
    </div>
 
-   <!-- 🔒 Update Password -->
+   <!-- 🔐 Update Password -->
    <div class="bg-white rounded-b-md shadow border border-emerald-600">
      <div class="bg-emerald-700 text-white p-2">
        <h2 class="text-sm font-semibold">Update Password</h2>
      </div>
-     <form action="/controllers/update-password.php" method="POST" class="space-y-4 p-2">
-       <div class="pt-5">
-         <label for="password" class="block text-sm font-bold text-gray-700">Current Password</label>
-         <input type="password" name="password" id="password" class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2">
-       </div>
+     <form action="/controllers/account-settings/update-password.php" method="POST" class="space-y-4 p-2">
+
+       <!-- 🔒 Current Password -->
        <div>
-         <label for="password" class="block text-sm font-bold text-gray-700">New Password</label>
-         <input type="password" name="password" id="password" class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2">
+         <label for="current_password" class="block text-sm font-bold text-gray-700">Current Password</label>
+         <div class="relative">
+           <input type="password" name="current_password" id="current_password"
+             class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2 pr-10">
+           <img
+             src="/assets/img/eye-open.png"
+             alt="Toggle visibility"
+             data-toggle-password="current_password"
+             class="absolute right-3 top-3 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100" />
+         </div>
        </div>
+
+       <!-- 🔒 New Password -->
        <div>
-         <label for="password" class="block text-sm font-bold text-gray-700">Confirm Password</label>
-         <input type="password" name="password" id="password" class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2">
+         <label for="new_password" class="block text-sm font-bold text-gray-700">New Password</label>
+         <div class="relative">
+           <input type="password" name="new_password" id="new_password"
+             class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2 pr-10">
+           <img
+             src="/assets/img/eye-open.png"
+             alt="Toggle visibility"
+             data-toggle-password="new_password"
+             class="absolute right-3 top-3 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100" />
+         </div>
        </div>
+
+       <!-- 🔒 Confirm Password -->
+       <div>
+         <label for="confirm_password" class="block text-sm font-bold text-gray-700">Confirm Password</label>
+         <div class="relative">
+           <input type="password" name="confirm_password" id="confirm_password"
+             class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2 pr-10">
+           <img
+             src="/assets/img/eye-open.png"
+             alt="Toggle visibility"
+             data-toggle-password="confirm_password"
+             class="absolute right-3 top-3 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100" />
+         </div>
+       </div>
+
        <div class="flex justify-end">
          <button type="submit" class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600">
            Update Password

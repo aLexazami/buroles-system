@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../auth/session.php';
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../helpers/flash.php';
+require_once __DIR__ . '/../../auth/session.php';
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/flash.php';
 
 if (!isset($_SESSION['user_id'])) {
   setFlash('error', 'Session expired. Please log in again.');
@@ -40,7 +40,7 @@ if ($stmt->fetch()) {
 $stmt = $pdo->prepare("UPDATE users SET email = ? WHERE id = ?");
 if ($stmt->execute([$newEmail, $userId])) {
   $_SESSION['email'] = $newEmail;
-  setFlash('success', '✅ Email updated successfully.');
+  setFlash('success', 'Email updated successfully.');
 } else {
   setFlash('error', 'Something went wrong while updating your email.');
 }
