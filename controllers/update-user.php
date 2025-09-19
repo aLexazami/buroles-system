@@ -13,7 +13,6 @@ $last_name = trim($_POST['last_name']);
 $username = trim($_POST['username']);
 $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 $role_id = $_POST['role_id'];
-$must_change_password = $_POST['must_change_password'] ?? 1;
 $is_archived = $_POST['is_archived'] ?? 0;
 
 try {
@@ -21,14 +20,14 @@ try {
     UPDATE users SET
       first_name = ?, middle_name = ?, last_name = ?,
       username = ?, email = ?, role_id = ?,
-      must_change_password = ?, is_archived = ?
+      is_archived = ?
     WHERE id = ?
   ");
 
   $stmt->execute([
     $first_name, $middle_name, $last_name,
     $username, $email, $role_id,
-    $must_change_password, $is_archived,
+    $is_archived,
     $id
   ]);
 
