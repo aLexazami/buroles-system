@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role_slug']      = strtolower($user['role_slug']);
             $_SESSION['original_role_id']   = $user['role_id'];
             $_SESSION['original_role_name'] = $user['role_name'];
+            $_SESSION['avatar_path'] = $user['avatar_path'];
 
             // 🔄 Fetch all roles from user_roles
             $stmt = $pdo->prepare("SELECT role_id FROM user_roles WHERE user_id = ?");

@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.12",
+    "cropperjs": "^2.0.1",
     "tailwind": "^4.0.0",
     "tailwindcss": "^4.1.12"
   }

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/role-nav-map.php';
+$currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 <header class=" shadow-md sticky-top-0 z-10 bg-emerald-950 text-white p-1">
   <section class=" max-w-7xl m-auto flex justify-between px-10 items-center">
@@ -23,7 +24,9 @@ require_once __DIR__ . '/role-nav-map.php';
           <?php include 'role-badge.php'; ?>
           <!-- Profile Button -->
           <button id="menu-btn-desktop" class="flex flex-row items-center space-x-3 cursor-pointer mr-2">
-            <img src="/assets/img/user.png" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
+            <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>"
+              alt="Profile"
+              class="h-10 w-10 rounded-full border-2 border-emerald-400">
             <div>
               <p class="font-medium">
                 <?= htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']) ?>
@@ -48,8 +51,11 @@ require_once __DIR__ . '/role-nav-map.php';
           <?php endif; ?>
         </div>
         <?php foreach ($navItems as $item): ?>
+          <?php $isActive = basename($item['link']) === $currentPage; ?>
           <div class="flex items-center">
-            <a href="<?= $item['link'] ?>" class="group relative flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
+            <a href="<?= $item['link'] ?>"
+              class="group relative flex items-center p-2 text-sm rounded-sm
+          <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>">
               <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 invert">
               <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">
                 <?= $item['label'] ?>
@@ -70,7 +76,9 @@ require_once __DIR__ . '/role-nav-map.php';
       <!-- Nav Menu for Mobile -->
       <div class=" flex flex-row">
         <button id="menu-btn-mobile" class=" flex flex-row items-center space-x-3 cursor-pointer md:hidden mr-2">
-          <img src="/assets/img/user.png" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
+          <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>"
+            alt="Profile"
+            class="h-10 w-10 rounded-full border-2 border-emerald-400">
           <div>
             <p class="font-medium"> <?php echo htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']); ?></p>
             <p class="uppercase text-sm"><?php echo htmlspecialchars($_SESSION['role_name']); ?></p>
@@ -78,7 +86,10 @@ require_once __DIR__ . '/role-nav-map.php';
         </button>
         <div id="menu-links" class="hidden md:hidden absolute top-17 max-md:top-20   p-3 bg-white shadow-lg rounded-sm ">
           <?php foreach ($navItems as $item): ?>
-            <a href="<?= $item['link'] ?>" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
+            <?php $isActive = basename($item['link']) === $currentPage; ?>
+            <a href="<?= $item['link'] ?>"
+              class="menu-link flex items-center p-2 text-sm rounded-sm
+          <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>">
               <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 rounded-full mr-3">
               <?= $item['label'] ?>
             </a>

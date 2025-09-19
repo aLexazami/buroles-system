@@ -1,0 +1,987 @@
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpABBB.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php5570.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+❌ Invalid file type or size
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cat.png
+            [full_path] => cat.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php6CC2.tmp
+            [error] => 0
+            [size] => 1551036
+        )
+
+)
+✅ File saved to C:\buroles\workspace\buroles_system\assets\img\uploads\avatar_1_1758274447.png
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php1528.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+❌ Invalid file type or size
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php56E6.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+❌ Invalid file type or size
+Array
+(
+    [avatar] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+❌ No file uploaded or upload error
+Array
+(
+    [avatar] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+❌ No file uploaded or upload error
+Array
+(
+    [avatar] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+❌ No file uploaded or upload error
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php2204.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+❌ Invalid file type or size
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php66D6.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+✅ File saved to C:\buroles\workspace\buroles_system\assets\img\uploads\avatar_1_1758275363.png
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cat.png
+            [full_path] => cat.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpA45D.tmp
+            [error] => 0
+            [size] => 1551036
+        )
+
+)
+✅ File saved to C:\buroles\workspace\buroles_system\assets\img\uploads\avatar_1_1758275379.png
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpC2E1.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+📁 Created user upload directory: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758276698.png
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cat.png
+            [full_path] => cat.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php6339.tmp
+            [error] => 0
+            [size] => 1551036
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758276698.png
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758276739.png
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpE5E2.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+📁 Created user upload directory: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\2
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\2\avatar_2_1758276838.png
+✅ DB updated for user_id: 2
+Array
+(
+    [avatar] => Array
+        (
+            [name] => Angela Folder_cutieecat.png
+            [full_path] => Angela Folder_cutieecat.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php1F99.tmp
+            [error] => 0
+            [size] => 1551036
+        )
+
+)
+📁 Created user upload directory: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8\avatar_8_1758277180.png
+✅ DB updated for user_id: 8
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php727C.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8/avatar_8_1758277180.png
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8\avatar_8_1758277201.png
+✅ DB updated for user_id: 8
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cat.png
+            [full_path] => cat.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php93A2.tmp
+            [error] => 0
+            [size] => 1551036
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8/avatar_8_1758277201.png
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8\avatar_8_1758277210.png
+✅ DB updated for user_id: 8
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog.png
+            [full_path] => dog.png
+            [type] => image/png
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php15AA.tmp
+            [error] => 0
+            [size] => 2442116
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8/avatar_8_1758277210.png
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8\avatar_8_1758277374.png
+✅ DB updated for user_id: 8
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php4BC8.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8/avatar_8_1758277374.png
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\8\avatar_8_1758277912.jpg
+✅ DB updated for user_id: 8
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpF34F.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758276739.png
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758278021.jpg
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpD0EF.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758278021.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758278930.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpD257.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758278930.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758278930.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php38FE.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758278930.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279022.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php39F9.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279022.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279022.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php9890.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279022.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279112.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php2FF1.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279112.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279544.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php3409.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279544.jpg
+❌ Intervention Image class not found
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php3523.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+❌ Intervention Image class not found
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php9536.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+❌ Intervention Image class not found
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpE8D5.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279591.jpg
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpE6B.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279591.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279666.jpg
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php1B9B.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279666.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279669.jpg
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php1CB5.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279669.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279670.jpg
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php1DB0.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279670.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279670.jpg
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php47AF.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279670.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279681.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpCB09.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279681.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279714.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php80BE.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279714.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758279761.jpg
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+❌ Intervention Image class not found
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+❌ Intervention Image class not found
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+❌ Intervention Image class not found
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+❌ Intervention Image class not found
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+❌ Intervention Image class not found
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+❌ Intervention Image class not found
+Autoload path: C:\buroles\workspace\buroles_system\vendor\autoload.php
+❌ Intervention Image class not found
+❌ GD extension not loaded
+❌ GD extension not loaded
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php88CA.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758279761.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758280680.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php89D5.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758280680.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758280681.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php8AEF.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758280681.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758280681.jpg
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php4854.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758280681.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758280730.jpg
+❌ Image resize failed: Unable to resolve driver. Argment must be either an instance of Intervention\Image\Interfaces\DriverInterface::class or a qualified namespaced name of the driver class.
+✅ DB updated for user_id: 1
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+)
+❌ No file uploaded or upload error
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php81E4.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758280730.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758280744.jpg
+❌ Image resize failed: Unable to resolve driver. Argment must be either an instance of Intervention\Image\Interfaces\DriverInterface::class or a qualified namespaced name of the driver class.
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => flower.jpg
+            [full_path] => flower.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpC3D6.tmp
+            [error] => 0
+            [size] => 209515
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758280744.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758280892.jpg
+✅ Image resized to 256x256
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog1.avif
+            [full_path] => dog1.avif
+            [type] => image/avif
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\phpBD69.tmp
+            [error] => 0
+            [size] => 57431
+        )
+
+)
+❌ Invalid file type or size
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog1.jpg
+            [full_path] => dog1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php6FF1.tmp
+            [error] => 0
+            [size] => 57431
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758280892.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758281002.jpg
+✅ Image resized to 256x256
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php294B.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758281002.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758281115.jpg
+✅ Image resized to 256x256
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => dog1.jpg
+            [full_path] => dog1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php9163.tmp
+            [error] => 0
+            [size] => 57431
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758281115.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758282780.jpg
+✅ Image resized to 256x256
+✅ DB updated for user_id: 1
+Array
+(
+    [avatar] => Array
+        (
+            [name] => cutedog.jpg
+            [full_path] => cutedog.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\Maryjane Vedano\AppData\Local\Temp\php74EE.tmp
+            [error] => 0
+            [size] => 24863
+        )
+
+)
+🗑️ Deleted old avatar: C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1/avatar_1_1758282780.jpg
+✅ File saved to C:\buroles\workspace\buroles_system\controllers/../assets/img/uploads\1\avatar_1_1758282838.jpg
+✅ Image resized to 256x256
+✅ DB updated for user_id: 1

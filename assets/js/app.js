@@ -13,6 +13,9 @@ import { initDropdownMenus } from './dropdown.js';
 // Search Filters (Unified)
 import { setupSearchFilter } from './search-filter.js';
 
+// Preview
+import { setupAvatarPreview } from './avatar-preview.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   // 🧭 UI & Role Toggles
   setupMenuToggle();
@@ -28,6 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initExportDropdown();
   initPasswordButtons();
   initUnlockButtons();
+
+  setupAvatarPreview();
+
 
   // 🔍 Search Filters
   setupSearchFilter({
@@ -50,4 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
       selector: 'table tbody tr'
     });
   }
+
+
 });

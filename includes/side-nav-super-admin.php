@@ -3,7 +3,9 @@
   $currentPage = basename($_SERVER['PHP_SELF']);
   ?>
   <div class="flex flex-col items-center mt-10 mb-20">
-    <img src="/assets/img/user.png" class="h-15 w-15 rounded-full border-2 border-emerald-400">
+    <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>"
+     alt="Profile"
+     class="h-15 w-15 rounded-full border-2 border-emerald-400">
     <h1 class="text-md font-medium pt-3">
       <?php echo htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']); ?>
     </h1>
