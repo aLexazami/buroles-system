@@ -10,7 +10,7 @@
         <!-- Avatar Preview -->
         <img id="avatar-preview"
           src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>"
-          class="h-24 w-24 rounded-full border-2 border-emerald-400 object-cover"
+          class="h-35 w-35 rounded-full border-2 border-emerald-400 object-cover"
           alt="Profile Avatar">
         <!-- Hidden File Input -->
         <input type="file" name="avatar" id="avatar-upload" accept="image/*" class="sr-only">

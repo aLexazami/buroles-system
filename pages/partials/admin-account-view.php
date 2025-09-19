@@ -10,7 +10,7 @@
         <!-- Avatar Preview -->
         <img id="avatar-preview"
           src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>"
-          class="h-24 w-24 rounded-full border-2 border-emerald-400 object-cover"
+          class="h-35 w-35 rounded-full border-2 border-emerald-400 object-cover"
           alt="Profile Avatar">
         <!-- Hidden File Input -->
         <input type="file" name="avatar" id="avatar-upload" accept="image/*" class="sr-only">
@@ -30,15 +30,17 @@
       <!-- Profile Info -->
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Full Name</label>
-          <p class="mt-1 text-gray-900"><?= htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']) ?></p>
+          <label class="block text-sm font-bold text-gray-700">Full Name</label>
+          <p class="mt-1 text-gray-900">
+            <?= htmlspecialchars(trim($_SESSION['firstName'] . ' ' . ($_SESSION['middleName'] ?? '') . ' ' . $_SESSION['lastName'])) ?>
+          </p>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Role</label>
+          <label class="block text-sm font-bold text-gray-700">Role</label>
           <p class="mt-1 text-gray-900"><?= htmlspecialchars($_SESSION['role_name']) ?></p>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <label class="block text-sm font-bold text-gray-700">Email</label>
           <p class="mt-1 text-gray-900"><?= htmlspecialchars($_SESSION['email'] ?? 'Not set') ?></p>
         </div>
       </div>
@@ -59,16 +61,6 @@
       </div>
       <button type="submit" class="bg-emerald-700 text-white px-4 py-2 rounded hover:bg-emerald-800">Save Changes</button>
     </form>
-  </section>
-
-  <!-- 📊 Admin Insights -->
-  <section class="bg-white p-6 rounded shadow">
-    <h2 class="text-lg font-semibold mb-4">Admin Activity Summary</h2>
-    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-      <li>Last login: <?= htmlspecialchars($_SESSION['last_login'] ?? 'Unknown') ?></li>
-      <li>Feedback reports submitted: <?= htmlspecialchars($_SESSION['feedback_count'] ?? '0') ?></li>
-      <li>System role switches: <?= htmlspecialchars($_SESSION['role_switch_count'] ?? '0') ?></li>
-    </ul>
   </section>
 
 </div>

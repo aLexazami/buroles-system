@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/flash.php';
+
 $originalRole = $_SESSION['role_id'];
 $activeRole = $_SESSION['active_role_id'];
 ?>
@@ -40,6 +42,7 @@ $activeRole = $_SESSION['active_role_id'];
       }
     ?>
     <section class="m-4">
+      <?php showFlash(); ?>
       <?php
       switch ($originalRole) {
         case 1:
@@ -63,6 +66,7 @@ $activeRole = $_SESSION['active_role_id'];
 
 
   <script type="module" src="/assets/js/app.js"></script>
-  <script src="/../assets/js/date-time.js"></script>
+  <script src="/assets/js/auto-dismiss-alert.js"></script>
+  <script src="/assets/js/date-time.js"></script>
 </body>
 </html>
