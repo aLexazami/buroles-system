@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/role-nav-map.php';
 $currentPage = basename($_SERVER['PHP_SELF']);
+$activeRole = $_SESSION['active_role_id'] ?? null;
+$availableRoles = $_SESSION['available_roles'] ?? [];
+$canSwitchRoles = in_array(2, $availableRoles) || in_array(99, $availableRoles);
 ?>
 <header class=" shadow-md sticky-top-0 z-10 bg-emerald-950 text-white p-1">
   <section class=" max-w-7xl m-auto flex justify-between px-10 items-center">
@@ -38,11 +41,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
           </button>
 
           <!-- Role Switcher Dropdown -->
-          <?php if (count($_SESSION['available_roles']) >= 1): ?>
+          <?php if ($canSwitchRoles && count($availableRoles) >= 1): ?>
             <div id="role-switcher-desktop" class="absolute top-full right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50 hidden px-4 py-2 space-y-1">
-              <?php foreach ($_SESSION['available_roles'] as $role): ?>
+              <?php foreach ($availableRoles as $role): ?>
                 <a href="#"
-                  class="block px-3 py-2 text-sm rounded hover:bg-emerald-100 text-emerald-800 <?= $role == $_SESSION['active_role_id'] ? 'font-bold bg-emerald-50' : '' ?>"
+                  class="block px-3 py-2 text-sm rounded hover:bg-emerald-100 text-emerald-800 <?= $role == $activeRole ? 'font-bold bg-emerald-50' : '' ?>"
                   data-role="<?= $role ?>">
                   <?= $role == 1 ? 'Staff' : ($role == 2 ? 'Admin' : 'Super Admin') ?>
                 </a>
