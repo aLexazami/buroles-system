@@ -44,9 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Change Password</title>
-  <link rel="preload" href="/assets/img/eye-open.png" as="image">
-  <link rel="preload" href="/assets/img/eye-closed.png" as="image">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/src/styles.css" rel="stylesheet">
 </head>
 
 <body class="bg-gradient-to-b from-white to-emerald-800 min-h-screen">
@@ -96,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               src="/assets/img/eye-open.png"
               alt="Toggle visibility"
               class="absolute right-3 top-9 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
-              onclick="toggleVisibility('new_password', this)" />
+              data-toggle-password="new_password" />
             <div id="strengthBar" class="mt-2 h-2 bg-gray-200 rounded overflow-hidden">
               <div class="h-full transition-all duration-300 w-0"></div>
             </div>
@@ -116,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               src="/assets/img/eye-open.png"
               alt="Toggle visibility"
               class="absolute right-3 top-9 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
-              onclick="toggleVisibility('confirm_password', this)" />
+              data-toggle-password="confirm_password" />
           </div>
 
           <button
