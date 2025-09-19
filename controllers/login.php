@@ -62,9 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_token']     = hash('sha256', $_ENV['SESSION_SECRET']);
             $_SESSION['user_id']        = $user['id'];
             $_SESSION['username']       = $user['username'];
+            $_SESSION['email']          = $user['email'];
             $_SESSION['role_id']        = $user['role_id'];
             $_SESSION['firstName']      = $user['first_name'];
-            $_SESSION['middleName']      = $user['middle_name'];
+            $_SESSION['middleName']     = $user['middle_name'];
             $_SESSION['lastName']       = $user['last_name'];
             $_SESSION['role_name']      = $user['role_name'];
             $_SESSION['role_slug']      = strtolower($user['role_slug']);
