@@ -23,8 +23,10 @@ if (!empty($replyToId)) {
 }
 ?>
 
-<h2 class="text-xl font-semibold mb-4">Admin Messaging</h2>
-
+<div class="bg-emerald-700 text-white p-5">
+   <h2 class="text-lg font-semibold">Messages</h2>
+</div>
+<section class="bg-white p-6 rounded-b-lg shadow ">
 <?php if ($replyContext): ?>
   <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded">
     <p class="text-sm text-blue-700">
@@ -66,3 +68,4 @@ if (!empty($replyToId)) {
 </form>
 
 <?php include __DIR__ . '/inbox-admin.php'; ?>
+</section>
