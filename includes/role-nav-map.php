@@ -6,11 +6,11 @@ $sharedNav = [
   ],
   'Messages' => [
     'icon' => 'message.png',
-    'link' => '/pages/messages.php',
+    'link' => '/pages/header/messages.php',
   ],
   'Notifications' => [
     'icon' => 'notif.png',
-    'link' => '/pages/notifications.php',
+    'link' => '/pages/header/notifications.php',
   ],
 ];
 
