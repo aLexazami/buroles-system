@@ -23,48 +23,50 @@ if (!empty($replyToId)) {
 }
 ?>
 <div class="bg-emerald-700 text-white p-5">
-   <h2 class="text-lg font-semibold">Messages</h2>
+  <h2 class="text-lg font-semibold">Messages</h2>
 </div>
-<section class="bg-white p-6 rounded-b-lg shadow ">
-<?php if ($replyContext): ?>
-  <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded">
-    <p class="text-sm text-blue-700">
-      <strong>Replying to:</strong> <?= htmlspecialchars($replyContext['sender_name']) ?>
-    </p>
-    <?php if (!empty($replyContext['subject'])): ?>
-      <p class="text-sm text-blue-600 italic">Subject: <?= htmlspecialchars($replyContext['subject']) ?></p>
+<section class="flex bg-white rounded-b-lg shadow">
+  <!-- Sidebar Navigation -->
+  <?php include __DIR__ . '/../../../includes/side-nav-messages.php'; ?>
+
+
+  <!-- Main Form Area -->
+  <div class="flex-1 p-6 min-h-screen">
+    <?php if ($replyContext): ?>
+      <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded">
+        <p class="text-sm text-blue-700">
+          <strong>Replying to:</strong> <?= htmlspecialchars($replyContext['sender_name']) ?>
+        </p>
+        <?php if (!empty($replyContext['subject'])): ?>
+          <p class="text-sm text-blue-600 italic">Subject: <?= htmlspecialchars($replyContext['subject']) ?></p>
+        <?php endif; ?>
+        <p class="text-sm text-gray-700 mt-1"><?= nl2br(htmlspecialchars($replyContext['content'])) ?></p>
+      </div>
     <?php endif; ?>
-    <p class="text-sm text-gray-700 mt-1"><?= nl2br(htmlspecialchars($replyContext['content'])) ?></p>
+
+    <form method="POST" action="/actions/send-message.php" class="space-y-4">
+      <select name="recipient_id" required class="w-full p-2 border rounded">
+        <?php foreach ($recipients as $r): ?>
+          <option value="<?= $r['id'] ?>" <?= ($replyContext && $r['id'] == $replyContext['sender_id']) ? 'selected' : '' ?>>
+            <?= htmlspecialchars($r['full_name']) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+
+      <input type="text" name="subject"
+        value="<?= $replyContext ? 'Re: ' . htmlspecialchars($replyContext['subject']) : '' ?>"
+        placeholder="Subject (optional)"
+        class="w-full p-2 border rounded" />
+
+      <textarea name="message" rows="12" required class="w-full p-2 border rounded resize-none" placeholder="Type your message..."></textarea>
+
+      <input type="hidden" name="reply_to_id" value="<?= htmlspecialchars($replyToId) ?>" />
+
+      <div class="sticky bottom-0 bg-white p-4 flex justify-end">
+        <button type="submit" class="bg-emerald-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-emerald-500">
+          Send
+        </button>
+      </div>
+    </form>
   </div>
-<?php endif; ?>
-
-<form method="POST" action="/actions/send-message.php" class="space-y-4">
-  <!-- Recipient Dropdown -->
-  <select name="recipient_id" required class="w-full p-2 border rounded">
-    <?php foreach ($recipients as $r): ?>
-      <option value="<?= $r['id'] ?>"
-        <?= ($replyContext && $r['id'] == $replyContext['sender_id']) ? 'selected' : '' ?>>
-        <?= htmlspecialchars($r['full_name']) ?>
-      </option>
-    <?php endforeach; ?>
-  </select>
-
-  <!-- Subject Field -->
-  <input type="text" name="subject"
-    value="<?= $replyContext ? 'Re: ' . htmlspecialchars($replyContext['subject']) : '' ?>"
-    placeholder="Subject (optional)"
-    class="w-full p-2 border rounded"
-  />
-
-  <!-- Message Body -->
-  <textarea name="message" rows="4" required class="w-full p-2 border rounded" placeholder="Type your message..."></textarea>
-
-  <!-- Reply-to Hidden Field -->
-  <input type="hidden" name="reply_to_id" value="<?= htmlspecialchars($replyToId) ?>" />
-
-  <!-- Submit Button -->
-  <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Send</button>
-</form>
-
-<?php include __DIR__ . '/inbox-admin.php'; ?>
 </section>
