@@ -45,6 +45,7 @@ if (!empty($replyToId)) {
     $replyPreview = mb_substr($replyContext['content'], 0, 100);
     $isLongReply = mb_strlen($replyContext['content']) > 100;
   }
+  $preselectedRecipientId = $replyContext['sender_id'] ?? null;
 }
 ?>
 
@@ -110,7 +111,7 @@ if (!empty($replyToId)) {
             <?php endforeach; ?>
           </div>
 
-          <input type="hidden" name="recipient_id" id="recipient-id" required>
+          <input type="hidden" name="recipient_id" id="recipient-id" value="<?= htmlspecialchars($preselectedRecipientId ?? '') ?>" required>
         </div>
       <?php endif; ?>
 
