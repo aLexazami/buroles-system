@@ -8,7 +8,7 @@ import { initRenameButtons, initDeleteButtons, initPasswordButtons, initUnlockBu
 import { initCreateFolderModal } from './folder-creation.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
-import { initDropdownMenus } from './dropdown.js';
+import { initDropdownMenus, setupRecipientDropdown } from './dropdown.js';
 
 // Search Filters (Unified)
 import { setupSearchFilter } from './search-filter.js';
@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAvatarPreview();
   initPasswordStrength();
   setupPasswordVisibilityToggles();
+  setupRecipientDropdown();
 
   // 🔍 Search Filters
   setupSearchFilter({

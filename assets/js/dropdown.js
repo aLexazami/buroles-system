@@ -38,3 +38,37 @@ export function initDropdownMenus() {
     if (newMenu) newMenu.classList.add('hidden');
   });
 }
+
+export function setupRecipientDropdown() {
+  const toggle = document.getElementById('dropdown-toggle');
+  const menu = document.getElementById('dropdown-menu');
+  const selected = document.getElementById('selected-recipient');
+  const hiddenInput = document.getElementById('recipient-id');
+
+  if (!toggle || !menu || !selected || !hiddenInput) return;
+
+  toggle.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+  });
+
+  document.querySelectorAll('.recipient-option').forEach(option => {
+    option.addEventListener('click', () => {
+      const name = option.querySelector('span.text-gray-800')?.textContent;
+      const role = option.querySelector('span.text-white')?.textContent;
+      const id = option.dataset.id;
+
+      selected.innerHTML = `
+        <span class="bg-emerald-800 text-white px-2 py-1 rounded text-xs font-semibold">${role}</span>
+        <span class="text-gray-800 font-semibold">${name}</span>
+      `;
+      hiddenInput.value = id;
+      menu.classList.add('hidden');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('recipient-dropdown')?.contains(e.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+}
