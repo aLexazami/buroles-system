@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/../../../config/database.php';
-
 $userId = $_SESSION['user_id'] ?? null;
 $replyToId = $_GET['reply_to_id'] ?? '';
 $replyContext = null;
@@ -41,6 +39,12 @@ if (!empty($replyToId)) {
   ");
   $stmt->execute([$replyToId]);
   $replyContext = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  // Crop long reply content
+  if ($replyContext && isset($replyContext['content'])) {
+    $replyPreview = mb_substr($replyContext['content'], 0, 100);
+    $isLongReply = mb_strlen($replyContext['content']) > 100;
+  }
 }
 ?>
 
@@ -56,13 +60,27 @@ if (!empty($replyToId)) {
   <div class="flex-1 p-6 min-h-screen">
     <?php if ($replyContext): ?>
       <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded">
-        <p class="text-sm text-blue-700">
-          <strong>Replying to:</strong> <?= htmlspecialchars($replyContext['sender_name']) ?>
-        </p>
-        <?php if (!empty($replyContext['subject'])): ?>
-          <p class="text-sm text-blue-600 italic">Subject: <?= htmlspecialchars($replyContext['subject']) ?></p>
+        <?php if (!empty($replyContext['sender_name'])): ?>
+          <p class="text-sm text-blue-700">
+            <strong>Replying to:</strong> <?= htmlspecialchars($replyContext['sender_name'] ?? '') ?>
+          </p>
         <?php endif; ?>
-        <p class="text-sm text-gray-700 mt-1"><?= nl2br(htmlspecialchars($replyContext['content'])) ?></p>
+
+        <?php if (!empty($replyContext['subject'])): ?>
+          <p class="text-sm text-blue-600 italic">
+            Subject: <?= htmlspecialchars($replyContext['subject'] ?? '') ?>
+          </p>
+        <?php endif; ?>
+
+        <?php if (!empty($replyContext['content'])): ?>
+          <p class="text-sm text-gray-700 mt-1">
+            <?= nl2br(htmlspecialchars(
+              mb_strlen($replyContext['content'] ?? '') > 100
+                ? mb_substr($replyContext['content'], 0, 100) . '…'
+                : $replyContext['content'] ?? ''
+            )) ?>
+          </p>
+        <?php endif; ?>
       </div>
     <?php endif; ?>
 
@@ -97,7 +115,7 @@ if (!empty($replyToId)) {
       <?php endif; ?>
 
       <input type="text" name="subject"
-        value="<?= $replyContext ? 'Re: ' . htmlspecialchars($replyContext['subject']) : '' ?>"
+        value="<?= 'Re: ' . htmlspecialchars($replyContext['subject'] ?? '') ?>"
         placeholder="Subject (optional)"
         class="w-full p-2 border rounded" />
 
