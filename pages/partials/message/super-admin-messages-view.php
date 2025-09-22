@@ -66,7 +66,7 @@ if (!empty($replyToId)) {
       </div>
     <?php endif; ?>
 
-    <form method="POST" action="/actions/send-message.php" class="space-y-4">
+    <form method="POST" action="/actions/message/send-message.php" class="space-y-4">
       <?php if (empty($recipients)): ?>
         <p class="text-red-600 text-sm">No available recipients.</p>
       <?php else: ?>
