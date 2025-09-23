@@ -15,9 +15,7 @@ require_once __DIR__ . '/../../helpers/message-router.php';
 </head>
 
 <body class="bg-gray-200 min-h-screen">
-  <header class="shadow-md sticky-top-0 z-10 bg-white">
-    <?php include __DIR__ . '/../../includes/header.php'; ?>
-  </header>
+  <?php include __DIR__ . '/../../includes/header.php'; ?>
   <main class="grid grid-cols-[248px_1fr] min-h-screen">
     <!-- Left Side Navigation -->
     <?php
