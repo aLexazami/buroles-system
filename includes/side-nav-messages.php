@@ -2,17 +2,23 @@
 $currentView = $_GET['view'] ?? '';
 $userId = $_SESSION['user_id'] ?? null;
 
-// Count messages
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages WHERE sender_id = ?");
-$stmt->execute([$userId]);
-$messageCount = $stmt->fetchColumn() ?? 0;
-
+// Count inbox messages (not deleted by recipient)
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM messages WHERE recipient_id = ? AND deleted_by_recipient = 0");
 $stmt->execute([$userId]);
 $inboxCount = $stmt->fetchColumn() ?? 0;
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages WHERE recipient_id = ? AND deleted_by_recipient = 1");
+// Count sent messages (not deleted by sender)
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages WHERE sender_id = ? AND deleted_by_sender = 0");
 $stmt->execute([$userId]);
+$sentCount = $stmt->fetchColumn() ?? 0;
+
+// Count trash messages (deleted by recipient OR sender)
+$stmt = $pdo->prepare("
+  SELECT COUNT(*) FROM messages
+  WHERE (recipient_id = ? AND deleted_by_recipient = 1)
+     OR (sender_id = ? AND deleted_by_sender = 1)
+");
+$stmt->execute([$userId, $userId]);
 $trashCount = $stmt->fetchColumn() ?? 0;
 ?>
 
@@ -37,7 +43,7 @@ $trashCount = $stmt->fetchColumn() ?? 0;
       <img src="/assets/img/message.png" alt="Sent Icon" class="w-4 h-4" />
       <span>Sent</span>
     </div>
-    <span class="bg-emerald-600 text-white text-xs px-2 py-0.5 rounded-full"><?= $messageCount ?></span>
+    <span class="bg-emerald-600 text-white text-xs px-2 py-0.5 rounded-full"><?= $sentCount ?></span>
   </a>
 
   <!-- Inbox -->
