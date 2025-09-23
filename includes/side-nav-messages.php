@@ -19,14 +19,20 @@ $trashCount = $stmt->fetchColumn() ?? 0;
 <nav class="w-48 bg-gray-100 border-r border-gray-300 p-4 space-y-4 text-sm font-medium text-gray-700">
   <!-- Compose -->
   <a href="/pages/header/messages.php?view=compose"
-    class="flex items-center space-x-2 hover:text-emerald-700 <?= ($currentView === 'compose') ? 'text-emerald-700 font-semibold' : '' ?>">
+    class="flex items-center space-x-2 px-3 py-2 rounded transition
+      <?= ($currentView === 'compose')
+        ? 'bg-emerald-100 text-emerald-700 font-semibold'
+        : 'hover:bg-emerald-50 hover:text-emerald-700' ?>">
     <img src="/assets/img/composed.png" alt="Compose Icon" class="w-4 h-4" />
     <span>Compose</span>
   </a>
 
   <!-- Sent -->
   <a href="/pages/header/messages.php?view=sent"
-    class="flex items-center justify-between hover:text-emerald-700 <?= str_contains($currentView, 'sent') ? 'text-emerald-700 font-semibold' : '' ?>">
+    class="flex items-center justify-between px-3 py-2 rounded transition
+      <?= str_contains($currentView, 'sent')
+        ? 'bg-emerald-100 text-emerald-700 font-semibold'
+        : 'hover:bg-emerald-50 hover:text-emerald-700' ?>">
     <div class="flex items-center space-x-2">
       <img src="/assets/img/message.png" alt="Sent Icon" class="w-4 h-4" />
       <span>Sent</span>
@@ -36,7 +42,8 @@ $trashCount = $stmt->fetchColumn() ?? 0;
 
   <!-- Inbox -->
   <a href="/pages/header/messages.php?view=inbox"
-    class="flex items-center justify-between hover:text-emerald-700 <?= str_contains($currentView, 'inbox') ? 'text-emerald-700 font-semibold' : '' ?>">
+    class="flex items-center justify-between px-3 py-2 rounded transition
+      <?= ($context === 'inbox') ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'hover:bg-emerald-50 hover:text-emerald-700' ?>">
     <div class="flex items-center space-x-2">
       <img src="/assets/img/inbox.png" alt="Inbox Icon" class="w-4 h-4" />
       <span>Inbox</span>
@@ -46,7 +53,10 @@ $trashCount = $stmt->fetchColumn() ?? 0;
 
   <!-- Trash -->
   <a href="/pages/header/messages.php?view=trash"
-    class="flex items-center justify-between hover:text-emerald-700 <?= str_contains($currentView, 'trash') ? 'text-emerald-700 font-semibold' : '' ?>">
+    class="flex items-center justify-between px-3 py-2 rounded transition
+      <?= str_contains($currentView, 'trash')
+        ? 'bg-emerald-100 text-emerald-700 font-semibold'
+        : 'hover:bg-emerald-50 hover:text-emerald-700' ?>">
     <div class="flex items-center space-x-2">
       <img src="/assets/img/trash.png" alt="Trash Icon" class="w-4 h-4" />
       <span>Trash</span>
