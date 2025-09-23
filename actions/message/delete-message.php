@@ -5,30 +5,37 @@ require_once __DIR__ . '/../../auth/session.php';
 
 $userId = $_SESSION['user_id'] ?? null;
 $role = $_SESSION['role_id'] ?? null;
-$messageId = $_POST['message_id'] ?? null;
+$messageId = isset($_POST['message_id']) ? (int) $_POST['message_id'] : null;
+$context = $_POST['context'] === 'sent' ? 'sent' : 'inbox';
 
 if ($userId && $messageId) {
-  $stmt = $pdo->prepare("DELETE FROM messages WHERE id = ? AND recipient_id = ?");
-  $stmt->execute([$messageId, $userId]);
+  if ($context === 'sent') {
+    $stmt = $pdo->prepare("DELETE FROM messages WHERE id = ? AND sender_id = ?");
+  } else {
+    $stmt = $pdo->prepare("DELETE FROM messages WHERE id = ? AND recipient_id = ?");
+  }
 
+  $stmt->execute([$messageId, $userId]);
   setFlash('success', 'Message deleted successfully.');
 } else {
   setFlash('error', 'Unable to delete message.');
 }
 
-// Redirect to messages.php with appropriate view
+// Redirect to appropriate view
+$view = $context === 'sent' ? 'sent' : 'inbox';
+
 switch ($role) {
   case '1':
-    header('Location: /pages/header/messages.php?view=inbox-staff');
+    header("Location: /pages/header/messages.php?view={$view}-staff");
     break;
   case '2':
-    header('Location: /pages/header/messages.php?view=inbox-admin');
+    header("Location: /pages/header/messages.php?view={$view}-admin");
     break;
   case '99':
-    header('Location: /pages/header/messages.php?view=inbox-super-admin');
+    header("Location: /pages/header/messages.php?view={$view}-super-admin");
     break;
   default:
-    header('Location: /pages/header/messages.php'); // fallback
+    header("Location: /pages/header/messages.php");
     break;
 }
 

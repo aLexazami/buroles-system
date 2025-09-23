@@ -50,7 +50,7 @@ if (!empty($replyToId)) {
 ?>
 
 <div class="bg-emerald-700 text-white p-5">
-  <h2 class="text-lg font-semibold">Messages</h2>
+  <h2 class="text-lg font-semibold"><?= ucfirst($context) ?> Messages</h2>
 </div>
 
 <section class="flex bg-white rounded-b-lg shadow">
