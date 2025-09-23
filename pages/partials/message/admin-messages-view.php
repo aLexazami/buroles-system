@@ -60,15 +60,15 @@ if (!empty($replyToId)) {
   <!-- Main Form Area -->
   <div class="flex-1 p-6 min-h-screen">
     <?php if ($replyContext): ?>
-      <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded">
+      <div class="bg-emerald-50 p-4 border-x-4 border-emerald-700 mb-4 rounded">
         <?php if (!empty($replyContext['sender_name'])): ?>
-          <p class="text-sm text-blue-700">
+          <p class="text-sm text-emerald-700">
             <strong>Replying to:</strong> <?= htmlspecialchars($replyContext['sender_name'] ?? '') ?>
           </p>
         <?php endif; ?>
 
         <?php if (!empty($replyContext['subject'])): ?>
-          <p class="text-sm text-blue-600 italic">
+          <p class="text-sm text-emerald-600 italic">
             Subject: <?= htmlspecialchars($replyContext['subject'] ?? '') ?>
           </p>
         <?php endif; ?>

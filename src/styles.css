@@ -321,6 +321,9 @@
   .bottom-full {
     bottom: 100%;
   }
+  .left-1 {
+    left: calc(var(--spacing) * 1);
+  }
   .left-1\/2 {
     left: calc(1/2 * 100%);
   }
@@ -570,6 +573,9 @@
   .w-0 {
     width: calc(var(--spacing) * 0);
   }
+  .w-1 {
+    width: calc(var(--spacing) * 1);
+  }
   .w-1\/2 {
     width: calc(1/2 * 100%);
   }
@@ -581,6 +587,9 @@
   }
   .w-2\/4 {
     width: calc(2/4 * 100%);
+  }
+  .w-3 {
+    width: calc(var(--spacing) * 3);
   }
   .w-3\/4 {
     width: calc(3/4 * 100%);
@@ -669,6 +678,9 @@
   .flex-1 {
     flex: 1;
   }
+  .flex-shrink {
+    flex-shrink: 1;
+  }
   .shrink {
     flex-shrink: 1;
   }
@@ -687,6 +699,10 @@
   .border-spacing-y-2 {
     --tw-border-spacing-y: calc(var(--spacing) * 2);
     border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
+  }
+  .-translate-x-1 {
+    --tw-translate-x: calc(var(--spacing) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .-translate-x-1\/2 {
     --tw-translate-x: calc(calc(1/2 * 100%) * -1);
@@ -906,6 +922,14 @@
     border-style: var(--tw-border-style);
     border-width: 2px;
   }
+  .border-x {
+    border-inline-style: var(--tw-border-style);
+    border-inline-width: 1px;
+  }
+  .border-x-4 {
+    border-inline-style: var(--tw-border-style);
+    border-inline-width: 4px;
+  }
   .border-y {
     border-block-style: var(--tw-border-style);
     border-block-width: 1px;
@@ -945,6 +969,9 @@
   .border-emerald-600 {
     border-color: var(--color-emerald-600);
   }
+  .border-emerald-700 {
+    border-color: var(--color-emerald-700);
+  }
   .border-emerald-800 {
     border-color: var(--color-emerald-800);
   }
@@ -971,6 +998,12 @@
   }
   .border-yellow-300 {
     border-color: var(--color-yellow-300);
+  }
+  .border-x-emerald-700 {
+    border-inline-color: var(--color-emerald-700);
+  }
+  .border-y-emerald-700 {
+    border-block-color: var(--color-emerald-700);
   }
   .bg-black {
     background-color: var(--color-black);
@@ -1097,6 +1130,9 @@
   }
   .px-10 {
     padding-inline: calc(var(--spacing) * 10);
+  }
+  .py-0 {
+    padding-block: calc(var(--spacing) * 0);
   }
   .py-0\.5 {
     padding-block: calc(var(--spacing) * 0.5);

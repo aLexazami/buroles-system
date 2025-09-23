@@ -19,7 +19,7 @@
           </p>
         </div>
 
-        <div class="flex justify-between text-sm text-gray-500 mb-1">
+        <div class="flex justify-between items-center text-sm text-gray-500 mb-1">
           <div>
             <strong>From:</strong> <?= htmlspecialchars($focusedMessage['sender_name']) ?> |
             <strong>Date:</strong> <?= date('M d, Y H:i', strtotime($focusedMessage['created_at'])) ?>
