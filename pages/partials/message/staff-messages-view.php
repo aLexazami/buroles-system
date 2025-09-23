@@ -116,7 +116,7 @@ if (!empty($replyToId)) {
       <?php endif; ?>
 
       <input type="text" name="subject"
-        value="<?= 'Re: ' . htmlspecialchars($replyContext['subject'] ?? '') ?>"
+        value="<?= htmlspecialchars($replyContext['subject'] ?? '') ?>"
         placeholder="Subject (optional)"
         class="w-full p-2 border rounded" />
 
