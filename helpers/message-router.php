@@ -1,13 +1,20 @@
 <?php
-require_once __DIR__.'/../auth/session.php';
-require_once __DIR__.'/../config/database.php';
+require_once __DIR__ . '/../auth/session.php';
+require_once __DIR__ . '/../config/database.php';
 
 $userId = $_SESSION['user_id'];
 $roleId = $_SESSION['role_id'];
 $view = $_GET['view'] ?? 'inbox';
 $focusedId = $_GET['message_id'] ?? null;
 
-$context = $view === 'sent' ? 'sent' : ($view === 'trash' ? 'trash' : ($view === 'compose' ? 'compose' : 'inbox'));
+// Normalize view into context
+$context = match ($view) {
+  'sent' => 'sent',
+  'trash' => 'trash',
+  'compose' => 'compose',
+  default => 'inbox'
+};
+
 $isInbox = $context === 'inbox';
 $isSent = $context === 'sent';
 $isTrash = $context === 'trash';
@@ -16,13 +23,22 @@ $isCompose = $context === 'compose';
 $messages = [];
 $focusedMessage = null;
 
+// Skip message fetching for compose view
 if ($isCompose) {
   return;
 }
 
-$directionColumn = $isInbox ? 'recipient_id' : 'sender_id';
-$nameColumn = $isInbox ? 'sender_name' : 'recipient_name';
-$nameJoin = $isInbox ? 'm.sender_id = u.id' : 'm.recipient_id = u.id';
+// Determine query direction and joins
+$directionColumn = ($isInbox || $isTrash) ? 'recipient_id' : 'sender_id';
+$nameColumn = ($isInbox || $isTrash) ? 'sender_name' : 'recipient_name';
+$nameJoin = ($isInbox || $isTrash) ? 'm.sender_id = u.id' : 'm.recipient_id = u.id';
+
+// Build WHERE clause
+$whereClause = match ($context) {
+  'trash' => "m.recipient_id = ? AND m.deleted_by_recipient = 1",
+  'inbox' => "m.recipient_id = ? AND m.deleted_by_recipient = 0",
+  default => "m.$directionColumn = ?"
+};
 
 // Fetch messages
 $stmt = $pdo->prepare("
@@ -30,7 +46,7 @@ $stmt = $pdo->prepare("
          CONCAT(u.first_name, ' ', u.last_name) AS $nameColumn
   FROM messages m
   JOIN users u ON $nameJoin
-  WHERE m.$directionColumn = ?
+  WHERE $whereClause
   ORDER BY m.created_at DESC
   LIMIT 20
 ");
