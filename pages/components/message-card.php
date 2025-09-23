@@ -3,12 +3,14 @@ $preview = mb_substr($msg['content'], 0, 100);
 $isLong = mb_strlen($msg['content']) > 100;
 ?>
 
-<div class="p-3 rounded shadow <?= $msg['is_read'] ? 'bg-white hover:bg-gray-100' : 'bg-gray-200 hover:bg-gray-300' ?> transition">
+<div class="relative p-3 pb-12 rounded shadow <?= $msg['is_read'] ? 'bg-white hover:bg-gray-100' : 'bg-gray-200 hover:bg-gray-300' ?> transition">
+  <!-- Header -->
   <div class="text-sm text-gray-700 mb-1">
     <strong><?= htmlspecialchars($msg['sender_name']) ?></strong>
     <span class="float-right"><?= date('M d, Y H:i', strtotime($msg['created_at'])) ?></span>
   </div>
 
+  <!-- Subject -->
   <div class="flex gap-x-1 text-sm <?= $msg['is_read'] ? 'font-semibold text-emerald-700' : 'font-semibold text-emerald-800' ?> mb-1">
     <p>Subject:</p>
     <p>
@@ -16,12 +18,13 @@ $isLong = mb_strlen($msg['content']) > 100;
     </p>
   </div>
 
+  <!-- Preview -->
   <p class="<?= $msg['is_read'] ? 'text-gray-800' : 'font-semibold text-black' ?> text-sm mb-3">
     <?= htmlspecialchars($isLong ? $preview . '…' : $msg['content']) ?>
   </p>
 
   <!-- Actionbar Navigation -->
-  <div class="flex justify-end items-center gap-x-2">
+  <div class="absolute bottom-0 left-0 right-0 w-fit ml-auto flex justify-end items-center gap-x-2 px-3 py-2">
     <!-- Reply Icon with Tooltip -->
     <div class="relative group">
       <a href="messages.php?reply_to_id=<?= $msg['id'] ?>" class="block rounded-full p-2 hover:bg-emerald-100 hover:scale-110 transition-transform duration-200">
