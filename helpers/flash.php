@@ -18,28 +18,39 @@ if (!function_exists('setFlash')) {
   {
     if (empty($_SESSION['flash'])) return;
 
-    $classMap = [
-      'success' => 'bg-green-100 border-green-300 text-green-800',
-      'error'   => 'bg-red-100 border-red-300 text-red-800',
-      'warning' => 'bg-yellow-100 border-yellow-300 text-yellow-800',
-    ];
-
-    $buttonMap = [
-      'success' => 'text-green-700 hover:text-green-900',
-      'error'   => 'text-red-700 hover:text-red-900',
-      'warning' => 'text-yellow-700 hover:text-yellow-900',
+    $styleMap = [
+      'success' => [
+        'class' => 'bg-green-100 border-green-300 text-green-800',
+        'button' => 'text-green-700 hover:text-green-900',
+        'icon' => '/assets/img/success-icon.png'
+      ],
+      'error' => [
+        'class' => 'bg-red-100 border-red-300 text-red-800',
+        'button' => 'text-red-700 hover:text-red-900',
+        'icon' => '/assets/img/error-icon.png'
+      ],
+      'warning' => [
+        'class' => 'bg-yellow-100 border-yellow-300 text-yellow-800',
+        'button' => 'text-yellow-700 hover:text-yellow-900',
+        'icon' => '/assets/img/warning-icon.png'
+      ]
     ];
 
     foreach ($_SESSION['flash'] as $flash) {
       $type = $flash['type'];
       $message = htmlspecialchars($flash['message']);
-      $class = $classMap[$type] ?? 'bg-gray-100 border-gray-300 text-gray-800';
-      $buttonClass = $buttonMap[$type] ?? 'text-gray-700 hover:text-gray-900';
+      $style = $styleMap[$type] ?? [
+        'class' => 'bg-gray-100 border-gray-300 text-gray-800',
+        'button' => 'text-gray-700 hover:text-gray-900',
+        'icon' => '/assets/img/info-icon.png'
+      ];
 
       echo "<div role='alert' aria-live='assertive' data-alert
-    class='px-4 py-3 mb-4 rounded shadow-sm $class border flex justify-between items-center'>
-    <span>{$message}</span>
-    <button onclick='this.parentElement.remove()' class='ml-4 text-sm $buttonClass' aria-label='Dismiss'>✖</button>
+    class='fixed top-15 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full px-4 py-3 border-2 rounded shadow-lg {$style['class']} flex items-center justify-between transition-all duration-300'>
+    <div class='flex items-center space-x-3'>
+      <img src='{$style['icon']}' alt='{$type} icon' class='w-5 h-5'>
+      <span class='text-sm font-medium text-gray-800'>{$message}</span>
+    </div>
   </div>";
     }
 

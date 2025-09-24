@@ -35,7 +35,8 @@ require_once __DIR__ . '/../../helpers/message-router.php';
     ?>
 
     <section class="m-4 ">
-      <?php showFlash(); ?>
+        <?php showFlash(); ?>
+
 
       <?php
       switch ($context) {
