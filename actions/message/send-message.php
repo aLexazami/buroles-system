@@ -55,5 +55,5 @@ try {
   setFlash('error', 'Failed to send message. Please try again.');
 }
 
-header('Location: /pages/header/messages.php');
+header("Location: /pages/header/messages.php?view=compose");
 exit;
