@@ -4,14 +4,22 @@ $replyToId = $_GET['reply_to_id'] ?? '';
 $replyContext = null;
 $context = 'compose';
 
-// Role labels for display
+// Helper to normalize subject
+function normalizeReplySubject($subject)
+{
+  $clean = trim($subject ?? '');
+  return $clean !== '' ? preg_replace('/^(Re:\s*)+/i', 'Re: ', $clean) : 'Re:';
+}
+
+
+// Role labels
 $roleLabels = [
   1 => 'Staff',
   2 => 'Admin',
   99 => 'Super Admin'
 ];
 
-// Fetch all users except the sender
+// Fetch all users except sender
 $stmt = $pdo->prepare("
   SELECT id, role_id, CONCAT(first_name, ' ', last_name) AS full_name
   FROM users
@@ -20,16 +28,14 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $recipients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Sort alphabetically
+// Sort and group
 usort($recipients, fn($a, $b) => strcasecmp($a['full_name'], $b['full_name']));
-
-// Group by role
 $groupedRecipients = [];
 foreach ($recipients as $r) {
   $groupedRecipients[$r['role_id']][] = $r;
 }
 
-// If replying, validate ownership and fetch original message
+// If replying, validate ownership
 $preselectedRecipientId = null;
 if (!empty($replyToId)) {
   $stmt = $pdo->prepare("
@@ -45,8 +51,20 @@ if (!empty($replyToId)) {
   $stmt->execute([$replyToId, $userId]);
   $replyContext = $stmt->fetch(PDO::FETCH_ASSOC);
 
+  // Prevent self-reply
+  if ($replyContext && $replyContext['sender_id'] === $userId) {
+    $replyContext = null;
+  }
+
   if ($replyContext) {
     $preselectedRecipientId = $replyContext['sender_id'] ?? null;
+  }
+  $replySubject = '';
+  if (!empty($replyToId)) {
+    $original = $replyContext['subject'] ?? '';
+    $replySubject = preg_match('/^Re:/i', $original)
+      ? $original
+      : 'Re: ' . trim($original);
   }
 }
 ?>
@@ -68,7 +86,7 @@ if (!empty($replyToId)) {
         <?php endif; ?>
         <?php if (!empty($replyContext['subject'])): ?>
           <p class="text-sm text-emerald-600 italic">
-            Subject: <?= htmlspecialchars($replyContext['subject']) ?>
+            Subject: <?= htmlspecialchars(normalizeReplySubject($replyContext['subject'])) ?>
           </p>
         <?php endif; ?>
         <?php if (!empty($replyContext['content'])): ?>
@@ -116,7 +134,7 @@ if (!empty($replyToId)) {
       <?php endif; ?>
 
       <input type="text" name="subject"
-        value="<?= isset($replyContext['subject']) ? htmlspecialchars('Re: ' . $replyContext['subject']) : '' ?>"
+        value="<?= htmlspecialchars($replySubject) ?>"
         placeholder="Subject (optional)"
         class="w-full p-2 border rounded" />
 
@@ -124,7 +142,10 @@ if (!empty($replyToId)) {
 
       <input type="hidden" name="reply_to_id" value="<?= htmlspecialchars($replyToId) ?>" />
 
-      <div class="sticky bottom-0 bg-white p-4 flex justify-end">
+      <div class="sticky bottom-0 bg-white p-4 flex justify-end gap-x-2">
+        <a href="/pages/header/messages.php?view=inbox" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
+          Cancel
+        </a>
         <button type="submit" class="bg-emerald-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-emerald-500">
           Send
         </button>
