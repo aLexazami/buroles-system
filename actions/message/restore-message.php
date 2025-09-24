@@ -34,5 +34,5 @@ if ($message) {
   setFlash('error', 'Message restored, but role could not be verified.');
 }
 
-header("Location: /pages/header/messages.php?view={$redirectView}");
+header("Location: /pages/header/messages.php?view=trash");
 exit;
