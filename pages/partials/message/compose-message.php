@@ -4,14 +4,6 @@ $replyToId = $_GET['reply_to_id'] ?? '';
 $replyContext = null;
 $context = 'compose';
 
-// Helper to normalize subject
-function normalizeReplySubject($subject)
-{
-  $clean = trim($subject ?? '');
-  return $clean !== '' ? preg_replace('/^(Re:\s*)+/i', 'Re: ', $clean) : 'Re:';
-}
-
-
 // Role labels
 $roleLabels = [
   1 => 'Staff',
@@ -37,6 +29,8 @@ foreach ($recipients as $r) {
 
 // If replying, validate ownership
 $preselectedRecipientId = null;
+$replySubject = ''; // Always define early
+
 if (!empty($replyToId)) {
   $stmt = $pdo->prepare("
     SELECT m.subject, m.content, m.sender_id,
@@ -58,13 +52,12 @@ if (!empty($replyToId)) {
 
   if ($replyContext) {
     $preselectedRecipientId = $replyContext['sender_id'] ?? null;
-  }
-  $replySubject = '';
-  if (!empty($replyToId)) {
-    $original = $replyContext['subject'] ?? '';
-    $replySubject = preg_match('/^Re:/i', $original)
-      ? $original
-      : 'Re: ' . trim($original);
+
+    // Normalize subject safely
+    $original = trim($replyContext['subject'] ?? '');
+    $replySubject = $original !== ''
+      ? (preg_match('/^Re:/i', $original) ? $original : 'Re: ' . $original)
+      : 'Re:';
   }
 }
 ?>
@@ -86,7 +79,7 @@ if (!empty($replyToId)) {
         <?php endif; ?>
         <?php if (!empty($replyContext['subject'])): ?>
           <p class="text-sm text-emerald-600 italic">
-            Subject: <?= htmlspecialchars(normalizeReplySubject($replyContext['subject'])) ?>
+            Subject: <?= htmlspecialchars($replySubject) ?>
           </p>
         <?php endif; ?>
         <?php if (!empty($replyContext['content'])): ?>
