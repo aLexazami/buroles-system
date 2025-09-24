@@ -2,23 +2,30 @@
 $currentView = $_GET['view'] ?? '';
 $userId = $_SESSION['user_id'] ?? null;
 
-// Count inbox messages (not deleted by recipient)
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages WHERE recipient_id = ? AND deleted_by_recipient = 0");
-$stmt->execute([$userId]);
-$inboxCount = $stmt->fetchColumn() ?? 0;
-
-// Count sent messages (not deleted by sender)
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages WHERE sender_id = ? AND deleted_by_sender = 0");
-$stmt->execute([$userId]);
-$sentCount = $stmt->fetchColumn() ?? 0;
-
-// Count trash messages (deleted by recipient OR sender)
+// Count inbox messages (not deleted, where user is recipient)
 $stmt = $pdo->prepare("
-  SELECT COUNT(*) FROM messages
-  WHERE (recipient_id = ? AND deleted_by_recipient = 1)
-     OR (sender_id = ? AND deleted_by_sender = 1)
+  SELECT COUNT(*) FROM message_user mu
+  JOIN messages m ON mu.message_id = m.id
+  WHERE mu.user_id = ? AND mu.is_deleted = 0 AND m.recipient_id = ?
 ");
 $stmt->execute([$userId, $userId]);
+$inboxCount = $stmt->fetchColumn() ?? 0;
+
+// Count sent messages (not deleted, where user is sender)
+$stmt = $pdo->prepare("
+  SELECT COUNT(*) FROM message_user mu
+  JOIN messages m ON mu.message_id = m.id
+  WHERE mu.user_id = ? AND mu.is_deleted = 0 AND m.sender_id = ?
+");
+$stmt->execute([$userId, $userId]);
+$sentCount = $stmt->fetchColumn() ?? 0;
+
+// Count trash messages (deleted by current user)
+$stmt = $pdo->prepare("
+  SELECT COUNT(*) FROM message_user
+  WHERE user_id = ? AND is_deleted = 1
+");
+$stmt->execute([$userId]);
 $trashCount = $stmt->fetchColumn() ?? 0;
 ?>
 

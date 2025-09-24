@@ -8,15 +8,14 @@ $messageId = isset($_POST['message_id']) ? (int) $_POST['message_id'] : null;
 $context = $_POST['context'] ?? 'inbox';
 
 if ($userId && $messageId) {
-  if ($context === 'sent') {
-    $stmt = $pdo->prepare("UPDATE messages SET deleted_by_sender = 1 WHERE id = ? AND sender_id = ?");
-    $stmt->execute([$messageId, $userId]);
-    setFlash('success', 'Sent message moved to trash.');
-  } else {
-    $stmt = $pdo->prepare("UPDATE messages SET deleted_by_recipient = 1 WHERE id = ? AND recipient_id = ?");
-    $stmt->execute([$messageId, $userId]);
-    setFlash('success', 'Message moved to trash.');
-  }
+  $stmt = $pdo->prepare("
+    UPDATE message_user SET is_deleted = 1
+    WHERE message_id = ? AND user_id = ?
+  ");
+  $stmt->execute([$messageId, $userId]);
+
+  $label = $context === 'sent' ? 'Sent message' : 'Message';
+  setFlash('success', "{$label} moved to trash.");
 } else {
   setFlash('error', 'Unable to delete message.');
 }

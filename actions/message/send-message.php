@@ -17,14 +17,13 @@ if (!$senderId || !$recipientId || !$content) {
   exit;
 }
 
-// Insert message
-$stmt = $pdo->prepare("
-  INSERT INTO messages (
-    sender_id, recipient_id, subject, content, reply_to_id, is_read, created_at
-  ) VALUES (?, ?, ?, ?, ?, 0, NOW())
-");
-
 try {
+  // Step 1: Insert into messages
+  $stmt = $pdo->prepare("
+    INSERT INTO messages (
+      sender_id, recipient_id, subject, content, reply_to_id, created_at
+    ) VALUES (?, ?, ?, ?, ?, NOW())
+  ");
   $stmt->execute([
     $senderId,
     $recipientId,
@@ -32,6 +31,24 @@ try {
     $content,
     $replyToId ?: null
   ]);
+
+  $messageId = $pdo->lastInsertId();
+
+  // Step 2: Insert sender and recipient states into message_user
+  if ($senderId !== $recipientId) {
+    $userStmt = $pdo->prepare("
+      INSERT INTO message_user (message_id, user_id)
+      VALUES (?, ?), (?, ?)
+    ");
+    $userStmt->execute([$messageId, $senderId, $messageId, $recipientId]);
+  } else {
+    $userStmt = $pdo->prepare("
+      INSERT INTO message_user (message_id, user_id)
+      VALUES (?, ?)
+    ");
+    $userStmt->execute([$messageId, $senderId]);
+  }
+
   setFlash('success', 'Message sent successfully.');
 } catch (PDOException $e) {
   error_log('Message send failed: ' . $e->getMessage());

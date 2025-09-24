@@ -8,9 +8,13 @@ $activeRole = $_SESSION['active_role_id'] ?? null;
 $availableRoles = $_SESSION['available_roles'] ?? [];
 $canSwitchRoles = in_array(2, $availableRoles) || in_array(99, $availableRoles);
 
-// Unread message count
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages WHERE recipient_id = ? AND is_read = 0 AND deleted_by_recipient = 0");
-$stmt->execute([$userId]);
+// Unread message count (based on message_user)
+$stmt = $pdo->prepare("
+  SELECT COUNT(*) FROM message_user mu
+  JOIN messages m ON mu.message_id = m.id
+  WHERE mu.user_id = ? AND mu.is_read = 0 AND mu.is_deleted = 0 AND m.recipient_id = ?
+");
+$stmt->execute([$userId, $userId]);
 $unreadMessages = $stmt->fetchColumn() ?? 0;
 
 // Unread notification count (fallback if table not yet created)

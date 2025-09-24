@@ -12,31 +12,26 @@ if (!$userId || !$messageId) {
   exit;
 }
 
-// Fetch sender and recipient to determine role
-$stmt = $pdo->prepare("SELECT sender_id, recipient_id FROM messages WHERE id = ?");
-$stmt->execute([$messageId]);
-$message = $stmt->fetch(PDO::FETCH_ASSOC);
+// Restore current user's copy
+$restoreStmt = $pdo->prepare("
+  UPDATE message_user SET is_deleted = 0
+  WHERE message_id = ? AND user_id = ?
+");
+$restoreStmt->execute([$messageId, $userId]);
 
-if (!$message) {
-  setFlash('error', 'Message not found.');
-  header("Location: /pages/header/messages.php?view=trash");
-  exit;
-}
+// Determine redirect view based on role
+$roleStmt = $pdo->prepare("
+  SELECT sender_id, recipient_id FROM messages WHERE id = ?
+");
+$roleStmt->execute([$messageId]);
+$message = $roleStmt->fetch(PDO::FETCH_ASSOC);
 
-// Restore based on user role
-if ($message['recipient_id'] == $userId) {
-  $restoreStmt = $pdo->prepare("UPDATE messages SET deleted_by_recipient = 0 WHERE id = ?");
-  $restoreStmt->execute([$messageId]);
-  setFlash('success', 'Message restored to inbox.');
-  $redirectView = 'inbox';
-} elseif ($message['sender_id'] == $userId) {
-  $restoreStmt = $pdo->prepare("UPDATE messages SET deleted_by_sender = 0 WHERE id = ?");
-  $restoreStmt->execute([$messageId]);
-  setFlash('success', 'Message restored to sent messages.');
-  $redirectView = 'sent';
+if ($message) {
+  $redirectView = ($message['sender_id'] == $userId) ? 'sent' : 'inbox';
+  setFlash('success', 'Message restored.');
 } else {
-  setFlash('error', 'You are not authorized to restore this message.');
-  $redirectView = 'trash';
+  $redirectView = 'inbox';
+  setFlash('error', 'Message restored, but role could not be verified.');
 }
 
 header("Location: /pages/header/messages.php?view={$redirectView}");

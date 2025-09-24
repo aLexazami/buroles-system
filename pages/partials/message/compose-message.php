@@ -2,6 +2,7 @@
 $userId = $_SESSION['user_id'] ?? null;
 $replyToId = $_GET['reply_to_id'] ?? '';
 $replyContext = null;
+$context = 'compose';
 
 // Role labels for display
 $roleLabels = [
@@ -10,7 +11,7 @@ $roleLabels = [
   99 => 'Super Admin'
 ];
 
-// Fetch all users except the sender, including role_id
+// Fetch all users except the sender
 $stmt = $pdo->prepare("
   SELECT id, role_id, CONCAT(first_name, ' ', last_name) AS full_name
   FROM users
@@ -19,33 +20,34 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $recipients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Sort alphabetically by full name
+// Sort alphabetically
 usort($recipients, fn($a, $b) => strcasecmp($a['full_name'], $b['full_name']));
 
-// Group recipients by role
+// Group by role
 $groupedRecipients = [];
 foreach ($recipients as $r) {
-  $roleId = $r['role_id'];
-  $groupedRecipients[$roleId][] = $r;
+  $groupedRecipients[$r['role_id']][] = $r;
 }
 
-// If replying, fetch original message context
+// If replying, validate ownership and fetch original message
+$preselectedRecipientId = null;
 if (!empty($replyToId)) {
   $stmt = $pdo->prepare("
-    SELECT m.subject, m.content, m.sender_id, CONCAT(u.first_name, ' ', u.last_name) AS sender_name
+    SELECT m.subject, m.content, m.sender_id,
+           CONCAT(u.first_name, ' ', u.last_name) AS sender_name
     FROM messages m
     JOIN users u ON m.sender_id = u.id
-    WHERE m.id = ?
+    WHERE m.id = ? AND EXISTS (
+      SELECT 1 FROM message_user mu
+      WHERE mu.message_id = m.id AND mu.user_id = ?
+    )
   ");
-  $stmt->execute([$replyToId]);
+  $stmt->execute([$replyToId, $userId]);
   $replyContext = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  // Crop long reply content
-  if ($replyContext && isset($replyContext['content'])) {
-    $replyPreview = mb_substr($replyContext['content'], 0, 100);
-    $isLongReply = mb_strlen($replyContext['content']) > 100;
+  if ($replyContext) {
+    $preselectedRecipientId = $replyContext['sender_id'] ?? null;
   }
-  $preselectedRecipientId = $replyContext['sender_id'] ?? null;
 }
 ?>
 
@@ -54,32 +56,26 @@ if (!empty($replyToId)) {
 </div>
 
 <section class="flex bg-white rounded-b-lg shadow">
-  <!-- Sidebar Navigation -->
   <?php include __DIR__ . '/../../../includes/side-nav-messages.php'; ?>
 
-  <!-- Main Form Area -->
   <div class="flex-1 p-6 min-h-screen">
     <?php if ($replyContext): ?>
       <div class="bg-emerald-50 p-4 border-x-4 border-emerald-700 mb-4 rounded">
         <?php if (!empty($replyContext['sender_name'])): ?>
           <p class="text-sm text-emerald-700">
-            <strong>Replying to:</strong> <?= htmlspecialchars($replyContext['sender_name'] ?? '') ?>
+            <strong>Replying to:</strong> <?= htmlspecialchars($replyContext['sender_name']) ?>
           </p>
         <?php endif; ?>
-
         <?php if (!empty($replyContext['subject'])): ?>
           <p class="text-sm text-emerald-600 italic">
-            Subject: <?= htmlspecialchars($replyContext['subject'] ?? '') ?>
+            Subject: <?= htmlspecialchars($replyContext['subject']) ?>
           </p>
         <?php endif; ?>
-
         <?php if (!empty($replyContext['content'])): ?>
           <p class="text-sm text-gray-700 mt-1">
-            <?= nl2br(htmlspecialchars(
-              mb_strlen($replyContext['content'] ?? '') > 100
-                ? mb_substr($replyContext['content'], 0, 100) . '…'
-                : $replyContext['content'] ?? ''
-            )) ?>
+            <?= nl2br(htmlspecialchars(mb_strlen($replyContext['content']) > 100
+              ? mb_substr($replyContext['content'], 0, 100) . '…'
+              : $replyContext['content'])) ?>
           </p>
         <?php endif; ?>
       </div>
@@ -90,8 +86,12 @@ if (!empty($replyToId)) {
         <p class="text-red-600 text-sm">No available recipients.</p>
       <?php else: ?>
         <div class="relative w-full" id="recipient-dropdown">
-          <button type="button" id="dropdown-toggle" aria-haspopup="listbox" aria-expanded="false" class="w-full p-2 border rounded bg-white text-left flex justify-between items-center">
-            <span id="selected-recipient" class="flex items-center space-x-2 text-sm font-medium text-gray-800">Select recipient</span>
+          <button type="button" id="dropdown-toggle" class="w-full p-2 border rounded bg-white text-left flex justify-between items-center">
+            <span id="selected-recipient" class="flex items-center space-x-2 text-sm font-medium text-gray-800">
+              <?= isset($preselectedRecipientId)
+                ? htmlspecialchars($replyContext['sender_name'] ?? 'Select recipient')
+                : 'Select recipient' ?>
+            </span>
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
@@ -116,7 +116,7 @@ if (!empty($replyToId)) {
       <?php endif; ?>
 
       <input type="text" name="subject"
-        value="<?= htmlspecialchars($replyContext['subject'] ?? '') ?>"
+        value="<?= isset($replyContext['subject']) ? htmlspecialchars('Re: ' . $replyContext['subject']) : '' ?>"
         placeholder="Subject (optional)"
         class="w-full p-2 border rounded" />
 

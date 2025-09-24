@@ -7,12 +7,16 @@ $name = $context === 'sent' ? $msg['recipient_name'] : $msg['sender_name'];
 $bgClass = ($context === 'inbox' && !$msg['is_read'])
   ? 'bg-gray-200 hover:bg-gray-300'
   : 'bg-white hover:bg-gray-100';
+
+$showUnreadBadge = !$msg['is_read'] && $context === 'inbox';
+$badgeClass = 'ml-2 inline-block bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full';
 ?>
 
 <div class="relative p-3 pb-12 rounded shadow <?= $bgClass ?> transition cursor-pointer">
   <!-- Header -->
   <div class="text-sm text-gray-700 mb-1">
     <strong><?= $label ?> <?= htmlspecialchars($name) ?></strong>
+    <?php include __DIR__ . '/../../pages/components/unread-badge.php'; ?>
     <span class="float-right"><?= date('M d, Y H:i', strtotime($msg['created_at'])) ?></span>
   </div>
 

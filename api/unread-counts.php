@@ -4,19 +4,23 @@ session_start();
 
 $userId = $_SESSION['user_id'] ?? null;
 
-if (!$userId) {
-  echo json_encode(['messages' => 0, 'notifications' => 0]);
-  exit;
+$unreadMessages = 0;
+$unreadNotifs = 0;
+
+if ($userId) {
+  // Updated unread message count
+  $stmt = $pdo->prepare("
+    SELECT COUNT(*) FROM message_user mu
+    JOIN messages m ON mu.message_id = m.id
+    WHERE mu.user_id = ? AND mu.is_read = 0 AND mu.is_deleted = 0 AND m.recipient_id = ?
+  ");
+  $stmt->execute([$userId, $userId]);
+  $unreadMessages = $stmt->fetchColumn() ?? 0;
+
+  // Optional: update unreadNotifs logic if you have a notifications table
 }
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages WHERE recipient_id = ? AND is_read = 0 AND deleted_by_recipient = 0");
-$stmt->execute([$userId]);
-$messages = $stmt->fetchColumn() ?? 0;
-
-// Optional: if notifications table exists
-$notifications = 0;
-
 echo json_encode([
-  'messages' => $messages,
-  'notifications' => $notifications
+  'messages' => $unreadMessages,
+  'notifications' => $unreadNotifs
 ]);
