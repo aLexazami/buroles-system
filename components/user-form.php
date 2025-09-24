@@ -45,9 +45,14 @@
 
   <!-- Password (only for create) -->
   <?php if ($formMode === 'create'): ?>
-    <div class="flex justify-center items-center mb-5 w-180 m-auto rounded-lg border-2">
-      <img src="/assets/img/password.png" class="h-5 m-2">
-      <input type="password" name="password" placeholder="Password" class="input h-12 w-170 p-2 border-l-2 focus:outline-none" required>
+      <div class="relative flex justify-center items-center mb-5 w-180 m-auto rounded-lg border-2">
+        <img src="/assets/img/password.png" class="h-5 m-2">
+        <input type="password" id="password" name="password" placeholder="Password" class="input h-12 w-170 p-2 border-l-2 focus:outline-none" required>
+        <img
+          src="/assets/img/eye-open.png"
+          alt="Toggle visibility"
+          class="absolute right-3  w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
+          data-toggle-password="password"/>
     </div>
   <?php endif; ?>
 

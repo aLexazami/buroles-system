@@ -66,21 +66,32 @@ $fullName = trim("{$user['first_name']} {$middleInitial} {$user['last_name']}");
         <div class="max-w-lg  m-auto">
           <form action="/controllers/update-password.php" method="POST" class="space-y-4">
             <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-            <div>
+            <div class="relative">
               <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
               <input type="password" name="new_password" id="new_password" required
                 class="mt-1 block w-full border px-3 py-2 rounded shadow-sm focus:ring focus:border-blue-300">
+              <img
+                src="/assets/img/eye-open.png"
+                alt="Toggle visibility"
+                class="absolute right-3 top-9 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
+                data-toggle-password="new_password" />
             </div>
-            <div>
+            <div class="relative">
               <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
               <input type="password" name="confirm_password" id="confirm_password" required
                 class="mt-1 block w-full border px-3 py-2 rounded shadow-sm focus:ring focus:border-blue-300">
+              <img
+                src="/assets/img/eye-open.png"
+                alt="Toggle visibility"
+                class="absolute right-3 top-9 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
+                data-toggle-password="confirm_password" />
             </div>
             <div>
               <label for="reason" class="block text-sm font-medium text-gray-700">Reason for Password Change</label>
               <textarea name="reason" id="reason" rows="8"
                 class="mt-1 block w-full border px-3 py-2 rounded shadow-sm focus:ring focus:border-blue-300 resize-none"
-                placeholder="Specify your reason"></textarea></div>
+                placeholder="Specify your reason"></textarea>
+            </div>
             <?php
             $shouldUnlock = isset($_GET['unlock']) && $_GET['unlock'] == '1';
             ?>

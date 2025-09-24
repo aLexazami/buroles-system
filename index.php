@@ -51,9 +51,16 @@ require_once __DIR__ . '/auth/session.php';
           <img src="./assets/img/username.png" class="h-5 m-2">
           <input type="text" id="username" name="username" class="h-12 w-80 p-2 border-l-2  focus:outline-none" placeholder="Username" required>
         </div>
-        <div class="flex justify-center items-center my-5  w-90 m-auto border-2 rounded-lg">
-          <img src="./assets/img/password.png" class="h-5 m-2">
-          <input type="password" id="password" name="password" class="h-12 w-80 p-2  border-l-2 focus:outline-none" placeholder="Password" required>
+        <div class="relative">
+          <div class="flex justify-center items-center my-5  w-90 m-auto border-2 rounded-lg">
+            <img src="./assets/img/password.png" class="h-5 m-2">
+            <input type="password" id="password" name="password" class="h-12 w-80 p-2  border-l-2 focus:outline-none" placeholder="Password" required>
+            <img
+                src="/assets/img/eye-open.png"
+                alt="Toggle visibility"
+                class="absolute right-3 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
+                data-toggle-password="password"/>
+          </div>
         </div>
         <?php if (isset($_SESSION['error_message'])): ?>
           <div class="error-message text-red-500 text-center">
@@ -69,7 +76,7 @@ require_once __DIR__ . '/auth/session.php';
             </span></p>
         </div>
         <div class="text-center">
-          <button type="submit" class="w-55 bg-emerald-800 text-white p-2 rounded hover:bg-emerald-600">
+          <button type="submit" class="w-55 bg-emerald-800 text-white p-2 rounded cursor-pointer hover:bg-emerald-600">
             Login
           </button>
         </div>
@@ -91,5 +98,5 @@ require_once __DIR__ . '/auth/session.php';
     </section>
   </footer>
 </body>
-
+<script type="module" src="/assets/js/app.js"></script>
 </html>

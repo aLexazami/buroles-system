@@ -68,7 +68,14 @@ $showActions = true;
         <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
         <div class="relative bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 border border-emerald-500">
           <h2 class="text-2xl font-semibold mb-8">Super Admin Verification</h2>
-          <input type="password" id="superAdminPasswordInput" class="w-full border px-3 py-2 rounded mb-4" placeholder="Enter your password">
+          <div class="relative">
+            <input type="password" id="superAdminPasswordInput" class="w-full border px-3 py-2 rounded mb-4" placeholder="Enter your password">
+            <img
+            src="/assets/img/eye-open.png"
+            alt="Toggle visibility"
+            class="absolute right-3 top-3 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
+            data-toggle-password="superAdminPasswordInput"/>
+          </div>
           <input type="hidden" id="targetUserId">
           <div class="flex justify-end gap-2">
             <button id="cancelSuperAdminPassword" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 cursor-pointer">Cancel</button>
