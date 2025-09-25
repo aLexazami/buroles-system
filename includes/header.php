@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config/database.php';
 // Get user info
 $userId = $_SESSION['user_id'] ?? null;
 $currentPage = basename($_SERVER['PHP_SELF']);
+$activeRole = $_SESSION['active_role_id'] ?? null;
 $originalRoleId = $_SESSION['original_role_id'] ?? null;
 $availableRoles = $_SESSION['available_roles'] ?? [];
 $canSwitchRoles = in_array(2, $availableRoles) || in_array(99, $availableRoles);
