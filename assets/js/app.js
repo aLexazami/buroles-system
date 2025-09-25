@@ -8,7 +8,7 @@ import { initRenameButtons, initDeleteButtons, initPasswordButtons, initUnlockBu
 import { initCreateFolderModal } from './folder-creation.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
-import { initDropdownMenus, setupRecipientDropdown } from './dropdown.js';
+import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
 
 // Search Filters (Unified)
 import { setupSearchFilter } from './search-filter.js';
@@ -17,7 +17,6 @@ import { setupSearchFilter } from './search-filter.js';
 import { setupAvatarPreview } from './avatar-preview.js';
 import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
-import { highlightSortedColumn } from './highlights.js';
 import { setupTableSorter } from '/assets/js/table-sorter.js';
 
 
@@ -43,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initPasswordStrength();
   setupPasswordVisibilityToggles();
   setupRecipientDropdown();
+  initNotificationActions();
+
 
   // Badge Updater
   startBadgePolling();

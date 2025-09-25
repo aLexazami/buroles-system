@@ -86,3 +86,56 @@ export function setupRecipientDropdown() {
     }
   });
 }
+
+export function initNotificationActions() {
+  const selectAll = document.getElementById('select-all');
+  const checkboxes = document.querySelectorAll('input[name="selected_ids[]"]');
+  const filterButtons = document.querySelectorAll('[data-filter]');
+  const filterToggle = document.getElementById('filter-toggle');
+  const filterDropdown = document.getElementById('filter-dropdown');
+
+  if (!selectAll || !filterToggle || !filterDropdown) return;
+
+  // Toggle dropdown visibility on click
+  filterToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    filterDropdown.classList.toggle('hidden');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    const isClickInsideToggle = filterToggle.contains(e.target);
+    const isClickInsideDropdown = filterDropdown.contains(e.target);
+
+    if (!isClickInsideToggle && !isClickInsideDropdown) {
+      filterDropdown.classList.add('hidden');
+    }
+  });
+
+  // Select All toggle
+  selectAll.addEventListener('change', () => {
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+  });
+
+  // Filter-based selection
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      checkboxes.forEach(cb => {
+        const notifDiv = cb.closest('.notification-item');
+        const isUnread = notifDiv?.dataset?.unread === "true";
+        const isRead = notifDiv?.dataset?.unread === "false";
+
+        if (filter === "all") {
+          cb.checked = true;
+        } else if (filter === "unread") {
+          cb.checked = isUnread;
+        } else if (filter === "read") {
+          cb.checked = isRead;
+        }
+      });
+
+      filterDropdown.classList.add('hidden');
+    });
+  });
+}
