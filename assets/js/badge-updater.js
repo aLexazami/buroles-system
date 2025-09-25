@@ -1,7 +1,7 @@
 // badgeUpdater.js
 
 function updateBadgeCounts() {
-  fetch('/api/unread-counts.php')
+  fetch('/ajax/fetch-badge-counts.php')
     .then(res => res.json())
     .then(data => {
       const msgBadge = document.querySelector('[data-badge="Messages"]');

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/database.php';
 // Get user info
 $userId = $_SESSION['user_id'] ?? null;
 $currentPage = basename($_SERVER['PHP_SELF']);
-$activeRole = $_SESSION['active_role_id'] ?? null;
+$originalRoleId = $_SESSION['original_role_id'] ?? null;
 $availableRoles = $_SESSION['available_roles'] ?? [];
 $canSwitchRoles = in_array(2, $availableRoles) || in_array(99, $availableRoles);
 
@@ -17,8 +17,16 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId, $userId]);
 $unreadMessages = $stmt->fetchColumn() ?? 0;
 
-// Unread notification count (fallback if table not yet created)
-$unreadNotifs = 0;
+// Unread notification count
+$notifStmt = $pdo->prepare("
+  SELECT COUNT(*) FROM notifications
+  WHERE (user_id = :userId OR role_id = :roleId) AND is_read = 0
+");
+$notifStmt->execute([
+  'userId' => $userId,
+  'roleId' => $originalRoleId
+]);
+$unreadNotifs = $notifStmt->fetchColumn() ?? 0;
 
 // Include nav map after counts are available
 require_once __DIR__ . '/role-nav-map.php';

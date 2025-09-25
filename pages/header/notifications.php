@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 
 $userId = $_SESSION['user_id'] ?? null;
-$roleId = $_SESSION['active_role_id'] ?? null;
+$roleId = $_SESSION['original_role_id'] ?? null;
 
 // Fetch notifications including is_read
 $stmt = $pdo->prepare("
