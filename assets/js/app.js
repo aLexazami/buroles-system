@@ -17,7 +17,7 @@ import { setupSearchFilter } from './search-filter.js';
 import { setupAvatarPreview } from './avatar-preview.js';
 import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
-
+import {  highlightSortedColumn } from './highlights.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 🧭 UI & Role Toggles
@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPasswordStrength();
   setupPasswordVisibilityToggles();
   setupRecipientDropdown();
+  highlightSortedColumn();
 
   // Badge Updater
   startBadgePolling();
