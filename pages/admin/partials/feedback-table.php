@@ -5,6 +5,12 @@ require_once __DIR__ . '/../../../includes/fetch-feedback-data.php';
 ob_start();
 ?>
 
+<?php if (empty($results)): ?>
+  <div class="text-center py-10 text-gray-500 italic flex flex-col items-center gap-2">
+  <img src="/assets/img/empty-box.png" class="w-10 h-10 opacity-50" alt="Empty">
+  No feedback respondents found at the moment.
+</div>
+<?php else: ?>
 <table class="min-w-full text-sm text-left">
   <thead class="bg-emerald-600 text-white">
     <tr>
@@ -58,5 +64,6 @@ ob_start();
     <?php endforeach; ?>
   </tbody>
 </table>
+<?php endif; ?>
 
 <?php echo ob_get_clean(); ?>

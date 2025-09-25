@@ -3,8 +3,6 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/table-utils.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +26,7 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
         <img src="/assets/img/feedback-respondent.png" class="w-5 h-5" alt="Feedback icon">
         <h1 class="font-bold text-lg">Feedback Respondents</h1>
       </div>
-      <div class="overflow-x-auto table-auto px-6 py-10 bg-white rounded-lg shadow-md">
+      <div class=" min-h-screen table-auto px-6 py-10 bg-white rounded-lg shadow-md">
         <!-- Export Dropdown -->
         <div class="relative inline-block text-left mb-2">
           <button id="exportToggle"

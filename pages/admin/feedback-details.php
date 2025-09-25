@@ -27,7 +27,7 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
       </div>
 
       <!-- Feedback Table -->
-      <div class="overflow-x-auto px-6 py-5 bg-white rounded-lg shadow-md">
+      <div class="min-h-screen px-6 py-5 bg-white rounded-lg shadow-md">
         <!-- Export Dropdown -->
         <div class="relative inline-block text-left mb-2">
           <button id="exportToggle"
