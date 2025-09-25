@@ -4,8 +4,7 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/table-utils.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 
-$markRead = $pdo->prepare("UPDATE feedback_respondents SET is_read = TRUE WHERE is_read = FALSE");
-$markRead->execute();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,39 +84,7 @@ $markRead->execute();
           </div>
         </div>
 
-        <table class="min-w-full text-sm text-left ">
-          <thead class="bg-emerald-600 text-white">
-            <tr>
-              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('ID', 'id') ?></th>
-              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Name', 'name') ?></th>
-              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Date', 'date') ?></th>
-              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Age', 'age') ?></th>
-              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Sex', 'sex') ?></th>
-              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Customer Type', 'customer_type') ?></th>
-              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Service Availed', 'service_availed') ?></th>
-              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Region', 'region') ?></th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($results as $row): ?>
-              <tr class="respondent-row border-y  border-gray-300 <?= !$row['is_read'] ? 'bg-emerald-100 hover:bg-emerald-200' : 'hover:bg-emerald-50' ?> transition-colors">
-                <td class="px-4 py-2 text-left whitespace-nowrap align-middle  text-red-500 font-medium gap-2">
-                  <?= htmlspecialchars($row['id'] ?? '') ?>
-                  <?php if (!$row['is_read']): ?>
-                    <span class="bg-green-600 rounded-full py-1 px-2 text-white text-[10px]" title="Unread">New</span>
-                  <?php endif; ?>
-                </td>
-                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['name'] ?? '') ?></td>
-                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['date'] ?? '') ?></td>
-                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['age'] ?? '') ?></td>
-                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['sex'] ?? '') ?></td>
-                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['customer_type'] ?? '') ?></td>
-                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['service_availed'] ?? '') ?></td>
-                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['region'] ?? '') ?></td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
+        <div id="respondentsTableContainer" class="min-w-full text-sm text-left"></div>
       </div>
     </section>
   </main>

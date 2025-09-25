@@ -17,8 +17,10 @@ import { setupSearchFilter } from './search-filter.js';
 import { setupAvatarPreview } from './avatar-preview.js';
 import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
-import {  highlightSortedColumn } from './highlights.js';
-import { loadFeedbackTable } from '/assets/js/sorting.js';
+import { highlightSortedColumn } from './highlights.js';
+import { setupTableSorter } from '/assets/js/table-sorter.js';
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -41,8 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initPasswordStrength();
   setupPasswordVisibilityToggles();
   setupRecipientDropdown();
-  highlightSortedColumn();
-  loadFeedbackTable();
 
   // Badge Updater
   startBadgePolling();
@@ -66,6 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
       inputId: 'userSearch',
       clearId: 'clearSearch',
       selector: 'table tbody tr'
+    });
+  }
+
+  if (document.getElementById('feedbackTableContainer')) {
+    setupTableSorter({
+      containerId: 'feedbackTableContainer',
+      endpoint: '/ajax/fetch-feedback-table.php'
+    });
+  }
+
+  if (document.getElementById('respondentsTableContainer')) {
+    setupTableSorter({
+      containerId: 'respondentsTableContainer',
+      endpoint: '/ajax/fetch-respondents-table.php'
     });
   }
 
