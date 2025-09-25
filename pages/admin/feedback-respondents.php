@@ -1,11 +1,10 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 
+$markRead = $pdo->prepare("UPDATE feedback_respondents SET is_read = TRUE WHERE is_read = FALSE");
+$markRead->execute();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -89,7 +88,12 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
           <tbody>
             <?php foreach ($results as $row): ?>
               <tr class="shadow-lg border-t hover:bg-emerald-50">
-                <td><?= htmlspecialchars($row['id'] ?? '') ?></td>
+                <td class="flex items-center gap-2">
+                  <?= htmlspecialchars($row['id'] ?? '') ?>
+                  <?php if (isset($row['is_read']) && !$row['is_read']): ?>
+                    <span class="w-2 h-2 bg-red-600 rounded-full inline-block" title="Unread"></span>
+                  <?php endif; ?>
+                </td>
                 <td><?= htmlspecialchars($row['name'] ?? '') ?></td>
                 <td><?= htmlspecialchars($row['date'] ?? '') ?></td>
                 <td><?= htmlspecialchars($row['age'] ?? '') ?></td>

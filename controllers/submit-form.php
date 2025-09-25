@@ -1,12 +1,10 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-session_start();
-
-// Include PDO connection
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../helpers/notify.php';
+require_once __DIR__ . '/../helpers/notification-icon.php';
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit'])) {
+//if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit'])) {
+if ((php_sapi_name() === 'cli' || $_SERVER["REQUEST_METHOD"] === "POST") && isset($_POST['submit'])) {
   try {
     // Respondent Info
     $name = $_POST['name'] ?? null;
@@ -83,6 +81,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit'])) {
       'sqd8' => $sqd8,
       'remarks' => $remarks
     ]);
+
+    // Prepare notification details
+    $displayName = $name ?: 'Anonymous';
+
+    // Optional: fetch service name
+    $serviceName = 'Unknown Service';
+    if ($service_availed_id) {
+      $stmtService = $pdo->prepare("SELECT name FROM services WHERE id = ?");
+      $stmtService->execute([$service_availed_id]);
+      $serviceName = $stmtService->fetchColumn() ?: $serviceName;
+    }
+
+    $regionName = 'Unknown Region';
+    if ($region_id) {
+      $stmtRegion = $pdo->prepare("SELECT code FROM regions WHERE id = ?");
+      $stmtRegion->execute([$region_id]);
+      $regionName = $stmtRegion->fetchColumn() ?: $regionName;
+    }
+
+    $icon = getNotificationIcon(
+      "New Respondent #{$respondent_id}: {$displayName}",
+      "Customer Type: {$customer_type} | Service Availed: {$serviceName} | Region: {$regionName}"
+    );
+
+    // Send notification to Admins
+    sendNotification(
+      "New Respondent #{$respondent_id}: {$displayName}",
+      "Customer Type: {$customer_type} | Service Availed: {$serviceName} | Region: {$regionName}",
+      "/pages/admin/feedback-respondents.php",
+      0,
+      2,
+      $icon
+    );
+
 
     // Redirect on success
     header("Location: thank-you.php");
