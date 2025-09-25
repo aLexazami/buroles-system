@@ -1,8 +1,5 @@
-export function highlightSortedColumn() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const sortBy = urlParams.get('sort_by');
-
-  if (!sortBy) return;
+export function highlightSortedColumn(sortBy, shouldHighlight = false) {
+  if (!sortBy || !shouldHighlight) return;
 
   document.querySelectorAll(`td[data-column="${sortBy}"]`).forEach(cell => {
     cell.classList.add('bg-emerald-100');

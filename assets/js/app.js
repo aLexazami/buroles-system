@@ -18,6 +18,8 @@ import { setupAvatarPreview } from './avatar-preview.js';
 import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
 import {  highlightSortedColumn } from './highlights.js';
+import { loadFeedbackTable } from '/assets/js/sorting.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
   // 🧭 UI & Role Toggles
@@ -40,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPasswordVisibilityToggles();
   setupRecipientDropdown();
   highlightSortedColumn();
+  loadFeedbackTable();
 
   // Badge Updater
   startBadgePolling();
