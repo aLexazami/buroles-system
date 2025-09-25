@@ -53,7 +53,7 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <div class="bg-emerald-700 text-white p-5">
         <h2 class="text-lg font-semibold">Notifications</h2>
       </div>
-      <div class="bg-white p-6 rounded-b-lg shadow space-y-4">
+      <div class="bg-white p-2 rounded-b-lg shadow space-y-4 min-h-screen">
         <?php if (empty($notifications)): ?>
           <div class="flex flex-col items-center justify-center py-10 text-gray-500 space-y-4">
             <img src="/assets/img/empty-notify.png" alt="No notifications" class="w-16 h-16 opacity-50">
