@@ -10,6 +10,19 @@ $allowedColumns = [
   'customer_type' => 'r.customer_type',
   'service_availed' => 's.name',
   'region' => 'reg.name',
+  'citizen_charter_awareness' => 'a.citizen_charter_awareness',
+  'cc1' => 'a.cc1',
+  'cc2' => 'a.cc2',
+  'cc3' => 'a.cc3',
+  'sqd1' => 'a.sqd1',
+  'sqd2' => 'a.sqd2',
+  'sqd3' => 'a.sqd3',
+  'sqd4' => 'a.sqd4',
+  'sqd5' => 'a.sqd5',
+  'sqd6' => 'a.sqd6',
+  'sqd7' => 'a.sqd7',
+  'sqd8' => 'a.sqd8',
+  'remarks' => 'a.remarks',
   'submitted_at' => 'r.submitted_at'
 ];
 

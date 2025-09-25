@@ -1,89 +1,126 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/table-utils.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
   <title>Feedback Respondents Details</title>
   <link href="/src/styles.css" rel="stylesheet" />
-  <!-- DataTables CSS & JS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css" />
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col">
-  <!-- 🔹 Header -->
   <?php include('../../includes/header.php'); ?>
 
-  <!-- 🔹 Main Content -->
   <main class=" min-h-screen">
-    <section class="mb-10">
-      <!-- 🧾 Page Title + Back Button -->
-      <div class="bg-emerald-300 grid grid-cols-3">
-        <div class="flex items-center justify-center gap-2 col-span-1 col-start-2">
-          <img src="/assets/img/feedback-respondent.png" class="w-5 h-5" alt="Feedback icon">
-          <h1 class="font-bold text-lg">Feedback Respondents</h1>
-        </div>
-        <div class="text-right">
-          <button onclick="window.location.href='/pages/admin/feedback-respondents.php'"
-                  class="cursor-pointer hover:bg-emerald-600 rounded-md p-1 transition-transform duration-200 hover:scale-105"
-                  title="Back to Respondents">
-            <img src="/assets/img/minimize.png" class="w-8 h-8" alt="Minimize icon">
-          </button>
-        </div>
+    <section class="m-4">
+      <!-- Page Title -->
+      <div class="bg-emerald-300 p-2 flex justify-center items-center gap-2 mb-5">
+        <img src="/assets/img/feedback-respondent.png" class="w-5 h-5" alt="Feedback icon">
+        <h1 class="font-bold text-lg">Feedback Respondents Details</h1>
       </div>
 
-      <!-- 📋 Feedback Table -->
-      <div class="overflow-x-auto mt-6">
-        <table id="feedbackTable" class="bg-white min-w-[1200px] w-full table-auto text-sm border-separate border-spacing-y-2">
-          <thead class="bg-gray-300 text-left text-black">
-            <tr class="shadow-lg sticky top-0 z-10">
-              <th>No.</th>
-              <th>Name</th>
-              <th>Citizen Charter Awareness</th>
-              <th>CC1</th>
-              <th>CC2</th>
-              <th>CC3</th>
-              <th>SQD1</th>
-              <th>SQD2</th>
-              <th>SQD3</th>
-              <th>SQD4</th>
-              <th>SQD5</th>
-              <th>SQD6</th>
-              <th>SQD7</th>
-              <th>SQD8</th>
-              <th>Remarks</th>
+      <!-- Feedback Table -->
+      <div class="overflow-x-auto px-6 py-5 bg-white rounded-lg shadow-md">
+        <!-- Export Dropdown -->
+        <div class="relative inline-block text-left mb-2">
+          <button id="exportToggle"
+            class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition cursor-pointer flex items-center gap-2">
+            <img src="/assets/img/export-icon.png" alt="Export" class="w-5 h-5 invert">
+            Export
+          </button>
+          <div id="exportMenu"
+            class="hidden absolute z-10 mt-2 w-45 bg-white border border-gray-200 rounded shadow-lg">
+            <form action="/controllers/export-feedback-csv.php" method="POST">
+              <input type="hidden" name="format" value="csv">
+              <button type="submit"
+                class="flex items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 cursor-pointer">
+                <img src="/assets/img/csv-icon.png" alt="CSV" class="w-5 h-5">
+                Export as CSV
+              </button>
+            </form>
+            <!-- Temporary Disable the PDF Export Button
+            <form action="/controllers/export-feedback-pdf.php" method="POST">
+              <input type="hidden" name="format" value="pdf">
+              <button type="submit"
+                class="flex items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 cursor-pointer">
+                <img src="/assets/img/pdf-icon.png" alt="PDF" class="w-5 h-5">
+                Export as PDF
+              </button>
+            </form>
+            -->
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 mb-4">
+          <!-- Search Bar -->
+          <input
+            type="text"
+            id="userSearch"
+            placeholder=" Search"
+            class="px-4 py-2 border rounded w-full max-w-md" />
+          <button
+            id="clearSearch"
+            class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
+            Clear
+          </button>
+
+          <!-- Back Button with Tooltip -->
+          <div class="relative group text-left">
+            <button onclick="window.location.href='/pages/admin/feedback-respondents.php'"
+              class="cursor-pointer hover:bg-emerald-100 rounded-md p-1 transition-transform duration-200 hover:scale-105">
+              <img src="/assets/img/minimize.png" class="w-6 h-6" alt="Fullscreen icon">
+            </button>
+            <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 font-semibold text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-10">
+              Return to feedback respondents
+            </div>
+          </div>
+        </div>
+
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-emerald-600 text-white">
+            <tr>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('ID', 'id') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Name', 'name') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Citizen Charter Awareness', 'citizen_charter_awareness') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('CC1', 'cc1') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('CC2', 'cc2') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('CC3', 'cc3') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('SQD1', 'sqd1') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('SQD2', 'sqd2') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('SQD3', 'sqd3') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('SQD4', 'sqd4') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('SQD5', 'sqd5') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('SQD6', 'sqd6') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('SQD7', 'sqd7') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('SQD8', 'sqd8') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Remarks', 'remarks') ?></th>
             </tr>
           </thead>
           <tbody>
             <?php foreach ($results as $row): ?>
-              <tr class="shadow-lg border-t hover:bg-emerald-50">
-                <td><?= htmlspecialchars($row['id'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['name'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['citizen_charter_awareness'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['cc1'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['cc2'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['cc3'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sqd1'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sqd2'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sqd3'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sqd4'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sqd5'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sqd6'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sqd7'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sqd8'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['remarks'] ?? '') ?></td>
+              <tr class="feedback-row border-y border-gray-300 hover:bg-emerald-50 transition-colors">
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap text-red-500 font-medium"><?= htmlspecialchars($row['id'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['name'] ?? '') ?></td>
+                <td class="px-4 py-2 text-center align-middle whitespace-nowrap"><?= htmlspecialchars($row['citizen_charter_awareness'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['cc1'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['cc2'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['cc3'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['sqd1'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['sqd2'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['sqd3'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['sqd4'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['sqd5'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['sqd6'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['sqd7'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['sqd8'] ?? '') ?></td>
+                <td class="px-4 py-2"><?= htmlspecialchars($row['remarks'] ?? '') ?></td>
               </tr>
             <?php endforeach; ?>
           </tbody>
@@ -92,21 +129,9 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
     </section>
   </main>
 
-  <!-- 🔹 Footer -->
   <?php include('../../includes/footer.php'); ?>
-
-  <!-- 🔹 DataTables Init -->
-  <script>
-    $(document).ready(function () {
-      $('#feedbackTable').DataTable({
-        pageLength: 10,
-        lengthChange: false,
-        deferRender: true,
-        order: [[0, 'desc']],
-        fixedHeader: true,
-        dom: '<"top"f>rt<"bottom"ip><"clear">'
-      });
-    });
-  </script>
+  <script type="module" src="/assets/js/app.js"></script>
+  <script src="/assets/js/date-time.js"></script>
 </body>
+
 </html>
