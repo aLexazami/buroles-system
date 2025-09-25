@@ -1,36 +1,11 @@
 <?php
-function sortLink($label, $column) {
-  $currentSort = $_GET['sort_by'] ?? '';
-  $currentOrder = $_GET['sort_order'] ?? 'asc';
-  $nextOrder = ($currentSort === $column && $currentOrder === 'asc') ? 'desc' : 'asc';
-
-  // Choose icon
-  if ($currentSort === $column) {
-    $arrow = $currentOrder === 'asc' ? '▲' : '▼'; // Active sort
-  } else {
-    $arrow = '⇅'; // Neutral sort indicator
-  }
-
-  $url = "?sort_by=$column&sort_order=$nextOrder";
-  return "<a href=\"$url\"> $label <span class=\"ml-1\">$arrow</span></a>";
-}
+require_once __DIR__ . '/../helpers/table-utils.php';
 ?>
 <?php if (!isset($users) || !is_array($users) || empty($users)): ?>
   <p class="text-red-600">No user data available.</p>
 <?php else: ?>
   <!-- Search Bar -->
-  <div class="flex items-center gap-2 mb-4">
-    <input
-      type="text"
-      id="userSearch"
-      placeholder=" Search"
-      class="px-4 py-2 border rounded w-full max-w-md" />
-    <button
-      id="clearSearch"
-      class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
-      Clear
-    </button>
-  </div>
+  <?php include('../../components/search-bar.php'); ?>
 
   <?php $isSuperAdmin = ($_SESSION['role_id'] ?? 0) === 99; ?>
 

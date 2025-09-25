@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/table-utils.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 
 $markRead = $pdo->prepare("UPDATE feedback_respondents SET is_read = TRUE WHERE is_read = FALSE");
@@ -15,92 +16,104 @@ $markRead->execute();
   <meta name="robots" content="noindex" />
   <title>Feedback Respondents</title>
   <link href="/src/styles.css" rel="stylesheet" />
-  <!-- DataTables CSS & JS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col">
-  <!-- 🔹 Header -->
   <?php include('../../includes/header.php'); ?>
 
-  <!-- 🔹 Main Layout -->
   <main class="grid grid-cols-[248px_1fr] min-h-screen">
-    <!-- 🔸 Sidebar -->
     <?php include('../../includes/side-nav-admin.php'); ?>
 
-    <!-- 🔸 Content -->
     <section class="m-4">
-      <!-- 🧾 Page Title + Fullscreen Button -->
-      <div class="bg-emerald-300 grid grid-cols-3">
-        <div class="flex items-center justify-center gap-2 col-span-1 col-start-2">
-          <img src="/assets/img/feedback-respondent.png" class="w-5 h-5" alt="Feedback icon">
-          <h1 class="font-bold text-lg">Feedback Respondents</h1>
-        </div>
-        <div class="text-right">
-          <button onclick="window.location.href='/pages/admin/feedback-details.php'"
-            class="cursor-pointer hover:bg-emerald-600 rounded-md p-1 transition-transform duration-200 hover:scale-105"
-            title="View full details">
-            <img src="/assets/img/fullscreen.png" class="w-8 h-8" alt="Fullscreen icon">
-          </button>
-        </div>
+      <div class="bg-emerald-300 p-2 flex justify-center items-center gap-2 mb-5">
+        <img src="/assets/img/feedback-respondent.png" class="w-5 h-5" alt="Feedback icon">
+        <h1 class="font-bold text-lg">Feedback Respondents</h1>
       </div>
-
-      <!-- 📋 Feedback Table -->
-      <div class="overflow-x-auto mt-6">
-        <div class="relative inline-block text-left">
+      <div class="overflow-x-auto table-auto px-6 py-10 bg-white rounded-lg shadow-md">
+        <!-- Export Dropdown -->
+        <div class="relative inline-block text-left mb-2">
           <button id="exportToggle"
-            class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600 transition">
-            Export Feedback ▼
+            class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition cursor-pointer flex items-center gap-2">
+            <img src="/assets/img/export-icon.png" alt="Export" class="w-5 h-5 invert">
+            Export
           </button>
           <div id="exportMenu"
-            class="hidden absolute z-10 mt-2 w-48 bg-white border rounded shadow-lg">
+            class="hidden absolute z-10 mt-2 w-45 bg-white border border-gray-200 rounded shadow-lg">
             <form action="/controllers/export-feedback-csv.php" method="POST">
               <input type="hidden" name="format" value="csv">
               <button type="submit"
-                class="block w-full text-left px-4 py-2 hover:bg-emerald-100">
+                class="flex items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 cursor-pointer">
+                <img src="/assets/img/csv-icon.png" alt="CSV" class="w-5 h-5">
                 Export as CSV
               </button>
             </form>
+            <!-- Temporary Disable the PDF Export Button
             <form action="/controllers/export-feedback-pdf.php" method="POST">
               <input type="hidden" name="format" value="pdf">
               <button type="submit"
-                class="block w-full text-left px-4 py-2 hover:bg-emerald-100">
+                class="flex items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 cursor-pointer">
+                <img src="/assets/img/pdf-icon.png" alt="PDF" class="w-5 h-5">
                 Export as PDF
               </button>
             </form>
+            -->
           </div>
         </div>
-        <table id="feedbackTable" class="min-w-[900px] w-full table-auto text-sm border-separate border-spacing-y-2 bg-white">
-          <thead class="bg-gray-300 text-left text-black">
-            <tr class="shadow-lg">
-              <th>No.</th>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Age</th>
-              <th>Sex</th>
-              <th>Customer Type</th>
-              <th>Service Availed</th>
-              <th>Region</th>
+
+        <div class="flex items-center gap-2 mb-4">
+          <!-- Search Bar -->
+          <input
+            type="text"
+            id="userSearch"
+            placeholder=" Search"
+            class="px-4 py-2 border rounded w-full max-w-md" />
+          <button
+            id="clearSearch"
+            class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
+            Clear
+          </button>
+
+          <!-- Fullscreen Icon with Tooltip -->
+          <div class="relative group text-left">
+            <button onclick="window.location.href='/pages/admin/feedback-details.php'"
+              class="cursor-pointer hover:bg-emerald-100 rounded-md p-1 transition-transform duration-200 hover:scale-105">
+              <img src="/assets/img/fullscreen.png" class="w-6 h-6" alt="Fullscreen icon">
+            </button>
+            <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 font-semibold text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-10">
+              View full details
+            </div>
+          </div>
+        </div>
+
+        <table class="min-w-full text-sm text-left ">
+          <thead class="bg-emerald-600 text-white">
+            <tr>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('ID', 'id') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Name', 'name') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Date', 'date') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Age', 'age') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Sex', 'sex') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Customer Type', 'customer_type') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Service Availed', 'service_availed') ?></th>
+              <th class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= sortLink('Region', 'region') ?></th>
             </tr>
           </thead>
           <tbody>
             <?php foreach ($results as $row): ?>
-              <tr class="shadow-lg border-t hover:bg-emerald-50">
-                <td class="flex items-center gap-2">
+              <tr class="respondent-row border-y  border-gray-300 <?= !$row['is_read'] ? 'bg-emerald-100 hover:bg-emerald-200' : 'hover:bg-emerald-50' ?> transition-colors">
+                <td class="px-4 py-2 text-left whitespace-nowrap align-middle  text-red-500 font-medium gap-2">
                   <?= htmlspecialchars($row['id'] ?? '') ?>
-                  <?php if (isset($row['is_read']) && !$row['is_read']): ?>
-                    <span class="w-2 h-2 bg-red-600 rounded-full inline-block" title="Unread"></span>
+                  <?php if (!$row['is_read']): ?>
+                    <span class="bg-green-600 rounded-full py-1 px-2 text-white text-[10px]" title="Unread">New</span>
                   <?php endif; ?>
                 </td>
-                <td><?= htmlspecialchars($row['name'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['date'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['age'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['sex'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['customer_type'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['service_availed'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['region'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['name'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle whitespace-nowrap"><?= htmlspecialchars($row['date'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['age'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['sex'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['customer_type'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['service_availed'] ?? '') ?></td>
+                <td class="px-4 py-2 text-left align-middle"><?= htmlspecialchars($row['region'] ?? '') ?></td>
               </tr>
             <?php endforeach; ?>
           </tbody>
@@ -109,26 +122,9 @@ $markRead->execute();
     </section>
   </main>
 
-  <!-- 🔹 Footer -->
   <?php include('../../includes/footer.php'); ?>
-
-  <!-- 🔹 Scripts -->
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('#feedbackTable').DataTable({
-        pageLength: 10,
-        lengthChange: false,
-        order: [
-          [0, 'desc']
-        ],
-        deferRender: true
-      });
-    });
-  </script>
-
-
 </body>
 
 </html>

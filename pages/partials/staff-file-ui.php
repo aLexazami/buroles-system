@@ -24,7 +24,7 @@ $breadcrumbPath = '';
   <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
     <div class="relative inline-block text-left py-4">
       <button type="button" id="newDropdownToggle"
-        class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
+        class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 cursor-pointer"
         aria-label="Open new item menu" title="Create new folder or upload file">
         <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4 mr-2">
         <span>New</span>
@@ -34,10 +34,10 @@ $breadcrumbPath = '';
         class="absolute mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
         <!-- New Folder Button -->
         <button type="button" id="openCreateFolderModal"
-          class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md"
+          class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md cursor-pointer"
           aria-label="Create new folder">
           <img src="/assets/img/new-folder.png" alt="New Folder" class="w-5 h-5">
-          <span>New Folder</span>
+          New Folder
         </button>
 
         <?php if (!empty($currentPath)): ?>
@@ -47,10 +47,10 @@ $breadcrumbPath = '';
             <input type="hidden" name="user_id" value="<?= $targetId ?>">
             <input type="file" name="file" id="uploadInput" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png" required>
             <button type="button" id="uploadTrigger"
-              class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md"
+              class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md cursor-pointer"
               aria-label="Upload file to <?= htmlspecialchars($currentPath) ?>" title="Upload file">
               <img src="/assets/img/file-upload.png" alt="Upload" class="w-5 h-5">
-              <span>File Upload</span>
+              File Upload
             </button>
           </form>
         <?php endif; ?>
