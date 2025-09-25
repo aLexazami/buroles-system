@@ -54,34 +54,39 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h2 class="text-lg font-semibold">Notifications</h2>
       </div>
       <div class="bg-white p-6 rounded-b-lg shadow space-y-4">
-        <?php
-        if (empty($notifications)) {
-          echo "<p class='text-sm text-gray-600'>No notifications available.</p>";
-        } else {
-          foreach ($notifications as $notif) {
-            $title = htmlspecialchars($notif['title']);
-            $body = htmlspecialchars($notif['body']);
-            $link = $notif['link'] ?? '#';
-            $timestamp = date('M d, Y h:i A', strtotime($notif['created_at']));
-            $icon = htmlspecialchars($notif['icon'] ?? '/assets/img/info.png');
-            $isUnread = !$notif['is_read'];
-            $hoverClass = $isUnread ? 'hover:bg-gray-300' : 'hover:bg-gray-100';
-            $bgClass = $isUnread ? 'bg-gray-200' : 'bg-white';
-
-            echo "<a href='/actions/notification/mark-notification-as-read.php?id={$notif['id']}&redirect=" . urlencode($link) . "' class='flex items-start gap-4 p-4 {$bgClass} rounded shadow {$hoverClass} transition'>
-              <div class='relative'>
-                <img src='{$icon}' alt='icon' class='w-6 h-6 mt-1'>
-                " . ($isUnread ? "<span class='absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full'></span>" : "") . "
+        <?php if (empty($notifications)): ?>
+          <div class="flex flex-col items-center justify-center py-10 text-gray-500 space-y-4">
+            <img src="/assets/img/empty-notify.png" alt="No notifications" class="w-16 h-16 opacity-50">
+            <p class="text-sm italic">You're all caught up. No notifications at the moment.</p>
+          </div>
+        <?php else: ?>
+          <?php foreach ($notifications as $notif): ?>
+            <?php
+              $title = htmlspecialchars($notif['title']);
+              $body = htmlspecialchars($notif['body']);
+              $link = $notif['link'] ?? '#';
+              $timestamp = date('M d, Y h:i A', strtotime($notif['created_at']));
+              $icon = htmlspecialchars($notif['icon'] ?? '/assets/img/info.png');
+              $isUnread = !$notif['is_read'];
+              $hoverClass = $isUnread ? 'hover:bg-gray-300' : 'hover:bg-gray-100';
+              $bgClass = $isUnread ? 'bg-gray-200' : 'bg-white';
+            ?>
+            <a href="/actions/notification/mark-notification-as-read.php?id=<?= $notif['id'] ?>&redirect=<?= urlencode($link) ?>"
+               class="flex items-start gap-4 p-4 <?= $bgClass ?> rounded shadow <?= $hoverClass ?> transition">
+              <div class="relative">
+                <img src="<?= $icon ?>" alt="icon" class="w-6 h-6 mt-1">
+                <?php if ($isUnread): ?>
+                  <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                <?php endif; ?>
               </div>
               <div>
-                <p class='font-semibold text-emerald-800'>{$title}</p>
-                <p class='text-sm text-gray-700'>{$body}</p>
-                <p class='text-xs text-gray-500 mt-1'>{$timestamp}</p>
+                <p class="font-semibold text-emerald-800"><?= $title ?></p>
+                <p class="text-sm text-gray-700"><?= $body ?></p>
+                <p class="text-xs text-gray-500 mt-1"><?= $timestamp ?></p>
               </div>
-            </a>";
-          }
-        }
-        ?>
+            </a>
+          <?php endforeach; ?>
+        <?php endif; ?>
       </div>
     </section>
   </main>
