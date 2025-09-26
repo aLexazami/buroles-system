@@ -76,7 +76,7 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <!-- Filter Dropdown Icon with Tooltip -->
                 <div class="relative group">
-                  <button type="button" id="filter-toggle" class="p-1 rounded hover:bg-gray-100 transition cursor-pointer">
+                  <button type="button" id="filter-toggle" class="p-1 rounded hover:bg-emerald-100 transition cursor-pointer">
                     <img src="/assets/img/dropdown-icon.png" alt="Filter" class="w-3 h-3">
                   </button>
                   <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-10">
@@ -84,9 +84,9 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                   </div>
                   <!-- Dropdown Menu -->
                   <div id="filter-dropdown" class="absolute top-full left-0 mt-2 w-50 bg-white rounded shadow-lg z-10 hidden">
-                    <button type="button" data-filter="all" class="block pl-15 w-full font-semibold cursor-pointer text-left px-3 py-2 text-sm hover:bg-gray-100">Select All</button>
-                    <button type="button" data-filter="unread" class="block pl-15 w-full font-semibold cursor-pointer text-left px-3 py-2 text-sm hover:bg-gray-100">Select Unread</button>
-                    <button type="button" data-filter="read" class="block pl-15 w-full font-semibold cursor-pointer text-left px-3 py-2 text-sm hover:bg-gray-100">Select Read</button>
+                    <button type="button" data-filter="all" class="block pl-15 w-full font-semibold cursor-pointer text-left px-3 py-2 text-sm hover:bg-emerald-100">Select All</button>
+                    <button type="button" data-filter="unread" class="block pl-15 w-full font-semibold cursor-pointer text-left px-3 py-2 text-sm hover:bg-emerald-100">Select Unread</button>
+                    <button type="button" data-filter="read" class="block pl-15 w-full font-semibold cursor-pointer text-left px-3 py-2 text-sm hover:bg-emerald-100">Select Read</button>
                   </div>
                 </div>
               </div>
