@@ -73,6 +73,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['original_role_name'] = $user['role_name'];
             $_SESSION['avatar_path'] = $user['avatar_path'];
 
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'username' => $user['username'],
+                'email' => $user['email'],
+                'role_id' => $user['role_id'],
+                'role_name' => $user['role_name'],
+                'role_slug' => strtolower($user['role_slug']),
+                'first_name' => $user['first_name'],
+                'middle_name' => $user['middle_name'],
+                'last_name' => $user['last_name'],
+                'avatar_path' => $user['avatar_path']
+            ];
+
+
+
             // 🔄 Fetch all roles from user_roles
             $stmt = $pdo->prepare("SELECT role_id FROM user_roles WHERE user_id = ?");
             $stmt->execute([$user['id']]);

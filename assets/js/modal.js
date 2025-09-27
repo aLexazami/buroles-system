@@ -1,4 +1,4 @@
-// 📁 Modal Helpers
+// Modal Helpers
 function toggleModal(modalId, show) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
@@ -14,7 +14,7 @@ function toggleModal(modalId, show) {
   document.body.classList.toggle('overflow-hidden', show);
 }
 
-// 📁 Rename Modal Logic
+//  Rename Modal Logic
 export function openRenameModal(name, type, userId, path) {
   toggleModal('renameModal', true);
 
@@ -80,7 +80,7 @@ export function initRenameButtons() {
   }
 }
 
-// 🗑️ Delete Modal Logic
+//  Delete Modal Logic
 export function openDeleteModal(name, type, userId, path) {
   toggleModal('deleteModal', true);
 
@@ -116,7 +116,7 @@ export function initDeleteButtons() {
 }
 
 
-// 🔐 Password Modal Logic
+//  Password Modal Logic
 let pendingPasswordHref = '';
 
 export function openPasswordModal(userId) {
@@ -133,7 +133,7 @@ export function closePasswordModal() {
 }
 
 export function initPasswordButtons() {
-  // 🔘 Trigger modal from table
+  //  Trigger modal from table
 
   document.querySelectorAll('[data-manage-password]').forEach(link => {
     link.addEventListener('click', e => {
@@ -146,7 +146,7 @@ export function initPasswordButtons() {
 
 
 
-  // ⏎ Submit on Enter key
+  //  Submit on Enter key
   document.getElementById('superAdminPasswordInput')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') submitSuperAdminPassword();
   });
@@ -156,10 +156,10 @@ export function initPasswordButtons() {
     if (e.key === 'Escape') closePasswordModal();
   });
 
-  // ✅ Verify button
+  //  Verify button
   document.getElementById('submitSuperAdminPassword')?.addEventListener('click', submitSuperAdminPassword);
 
-  // ❌ Cancel button
+  //  Cancel button
   document.getElementById('cancelSuperAdminPassword')?.addEventListener('click', closePasswordModal);
 }
 
@@ -199,7 +199,7 @@ function submitSuperAdminPassword() {
 
 
 
-// 🔓 Unlock Modal Logic
+// Unlock Modal Logic
 let pendingUnlockUserId = '';
 let pendingManagePasswordUrl = '';
 let pendingChainedRedirect = '';
@@ -265,5 +265,54 @@ export function initUnlockButtons() {
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeUnlockModal();
+  });
+}
+
+//Announcement Modal
+export function initAnnouncementModal() {
+  document.getElementById('openAnnouncementModal')?.addEventListener('click', () => {
+    toggleModal('announcementModal', true);
+  });
+
+  document.getElementById('closeAnnouncementModal')?.addEventListener('click', () => {
+    toggleModal('announcementModal', false);
+  });
+
+  document.getElementById('cancelAnnouncementModal')?.addEventListener('click', () => {
+    toggleModal('announcementModal', false);
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') toggleModal('announcementModal', false);
+  });
+}
+
+// Announcement Viewer Modal
+export function openAnnouncementViewer(el) {
+  const title = el.dataset.title || 'Untitled';
+  const body = el.dataset.body || 'No content available.';
+  const role = el.dataset.role || 'For All';
+  const date = el.dataset.date || 'Unknown date';
+
+  document.getElementById('viewerTitle').textContent = title;
+  document.getElementById('viewerBody').textContent = body;
+  document.getElementById('viewerMeta').textContent = `${role} • Posted on ${date}`;
+
+  toggleModal('announcementViewer', true);
+}
+
+export function closeAnnouncementViewer() {
+  toggleModal('announcementViewer', false);
+}
+
+export function initAnnouncementTriggers() {
+  document.querySelectorAll('[data-viewer-trigger]').forEach(el => {
+    el.addEventListener('click', () => openAnnouncementViewer(el));
+  });
+
+  document.getElementById('closeAnnouncementViewer')?.addEventListener('click', closeAnnouncementViewer);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAnnouncementViewer();
   });
 }

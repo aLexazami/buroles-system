@@ -1,9 +1,8 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../helpers/flash.php';
+require_once __DIR__ . '/../helpers/text-format.php';
 ?>
 <?php //include __DIR__ . '/../includes/debug-panel.php' ?>
 <!DOCTYPE html>
@@ -27,6 +26,12 @@ require_once __DIR__ . '/../config/database.php';
     <!-- Left Side Navigation -->
     <?php include '../includes/side-nav-staff.php' ?>
 
+    <!-- Right Side Content -->
+    <section class="m-4">
+      <?php showFlash(); ?>
+
+      <?php include __DIR__ . '/dashboard/dashboard-card.php';?>
+    </section>
   </main>
 
   <!--Footer Section-->
@@ -35,5 +40,6 @@ require_once __DIR__ . '/../config/database.php';
 
   <script type="module" src="/assets/js/app.js"></script>
   <script src="../assets/js/date-time.js"></script>
+  <script src="/assets/js/auto-dismiss-alert.js"></script>
 </body>
 </html>

@@ -87,7 +87,7 @@ require_once __DIR__ . '/role-nav-map.php';
                   <?= $item['count'] ?>
                 </span>
               </div>
-              <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">
+              <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0 whitespace-nowrap">
                 <?= $item['label'] ?>
               </span>
             </a>

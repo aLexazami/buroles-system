@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../auth/session.php'; // includes session_start()
+require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/flash.php';
 
 header('Content-Type: application/json');

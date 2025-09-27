@@ -1,11 +1,10 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ .'/../includes/functions.php';
 require_once __DIR__ .'/../controllers/respondent-counts.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
+require_once __DIR__ . '/../helpers/flash.php';
+require_once __DIR__ . '/../helpers/text-format.php';
 ?>
 <?php //include __DIR__ . '/../includes/debug-panel.php' ?>
 <!DOCTYPE html>
@@ -27,10 +26,9 @@ require_once __DIR__ . '/../auth/session.php';
 
     <!-- Right Side Content -->
     <section class="m-4">
-      <div class="bg-emerald-300 col-span-3  flex justify-center items-center gap-2 p-2">
-        <img src="/assets/img/home.png " class="w-5 h-5">
-        <h1 class="font-bold text-lg ">Dashboard</h1>
-      </div>
+      <?php showFlash(); ?>
+
+      <?php include __DIR__ . '/dashboard/dashboard-card.php';?>
       <br>
       <div class=" grid grid-cols-3 gap-4">
         <div class="bg-gray-300 col-span-3 flex justify-center items-center gap-2 p-2">
@@ -67,5 +65,6 @@ require_once __DIR__ . '/../auth/session.php';
   <script src="../assets/js/update-dashboard.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="../assets/js/date-time.js"></script>
+  <script src="/assets/js/auto-dismiss-alert.js"></script>
 </body>
 </html>

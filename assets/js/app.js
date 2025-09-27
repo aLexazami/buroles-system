@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initRenameButtons, initDeleteButtons, initPasswordButtons, initUnlockButtons } from './modal.js';
+import { initRenameButtons, initDeleteButtons, initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers } from './modal.js';
 import { initCreateFolderModal } from './folder-creation.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
@@ -18,6 +18,8 @@ import { setupAvatarPreview } from './avatar-preview.js';
 import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
 import { setupTableSorter } from '/assets/js/table-sorter.js';
+import { initAnnouncementCarousel } from './announcementCarousel.js';
+
 
 
 
@@ -43,6 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPasswordVisibilityToggles();
   setupRecipientDropdown();
   initNotificationActions();
+  initAnnouncementModal();
+  initAnnouncementCarousel();
+  initAnnouncementTriggers();
 
 
   // Badge Updater
