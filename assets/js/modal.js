@@ -270,21 +270,32 @@ export function initUnlockButtons() {
 
 //Announcement Modal
 export function initAnnouncementModal() {
-  document.getElementById('openAnnouncementModal')?.addEventListener('click', () => {
-    toggleModal('announcementModal', true);
-  });
+  const modalId = 'announcementModal';
+  const openBtn = document.getElementById('openAnnouncementModal');
+  const cancelBtn = document.getElementById('cancelAnnouncementModal');
+  const textarea = document.getElementById('announcementBody');
 
-  document.getElementById('closeAnnouncementModal')?.addEventListener('click', () => {
-    toggleModal('announcementModal', false);
-  });
+  // 🟢 Modal open/close handlers
+  openBtn?.addEventListener('click', () => toggleModal(modalId, true));
+  cancelBtn?.addEventListener('click', () => toggleModal(modalId, false));
 
-  document.getElementById('cancelAnnouncementModal')?.addEventListener('click', () => {
-    toggleModal('announcementModal', false);
-  });
-
+  // ⎋ Escape key closes modal
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') toggleModal('announcementModal', false);
+    if (e.key === 'Escape') toggleModal(modalId, false);
   });
+
+  // ✏️ Auto-resize textarea without scroll
+  if (textarea) {
+    textarea.style.overflowY = 'hidden'; // ⛔ Prevent vertical scroll
+
+    const resize = () => {
+      textarea.style.height = 'auto'; // Reset height
+      textarea.style.height = textarea.scrollHeight + 'px'; // Expand to fit content
+    };
+
+    textarea.addEventListener('input', resize);
+    resize(); // Trigger once on load
+  }
 }
 
 // Announcement Viewer Modal

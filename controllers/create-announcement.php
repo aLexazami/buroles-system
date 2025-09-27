@@ -1,45 +1,100 @@
 <?php
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../helpers/flash.php';
+require_once __DIR__ . '/../helpers/text-format.php';
 
-if (empty($_SESSION['user']) || !in_array($_SESSION['user']['role_id'], [1, 2, 99])) {
+// 🔐 Authorization check
+$user = $_SESSION['user'] ?? null;
+if (!$user || !in_array($user['role_id'], [1, 2, 99])) {
   http_response_code(403);
   exit('Unauthorized access.');
 }
 
-// 🧼 Sanitize and validate input
+// 🧼 Input sanitization
 $title = trim($_POST['title'] ?? '');
 $body = trim($_POST['body'] ?? '');
-$role_id = $_POST['role_id'] ?? null;
+$roleId = is_numeric($_POST['role_id'] ?? null) ? (int) $_POST['role_id'] : null;
 
 if ($title === '' || $body === '') {
-  // You can redirect back with error or show a message
-  exit('Title and body are required.');
+  setFlash('error', 'Title and body are required.');
+  header('Location: /pages/main-super-admin.php');
+  exit;
 }
 
-// 🧠 Normalize role_id
-$target_role = is_numeric($role_id) ? (int) $role_id : null;
-
 try {
+  // 📣 Insert announcement
   $stmt = $pdo->prepare("
     INSERT INTO announcements (title, body, target_role_id, created_by, created_at)
     VALUES (:title, :body, :role_id, :created_by, NOW())
   ");
-
   $stmt->execute([
     ':title' => $title,
     ':body' => $body,
-    ':role_id' => $target_role,
-    ':created_by' => $_SESSION['user']['id']
+    ':role_id' => $roleId,
+    ':created_by' => $user['id']
   ]);
 
-  // ✅ Redirect or respond
-  header('Location: /pages/main-super-admin.php?announcement=success');
+  // 🔔 Insert notification
+  if ($roleId === 100) {
+    // For All: insert one notification per user with role-based dashboard link
+    $userStmt = $pdo->query("SELECT id, role_id FROM users");
+    $users = $userStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $notif = $pdo->prepare("
+      INSERT INTO notifications (title, body, link, icon, user_id, role_id, created_at)
+      VALUES (:title, :body, :link, :icon, :user_id, NULL, NOW())
+    ");
+
+    foreach ($users as $userRow) {
+      $uid = $userRow['id'];
+      $role = (int) $userRow['role_id'];
+
+      // 🎯 Role-based dashboard link
+      $linkMap = [
+        1 => '/pages/main-staff.php',
+        2 => '/pages/main-admin.php',
+        99 => '/pages/main-super-admin.php'
+      ];
+      $link = $linkMap[$role] ?? '/dashboard';
+
+      $notif->execute([
+        ':title' => 'New Announcement Posted',
+        ':body' => mb_strimwidth(sentenceCase($body), 0, 140, '...'),
+        ':link' => $link,
+        ':icon' => '/assets/img/announcement-icon.png',
+        ':user_id' => $uid
+      ]);
+    }
+  } else {
+    // Role-specific notification
+    $roleLinkMap = [
+      1 => '/pages/main-staff.php',
+      2 => '/pages/main-admin.php',
+      99 => '/pages/main-super-admin.php'
+    ];
+    $link = $roleLinkMap[$roleId] ?? '/dashboard';
+
+    $notif = $pdo->prepare("
+      INSERT INTO notifications (title, body, link, icon, user_id, role_id, created_at)
+      VALUES (:title, :body, :link, :icon, NULL, :role_id, NOW())
+    ");
+    $notif->execute([
+      ':title' => 'New Announcement Posted',
+      ':body' => mb_strimwidth($body, 0, 140, '...'),
+      ':link' => $link,
+      ':icon' => '/assets/img/announcement-icon.png',
+      ':role_id' => $roleId
+    ]);
+  }
+
+  setFlash('success', 'Announcement posted successfully.');
+  header('Location: /pages/main-super-admin.php');
   exit;
 
 } catch (PDOException $e) {
-  // 🐞 Log error and fail gracefully
   error_log('Announcement creation failed: ' . $e->getMessage());
-  http_response_code(500);
-  exit('Server error. Please try again.');
+  setFlash('error', 'Server error. Please try again.');
+  header('Location: /pages/main-super-admin.php');
+  exit;
 }

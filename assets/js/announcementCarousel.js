@@ -2,6 +2,9 @@ export function initAnnouncementCarousel() {
   const slides = document.querySelectorAll('.announcement-slide');
   const dots = document.querySelectorAll('.dot');
   const dotTrack = document.getElementById('dot-track');
+
+  if (!dotTrack || slides.length === 0 || dots.length === 0) return; // 🛡️ Prevent error
+
   const maxVisibleDots = 10;
   const dotSize = 24;
   let current = 0;

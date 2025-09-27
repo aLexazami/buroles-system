@@ -27,6 +27,12 @@ include __DIR__ . '/dashboard-data.php';
           <div class="announcement-slide <?= $index === 0 ? '' : 'hidden' ?>">
             <div class="p-8 rounded-2xl  min-h-[350px] flex flex-col justify-between bg-emerald-50">
               <div>
+                <?php
+                $isNew = strtotime($note['created_at']) >= strtotime('-1 days');
+                ?>
+                <?php if ($isNew): ?>
+                  <span class="ml-2 px-2 py-1 text-xs w-fit font-medium bg-green-600 text-white rounded-full">New</span>
+                <?php endif; ?>
                 <div class="flex flex-col items-center justify-center gap-2 mb-6 text-center">
                   <h3 class="text-2xl font-bold text-gray-800">
                     <?= ucwords(htmlspecialchars($note['title'])) ?>
@@ -113,64 +119,81 @@ include __DIR__ . '/dashboard-data.php';
   </div>
 </div>
 
-<!-- Announcement Modal -->
-<div id="announcementModal" class="fixed inset-0  z-50 hidden items-center justify-center">
-  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="bg-white border border-emerald-600 rounded shadow-lg w-full max-w-4xl relative">
-    <h2 class="bg-emerald-600 py-3 text-2xl font-bold text-white text-center tracking-wide flex items-center justify-center gap-4">
-      Create Announcements
-    </h2>
-    <div class="p-4 ">
-      <form method="POST" action="/controllers/create-announcement.php" class="space-y-6 text-sm text-gray-800">
-        <!-- Title Field -->
-        <div class="relative">
-          <input type="text" name="title" id="announcementTitle" required
-            class="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-            placeholder=" " />
-          <label for="announcementTitle"
-            class="absolute left-4 font-semibold  top-2 text-gray-500 text-xs transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-emerald-600">
-            Title
-          </label>
-        </div>
+<!-- 📣 Announcement Modal -->
+<div id="announcementModal" class="fixed inset-0 z-50 hidden overflow-y-auto items-start justify-center">
 
-        <!-- Body Field -->
-        <div class="relative">
-          <textarea name="body" id="announcementBody" required rows="4"
-            class="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-            placeholder=" "></textarea>
-          <label for="announcementBody"
-            class="absolute font-semibold  left-4 top-2 text-gray-500 text-xs transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-emerald-600">
-            Body
-          </label>
-        </div>
+  <!-- Fullscreen overlay -->
+  <div class="fixed inset-0 bg-black opacity-50 z-0"></div>
 
-        <!-- Role Selector -->
-        <div class="relative">
-          <select name="role_id" id="announcementRole"
-            class="peer w-full px-4 pt-7 pb-2 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-            <option value="">All</option>
-            <option value="1">Staff</option>
-            <option value="2">Admin</option>
-            <option value="99">Super Admin</option>
-          </select>
-          <label for="announcementRole"
-            class="absolute font-semibold left-4 top-2 text-gray-500 text-xs transition-all peer-focus:text-emerald-600">
-            Audience
-          </label>
-        </div>
+  <!-- Content wrapper (scrollable) -->
+  <div class="relative w-full flex justify-center z-10">
 
-        <!-- Action Buttons -->
-        <div class="flex justify-end gap-2 pt-4">
-          <button type="button" id="cancelAnnouncementModal"
-            class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition shadow-sm cursor-pointer">
-            Cancel
-          </button>
-          <button type="submit"
-            class="px-4 py-2 rounded-md bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm cursor-pointer">
-            Post Announcement
-          </button>
-        </div>
-      </form>
+    <!-- Content box -->
+    <div class="bg-white border border-emerald-600 rounded shadow-lg w-full max-w-4xl relative my-12">
+      <h2 class="bg-emerald-600 py-3 text-2xl font-bold text-white text-center tracking-wide flex items-center justify-center gap-4">
+        Create Announcements
+      </h2>
+
+      <div class="p-6 space-y-6 text-sm text-gray-800">
+        <form method="POST" action="/controllers/create-announcement.php" class="space-y-6">
+          <!-- Title Field -->
+          <div class="relative">
+            <input
+              type="text"
+              name="title"
+              id="announcementTitle"
+              required
+              class="peer w-full px-4 pt-6 pb-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+            <label for="announcementTitle"
+              class="absolute left-4 top-2 text-xs text-gray-500 font-semibold transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-emerald-600 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400">
+              Title
+            </label>
+          </div>
+
+          <!-- Body Field -->
+          <div class="relative">
+            <textarea
+              name="body"
+              id="announcementBody"
+              required
+              rows="4"
+              placeholder="Body"
+              class="peer w-full px-4 pt-6 pb-2 border border-gray-300 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+  </textarea>
+            <label for="announcementBody"
+              class="absolute left-4 top-2 text-xs text-gray-500 font-semibold transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-emerald-600 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400">
+              Body
+            </label>
+          </div>
+
+          <!-- Role Selector -->
+          <div class="relative">
+            <select name="role_id" id="announcementRole"
+              class="peer w-full px-4 pt-7 pb-2 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+              <option value="100">All</option>
+              <option value="1">Staff</option>
+              <option value="2">Admin</option>
+              <option value="99">Super Admin</option>
+            </select>
+            <label for="announcementRole"
+              class="absolute font-semibold left-4 top-2 text-gray-500 text-xs transition-all peer-focus:text-emerald-600">
+              Audience
+            </label>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-end gap-2 pt-4">
+            <button type="button" id="cancelAnnouncementModal"
+              class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition shadow-sm cursor-pointer">
+              Cancel
+            </button>
+            <button type="submit"
+              class="px-4 py-2 rounded-md bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm cursor-pointer">
+              Post Announcement
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

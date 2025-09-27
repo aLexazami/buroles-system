@@ -6,10 +6,10 @@ require_once __DIR__ . '/../../config/database.php';
 //  Get current user role
 $currentRoleId = $_SESSION['user']['role_id'] ?? null;
 
-//  Fetch announcements
+//  Announcement fetch logic
 try {
   if ((int) $currentRoleId === 99) {
-    // Super Admin sees all announcements
+    //  Super Admin sees all announcements
     $stmt = $pdo->query("
       SELECT a.id, a.title, a.body, a.target_role_id, a.created_at, u.username AS author
       FROM announcements a
@@ -19,12 +19,12 @@ try {
     ");
     $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
   } else {
-    // Other roles see only relevant announcements
+    //  Other roles see announcements for their role + 'For All' (role_id = 100)
     $stmt = $pdo->prepare("
       SELECT a.id, a.title, a.body, a.target_role_id, a.created_at, u.username AS author
       FROM announcements a
       JOIN users u ON a.created_by = u.id
-      WHERE a.target_role_id IS NULL OR a.target_role_id = :role_id
+      WHERE a.target_role_id IN (:role_id, 100)
       ORDER BY a.created_at DESC
       LIMIT 20
     ");
