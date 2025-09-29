@@ -173,19 +173,27 @@ include __DIR__ . '/dashboard-data.php';
             </label>
           </div>
 
-          <!-- Role Selector -->
-          <div class="relative">
-            <select name="role_id" id="announcementRole"
-              class="peer w-full px-4 pt-7 pb-2 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-              <option value="100">All</option>
-              <option value="1">Staff</option>
-              <option value="2">Admin</option>
-              <option value="99">Super Admin</option>
-            </select>
-            <label for="announcementRole"
-              class="absolute font-semibold left-4 top-2 text-gray-500 text-xs transition-all peer-focus:text-emerald-600">
-              Audience
-            </label>
+          <!-- Role Selector with Checkboxes -->
+          <div class="relative space-y-2">
+            <label class="font-semibold text-gray-500 text-xs block">Audience</label>
+            <div class="flex flex-wrap gap-4">
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" name="role_ids[]" value="100" class="role-checkbox accent-emerald-600">
+                <span>All</span>
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" name="role_ids[]" value="1" class="role-checkbox accent-emerald-600">
+                <span>Staff</span>
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" name="role_ids[]" value="2" class="role-checkbox accent-emerald-600">
+                <span>Admin</span>
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" name="role_ids[]" value="99" class="role-checkbox accent-emerald-600">
+                <span>Super Admin</span>
+              </label>
+            </div>
           </div>
 
           <!-- Action Buttons -->
@@ -207,3 +215,18 @@ include __DIR__ . '/dashboard-data.php';
 
 <!-- 📖 Dynamic Announcement Viewer -->
 <?php require __DIR__ . '/../components/announcement-viewer.php'; ?>
+<script>
+  const allCheckbox = document.querySelector('input[value="100"]');
+  const otherCheckboxes = document.querySelectorAll('.role-checkbox:not([value="100"])');
+
+  allCheckbox.addEventListener('change', () => {
+    if (allCheckbox.checked) {
+      otherCheckboxes.forEach(cb => {
+        cb.checked = false;
+        cb.disabled = true;
+      });
+    } else {
+      otherCheckboxes.forEach(cb => cb.disabled = false);
+    }
+  });
+</script>

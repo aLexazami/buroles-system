@@ -14,78 +14,83 @@ if (!$user || !in_array($user['role_id'], [1, 2, 99])) {
 // 🧼 Input sanitization
 $title = trim($_POST['title'] ?? '');
 $body = trim($_POST['body'] ?? '');
-$roleId = is_numeric($_POST['role_id'] ?? null) ? (int) $_POST['role_id'] : null;
+$roleIds = $_POST['role_ids'] ?? [];
+$validRoles = [1, 2, 99, 100];
+$filteredRoles = array_filter($roleIds, fn($r) => in_array((int)$r, $validRoles));
 
-if ($title === '' || $body === '') {
-  setFlash('error', 'Title and body are required.');
+if ($title === '' || $body === '' || empty($filteredRoles)) {
+  setFlash('error', 'Title, body, and at least one audience role are required.');
   header('Location: /pages/main-super-admin.php');
   exit;
 }
 
+// 🎯 Role-based dashboard links
+$roleLinkMap = [
+  1 => '/pages/main-staff.php',
+  2 => '/pages/main-admin.php',
+  99 => '/pages/main-super-admin.php'
+];
+
 try {
-  // 📣 Insert announcement
-  $stmt = $pdo->prepare("
-    INSERT INTO announcements (title, body, target_role_id, created_by, created_at)
-    VALUES (:title, :body, :role_id, :created_by, NOW())
-  ");
-  $stmt->execute([
-    ':title' => $title,
-    ':body' => $body,
-    ':role_id' => $roleId,
-    ':created_by' => $user['id']
-  ]);
+  if (in_array("100", $filteredRoles)) {
+    // 📣 Insert one announcement for "All"
+    $stmt = $pdo->prepare("
+      INSERT INTO announcements (title, body, target_role_id, created_by, created_at)
+      VALUES (:title, :body, 100, :created_by, NOW())
+    ");
+    $stmt->execute([
+      ':title' => $title,
+      ':body' => $body,
+      ':created_by' => $user['id']
+    ]);
 
-  // 🔔 Insert notification
-  if ($roleId === 100) {
-    // For All: insert one notification per user with role-based dashboard link
-    $userStmt = $pdo->query("SELECT id, role_id FROM users");
-    $users = $userStmt->fetchAll(PDO::FETCH_ASSOC);
-
+    // 🔔 Notify all users individually
+    $users = $pdo->query("SELECT id, role_id FROM users")->fetchAll(PDO::FETCH_ASSOC);
     $notif = $pdo->prepare("
       INSERT INTO notifications (title, body, link, icon, user_id, role_id, created_at)
       VALUES (:title, :body, :link, :icon, :user_id, NULL, NOW())
     ");
 
-    foreach ($users as $userRow) {
-      $uid = $userRow['id'];
-      $role = (int) $userRow['role_id'];
-
-      // 🎯 Role-based dashboard link
-      $linkMap = [
-        1 => '/pages/main-staff.php',
-        2 => '/pages/main-admin.php',
-        99 => '/pages/main-super-admin.php'
-      ];
-      $link = $linkMap[$role] ?? '/dashboard';
-
+    foreach ($users as $u) {
+      $link = $roleLinkMap[$u['role_id']] ?? '/dashboard';
       $notif->execute([
         ':title' => 'New Announcement Posted',
         ':body' => mb_strimwidth(sentenceCase($body), 0, 140, '...'),
         ':link' => $link,
         ':icon' => '/assets/img/announcement-icon.png',
-        ':user_id' => $uid
+        ':user_id' => $u['id']
       ]);
     }
-  } else {
-    // Role-specific notification
-    $roleLinkMap = [
-      1 => '/pages/main-staff.php',
-      2 => '/pages/main-admin.php',
-      99 => '/pages/main-super-admin.php'
-    ];
-    $link = $roleLinkMap[$roleId] ?? '/dashboard';
 
-    $notif = $pdo->prepare("
+  } else {
+    // 📣 Insert per-role announcements and notifications
+    $announcementStmt = $pdo->prepare("
+      INSERT INTO announcements (title, body, target_role_id, created_by, created_at)
+      VALUES (:title, :body, :role_id, :created_by, NOW())
+    ");
+
+    $notifStmt = $pdo->prepare("
       INSERT INTO notifications (title, body, link, icon, user_id, role_id, created_at)
       VALUES (:title, :body, :link, :icon, NULL, :role_id, NOW())
     ");
-    $notif->execute([
-      ':title' => 'New Announcement Posted',
-      ':body' => mb_strimwidth($body, 0, 140, '...'),
-      ':link' => $link,
-      ':icon' => '/assets/img/announcement-icon.png',
-      ':role_id' => $roleId
-    ]);
+
+    foreach ($filteredRoles as $roleId) {
+      $announcementStmt->execute([
+        ':title' => $title,
+        ':body' => $body,
+        ':role_id' => $roleId,
+        ':created_by' => $user['id']
+      ]);
+
+      $link = $roleLinkMap[(int)$roleId] ?? '/dashboard';
+      $notifStmt->execute([
+        ':title' => 'New Announcement Posted',
+        ':body' => mb_strimwidth($body, 0, 140, '...'),
+        ':link' => $link,
+        ':icon' => '/assets/img/announcement-icon.png',
+        ':role_id' => $roleId
+      ]);
+    }
   }
 
   setFlash('success', 'Announcement posted successfully.');
