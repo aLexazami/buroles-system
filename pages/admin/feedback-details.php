@@ -19,24 +19,24 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
   <?php include('../../includes/header.php'); ?>
 
   <main class=" min-h-screen">
-    <section class="m-4">
+    <section class="m-4 md:m-4 md:my-10">
       <!-- Page Title -->
       <div class="bg-emerald-300 p-2 flex justify-center items-center gap-2 mb-5">
         <img src="/assets/img/feedback-respondent.png" class="w-5 h-5" alt="Feedback icon">
         <h1 class="font-bold text-lg">Feedback Respondents Details</h1>
       </div>
 
-      <!-- Feedback Table -->
-      <div class="min-h-screen px-6 py-5 bg-white rounded-lg shadow-md">
+      <!-- Table Container -->
+      <div class="bg-white rounded-lg shadow-md px-4 py-6 md:px-6 md:py-10">
         <!-- Export Dropdown -->
-        <div class="relative inline-block text-left mb-2">
+        <div class="relative inline-block text-left mb-4">
           <button id="exportToggle"
             class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition cursor-pointer flex items-center gap-2">
             <img src="/assets/img/export-icon.png" alt="Export" class="w-5 h-5 invert">
             Export
           </button>
           <div id="exportMenu"
-            class="hidden absolute z-10 mt-2 w-45 bg-white border border-gray-200 rounded shadow-lg">
+            class="hidden absolute z-10 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg">
             <form action="/controllers/export-feedback-csv.php" method="POST">
               <input type="hidden" name="format" value="csv">
               <button type="submit"
@@ -45,26 +45,16 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
                 Export as CSV
               </button>
             </form>
-            <!-- Temporary Disable the PDF Export Button
-            <form action="/controllers/export-feedback-pdf.php" method="POST">
-              <input type="hidden" name="format" value="pdf">
-              <button type="submit"
-                class="flex items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 cursor-pointer">
-                <img src="/assets/img/pdf-icon.png" alt="PDF" class="w-5 h-5">
-                Export as PDF
-              </button>
-            </form>
-            -->
           </div>
         </div>
 
-        <div class="flex items-center gap-2 mb-4">
-          <!-- Search Bar -->
+        <!-- Search and Controls -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
           <input
             type="text"
             id="userSearch"
-            placeholder=" Search"
-            class="px-4 py-2 border rounded w-full max-w-md" />
+            placeholder="Search"
+            class="px-4 py-2 border rounded w-full sm:max-w-md" />
           <button
             id="clearSearch"
             class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
@@ -83,7 +73,10 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
           </div>
         </div>
 
-        <div id="feedbackTableContainer" class="min-w-full text-sm text-left"></div>
+        <!-- Table Output -->
+        <div class="overflow-x-auto">
+          <div id="respondentsTableContainer" class="min-w-full text-sm text-left"></div>
+        </div>
       </div>
     </section>
   </main>

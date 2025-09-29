@@ -31,15 +31,20 @@ $unreadNotifs = $notifStmt->fetchColumn() ?? 0;
 
 // Include nav map after counts are available
 require_once __DIR__ . '/role-nav-map.php';
+
+$currentPage = basename($_SERVER['PHP_SELF']);
+$hideSidebarButtonPages = ['feedback-details.php'];
 ?>
 
 <header class="shadow-md sticky top-0 z-10 bg-emerald-950 text-white p-4">
   <section class="max-w-7xl mx-auto flex items-center justify-between px-4">
 
-    <!-- Mobile Menu Button For Side Nav -->
+    <?php if (!in_array($currentPage, $hideSidebarButtonPages)): ?>
+      <!-- Mobile Menu Button For Side Nav -->
       <button id="open-sidebar" class="border p-2 mr-4 md:hidden focus:outline-none cursor-pointer">
         <img src="/assets/img/menu-icon.png" alt="Menu" class="h-8 w-9">
       </button>
+    <?php endif; ?>
 
 
     <!-- Logo and School Name -->
