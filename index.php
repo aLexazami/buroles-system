@@ -19,21 +19,21 @@ require_once __DIR__ . '/auth/session.php';
     <section class="max-w-6xl mx-auto flex items-center justify-between">
       <!-- Logo + Title -->
       <div class="flex items-center gap-4">
-        <img src="./assets/img/bes-logo1.png" alt="Burol Elementary School Logo" class="h-14 w-14 border rounded-full bg-white">
-        <p class="text-xl md:text-3xl font-medium text-white">Burol Elementary School</p>
+        <img src="/assets/img/bes-logo1.png" alt="Burol Elementary School Logo" class="h-14 w-14 border rounded-full bg-white">
+        <p class="text-xl md:text-3xl font-medium text-white">BESIMS</p>
       </div>
 
       <!-- Mobile Menu Toggle -->
-      <button id="menuToggle" class="md:hidden text-white focus:outline-none cursor-pointer">
+      <button id="menu-btn-mobile" class="md:hidden text-white focus:outline-none cursor-pointer">
         <img src="/assets/img/menu-icon.png" alt="Menu" class="h-6 w-6">
       </button>
 
       <!-- Navigation Links -->
-      <nav id="mainNav" class="hidden md:flex flex-col md:flex-row gap-4 text-sm md:text-base bg-emerald-950 md:bg-transparent absolute md:static top-full left-0 w-full md:w-auto px-4 py-2 md:p-0">
+      <nav id="menu-links" class="hidden md:flex flex-col md:flex-row gap-4 text-sm md:text-base bg-emerald-950 md:bg-transparent absolute md:static top-full left-0 w-full md:w-auto px-4 py-2 md:p-0">
         <ul class="flex flex-col md:flex-row gap-4">
-          <li><a href="/index.php" class="text-white hover:text-emerald-400">Sign in</a></li>
-          <li><a href="/pages/feedback-form.php" class="text-white hover:text-emerald-400">Feedback</a></li>
-          <li><a href="/pages/faqs.php" class="text-white hover:text-emerald-400">FAQs</a></li>
+          <li><a href="/index.php" class="menu-link text-white hover:text-emerald-400">Sign in</a></li>
+          <li><a href="/pages/feedback-form.php" class="menu-link text-white hover:text-emerald-400">Feedback</a></li>
+          <li><a href="/pages/faqs.php" class="menu-link text-white hover:text-emerald-400">FAQs</a></li>
         </ul>
       </nav>
     </section>
@@ -118,12 +118,5 @@ require_once __DIR__ . '/auth/session.php';
   </footer>
   <script type="module" src="/assets/js/app.js"></script>
 </body>
-<script>
-  const toggle = document.getElementById('menuToggle');
-  const nav = document.getElementById('mainNav');
 
-  toggle.addEventListener('click', () => {
-    nav.classList.toggle('hidden');
-  });
-</script>
 </html>

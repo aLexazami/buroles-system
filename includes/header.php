@@ -38,7 +38,7 @@ require_once __DIR__ . '/role-nav-map.php';
     <!-- Logo and School Name -->
     <div class="flex items-center py-2">
       <img src="/assets/img/bes-logo1.png" alt="Burol Elementary School Logo" class="h-12 border rounded-full bg-white">
-      <p class="text-xl font-medium ml-5">Burol Elementary School</p>
+      <p class="text-xl font-medium ml-5">BESIMS</p>
     </div>
 
     <!-- Date and Time -->
@@ -114,7 +114,7 @@ require_once __DIR__ . '/role-nav-map.php';
             <p class="uppercase text-sm"><?= htmlspecialchars($_SESSION['role_name']) ?></p>
           </div>
         </button>
-        <div id="menu-links" class="hidden md:hidden absolute top-17 max-md:top-20 p-3 bg-white shadow-lg rounded-sm">
+        <div id="menu-links" class="hidden md:hidden absolute top-17 max-md:top-20 p-3 z-10 bg-white shadow-lg rounded-sm">
           <?php foreach ($navItems as $item): ?>
             <?php $isActive = basename($item['link']) === $currentPage; ?>
             <a href="<?= $item['link'] ?>" class="menu-link relative flex items-center p-2 text-sm rounded-sm <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>">
