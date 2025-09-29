@@ -33,28 +33,36 @@ $unreadNotifs = $notifStmt->fetchColumn() ?? 0;
 require_once __DIR__ . '/role-nav-map.php';
 ?>
 
-<header class="shadow-md sticky-top-0 z-10 bg-emerald-950 text-white p-1">
-  <section class="max-w-7xl m-auto flex justify-between px-10 items-center">
+<header class="shadow-md sticky top-0 z-10 bg-emerald-950 text-white p-4">
+  <section class="max-w-7xl mx-auto flex items-center justify-between px-4">
+
+    <!-- Mobile Menu Button For Side Nav -->
+      <button id="open-sidebar" class="border p-2 mr-4 md:hidden focus:outline-none cursor-pointer">
+        <img src="/assets/img/menu-icon.png" alt="Menu" class="h-8 w-9">
+      </button>
+
+
     <!-- Logo and School Name -->
-    <div class="flex items-center py-2">
-      <img src="/assets/img/bes-logo1.png" alt="Burol Elementary School Logo" class="h-12 border rounded-full bg-white">
-      <p class="text-xl font-medium ml-5">BESIMS</p>
+    <div class="flex items-center gap-4">
+      <img src="/assets/img/bes-logo1.png" alt="Burol Elementary School Logo" class="h-12 w-12 border rounded-full bg-white">
+      <p class="text-xl font-medium">BESIMS</p>
     </div>
 
-    <!-- Date and Time -->
-    <div class="flex text-sm font-bold">
+    <!-- Date and Time (Desktop Only) -->
+    <div class="hidden md:block text-sm font-bold text-right w-full md:w-auto">
       <span id="date-time"></span>
     </div>
 
     <!-- User and Nav -->
-    <div class="flex justify-end items-center">
+    <div class="flex justify-end items-center w-full md:w-auto">
+
       <!-- Desktop Nav -->
-      <div class="max-md:hidden flex space-x-2">
-        <div class="flex space-x-2 relative">
+      <div class="hidden md:flex space-x-2 items-center">
+        <div class="relative flex space-x-2">
           <?php include 'role-badge.php'; ?>
 
           <!-- Profile Button -->
-          <button id="menu-btn-desktop" class="flex flex-row items-center space-x-3 cursor-pointer mr-2">
+          <button id="menu-btn-desktop" class="flex items-center space-x-3 cursor-pointer">
             <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
             <div>
               <p class="font-medium"><?= htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']) ?></p>
@@ -74,16 +82,14 @@ require_once __DIR__ . '/role-nav-map.php';
           <?php endif; ?>
         </div>
 
-        <!-- Nav Items with Badge -->
+        <!-- Nav Items -->
         <?php foreach ($navItems as $item): ?>
           <?php $isActive = basename($item['link']) === $currentPage; ?>
-          <div class="flex items-center relative">
-            <a href="<?= $item['link'] ?>" class="group relative flex items-center p-2 text-sm rounded-sm <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>">
+          <div class="relative">
+            <a href="<?= $item['link'] ?>" class="group flex items-center p-2 text-sm rounded-sm <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>">
               <div class="relative">
                 <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 invert">
-                <span data-badge="<?= $item['label'] ?>"
-                  class="absolute -top-3 -right-2 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center"
-                  style="<?= empty($item['count']) ? 'display:none;' : '' ?>">
+                <span data-badge="<?= $item['label'] ?>" class="absolute -top-3 -right-2 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center" style="<?= empty($item['count']) ? 'display:none;' : '' ?>">
                   <?= $item['count'] ?>
                 </span>
               </div>
@@ -95,49 +101,59 @@ require_once __DIR__ . '/role-nav-map.php';
         <?php endforeach; ?>
 
         <!-- Logout -->
-        <div class="flex items-center">
-          <a href="/controllers/log-out.php" class="group relative flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
-            <img src="/assets/img/logout.png" alt="Logout" class="h-5 w-5">
-            <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">
-              Logout
-            </span>
-          </a>
-        </div>
+        <a href="/controllers/log-out.php" class="group flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
+          <img src="/assets/img/logout.png" alt="Logout" class="h-5 w-5">
+          <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">Logout</span>
+        </a>
       </div>
 
       <!-- Mobile Menu -->
-      <div class="flex flex-row">
-        <button id="menu-btn-mobile" class="flex flex-row items-center space-x-3 cursor-pointer md:hidden mr-2">
-          <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
-          <div>
-            <p class="font-medium"><?= htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']) ?></p>
-            <p class="uppercase text-sm"><?= htmlspecialchars($_SESSION['role_name']) ?></p>
-          </div>
-        </button>
-        <div id="menu-links" class="hidden md:hidden absolute top-17 max-md:top-20 p-3 z-10 bg-white shadow-lg rounded-sm">
+      <div class="md:hidden relative w-full">
+        <div class="flex justify-end items-center">
+          <button id="menu-btn-mobile" class="cursor-pointer border p-2">
+            <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
+          </button>
+        </div>
+
+        <div id="menu-links"
+          class="hidden absolute top-full right-0 mt-2 w-[40vw] bg-white shadow-lg rounded-sm z-50 p-3 space-y-2 ">
+          <?php if ($canSwitchRoles && count($availableRoles) > 1): ?>
+            <div class="border-b pb-2 mb-2">
+              <p class="text-xs font-semibold text-gray-500 mb-1">Switch Role</p>
+              <?php foreach ($availableRoles as $role): ?>
+                <a href="#" class="block px-3 py-2 text-sm rounded hover:bg-emerald-100 text-emerald-800 <?= $role == $activeRole ? 'font-bold bg-emerald-50' : '' ?>" data-role="<?= $role ?>">
+                  <?= $role == 1 ? 'Staff' : ($role == 2 ? 'Admin' : 'Super Admin') ?>
+                </a>
+              <?php endforeach; ?>
+            </div>
+          <?php endif; ?>
+
           <?php foreach ($navItems as $item): ?>
             <?php $isActive = basename($item['link']) === $currentPage; ?>
-            <a href="<?= $item['link'] ?>" class="menu-link relative flex items-center p-2 text-sm rounded-sm <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>">
-              <div class="relative">
-                <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 rounded-full mr-3">
-                <span data-badge="<?= $item['label'] ?>"
-                  class="absolute -top-2 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center"
-                  style="<?= empty($item['count']) ? 'display:none;' : '' ?>">
-                  <?= $item['count'] ?>
-                </span>
-              </div>
+            <a href="<?= $item['link'] ?>" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 <?= $isActive ? 'bg-emerald-50 font-bold' : ' hover:bg-emerald-100' ?>">
+              <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 rounded-full mr-3">
               <?= $item['label'] ?>
+              <span data-badge="<?= $item['label'] ?>" class="absolute -top-2 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center" style="<?= empty($item['count']) ? 'display:none;' : '' ?>">
+                <?= $item['count'] ?>
+              </span>
             </a>
           <?php endforeach; ?>
-          <a href="/controllers/log-out.php" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
-            <img src="/assets/img/logout.png" alt="Logout" class="h-5 w-5 rounded-full mr-3">Logout
+
+          <a href="/controllers/log-out.php" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-100">
+            <img src="/assets/img/logout.png" alt="Logout" class="h-5 w-5 rounded-full mr-3">
+            Logout
           </a>
         </div>
       </div>
     </div>
   </section>
-</header>
 
+  <!-- Date and Time (Mobile Only) -->
+  <div class="block md:hidden text-center text-sm font-bold bg-emerald-950 text-white py-1">
+    <span id="date-time"></span>
+  </div>
+</header>
+<!-- Role Welcome -->
 <div>
   <?php include __DIR__ . '/../includes/role-welcome.php' ?>
 </div>

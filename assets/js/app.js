@@ -1,5 +1,5 @@
 // UI & Role Toggles
-import { setupMenuToggle } from './menu-toggle.js';
+import { setupMenuToggle, setupSidebarToggle } from './menu-toggle.js';
 import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnnouncementModal();
   initAnnouncementCarousel();
   initAnnouncementTriggers();
+  setupSidebarToggle();
 
 
   // Badge Updater
