@@ -8,7 +8,14 @@ include __DIR__ . '/dashboard-data.php';
   </h2>
 
   <div class=" relative p-8 rounded-b-2xl shadow-lg border border-emerald-600 min-h-[455px] bg-white">
-    <?php if (!empty($_SESSION['user']) && (int) $_SESSION['user']['role_id'] === 99): ?>
+    <?php
+    if (
+      !empty($_SESSION['user']) &&
+      (int) $_SESSION['user']['role_id'] === 99 &&
+      isset($_SESSION['active_role_id']) &&
+      (int) $_SESSION['active_role_id'] === 99
+    ):
+    ?>
       <!-- Create Announcement Icon -->
       <div class="absolute bottom-4 left-4 flex justify-end items-center gap-x-2 z-10">
         <button id="openAnnouncementModal"
