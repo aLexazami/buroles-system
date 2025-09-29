@@ -63,7 +63,7 @@ require_once __DIR__ . '/role-nav-map.php';
           </button>
 
           <!-- Role Switcher -->
-          <?php if ($canSwitchRoles && count($availableRoles) >= 1): ?>
+          <?php if ($canSwitchRoles && count($availableRoles) > 1): ?>
             <div id="role-switcher-desktop" class="absolute top-full right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50 hidden px-4 py-2 space-y-1">
               <?php foreach ($availableRoles as $role): ?>
                 <a href="#" class="block px-3 py-2 text-sm rounded hover:bg-emerald-100 text-emerald-800 <?= $role == $activeRole ? 'font-bold bg-emerald-50' : '' ?>" data-role="<?= $role ?>">
