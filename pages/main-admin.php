@@ -30,7 +30,7 @@ require_once __DIR__ . '/../helpers/text-format.php';
 
       <?php include __DIR__ . '/dashboard/dashboard-card.php';?>
       <br>
-      <div class=" grid grid-cols-3 gap-4">
+      <div class=" grid grid-cols-3 gap-4 bg-white p-2 rounded-lg">
         <div class="bg-gray-300 col-span-3 flex justify-center items-center gap-2 p-2">
           <h1 class="font-bold text-lg ">Respondents</h1>
         </div>
