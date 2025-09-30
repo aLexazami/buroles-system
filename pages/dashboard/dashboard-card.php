@@ -34,7 +34,7 @@ include __DIR__ . '/dashboard-data.php';
         <?php foreach ($announcements as $index => $note): ?>
           <div class="announcement-slide <?= $index === 0 ? '' : 'hidden' ?>">
             <div class="w-full bg-emerald-50 p-4 sm:p-6 md:p-8 rounded-2xl min-h-[350px] flex flex-col justify-between">
-              <div class="bg-amber-200">
+              <div>
                 <?php $isNew = strtotime($note['created_at']) >= strtotime('-1 days'); ?>
                 <?php if ($isNew): ?>
                   <span class="ml-2 px-2 py-1 text-xs w-fit font-medium bg-green-600 text-white rounded-full">New</span>
