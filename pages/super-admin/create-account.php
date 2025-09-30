@@ -13,7 +13,7 @@ renderHead('Super Admin');
   <?php include('../../includes/header.php'); ?>
 
   <!--  Main Layout -->
-  <main class="grid grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <!--  Sidebar -->
     <?php include('../../includes/side-nav-super-admin.php'); ?>
 
@@ -21,7 +21,7 @@ renderHead('Super Admin');
     <section class="m-4">
       <!-- Page Title -->
       <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
-        <img src="/assets/img/create-account.png" class="w-5 h-5" alt="Create icon">
+        <img src="/assets/img/create-account.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Create icon">
         <h1 class="font-bold text-lg">Create Account</h1>
       </div>
 
@@ -29,7 +29,7 @@ renderHead('Super Admin');
       <?php showFlash(); ?>
 
       <!-- Form Component -->
-      <div class="p-6 bg-white rounded-lg shadow-md">
+      <div class="p-4 sm:p-6 bg-white rounded-lg shadow-md w-full max-w-4xl mx-auto">
         <?php include(__DIR__ . '/../../components/user-form.php'); ?>
       </div>
     </section>
