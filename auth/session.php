@@ -6,7 +6,7 @@ require_once __DIR__ . '/../helpers/flash.php';      // Optional: for messaging
 $publicPages = [
     'index.php',
     'login.php',
-    'forgot-password.php',
+    'reset-password.php',
     'feedback-form.php',
     'faqs.php'
 ];

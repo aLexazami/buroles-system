@@ -99,7 +99,7 @@ require_once __DIR__ . '/auth/session.php';
 
           <!-- Forgot Password -->
           <div class="text-center mt-5">
-            <a href="#" class="text-emerald-800 hover:underline font-bold">
+            <a href="/pages/reset-password.php" class="text-emerald-800 hover:underline font-bold">
               Reset/Forgot Password?
             </a>
           </div>
