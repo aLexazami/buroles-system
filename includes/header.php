@@ -38,7 +38,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 $hideSidebarButtonPages = ['feedback-details.php'];
 ?>
 
-<header class="shadow-md sticky top-0 z-10 bg-emerald-950 text-white p-4">
+<header class="shadow-md  top-0 z-10 bg-emerald-950 text-white p-4">
   <section class="max-w-7xl mx-auto flex items-center justify-between px-4">
 
     <?php if (!in_array($currentPage, $hideSidebarButtonPages)): ?>
@@ -131,7 +131,7 @@ $hideSidebarButtonPages = ['feedback-details.php'];
         </div>
 
         <div id="menu-links"
-          class="hidden absolute top-full right-0 mt-2 w-[35vw] bg-white shadow-lg rounded-sm z-50 p-3 space-y-2 ">
+          class="hidden absolute top-full right-0 mt-2 w-[35vw] bg-white shadow-lg rounded-sm z-50 p-3 space-y-2  ">
           <?php if ($canSwitchRoles && count($availableRoles) > 1): ?>
             <div class="border-b pb-2 mb-2">
               <p class="text-xs font-semibold text-gray-500 mb-1">Switch Role</p>

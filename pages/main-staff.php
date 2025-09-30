@@ -16,9 +16,7 @@ require_once __DIR__ . '/../helpers/text-format.php';
 <body class="bg-gray-200 min-h-screen">
 
   <!-- Header Section -->
-  <header class=" shadow-md sticky-top-0 z-10 bg-white">
-    <?php include '../includes/header.php' ?>
-  </header>
+  <?php include '../includes/header.php' ?>
 
   <!-- Main Content Section -->
   <!-- Main Staff Section-->
@@ -27,7 +25,7 @@ require_once __DIR__ . '/../helpers/text-format.php';
     <?php include '../includes/side-nav-staff.php' ?>
 
     <!-- Right Side Content -->
-    <section class="p-4 sm:p-6 md:p-8">
+    <section class="w-full sm:p-6 md:p-4">
       <?php showFlash(); ?>
 
       <?php include __DIR__ . '/dashboard/dashboard-card.php';?>

@@ -14,20 +14,20 @@ require_once __DIR__ . '/../helpers/text-format.php';
   <link href="../src/styles.css" rel="stylesheet">
   <title>Admin Dashboard</title>
 </head>
-<body class="bg-gray-200 min-h-screen flex flex-col">
+<body class="bg-gray-200 min-h-screen">
 
   <!-- Header -->
   <?php include '../includes/header.php' ?>
 
   <!-- Main Layout -->
-  <main class="flex flex-col md:flex-row flex-grow">
+<main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
 
     <!-- Desktop and Mobile Left Sidebar -->
       <?php include '../includes/side-nav-admin.php' ?>
 
-
+  
     <!-- Main Content -->
-    <section class="flex-grow p-4 space-y-6">
+    <section class="w-full p-4 space-y-6">
       <?php showFlash(); ?>
       <?php include __DIR__ . '/dashboard/dashboard-card.php'; ?>
 

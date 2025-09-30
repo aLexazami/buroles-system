@@ -1,21 +1,23 @@
 export function setupRoleSwitcher() {
+  // Desktop toggle
   const desktopBtn = document.getElementById('menu-btn-desktop');
-  const roleSwitcher = document.getElementById('role-switcher-desktop');
+  const roleSwitcherDesktop = document.getElementById('role-switcher-desktop');
 
-  if (desktopBtn && roleSwitcher) {
+  if (desktopBtn && roleSwitcherDesktop) {
     desktopBtn.addEventListener('click', e => {
       e.preventDefault();
-      roleSwitcher.classList.toggle('hidden');
+      roleSwitcherDesktop.classList.toggle('hidden');
     });
 
     document.addEventListener('click', e => {
-      if (!desktopBtn.contains(e.target) && !roleSwitcher.contains(e.target)) {
-        roleSwitcher.classList.add('hidden');
+      if (!desktopBtn.contains(e.target) && !roleSwitcherDesktop.contains(e.target)) {
+        roleSwitcherDesktop.classList.add('hidden');
       }
     });
   }
 
-  const roleLinks = document.querySelectorAll('#role-switcher-desktop a[data-role]');
+  // Role switching (desktop only)
+  const roleLinks = roleSwitcherDesktop?.querySelectorAll('[data-role]') || [];
   roleLinks.forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();

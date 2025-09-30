@@ -2,12 +2,12 @@
 include __DIR__ . '/dashboard-data.php';
 ?>
 <!-- 📣 Announcement Carousel -->
-<div class="rounded-b-2xl relative overflow-hidden min-h-[300px] sm:min-h-[400px]">
+<div class="w-full rounded-b-2xl relative overflow-hidden min-h-[300px] sm:min-h-[400px]">
   <h2 class="bg-emerald-600 py-3 text-lg sm:text-xl md:text-2xl font-bold text-white text-center tracking-wide flex items-center justify-center gap-2 sm:gap-4 px-4">
     <img src="/assets/img/announcement.png" alt="Announcements" class="h-10 w-10">Announcements
   </h2>
 
-  <div class="relative p-4 sm:p-6 md:p-8 rounded-b-2xl shadow-lg border border-emerald-600 min-h-[350px] sm:min-h-[455px] bg-white">
+  <div class="w-full relative p-4 sm:p-6 md:p-8 rounded-b-2xl shadow-lg border border-emerald-600 min-h-[350px] sm:min-h-[455px] bg-white">
     <?php
     if (
       !empty($_SESSION['user']) &&
@@ -28,41 +28,31 @@ include __DIR__ . '/dashboard-data.php';
         </button>
       </div>
     <?php endif; ?>
+
     <?php if (!empty($announcements)): ?>
-      <div id="announcement-carousel" class="relative">
+      <div id="announcement-carousel" class="w-full relative">
         <?php foreach ($announcements as $index => $note): ?>
           <div class="announcement-slide <?= $index === 0 ? '' : 'hidden' ?>">
-            <div class="p-4 sm:p-6 md:p-8 rounded-2xl min-h-[300px] sm:min-h-[350px] flex flex-col justify-between bg-emerald-50">
-              <div>
-                <?php
-                $isNew = strtotime($note['created_at']) >= strtotime('-1 days');
-                ?>
+            <div class="w-full bg-emerald-50 p-4 sm:p-6 md:p-8 rounded-2xl min-h-[350px] flex flex-col justify-between">
+              <div class="bg-amber-200">
+                <?php $isNew = strtotime($note['created_at']) >= strtotime('-1 days'); ?>
                 <?php if ($isNew): ?>
                   <span class="ml-2 px-2 py-1 text-xs w-fit font-medium bg-green-600 text-white rounded-full">New</span>
                 <?php endif; ?>
+
                 <div class="flex flex-col items-center justify-center gap-2 mb-6 text-center">
-                  <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 text-center">
+                  <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">
                     <?= ucwords(htmlspecialchars($note['title'])) ?>
                   </h3>
-                  <!-- 🏷️ Audience Type -->
                   <p class="text-xs font-semibold bg-emerald-700 p-1 text-white">
-                    <?php
-                    $roleMap = [
-                      '1' => 'For Staff',
-                      '2' => 'For Admin',
-                      '99' => 'For Super Admin',
-                      '' => 'For All',
-                      null => 'For All'
-                    ];
-                    echo $roleMap[$note['target_role_id']] ?? 'For All';
-                    ?>
+                    <?= $roleMap[$note['target_role_id']] ?? 'For All' ?>
                   </p>
-                  <!-- 📅 Date -->
                   <p class="text-xs text-gray-500 italic">
                     Posted on <?= date('F j, Y', strtotime($note['created_at'])) ?>
                   </p>
                 </div>
-                <p class="text-sm sm:text-base text-center leading-relaxed whitespace-pre-line cursor-pointer text-emerald-900 hover:text-emerald-700 transition px-2 sm:px-4"
+
+                <p class="w-full text-sm sm:text-base text-center leading-relaxed whitespace-pre-line cursor-pointer text-emerald-900 hover:text-emerald-700 transition px-2 sm:px-4"
                   data-viewer-trigger
                   data-id="<?= $note['id'] ?>"
                   data-title="<?= htmlspecialchars($note['title']) ?>"
@@ -72,9 +62,9 @@ include __DIR__ . '/dashboard-data.php';
                   <?= mb_strimwidth(sentenceCase($note['body']), 0, 180, '...') ?>
                 </p>
               </div>
+
               <?php if (!empty($_SESSION['user']) && (int) $_SESSION['user']['role_id'] === 99): ?>
                 <div class="mt-6 flex justify-end items-center gap-x-2">
-                  <!-- Delete Announcement Icon -->
                   <div class="relative group">
                     <form method="POST" action="/actions/announcement/delete-announcement.php">
                       <input type="hidden" name="announcement_id" value="<?= $note['id'] ?>">
@@ -83,8 +73,7 @@ include __DIR__ . '/dashboard-data.php';
                         <img src="/assets/img/delete-icon.png" alt="Delete Announcement" class="w-5 h-5" />
                       </button>
                     </form>
-                    <div
-                      class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-red-700 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none">
+                    <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-red-700 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none">
                       Delete Announcement
                     </div>
                   </div>
@@ -96,20 +85,20 @@ include __DIR__ . '/dashboard-data.php';
       </div>
 
       <!-- Navigation Arrows -->
-      <div class="absolute top-1/2 left-1 transform -translate-y-1/2 z-10">
-        <button id="prev-announcement" class=" hover:bg-green-400 px-3 py-3 rounded-full  transition cursor-pointer flex items-center justify-center" aria-label="Previous announcement">
+      <div class="absolute top-1/2 left-1 transform -translate-y-1/2">
+        <button id="prev-announcement" class="hover:bg-green-400 px-3 py-3 rounded-full transition cursor-pointer flex items-center justify-center" aria-label="Previous announcement">
           <img src="/assets/img/arrow-left.png" alt="Previous" class="h-6 w-6">
         </button>
       </div>
-      <div class="absolute top-1/2 right-1 transform -translate-y-1/2 z-10">
-        <button id="next-announcement" class=" hover:bg-green-400 px-3 py-3 rounded-full  transition cursor-pointer flex items-center justify-center" aria-label="Next announcement">
+      <div class="absolute top-1/2 right-1 transform -translate-y-1/2">
+        <button id="next-announcement" class="hover:bg-green-400 px-3 py-3 rounded-full transition cursor-pointer flex items-center justify-center" aria-label="Next announcement">
           <img src="/assets/img/arrow-right.png" alt="Next" class="h-6 w-6">
         </button>
       </div>
 
       <!-- Dot Indicators -->
-      <div class="mt-6 overflow-x-auto max-w-full sm:max-w-[300px] mx-auto flex justify-center px-4">
-        <div id="dot-track" class="flex space-x-2 transition-transform duration-300 ">
+      <div class="mt-6 w-full mx-auto flex justify-center px-4">
+        <div id="dot-track" class="flex space-x-2 transition-transform duration-300">
           <?php foreach ($announcements as $dotIndex => $_): ?>
             <button class="dot h-3 w-3 rounded-full bg-gray-300 opacity-50 transition cursor-pointer" data-index="<?= $dotIndex ?>" aria-label="Slide <?= $dotIndex + 1 ?>"></button>
           <?php endforeach; ?>
@@ -126,7 +115,7 @@ include __DIR__ . '/dashboard-data.php';
 </div>
 
 <!-- 📣 Announcement Modal -->
-<div id="announcementModal" class="fixed inset-0 z-50 hidden overflow-y-auto items-start justify-center px-4 sm:px-6">
+<div id="announcementModal" class="fixed inset-0 z-50 hidden overflow-y-auto items-start justify-center px-4 sm:px-8 lg:px-12">
 
   <!-- Fullscreen overlay -->
   <div class="fixed inset-0 bg-black opacity-50 z-0"></div>
@@ -135,7 +124,7 @@ include __DIR__ . '/dashboard-data.php';
   <div class="relative w-full flex justify-center z-10">
 
     <!-- Content box -->
-    <div class="bg-white border border-emerald-600 rounded shadow-lg w-full max-w-2xl sm:max-w-3xl md:max-w-4xl relative my-8 sm:my-12">
+    <div class="bg-white border border-emerald-600 rounded shadow-lg w-full max-w-screen-lg relative my-8 sm:my-12">
       <h2 class="bg-emerald-600 py-3 text-lg sm:text-xl md:text-2xl font-bold text-white text-center tracking-wide flex items-center justify-center gap-2 sm:gap-4 px-4">
         Create Announcements
       </h2>
@@ -162,10 +151,8 @@ include __DIR__ . '/dashboard-data.php';
               name="body"
               id="announcementBody"
               required
-              rows="4"
-              placeholder="Body"
-              class="peer w-full px-4 pt-6 pb-2 border border-gray-300 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-  </textarea>
+              rows="10"
+              class="peer w-full px-4 pt-6 pb-2 border border-gray-300 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"></textarea>
             <label for="announcementBody"
               class="absolute left-4 top-2 text-xs text-gray-500 font-semibold transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-emerald-600 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400">
               Body
