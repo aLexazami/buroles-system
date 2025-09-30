@@ -75,7 +75,7 @@ require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 
         <!-- Table Output -->
         <div class="overflow-x-auto">
-          <div id="respondentsTableContainer" class="min-w-full text-sm text-left"></div>
+          <div id="feedbackTableContainer" class="min-w-full text-sm text-left"></div>
         </div>
       </div>
     </section>
