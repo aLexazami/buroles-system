@@ -18,7 +18,7 @@ renderHead('My Account');
 
   <!-- Main Content Section -->
   <!-- Main Staff Section-->
-  <main class=" grid grid-cols-[248px_1fr]  min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <!-- Left Side Navigation -->
     <?php
     switch ($activeRole) {

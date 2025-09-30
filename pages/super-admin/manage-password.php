@@ -44,7 +44,7 @@ renderHead('Super Admin');
     <section class="m-4">
       <!-- Page Title -->
       <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
-        <img src="/assets/img/manage-user.png" class="w-5 h-5" alt="Manage icon">
+        <img src="/assets/img/manage-user.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Manage icon">
         <h1 class="font-bold text-lg">Manage Password</h1>
       </div>
 

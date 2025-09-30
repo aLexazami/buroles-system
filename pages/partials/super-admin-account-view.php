@@ -1,5 +1,5 @@
  <!-- 👤 Profile Overview -->
- <div class="bg-emerald-700 text-white p-5">
+ <div class="bg-emerald-700 text-white px-4 py-5 sm:px-6 sm:py-6">
    <h2 class="text-lg font-semibold">My Profile</h2>
  </div>
  <section class="bg-white p-6 rounded-b-lg shadow ">
@@ -10,18 +10,18 @@
        <!-- Avatar Preview -->
        <img id="avatar-preview"
          src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>"
-         class="h-35 w-35 rounded-full border-2 border-emerald-400 object-cover"
+         class="h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 rounded-full border-2 border-emerald-400 object-cover"
          alt="Profile Avatar">
        <!-- Hidden File Input -->
        <input type="file" name="avatar" id="avatar-upload" accept="image/*" class="sr-only">
        <!-- Trigger Button -->
        <button type="button"
          onclick="document.getElementById('avatar-upload').click()"
-         class="text-xs bg-gray-300 text-black px-3 py-1 rounded hover:bg-gray-400">
+         class="text-xs bg-gray-300 text-black px-3 py-1 rounded hover:bg-gray-400 cursor-pointer">
          Choose Image
        </button>
        <!-- Submit Button -->
-       <button type="submit" class="text-xs bg-emerald-500 text-white px-3 py-1 rounded hover:bg-emerald-600">
+       <button type="submit" class="text-xs bg-emerald-500 text-white px-3 py-1 rounded hover:bg-emerald-600 cursor-pointer">
          Update Avatar
        </button>
      </form>
@@ -52,7 +52,7 @@
    <h2 class="text-lg font-semibold">Account Settings</h2>
  </div>
  <!-- 🔐 Account Settings -->
- <section class="bg-white p-6 rounded-b-lg shadow grid grid-cols-2 gap-x-5 gap-y-8">
+ <section class="bg-white p-4 sm:p-6 rounded-b-lg shadow grid grid-cols-1 md:grid-cols-2 gap-6">
 
    <!-- ✉️ Update Email -->
    <div class="bg-white rounded-b-md shadow border border-emerald-600 ">
@@ -72,7 +72,7 @@
            class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2">
        </div>
        <div class="flex justify-end">
-         <button type="submit" class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600">
+         <button type="submit" class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600 cursor-pointer">
            Update Email
          </button>
        </div>
@@ -138,7 +138,7 @@
        </div>
 
        <div class="flex justify-end">
-         <button type="submit" class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600">
+         <button type="submit" class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-600 cursor-pointer">
            Update Password
          </button>
        </div>

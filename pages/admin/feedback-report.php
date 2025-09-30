@@ -16,9 +16,9 @@ renderHead('Admin');
     <?php include '../../includes/side-nav-admin.php' ?>
 
     <!-- Right Side Context Section -->
-    <section class="p-4">
+    <section class="m-4">
       <div class="bg-emerald-300 p-2 flex justify-center items-center gap-2 mb-5">
-        <img src="/assets/img/feedback-report.png" class="w-5 h-5">
+        <img src="/assets/img/feedback-report.png" class="w-5 h-5 sm:w-6 sm:h-6">
         <h1 class="font-bold text-lg">Feedback Report</h1>
       </div>
 

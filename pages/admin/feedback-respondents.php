@@ -13,10 +13,10 @@ renderHead('Admin');
   <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <?php include('../../includes/side-nav-admin.php'); ?>
 
-    <section class="m-4 md:m-4 md:my-10">
+    <section class="m-4">
       <!-- Page Title -->
       <div class="bg-emerald-300 p-2 flex justify-center items-center gap-2 mb-5">
-        <img src="/assets/img/feedback-respondent.png" class="w-5 h-5" alt="Feedback icon">
+        <img src="/assets/img/feedback-respondent.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Feedback icon">
         <h1 class="font-bold text-lg md:text-xl">Feedback Respondents</h1>
       </div>
 
