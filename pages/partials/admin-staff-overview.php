@@ -7,21 +7,21 @@ $staffUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
   <img src="/assets/img/archive-user.png" class="w-5 h-5" alt="Archive icon">
-  <h1 class="font-bold text-lg">Manage File</h1>
+  <h1 class="font-bold text-lg sm:text-xl">Manage File</h1>
 </div>
 
 <div>
-  <h2 class="text-xl font-semibold mb-4">Manage Staff Files</h2>
+  <h2 class="text-lg sm:text-xl font-semibold mb-4 px-2 sm:px-0">Manage Staff Files</h2>
 </div>
 
-<div class="bg-white shadow-2xl rounded-md p-4">
+<div class="bg-white shadow-2xl rounded-md p-4 sm:p-6">
   <!-- Search Staff -->
-  <div class="flex items-center gap-2 mb-4">
+  <div class="flex flex-wrap items-center gap-2 mb-4">
     <input
       type="text"
       id="staffSearch"
       placeholder="Search"
-      class="border px-3 py-2 rounded w-full max-w-md" />
+      class="border px-3 py-2 rounded w-full sm:max-w-md text-sm" />
     <button
       id="clearStaffSearch"
       class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
@@ -36,12 +36,16 @@ $staffUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $fileCount = function_exists('countUserFiles') ? countUserFiles($userPath) : 0;
       ?>
       <a href="file-manager.php?user_id=<?= $user['id'] ?>"
-        class="staff-item flex gap-4 items-center w-full p-2 hover:bg-emerald-50"
-        data-name="<?= strtolower($user['first_name'] . ' ' . $user['last_name']) ?>">
-        <span class="font-medium"><?= $index + 1 ?></span>
-        <span><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></span>
-        <span class="ml-auto text-sm text-gray-500"><?= $fileCount ?> file<?= $fileCount !== 1 ? 's' : '' ?></span>
-      </a>
+   class="staff-item flex items-center justify-between w-full p-2 hover:bg-emerald-50"
+   data-name="<?= strtolower($user['first_name'] . ' ' . $user['last_name']) ?>">
+  <div class="flex items-center gap-2 flex-grow">
+    <span class="font-medium w-6 text-center"><?= $index + 1 ?></span>
+    <span class="text-sm"><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></span>
+  </div>
+  <span class="text-sm text-gray-500 text-right">
+    <?= $fileCount ?> file<?= $fileCount !== 1 ? 's' : '' ?>
+  </span>
+</a>
     <?php endforeach; ?>
   </div>
 </div>

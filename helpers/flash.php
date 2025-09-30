@@ -46,10 +46,10 @@ if (!function_exists('setFlash')) {
       ];
 
       echo "<div role='alert' aria-live='assertive' data-alert
-    class='fixed top-15 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full px-4 py-3 border-2 rounded shadow-lg {$style['class']} flex items-center justify-between transition-all duration-300'>
+    class='fixed top-4 sm:top-15 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm sm:max-w-md px-4 py-3 border-2 rounded shadow-lg {$style['class']} flex items-center justify-between transition-all duration-300'>
     <div class='flex items-center space-x-3'>
-      <img src='{$style['icon']}' alt='{$type} icon' class='w-5 h-5'>
-      <span class='text-sm font-medium text-gray-800'>{$message}</span>
+      <img src='{$style['icon']}' alt='{$type} icon' class='w-4 sm:w-5 h-4 sm:h-5'>
+<span class='text-xs sm:text-sm font-medium text-gray-800'>{$message}</span>
     </div>
   </div>";
     }

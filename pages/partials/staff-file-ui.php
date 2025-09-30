@@ -1,10 +1,3 @@
-<div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
-  <img src="/assets/img/archive-user.png" class="w-5 h-5" alt="Archive icon">
-  <h1 class="font-bold text-lg">Manage File</h1>
-</div>
-<!-- Flash Messages -->
-<?php showFlash(); ?>
-
 <?php
 $trueRoleId   = (int)($_SESSION['original_role_id'] ?? 0);
 $activeRoleId = (int)($_SESSION['active_role_id'] ?? 1);
@@ -16,39 +9,39 @@ $safePath    = htmlspecialchars(trim($currentPath, '/'));
 $segments     = explode('/', $currentPath);
 $breadcrumbPath = '';
 ?>
-
+<div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
+  <img src="/assets/img/archive-user.png" class="w-5 h-5" alt="Archive icon">
+  <h1 class="font-bold text-lg">Manage File</h1>
+</div>
+<!-- Flash Messages -->
+<?php showFlash(); ?>
 
 <div class="flex flex-col gap-4">
   <!-- Folder Creation + Upload -->
-  <!-- New Button + Dropdown -->
   <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
     <div class="relative inline-block text-left py-4">
       <button type="button" id="newDropdownToggle"
-        class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 cursor-pointer"
+        class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 cursor-pointer text-sm sm:text-base"
         aria-label="Open new item menu" title="Create new folder or upload file">
         <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4 mr-2">
         <span>New</span>
       </button>
 
       <div id="newDropdownMenu"
-        class="absolute mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
-        <!-- New Folder Button -->
+        class="absolute mt-2 w-40 sm:w-48 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
         <button type="button" id="openCreateFolderModal"
-          class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md cursor-pointer"
-          aria-label="Create new folder">
+          class="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm sm:text-base cursor-pointer">
           <img src="/assets/img/new-folder.png" alt="New Folder" class="w-5 h-5">
           New Folder
         </button>
 
         <?php if (!empty($currentPath)): ?>
-          <!-- Upload File -->
           <form action="/controllers/upload-file.php" method="POST" enctype="multipart/form-data" id="uploadForm">
             <input type="hidden" name="path" value="<?= htmlspecialchars($currentPath) ?>">
             <input type="hidden" name="user_id" value="<?= $targetId ?>">
             <input type="file" name="file" id="uploadInput" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png" required>
             <button type="button" id="uploadTrigger"
-              class="flex justify-center items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 text-md cursor-pointer"
-              aria-label="Upload file to <?= htmlspecialchars($currentPath) ?>" title="Upload file">
+              class="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm sm:text-base cursor-pointer">
               <img src="/assets/img/file-upload.png" alt="Upload" class="w-5 h-5">
               File Upload
             </button>
@@ -58,34 +51,29 @@ $breadcrumbPath = '';
     </div>
   <?php endif; ?>
 
-
   <!-- Create Folder Modal -->
-  <div id="createFolderModal"
-    class="fixed inset-0  z-50 hidden items-center justify-center">
+  <div id="createFolderModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-    <div class="relative z-10 bg-white p-6 rounded-4xl shadow-md w-full max-w-md border border-emerald-500">
-      <h2 class="text-2xl  mb-4">New Folder</h2>
+    <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
+      <h2 class="text-xl sm:text-2xl mb-4">New Folder</h2>
       <form method="POST" action="/controllers/create-folder.php" class="flex flex-col gap-3" id="createFolderForm">
-        <input type="text" name="folder_name" placeholder="Folder name" class="border px-3 py-4 rounded" required>
-        <input type="hidden" name="path" id="createFolderPath"> <!-- ✅ Inject current path here -->
+        <input type="text" name="folder_name" placeholder="Folder name" class="border px-3 py-3 rounded text-sm sm:text-base" required>
+        <input type="hidden" name="path" id="createFolderPath">
         <div class="flex justify-end gap-2 mt-5">
-          <button type="button" id="cancelCreateFolder" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</button>
-          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Create</button>
+          <button type="button" id="cancelCreateFolder" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Create</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div class="bg-white shadow-2xl rounded-md p-4">
+  <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6">
     <!-- Breadcrumb -->
-    <div class="text-sm text-gray-500 flex items-center pb-3 gap-2">
+    <div class="text-sm text-gray-500 flex flex-wrap items-center pb-3 gap-2 overflow-x-auto whitespace-nowrap">
       <a href="?user_id=<?= $targetId ?>&path=" class="text-emerald-600 hover:underline">Home</a>
-
       <?php foreach ($segments as $index => $segment): ?>
-        <?php
-        if ($segment === '') continue;
-        $breadcrumbPath .= ($index > 0 ? '/' : '') . $segment;
-        ?>
+        <?php if ($segment === '') continue;
+        $breadcrumbPath .= ($index > 0 ? '/' : '') . $segment; ?>
         <span>/</span>
         <a href="?user_id=<?= $targetId ?>&path=<?= urlencode($breadcrumbPath) ?>" class="text-emerald-600 hover:underline">
           <?= htmlspecialchars($segment) ?>
@@ -93,16 +81,11 @@ $breadcrumbPath = '';
       <?php endforeach; ?>
     </div>
 
-
     <!-- Search -->
-    <div class="flex items-center gap-2 mb-4">
-      <input
-        type="text"
-        id="folderSearch"
-        placeholder="Search"
-        class="border px-3 py-2 rounded w-full max-w-md" />
-      <button
-        id="clearFolderSearch"
+    <div class="flex flex-wrap items-center gap-2 mb-4">
+      <input type="text" id="folderSearch" placeholder="Search"
+        class="border px-3 py-2 rounded w-full max-w-md text-sm" />
+      <button id="clearFolderSearch"
         class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
         Clear
       </button>
@@ -111,23 +94,28 @@ $breadcrumbPath = '';
     <!-- Unified Folder + File List -->
     <div class="flex flex-col divide-y divide-black-200" id="itemList">
       <!-- Sorting Controls -->
-      <div class="flex items-center gap-4 text-sm text-gray-700 pb-5">
+      <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-700 pb-5">
         <span>Sort by:</span>
         <a href="?path=<?= urlencode($currentPath) ?>&sort=name" class="hover:underline <?= $sortBy === 'name' ? 'font-bold' : '' ?>">Name</a>
         <a href="?path=<?= urlencode($currentPath) ?>&sort=modified" class="hover:underline <?= $sortBy === 'modified' ? 'font-bold' : '' ?>">Modified</a>
       </div>
 
       <!-- Header Row -->
-      <div class="flex px-2 py-2 items-center w-full text-sm text-gray-600 border-b ">
-        <div class="flex items-center w-full justify-between">
-          <div class="flex items-center gap-3 flex-grow">
+      <div class="flex flex-wrap px-2 py-2 items-center w-full text-sm text-gray-600 border-b">
+        <div class="flex flex-wrap items-center w-full justify-between gap-2 sm:gap-0">
+          <!-- Name Label -->
+          <div class="flex items-center gap-2 sm:gap-3 flex-grow">
             <span class="font-medium">Name</span>
           </div>
-          <div class="flex items-center text-center font-medium gap-3">
-            <span class="w-24">Files</span>
-            <span class="w-32">Modified</span>
-            <span class="w-24">Size</span>
+
+          <!-- Metadata Labels (Desktop Only) -->
+          <div class="hidden sm:flex items-center text-center font-medium gap-2 sm:gap-3">
+            <span class="w-24 text-xs sm:text-sm">Files</span>
+            <span class="w-32 text-xs sm:text-sm">Modified</span>
+            <span class="w-24 text-xs sm:text-sm">Size</span>
           </div>
+
+          <!-- Dot Menu Column -->
           <div class="w-10"></div>
         </div>
       </div>
@@ -138,55 +126,65 @@ $breadcrumbPath = '';
         $nextPath   = trim($currentPath . '/' . $folderName, '/');
         $menuId     = 'menu-' . md5($folderName);
         ?>
-        <div class="flex item folder-item hover:bg-emerald-50 px-2 gap-2 py-2">
+        <div class="flex items-center hover:bg-emerald-50 px-2 py-3 sm:py-2 gap-2 folder-item">
+          <!-- Folder Name -->
           <a href="?user_id=<?= $targetId ?>&path=<?= urlencode($nextPath) ?>"
-            class="flex justify-between items-center w-full"
+            class="flex items-center gap-2 sm:gap-3 flex-grow"
             title="Open folder <?= htmlspecialchars($folderName) ?>">
-            <div class="flex items-center gap-3 flex-grow">
-              <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5" title="<?= htmlspecialchars($folderName) ?>">
-              <span class="text-sm font-medium"><?= htmlspecialchars($folderName) ?></span>
-            </div>
-            <div class="flex items-center justify-between text-xs text-gray-500 gap-3">
-              <span class="w-24 text-center px-2 bg-gray-200 py-1 rounded">
-                <?= $folder['fileCount'] ?> file<?= $folder['fileCount'] !== 1 ? 's' : '' ?>
-                <?php if ($folder['fileCount'] === 0): ?>
-                  <span class="text-gray-400 italic ml-1">(empty)</span>
-                <?php endif; ?>
-              </span>
-              <span class="w-32 text-center"><?= $folder['modified'] ?></span>
-              <span class="w-24 text-center"><?= formatSize($folder['size']) ?></span>
-            </div>
+            <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5" title="<?= htmlspecialchars($folderName) ?>">
+            <span class="text-sm font-medium"><?= htmlspecialchars($folderName) ?></span>
           </a>
 
+          <!-- Metadata (Desktop Only) -->
+          <div class="hidden sm:flex items-center text-xs text-gray-500">
+            <span class="w-24 text-center px-2 bg-gray-200 py-1 rounded">
+              <?= $folder['fileCount'] ?> file<?= $folder['fileCount'] !== 1 ? 's' : '' ?>
+              <?php if ($folder['fileCount'] === 0): ?>
+                <span class="text-gray-400 italic ml-1">(empty)</span>
+              <?php endif; ?>
+            </span>
+            <span class="w-32 text-center"><?= $folder['modified'] ?></span>
+            <span class="w-24 text-center"><?= formatSize($folder['size']) ?></span>
+          </div>
 
-          <!-- Folder Menu -->
-          <div class="flex items-center gap-2 w-10 justify-end">
-            <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+          <!-- Dot Menu -->
+          <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+            <div class="w-10 flex justify-end">
               <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
                 data-target="<?= $menuId ?>"
                 aria-label="Open folder options for <?= htmlspecialchars($folderName) ?>">
                 <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
               </button>
-              <div id="<?= $menuId ?>" class="absolute right-18 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150  font-semibold">
-                <button class="flex items-center gap-3 cursor-pointer px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
-                  data-name="<?= htmlspecialchars($folderName) ?>"
-                  data-type="folder"
-                  data-path="<?= $safePath ?>"
-                  data-user-id="<?= $targetId ?>">
-                  <img src="/assets/img/edit-icon.png" alt="Key" class="w-4 h-4">
-                  Rename
-                </button>
-                <button class="flex items-center gap-3 cursor-pointer px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn text-red-600"
-                  data-name="<?= htmlspecialchars($folderName) ?>"
-                  data-type="folder"
-                  data-path="<?= $safePath ?>"
-                  data-user-id="<?= $targetId ?>">
-                  <img src="/assets/img/delete-icon.png" alt="Key" class="w-4 h-4">
-                  Delete
-                </button>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div id="<?= $menuId ?>" class="absolute right-4 sm:right-18 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150 font-semibold">
+              <!-- Actions -->
+              <button class="flex items-center gap-3 cursor-pointer px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
+                data-name="<?= htmlspecialchars($folderName) ?>"
+                data-type="folder"
+                data-path="<?= $safePath ?>"
+                data-user-id="<?= $targetId ?>">
+                <img src="/assets/img/edit-icon.png" alt="Key" class="w-4 h-4">
+                Rename
+              </button>
+              <button class="flex items-center gap-3 cursor-pointer px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn text-red-600"
+                data-name="<?= htmlspecialchars($folderName) ?>"
+                data-type="folder"
+                data-path="<?= $safePath ?>"
+                data-user-id="<?= $targetId ?>">
+                <img src="/assets/img/delete-icon.png" alt="Key" class="w-4 h-4">
+                Delete
+              </button>
+
+              <!-- Mobile Metadata (Only visible on mobile, below actions) -->
+              <div class="block sm:hidden px-4 py-2 text-gray-600 border-t">
+                <p class="text-xs"><strong>Files:</strong> <?= $folder['fileCount'] ?><?= $folder['fileCount'] === 0 ? ' (empty)' : '' ?></p>
+                <p class="text-xs"><strong>Modified:</strong> <?= $folder['modified'] ?></p>
+                <p class="text-xs"><strong>Size:</strong> <?= formatSize($folder['size']) ?></p>
               </div>
-            <?php endif; ?>
-          </div>
+            </div>
+          <?php endif; ?>
         </div>
       <?php endforeach; ?>
 
@@ -198,78 +196,91 @@ $breadcrumbPath = '';
           $isImage  = preg_match('/\.(jpg|jpeg|png|gif)$/i', $filename);
           $menuId   = 'menu-' . md5($filename);
           ?>
-          <div class="flex item file-item hover:bg-emerald-50 px-2 gap-2 py-2">
+          <div class="flex items-center hover:bg-emerald-50 px-2 py-3 sm:py-2 gap-2 file-item">
+            <!-- File Name -->
             <a href="<?= $fileUrl ?>" target="_blank"
-              class="flex justify-between items-center w-full cursor-default"
+              class="flex items-center gap-2 sm:gap-3 flex-grow cursor-default"
               title="Open <?= htmlspecialchars($filename) ?>">
-              <div class="flex items-center gap-3 flex-grow">
-                <img src="<?= getFileIcon($filename) ?>" alt="File icon" class="w-5 h-5" title="<?= htmlspecialchars($filename) ?>">
-                <span class="text-sm font-medium"><?= htmlspecialchars($filename) ?></span>
-              </div>
-              <div class="flex items-center text-xs text-gray-500 gap-3">
-                <span class="w-24 text-center text-gray-400 italic"></span>
-                <span class="w-32 text-center"><?= $file['modified'] ?></span>
-                <span class="w-24 text-center"><?= formatSize($file['size']) ?></span>
-              </div>
+              <img src="<?= getFileIcon($filename) ?>" alt="File icon" class="w-5 h-5" title="<?= htmlspecialchars($filename) ?>">
+              <span class="text-sm font-medium"><?= htmlspecialchars($filename) ?></span>
             </a>
 
-            <!-- File Menu -->
-            <div class="flex items-center gap-2 w-10 justify-end">
-              <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+            <!-- Metadata (Desktop Only) -->
+            <div class="hidden sm:flex items-center text-xs text-gray-500">
+              <span class="w-32 text-center"><?= $file['modified'] ?></span>
+              <span class="w-24 text-center"><?= formatSize($file['size']) ?></span>
+            </div>
+
+            <!-- Dot Menu -->
+            <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+              <div class="w-10 flex justify-end">
                 <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
                   data-target="<?= $menuId ?>"
                   aria-label="Open file options for <?= htmlspecialchars($filename) ?>">
                   <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
                 </button>
-                <div id="<?= $menuId ?>" class="absolute  right-18 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150  font-semibold ">
-                  <?php if ($isImage): ?>
-                    <a href="<?= $fileUrl ?>" target="_blank" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left">
-                      <img src="/assets/img/preview-icon.png" alt="Key" class="w-4 h-4">
-                      Preview
-                    </a>
-                  <?php endif; ?>
-                  <a href="<?= $fileUrl ?>" download class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left">
-                    <img src="/assets/img/download-icon.png" alt="Key" class="w-4 h-4">
-                    Download
+              </div>
+
+              <!-- Dropdown Menu -->
+              <div id="<?= $menuId ?>" class="absolute right-4 sm:right-18 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold">
+                <?php if ($isImage): ?>
+                  <a href="<?= $fileUrl ?>" target="_blank" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left">
+                    <img src="/assets/img/preview-icon.png" alt="Key" class="w-4 h-4">
+                    Preview
                   </a>
-                  <button class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn cursor-pointer"
-                    data-name="<?= htmlspecialchars($filename) ?>"
-                    data-type="file"
-                    data-path="<?= $safePath ?>"
-                    data-user-id="<?= $targetId ?>">
-                    <img src="/assets/img/edit-icon.png" alt="Key" class="w-4 h-4">
-                    Rename
-                  </button>
-                  <button class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn text-red-600 cursor-pointer"
-                    data-name="<?= htmlspecialchars($filename) ?>"
-                    data-type="file"
-                    data-path="<?= $safePath ?>"
-                    data-user-id="<?= $targetId ?>">
-                    <img src="/assets/img/delete-icon.png" alt="Key" class="w-4 h-4">
-                    Delete
-                  </button>
+                <?php endif; ?>
+
+                <a href="<?= $fileUrl ?>" download class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left">
+                  <img src="/assets/img/download-icon.png" alt="Key" class="w-4 h-4">
+                  Download
+                </a>
+
+                <button class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn cursor-pointer"
+                  data-name="<?= htmlspecialchars($filename) ?>"
+                  data-type="file"
+                  data-path="<?= $safePath ?>"
+                  data-user-id="<?= $targetId ?>">
+                  <img src="/assets/img/edit-icon.png" alt="Key" class="w-4 h-4">
+                  Rename
+                </button>
+
+                <button class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left delete-btn text-red-600 cursor-pointer"
+                  data-name="<?= htmlspecialchars($filename) ?>"
+                  data-type="file"
+                  data-path="<?= $safePath ?>"
+                  data-user-id="<?= $targetId ?>">
+                  <img src="/assets/img/delete-icon.png" alt="Key" class="w-4 h-4">
+                  Delete
+                </button>
+
+                <!-- Mobile Metadata (Only visible on mobile, below actions) -->
+                <div class="block sm:hidden px-4 py-2 text-gray-600 border-t">
+                  <p class="text-xs"><strong>Modified:</strong> <?= $file['modified'] ?></p>
+                  <p class="text-xs"><strong>Size:</strong> <?= formatSize($file['size']) ?></p>
                 </div>
-              <?php endif; ?>
-            </div>
+              </div>
+            <?php endif; ?>
           </div>
         <?php endforeach; ?>
-
-        <?php if (empty($files) && empty($folders)): ?>
-          <p class="text-gray-500 text-sm py-5">This folder is empty.</p>
-        <?php elseif (empty($files)): ?>
-          <p class="text-gray-400 text-sm italic py-3">No files found, but subfolders are present.</p>
-        <?php endif; ?>
       <?php endif; ?>
+
+      <!-- Empty State Messages -->
+      <?php if (empty($files) && empty($folders)): ?>
+  <p class="text-gray-500 text-sm py-5 px-4 text-center">This folder is empty.</p>
+<?php elseif (!empty($folders) && empty($files) && !empty($currentPath)): ?>
+  <p class="text-gray-400 text-sm italic py-3 px-4 text-center">No files found, but subfolders are present.</p>
+<?php endif; ?>
     </div>
   </div>
 </div>
 
+
 <!-- Rename Modal -->
 <div id="renameModal" role="dialog" aria-labelledby="renameTypeLabel"
-  class="fixed inset-0 bg-opacity-50 z-50 hidden items-center justify-center">
+  class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
   <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="relative bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 border border-emerald-500">
-    <h2 class="text-2xl  mb-4">
+  <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4">
       Rename <span id="renameTypeLabel"></span>
     </h2>
     <form id="renameForm" method="POST" action="/controllers/rename-item.php" class="flex flex-col gap-3">
@@ -277,11 +288,11 @@ $breadcrumbPath = '';
       <input type="hidden" name="old_name" id="renameOldName">
       <input type="hidden" name="user_id" id="renameUserId" value="<?= $targetId ?>">
       <input type="hidden" name="path" id="renamePath" value="<?= htmlspecialchars($currentPath) ?>">
-      <input type="text" name="new_name" id="renameNewName" class="border px-3 py-4 rounded" required>
+      <input type="text" name="new_name" id="renameNewName" class="border px-3 py-3 rounded text-sm sm:text-base" required>
       <small id="renameExtensionHint" class="text-xs text-gray-500 hidden"></small>
       <div class="flex justify-end gap-2 mt-5">
-        <button type="button" id="cancelRename" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</button>
-        <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Rename</button>
+        <button type="button" id="cancelRename" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Rename</button>
       </div>
     </form>
   </div>
@@ -289,13 +300,13 @@ $breadcrumbPath = '';
 
 <!-- Delete Modal -->
 <div id="deleteModal" role="dialog" aria-labelledby="deleteTypeLabel" aria-modal="true"
-  class="fixed inset-0 bg-opacity-50 z-50 hidden items-center justify-center">
+  class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
   <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 relative border border-emerald-500 transition-opacity duration-200">
-    <h2 class="text-2xl mb-4">
+  <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 relative border border-emerald-500 transition-opacity duration-200">
+    <h2 class="text-xl sm:text-2xl mb-4">
       Delete <span id="deleteTypeLabel"></span>?
     </h2>
-    <p class="text-md mb-4">
+    <p class="text-sm sm:text-base mb-4">
       Are you sure you want to delete <strong id="deleteItemName" class="text-red-700"></strong>? This action cannot be undone.
     </p>
     <form id="deleteForm" method="POST" action="/controllers/delete-item.php" class="flex flex-col gap-3">
@@ -305,11 +316,11 @@ $breadcrumbPath = '';
       <input type="hidden" name="user_id" id="deleteUserId" value="<?= $targetId ?>">
       <div class="flex justify-end gap-2 mt-5">
         <button type="button" id="cancelDelete"
-          class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 transition duration-150">
+          class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm transition duration-150 cursor-pointer">
           Cancel
         </button>
         <button type="submit"
-          class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 transition duration-150">
+          class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm transition duration-150 cursor-pointer">
           Delete
         </button>
       </div>

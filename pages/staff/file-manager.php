@@ -18,8 +18,12 @@ $sortBy         = $_GET['sort'] ?? 'name';
 $isElevatedViewer   = in_array($originalRoleId, [2, 99]);
 $isSwitchedToStaff  = $activeRoleId === 1;
 $showMultiUserView  = $isElevatedViewer && $isSwitchedToStaff;
+$isElevatedViewer = in_array($_SESSION['original_role_id'], [2, 99]);
+$isSwitchedToStaff = $_SESSION['active_role_id'] == 1;
+$showMultiUserView = $isElevatedViewer && $isSwitchedToStaff;
 
-function canManageFolder(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool {
+function canManageFolder(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool
+{
   if (in_array($originalRoleId, [2, 99])) return true;
   return $activeRoleId === 1 && $userId === $targetId;
 }
@@ -84,21 +88,19 @@ usort($files, function ($a, $b) use ($sortBy) {
 <body data-current-path="<?= htmlspecialchars($currentPath) ?>" class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
-  <main class="grid grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <?php include('../../includes/side-nav-staff.php'); ?>
 
-    <section class="m-4">
-      <?php
-      $isElevatedViewer = in_array($_SESSION['original_role_id'], [2, 99]);
-      $isSwitchedToStaff = $_SESSION['active_role_id'] == 1;
-      $showMultiUserView = $isElevatedViewer && $isSwitchedToStaff;
+    <section class="p-4 sm:p-6 md:p-8">
 
-      if ($showMultiUserView && !isset($_GET['user_id'])) {
-        include('../partials/admin-staff-overview.php');
-      } else {
-        include('../partials/staff-file-ui.php');
-      }
-      ?>
+        <?php
+        if ($showMultiUserView && !isset($_GET['user_id'])) {
+          include('../partials/admin-staff-overview.php');
+        } else {
+          include('../partials/staff-file-ui.php');
+        }
+        ?>
+
     </section>
   </main>
 
