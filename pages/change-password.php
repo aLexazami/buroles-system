@@ -3,6 +3,8 @@ require_once __DIR__ . '/../includes/bootstrap.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/user-utils.php';
+require_once __DIR__ . '/../helpers/head.php';
+
 
 if (!isset($_SESSION['user_id'])) {
   redirectTo('/index.php');
@@ -36,17 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $error = "Failed to update password. Please try again.";
   }
 }
+renderHead('Change Password');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Change Password</title>
-  <link href="/src/styles.css" rel="stylesheet">
-</head>
-
 <body class="bg-gradient-to-b from-white to-emerald-800 min-h-screen">
   <!-- Header Section -->
   <header class="bg-emerald-950 shadow-md sticky top-0 z-10 p-1">
