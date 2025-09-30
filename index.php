@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/bootstrap.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/helpers/head.php';
-renderHead('Login');
+renderHead('Login', true);
 ?>
 <body class="bg-gradient-to-b from-white to-emerald-800 min-h-screen flex flex-col">
   <!-- Header Section -->

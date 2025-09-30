@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/role-checker.php';
+require_once __DIR__ . '/../../helpers/head.php';
 
 if (!hasRoleSlug('admin') && !hasRoleSlug('super_admin')) {
   header('Location: /unauthorized.php');
@@ -27,20 +28,9 @@ if (!$user) {
 
 $middleInitial = $user['middle_name'] ? strtoupper($user['middle_name'][0]) . '.' : '';
 $fullName = trim("{$user['first_name']} {$middleInitial} {$user['last_name']}");
+renderHead('Super Admin');
 ?>
-<?php //include __DIR__ . '/../../includes/debug-panel.php'
-?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Manage Password</title>
-  <link href="/src/styles.css" rel="stylesheet" />
-</head>
-
+<?php //include __DIR__ . '/../../includes/debug-panel.php'?>
 <body class="bg-gray-100 min-h-screen flex flex-col">
   <!-- Header -->
   <?php include('../../includes/header.php'); ?>

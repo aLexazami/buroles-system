@@ -2,19 +2,13 @@
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/flash.php';
+require_once __DIR__ . '/../../helpers/head.php';
 
 $originalRole = $_SESSION['role_id'];
 $activeRole = $_SESSION['active_role_id'];
+renderHead('My Account');
 ?>
 <?php //include __DIR__ . '/../includes/debug-panel.php' ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/src/styles.css" rel="stylesheet" />
-  <title>My Account</title>
-</head>
 <body class="bg-gray-200 min-h-screen">
 
   <!-- Header Section -->

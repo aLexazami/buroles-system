@@ -1,29 +1,16 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../controllers/get-users.php';
+require_once __DIR__ . '/../../helpers/head.php';
 
 // Context for the table
 $title = "User Management";
 $showActions = true;
+renderHead('Super Admin');
 ?>
-<?php //include __DIR__ . '/../../includes/debug-panel.php'
-?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-  <link href="/src/styles.css" rel="stylesheet" />
-  <title><?= $title ?></title>
-</head>
-
+<?php //include __DIR__ . '/../../includes/debug-panel.php'?>
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 

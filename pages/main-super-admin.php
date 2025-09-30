@@ -3,18 +3,10 @@ require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/text-format.php';
+require_once __DIR__ . '/../helpers/head.php';
+renderHead('Super Admin');
 ?>
-<?php //include __DIR__ . '/../includes/debug-panel.php' 
-?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="../src/styles.css" rel="stylesheet">
-  <title>Super Admin Dashboard</title>
-</head>
+<?php //include __DIR__ . '/../includes/debug-panel.php'?>
 <body class="bg-gray-200 min-h-screen">
   <!-- Header Section -->
   <?php include '../includes/header.php' ?>

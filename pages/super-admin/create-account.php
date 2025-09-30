@@ -1,24 +1,13 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/head.php';
 
 $formMode = 'create'; // Used by user-form.php to determine mode
+renderHead('Super Admin');
 ?>
 <?php //include __DIR__ . '/../../includes/debug-panel.php' ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <link href="/src/styles.css" rel="stylesheet" />
-  <title>Create Account</title>
-</head>
-
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <!-- Header -->
   <?php include('../../includes/header.php'); ?>

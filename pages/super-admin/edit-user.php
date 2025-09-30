@@ -3,20 +3,13 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../controllers/get-edit-user.php';
+require_once __DIR__ . '/../../helpers/head.php';
 
 $formMode = 'edit';       // Used by user-form.php to determine mode
 $userData = $user ?? [];  // Pass user data to the form
+renderHead('Super Admin');
 ?>
 <?php //include __DIR__ . '/../../includes/debug-panel.php' ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Edit User</title>
-  <link href="/src/styles.css" rel="stylesheet" />
-</head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
   <!-- Header -->
   <?php include('../../includes/header.php'); ?>

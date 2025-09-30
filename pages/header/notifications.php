@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/flash.php';
+require_once __DIR__ . '/../../helpers/head.php';
 
 $userId = $_SESSION['user_id'] ?? null;
 $roleId = $_SESSION['original_role_id'] ?? null;
@@ -16,17 +17,8 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute(['userId' => $userId, 'roleId' => $roleId]);
 $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+renderHead('Notifications');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="/src/styles.css" rel="stylesheet" />
-  <title>Notifications</title>
-</head>
-
 <body class="bg-gray-200 min-h-screen">
   <?php include __DIR__ . '/../../includes/header.php'; ?>
 

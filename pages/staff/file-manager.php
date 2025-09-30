@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../helpers/path.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php';
 require_once __DIR__ . '/../../helpers/file-utils.php';
+require_once __DIR__ . '/../../helpers/head.php';
 
 $userId       = (int)($_SESSION['user_id'] ?? 0);
 $activeRoleId = (int)($_SESSION['active_role_id'] ?? 0);
@@ -74,17 +75,8 @@ usort($files, function ($a, $b) use ($sortBy) {
     ? strtotime($b['modified']) <=> strtotime($a['modified'])
     : strcasecmp($a['name'], $b['name']);
 });
+renderHead('Staff');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Manage Files</title>
-  <meta name="robots" content="noindex" />
-  <link href="/src/styles.css" rel="stylesheet" />
-</head>
-
 <body data-current-path="<?= htmlspecialchars($currentPath) ?>" class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 

@@ -3,17 +3,9 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../helpers/message-router.php';
+require_once __DIR__ . '/../../helpers/head.php';
+renderHead('Messages');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="/src/styles.css" rel="stylesheet" />
-  <title>Messages</title>
-</head>
-
 <body class="bg-gray-200 min-h-screen">
   <?php include __DIR__ . '/../../includes/header.php'; ?>
   <main class="grid grid-cols-[248px_1fr] min-h-screen">

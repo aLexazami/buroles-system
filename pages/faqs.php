@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/src/styles.css" rel="stylesheet">
-  <title>BES Feedback Form</title>
-</head>
+<?php
+require_once __DIR__ . '/../helpers/head.php';
+renderHead('FAQs', true);
+?>
 <body class="bg-gradient-to-b from-white to-emerald-800 min-h-screen flex flex-col ">
   <!-- Header Section -->
   <header class=" bg-emerald-950 shadow-md sticky-top-0 z-10 p-1">
