@@ -1,17 +1,9 @@
 <?php
-require_once  __DIR__ . '/../../auth/session.php';
-require_once  __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../auth/session.php';
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/head.php';
+renderHead('Admin');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/src/styles.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-  <title>Feedback Report</title>
-</head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col">
 
@@ -36,27 +28,6 @@ require_once  __DIR__ . '/../../config/database.php';
             id="serviceSelect"
             placeholder="Select a service..."
             class="w-full p-2 rounded-lg border border-gray-300 bg-white shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400">
-            <option value="" disabled selected>Select a service</option>
-            <?php
-            $stmt = $pdo->query("
-    SELECT s.id, s.name, sc.name AS category
-    FROM services s
-    JOIN service_categories sc ON s.category_id = sc.id
-    ORDER BY sc.name, s.name
-  ");
-            $grouped = [];
-            while ($row = $stmt->fetch()) {
-              $grouped[$row['category']][] = $row;
-            }
-
-            foreach ($grouped as $category => $services) {
-              echo "<optgroup label=\"" . htmlspecialchars($category) . "\">";
-              foreach ($services as $service) {
-                echo "<option value=\"{$service['id']}\">" . htmlspecialchars($service['name']) . "</option>";
-              }
-              echo "</optgroup>";
-            }
-            ?>
           </select>
         </div>
       </div>
@@ -75,24 +46,7 @@ require_once  __DIR__ . '/../../config/database.php';
   <script src="/assets/js/date-time.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
   <script>
-    new TomSelect('#serviceSelect', {
-      maxOptions: 1000,
-      dropdownClass: 'dropdown-content',
-      controlInput: '<input>',
-      render: {
-        option: function(data, escape) {
-          return `<div class="ts-option-custom">${escape(data.text)}</div>`;
-        },
-        optgroup_header: function(data, escape) {
-          return `
-          <div class="px-4 py-1 text-xs font-bold text-gray-900 uppercase tracking-wide">
-            ${escape(data.label)}
-          </div>
-        `;
-        }
-      }
-    });
+
   </script>
 </body>
-
 </html>

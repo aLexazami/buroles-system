@@ -1,3 +1,25 @@
+fetch('/controllers/get-services-report.php')
+  .then(res => res.json())
+  .then(data => {
+    new TomSelect('#serviceSelect', {
+      options: data.options,
+      optgroups: data.optgroups,
+      optgroupField: 'category',
+      labelField: 'name',
+      valueField: 'id',
+      dropdownClass: 'dropdown-content',
+      controlInput: '<input>',
+      render: {
+        option: function (data, escape) {
+          return `<div class="ts-option-custom">${escape(data.name)}</div>`;
+        },
+        optgroup_header: function (data, escape) {
+          return `<div class="px-4 py-1 text-xs font-bold text-gray-900 uppercase tracking-wide">${escape(data.label)}</div>`;
+        }
+      }
+    });
+  });
+
 document.getElementById('serviceSelect').addEventListener('change', function () {
   const serviceId = this.value;
   const serviceName = this.options[this.selectedIndex].text;

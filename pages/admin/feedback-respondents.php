@@ -3,17 +3,9 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/table-utils.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
+require_once __DIR__ . '/../../helpers/head.php';
+renderHead('Admin');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Feedback Respondents</title>
-  <link href="/src/styles.css" rel="stylesheet" />
-</head>
-
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
