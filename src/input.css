@@ -6,3 +6,7 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+.ts-option-custom {
+  @apply px-4 py-2 text-sm sm:text-base text-gray-700 hover:bg-emerald-100 hover:text-emerald-700 cursor-pointer rounded-md whitespace-normal transition duration-150 ease-in-out;
+}

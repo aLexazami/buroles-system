@@ -115,7 +115,7 @@ $hideSidebarButtonPages = ['feedback-details.php'];
       <!-- Mobile Menu -->
       <div class="md:hidden relative w-full">
         <div class="flex justify-end items-center">
-          <button id="menu-btn-mobile" class="cursor-pointer border p-2">
+          <button id="menu-btn-mobile" class="cursor-pointer  p-2">
             <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
           </button>
         </div>
