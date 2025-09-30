@@ -1,7 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../config/database.php';
@@ -18,13 +15,13 @@ renderHead('Super Admin');
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
-  <main class="grid grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <?php include('../../includes/side-nav-super-admin.php'); ?>
 
     <section class="m-4">
       <!-- Page Header -->
       <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
-        <img src="/assets/img/archive-user.png" class="w-5 h-5" alt="Archive icon">
+        <img src="/assets/img/archive-user.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Archive icon">
         <h1 class="font-bold text-lg">Archived</h1>
       </div>
 
@@ -52,7 +49,7 @@ renderHead('Super Admin');
       <?php showFlash(); ?>
 
       <!-- User Table -->
-      <div class="p-6 bg-white rounded-lg shadow-md">
+      <div class="p-6 bg-white rounded-lg shadow-md ">
         <?php include(__DIR__ . '/../../components/user-table.php'); ?>
       </div>
     </section>

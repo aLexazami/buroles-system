@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../helpers/table-utils.php';
 ?>
 <?php if (!isset($users) || !is_array($users) || empty($users)): ?>
-  <p class="text-red-600">No user data available.</p>
+  <p class="text-red-600 min-h-screen">No user data available.</p>
 <?php else: ?>
   <!-- Search Bar -->
   <?php include('../../components/search-bar.php'); ?>
@@ -10,15 +10,15 @@ require_once __DIR__ . '/../helpers/table-utils.php';
   <?php $isSuperAdmin = ($_SESSION['role_id'] ?? 0) === 99; ?>
 
   <!-- User Table -->
-  <div class="overflow-x-auto rounded-lg shadow-sm">
+  <div class="overflow-x-auto rounded-lg shadow-sm  min-h-screen">
     <table class="min-w-full table-auto border-transparent">
       <thead class="bg-emerald-600 text-white">
         <tr>
-          <th class="px-2 py-2 text-left text-xs sm:text-sm md:text-base"><?= sortLink('ID', 'id') ?></th>
-          <th class="px-2 py-2 text-left text-xs sm:text-sm md:text-base"><?= sortLink('Full Name', 'last_name') ?></th>
-          <th class="px-2 py-2 text-left text-xs sm:text-sm md:text-base"><?= sortLink('Username', 'username') ?></th>
-          <th class="px-2 py-2 text-left text-xs sm:text-sm md:text-base"><?= sortLink('Email', 'email') ?></th>
-          <th class="px-2 py-2 text-left text-xs sm:text-sm md:text-base"><?= sortLink('Role', 'role_name') ?></th>
+          <th class="px-4 py-2 text-left sm:text-sm md:text-base"><?= sortLink('ID', 'id') ?></th>
+          <th class="px-4 py-2 text-left sm:text-sm md:text-base"><?= sortLink('Full Name', 'last_name') ?></th>
+          <th class="px-4 py-2 text-left sm:text-sm md:text-base"><?= sortLink('Username', 'username') ?></th>
+          <th class="px-4 py-2 text-left sm:text-sm md:text-base"><?= sortLink('Email', 'email') ?></th>
+          <th class="px-4 py-2 text-left sm:text-sm md:text-base"><?= sortLink('Role', 'role_name') ?></th>
           <th class="px-4 py-2 text-left sm:text-sm md:text-base">Status</th>
           <th class="px-4 py-2 text-left sm:text-sm md:text-base">Actions</th>
         </tr>
