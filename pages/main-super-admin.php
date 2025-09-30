@@ -25,7 +25,7 @@ require_once __DIR__ . '/../helpers/text-format.php';
     <?php include '../includes/side-nav-super-admin.php' ?>
 
     <!-- Right Side Content -->
-    <section class="w-full sm:p-6 md:p-4">
+    <section class="w-full p-4">
       <?php showFlash(); ?>
       <?php include __DIR__ . '/dashboard/dashboard-card.php'; ?>
     </section>
