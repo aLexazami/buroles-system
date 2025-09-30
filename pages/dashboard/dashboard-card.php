@@ -2,12 +2,12 @@
 include __DIR__ . '/dashboard-data.php';
 ?>
 <!-- 📣 Announcement Carousel -->
-<div class="rounded-b-2xl col-span-2 relative overflow-hidden min-h-[400px]">
-  <h2 class="bg-emerald-600 py-3 text-2xl font-bold text-white text-center tracking-wide flex items-center justify-center gap-4">
+<div class="rounded-b-2xl relative overflow-hidden min-h-[300px] sm:min-h-[400px]">
+  <h2 class="bg-emerald-600 py-3 text-lg sm:text-xl md:text-2xl font-bold text-white text-center tracking-wide flex items-center justify-center gap-2 sm:gap-4 px-4">
     <img src="/assets/img/announcement.png" alt="Announcements" class="h-10 w-10">Announcements
   </h2>
 
-  <div class=" relative p-8 rounded-b-2xl shadow-lg border border-emerald-600 min-h-[455px] bg-white">
+  <div class="relative p-4 sm:p-6 md:p-8 rounded-b-2xl shadow-lg border border-emerald-600 min-h-[350px] sm:min-h-[455px] bg-white">
     <?php
     if (
       !empty($_SESSION['user']) &&
@@ -32,7 +32,7 @@ include __DIR__ . '/dashboard-data.php';
       <div id="announcement-carousel" class="relative">
         <?php foreach ($announcements as $index => $note): ?>
           <div class="announcement-slide <?= $index === 0 ? '' : 'hidden' ?>">
-            <div class="p-8 rounded-2xl  min-h-[350px] flex flex-col justify-between bg-emerald-50">
+            <div class="p-4 sm:p-6 md:p-8 rounded-2xl min-h-[300px] sm:min-h-[350px] flex flex-col justify-between bg-emerald-50">
               <div>
                 <?php
                 $isNew = strtotime($note['created_at']) >= strtotime('-1 days');
@@ -41,7 +41,7 @@ include __DIR__ . '/dashboard-data.php';
                   <span class="ml-2 px-2 py-1 text-xs w-fit font-medium bg-green-600 text-white rounded-full">New</span>
                 <?php endif; ?>
                 <div class="flex flex-col items-center justify-center gap-2 mb-6 text-center">
-                  <h3 class="text-2xl font-bold text-gray-800">
+                  <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 text-center">
                     <?= ucwords(htmlspecialchars($note['title'])) ?>
                   </h3>
                   <!-- 🏷️ Audience Type -->
@@ -62,8 +62,7 @@ include __DIR__ . '/dashboard-data.php';
                     Posted on <?= date('F j, Y', strtotime($note['created_at'])) ?>
                   </p>
                 </div>
-                <p
-                  class="text-base text-center leading-relaxed whitespace-pre-line cursor-pointer text-emerald-900 hover:text-emerald-700 transition"
+                <p class="text-sm sm:text-base text-center leading-relaxed whitespace-pre-line cursor-pointer text-emerald-900 hover:text-emerald-700 transition px-2 sm:px-4"
                   data-viewer-trigger
                   data-id="<?= $note['id'] ?>"
                   data-title="<?= htmlspecialchars($note['title']) ?>"
@@ -109,7 +108,7 @@ include __DIR__ . '/dashboard-data.php';
       </div>
 
       <!-- Dot Indicators -->
-      <div class="mt-6 overflow-hidden max-w-[300px] mx-auto flex justify-center">
+      <div class="mt-6 overflow-x-auto max-w-full sm:max-w-[300px] mx-auto flex justify-center px-4">
         <div id="dot-track" class="flex space-x-2 transition-transform duration-300 ">
           <?php foreach ($announcements as $dotIndex => $_): ?>
             <button class="dot h-3 w-3 rounded-full bg-gray-300 opacity-50 transition cursor-pointer" data-index="<?= $dotIndex ?>" aria-label="Slide <?= $dotIndex + 1 ?>"></button>
@@ -118,7 +117,7 @@ include __DIR__ . '/dashboard-data.php';
       </div>
 
     <?php else: ?>
-      <div class="flex flex-col items-center justify-center py-20 text-gray-500 space-y-4">
+      <div class="flex flex-col items-center justify-center py-10 sm:py-20 text-gray-500 space-y-4 text-center px-4">
         <img src="/assets/img/no-announcement-icon.png" alt="No announcements" class="h-20 w-20 opacity-50">
         <p class="text-lg italic">No announcements available.</p>
       </div>
@@ -127,7 +126,7 @@ include __DIR__ . '/dashboard-data.php';
 </div>
 
 <!-- 📣 Announcement Modal -->
-<div id="announcementModal" class="fixed inset-0 z-50 hidden overflow-y-auto items-start justify-center">
+<div id="announcementModal" class="fixed inset-0 z-50 hidden overflow-y-auto items-start justify-center px-4 sm:px-6">
 
   <!-- Fullscreen overlay -->
   <div class="fixed inset-0 bg-black opacity-50 z-0"></div>
@@ -136,12 +135,12 @@ include __DIR__ . '/dashboard-data.php';
   <div class="relative w-full flex justify-center z-10">
 
     <!-- Content box -->
-    <div class="bg-white border border-emerald-600 rounded shadow-lg w-full max-w-4xl relative my-12">
-      <h2 class="bg-emerald-600 py-3 text-2xl font-bold text-white text-center tracking-wide flex items-center justify-center gap-4">
+    <div class="bg-white border border-emerald-600 rounded shadow-lg w-full max-w-2xl sm:max-w-3xl md:max-w-4xl relative my-8 sm:my-12">
+      <h2 class="bg-emerald-600 py-3 text-lg sm:text-xl md:text-2xl font-bold text-white text-center tracking-wide flex items-center justify-center gap-2 sm:gap-4 px-4">
         Create Announcements
       </h2>
 
-      <div class="p-6 space-y-6 text-sm text-gray-800">
+      <div class="p-4 sm:p-6 space-y-6 text-sm sm:text-base text-gray-800">
         <form method="POST" action="/controllers/create-announcement.php" class="space-y-6">
           <!-- Title Field -->
           <div class="relative">
@@ -176,7 +175,7 @@ include __DIR__ . '/dashboard-data.php';
           <!-- Role Selector with Checkboxes -->
           <div class="relative space-y-2">
             <label class="font-semibold text-gray-500 text-xs block">Audience</label>
-            <div class="flex flex-wrap gap-4">
+            <div class="flex flex-wrap gap-2 sm:gap-4">
               <label class="inline-flex items-center gap-2">
                 <input type="checkbox" name="role_ids[]" value="100" class="role-checkbox accent-emerald-600">
                 <span>All</span>
@@ -197,7 +196,7 @@ include __DIR__ . '/dashboard-data.php';
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex justify-end gap-2 pt-4">
+          <div class="flex flex-wrap justify-end gap-2 pt-4">
             <button type="button" id="cancelAnnouncementModal"
               class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition shadow-sm cursor-pointer">
               Cancel

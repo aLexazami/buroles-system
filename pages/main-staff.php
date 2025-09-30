@@ -22,12 +22,12 @@ require_once __DIR__ . '/../helpers/text-format.php';
 
   <!-- Main Content Section -->
   <!-- Main Staff Section-->
-  <main class=" grid grid-cols-[248px_1fr]  min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <!-- Left Side Navigation -->
     <?php include '../includes/side-nav-staff.php' ?>
 
     <!-- Right Side Content -->
-    <section class="m-4">
+    <section class="p-4 sm:p-6 md:p-8">
       <?php showFlash(); ?>
 
       <?php include __DIR__ . '/dashboard/dashboard-card.php';?>

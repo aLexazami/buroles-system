@@ -29,6 +29,8 @@ $notifStmt->execute([
 ]);
 $unreadNotifs = $notifStmt->fetchColumn() ?? 0;
 
+$totalBadgeCount = $unreadMessages + $unreadNotifs;
+
 // Include nav map after counts are available
 require_once __DIR__ . '/role-nav-map.php';
 
@@ -115,13 +117,21 @@ $hideSidebarButtonPages = ['feedback-details.php'];
       <!-- Mobile Menu -->
       <div class="md:hidden relative w-full">
         <div class="flex justify-end items-center">
-          <button id="menu-btn-mobile" class="cursor-pointer  p-2">
-            <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
-          </button>
+          <div class="relative">
+            <button id="menu-btn-mobile" class="cursor-pointer p-2">
+              <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
+            </button>
+
+            <?php if ($totalBadgeCount > 0): ?>
+              <span class="absolute -top-0 -left-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+                <?= $totalBadgeCount ?>
+              </span>
+            <?php endif; ?>
+          </div>
         </div>
 
         <div id="menu-links"
-          class="hidden absolute top-full right-0 mt-2 w-[40vw] bg-white shadow-lg rounded-sm z-50 p-3 space-y-2 ">
+          class="hidden absolute top-full right-0 mt-2 w-[35vw] bg-white shadow-lg rounded-sm z-50 p-3 space-y-2 ">
           <?php if ($canSwitchRoles && count($availableRoles) > 1): ?>
             <div class="border-b pb-2 mb-2">
               <p class="text-xs font-semibold text-gray-500 mb-1">Switch Role</p>
@@ -135,12 +145,17 @@ $hideSidebarButtonPages = ['feedback-details.php'];
 
           <?php foreach ($navItems as $item): ?>
             <?php $isActive = basename($item['link']) === $currentPage; ?>
-            <a href="<?= $item['link'] ?>" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 <?= $isActive ? 'bg-emerald-50 font-bold' : ' hover:bg-emerald-100' ?>">
-              <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 rounded-full mr-3">
-              <?= $item['label'] ?>
-              <span data-badge="<?= $item['label'] ?>" class="absolute -top-2 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center" style="<?= empty($item['count']) ? 'display:none;' : '' ?>">
-                <?= $item['count'] ?>
-              </span>
+            <a href="<?= $item['link'] ?>" class="menu-link flex items-center justify-between p-2 text-sm rounded-sm text-emerald-800 <?= $isActive ? 'bg-emerald-50 font-bold' : 'hover:bg-emerald-100' ?>">
+              <div class="flex items-center gap-3 relative">
+                <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 rounded-full">
+                <span class="text-sm"><?= $item['label'] ?></span>
+
+                <?php if (!empty($item['count'])): ?>
+                  <span data-badge="<?= $item['label'] ?>" class="absolute -top-2 -right-4 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+                    <?= $item['count'] ?>
+                  </span>
+                <?php endif; ?>
+              </div>
             </a>
           <?php endforeach; ?>
 
