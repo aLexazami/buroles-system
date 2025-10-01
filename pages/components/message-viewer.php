@@ -6,19 +6,21 @@
     ?>
 
    <!-- Focused Message Full View -->
-   <div class="flex-1  min-h-screen">
-     <div class="relative group inline-block mb-1">
-       <a href="<?= $backHref ?>" class="block rounded-full p-2 hover:bg-emerald-100 hover:scale-110 transition-transform duration-200">
-         <img src="/assets/img/back-icon.png" alt="Back" class="w-4 h-4" />
-       </a>
-       <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 font-semibold text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-10 transition duration-200">
-         <?= $backLabel ?>
-       </div>
-     </div>
+   <div class="flex-1 min-h-screen px-4 sm:px-6 py-4">
+     <div class="flex items-center mb-4">
+  <div class="relative group inline-block">
+    <a href="<?= $backHref ?>" class="block rounded-full p-2 hover:bg-emerald-100 hover:scale-110 transition-transform duration-200">
+      <img src="/assets/img/back-icon.png" alt="Back" class="w-4 h-4" />
+    </a>
+    <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 font-semibold text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-10 transition duration-200">
+      <?= $backLabel ?>
+    </div>
+  </div>
+</div>
 
 
      <div class="bg-white p-6 rounded shadow">
-       <div class="flex text-2xl gap-x-1 font-semibold text-emerald-700 mb-2">
+       <div class="flex flex-wrap text-xl sm:text-2xl gap-x-1 font-semibold text-emerald-700 mb-4">
          <p>Subject:</p>
          <p>
            <?= isset($focusedMessage['subject']) && trim($focusedMessage['subject']) !== ''
@@ -27,7 +29,7 @@
          </p>
        </div>
 
-       <div class="flex justify-between items-center text-sm text-gray-500 mb-1">
+       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm text-gray-500 gap-y-2 mb-4">
          <div>
            <strong><?= $label ?></strong> <?= htmlspecialchars($name) ?> |
            <strong>Date:</strong> <?= date('M d, Y H:i', strtotime($focusedMessage['created_at'])) ?>
@@ -63,7 +65,7 @@
          </div>
        </div>
 
-       <p class="text-gray-800 whitespace-pre-line mb-4">
+       <p class="text-gray-800 whitespace-pre-line mb-6 text-sm sm:text-base leading-relaxed">
          <?= htmlspecialchars($focusedMessage['content']) ?>
        </p>
 
