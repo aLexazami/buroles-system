@@ -8,15 +8,15 @@
    <!-- Focused Message Full View -->
    <div class="flex-1 min-h-screen px-4 sm:px-6 py-4">
      <div class="flex items-center mb-4">
-  <div class="relative group inline-block">
-    <a href="<?= $backHref ?>" class="block rounded-full p-2 hover:bg-emerald-100 hover:scale-110 transition-transform duration-200">
-      <img src="/assets/img/back-icon.png" alt="Back" class="w-4 h-4" />
-    </a>
-    <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 font-semibold text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-10 transition duration-200">
-      <?= $backLabel ?>
-    </div>
-  </div>
-</div>
+       <div class="relative group inline-block">
+         <a href="<?= $backHref ?>" class="block rounded-full p-2 hover:bg-emerald-100 hover:scale-110 transition-transform duration-200">
+           <img src="/assets/img/back-icon.png" alt="Back" class="w-4 h-4" />
+         </a>
+         <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 font-semibold text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-10 transition duration-200">
+           <?= $backLabel ?>
+         </div>
+       </div>
+     </div>
 
 
      <div class="bg-white p-6 rounded shadow">
@@ -37,8 +37,21 @@
 
          <!-- Actionbar Navigation -->
          <div class="flex justify-end items-center gap-x-2">
-           <?php if ($context !== 'sent'): ?>
-             <!-- Reply Icon with Tooltip -->
+           <?php if ($context === 'trash'): ?>
+             <!-- Restore Icon -->
+             <div class="relative group">
+               <form method="POST" action="/actions/message/restore-message.php">
+                 <input type="hidden" name="message_id" value="<?= $focusedMessage['id'] ?>">
+                 <button type="submit" class="rounded-full p-2 hover:bg-emerald-100 hover:scale-110 transition-transform duration-200 cursor-pointer">
+                   <img src="/assets/img/restore-icon.png" alt="Restore" class="w-4 h-4" />
+                 </button>
+               </form>
+               <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 font-semibold text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-10">
+                 Restore
+               </div>
+             </div>
+           <?php elseif ($context !== 'sent'): ?>
+             <!-- Reply Icon -->
              <div class="relative group">
                <a href="messages.php?view=compose&reply_to_id=<?= $focusedMessage['id'] ?>" class="block rounded-full p-2 hover:bg-emerald-100 hover:scale-110 transition-transform duration-200">
                  <img src="/assets/img/reply-icon.png" alt="Reply" class="w-4 h-4" />

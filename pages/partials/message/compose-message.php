@@ -68,7 +68,7 @@ if (!empty($replyToId)) {
 <section class="flex flex-col md:flex-row bg-white rounded-b-lg shadow">
   <?php include __DIR__ . '/../../../includes/side-nav-messages.php'; ?>
 
-  <div class="flex-1 p-4 sm:p-6 min-h-screen">
+  <div class="flex-1 px-4 sm:px-6 py-6 min-h-screen">
     <?php if ($replyContext): ?>
       <div class="bg-emerald-50 p-4 border-x-4 border-emerald-700 mb-4 rounded">
         <?php if (!empty($replyContext['sender_name'])): ?>
