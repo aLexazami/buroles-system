@@ -8,13 +8,9 @@ $originalRole = $_SESSION['role_id'];
 $activeRole = $_SESSION['active_role_id'];
 renderHead('My Account');
 ?>
-<?php //include __DIR__ . '/../includes/debug-panel.php' ?>
 <body class="bg-gray-200 min-h-screen">
-
   <!-- Header Section -->
-  <header class=" shadow-md sticky-top-0 z-10 bg-white">
     <?php include __DIR__ . '/../../includes/header.php' ?>
-  </header>
 
   <!-- Main Content Section -->
   <!-- Main Staff Section-->

@@ -29,7 +29,7 @@ $stmt->execute([$userId]);
 $trashCount = $stmt->fetchColumn() ?? 0;
 ?>
 
-<nav class="w-48 bg-gray-100 border-r border-gray-300 p-4 space-y-4 text-sm font-medium text-gray-700">
+<nav class="w-full md:w-48 bg-gray-100 border-r border-gray-300 p-4 space-y-4 text-sm font-medium text-gray-700">
   <!-- Compose -->
   <a href="/pages/header/messages.php?view=compose"
     class="flex items-center space-x-2 px-3 py-2 rounded transition

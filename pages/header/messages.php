@@ -7,8 +7,10 @@ require_once __DIR__ . '/../../helpers/head.php';
 renderHead('Messages');
 ?>
 <body class="bg-gray-200 min-h-screen">
+  <!-- Header Section -->
   <?php include __DIR__ . '/../../includes/header.php'; ?>
-  <main class="grid grid-cols-[248px_1fr] min-h-screen">
+
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <!-- Left Side Navigation -->
     <?php
     switch ($activeRole) {

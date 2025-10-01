@@ -62,13 +62,13 @@ if (!empty($replyToId)) {
 }
 ?>
 
-<div class="bg-emerald-700 text-white p-5">
+<div class="bg-emerald-700 text-white px-4 py-5 sm:px-6 sm:py-6">
   <h2 class="text-lg font-semibold"><?= ucfirst($context) ?> Messages</h2>
 </div>
-<section class="flex bg-white rounded-b-lg shadow">
+<section class="flex flex-col md:flex-row bg-white rounded-b-lg shadow">
   <?php include __DIR__ . '/../../../includes/side-nav-messages.php'; ?>
 
-  <div class="flex-1 p-6 min-h-screen">
+  <div class="flex-1 p-4 sm:p-6 min-h-screen">
     <?php if ($replyContext): ?>
       <div class="bg-emerald-50 p-4 border-x-4 border-emerald-700 mb-4 rounded">
         <?php if (!empty($replyContext['sender_name'])): ?>
@@ -107,7 +107,7 @@ if (!empty($replyToId)) {
             </svg>
           </button>
 
-          <div id="dropdown-menu" class="absolute z-10 mt-1 w-full bg-white border rounded shadow-lg hidden max-h-60 overflow-y-auto">
+          <div id="dropdown-menu" class="absolute z-10 mt-1 w-full bg-white border rounded shadow-lg hidden max-h-60 overflow-y-auto text-sm">
             <?php foreach ($roleLabels as $roleId => $roleName): ?>
               <?php if (!empty($groupedRecipients[$roleId])): ?>
                 <div class="px-2 py-1 bg-gray-100 text-xs font-semibold text-gray-600 uppercase"><?= htmlspecialchars($roleName) ?></div>
@@ -134,8 +134,8 @@ if (!empty($replyToId)) {
 
       <input type="hidden" name="reply_to_id" value="<?= htmlspecialchars($replyToId) ?>" />
 
-      <div class="sticky bottom-0 bg-white p-4 flex justify-end gap-x-2">
-        <a href="/pages/header/messages.php?view=inbox" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
+      <div class="sticky bottom-0 bg-white px-4 py-3 sm:px-6 flex flex-col sm:flex-row justify-end gap-2 text-center">
+        <a href="/pages/header/messages.php?view=inbox" class="px-4 py-2  bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
           Cancel
         </a>
         <button type="submit" class="bg-emerald-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-emerald-500">
