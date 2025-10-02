@@ -9,7 +9,7 @@ renderHead('FAQs', true);
 <body class="bg-gradient-to-b from-white to-emerald-800 min-h-screen flex flex-col">
 
   <!-- Header Section -->
-  <header class="bg-emerald-950 shadow-md sticky top-0 z-10 p-2">
+  <header class="bg-emerald-950 shadow-md  top-0 z-10 p-2">
     <section class="max-w-6xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-4">
         <img src="/assets/img/bes-logo1.png" alt="Burol Elementary School Logo" class="h-14 w-14 border rounded-full bg-white">
