@@ -26,9 +26,9 @@ renderHead('Admin');
 
   <!-- Center Content (padded and centered) -->
   <section class="order-2 lg:order-none lg:col-span-1 px-4 py-4 w-full">
-    <div class="space-y-4 max-w-full">
+    <div class="space-y-6 max-w-full bg-white h-full py-6 px-4 rounded shadow">
       <div class="space-y-4">
-        <div class="bg-emerald-300 flex justify-center items-center gap-2 py-2 rounded">
+        <div class="bg-gray-300 flex justify-center items-center gap-2 py-2 rounded">
           <h1 class="font-bold text-lg">Respondents</h1>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

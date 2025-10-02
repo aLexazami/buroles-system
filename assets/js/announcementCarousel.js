@@ -37,6 +37,8 @@ export function setupAnnouncementPagination() {
   const container = document.querySelector('#announcement-container');
   const pagination = document.querySelector('#pagination-container');
 
+  if (!container || !pagination) return;
+
   function loadPage(page = 1) {
     container.innerHTML = '<p>Loading...</p>';
 

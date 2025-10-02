@@ -34,7 +34,7 @@ $navItems = [
 </div>
 
 <!-- Desktop Sidebar -->
-<aside class="hidden md:block md:w-[248px] bg-gray-300 space-y-4">
+<aside class="hidden md:flex flex-col bg-gray-300  h-full min-h-screen w-[64px] lg:w-[248px]">
   <div class="flex flex-col items-center mt-4 mb-8">
     <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>"
       alt="Profile"
