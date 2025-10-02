@@ -14,7 +14,14 @@ $sharedNav = [
     'icon' => 'notif.png',
     'link' => '/pages/header/notifications.php',
   ],
+  'Logout' => [
+    'label' => 'Logout',
+    'icon' => 'logout.png',
+    'link' => '/controllers/log-out.php',
+    'isLogout' => true,
+  ],
 ];
+
 
 $roleId = $_SESSION['role_id'];
 $navItems = [];

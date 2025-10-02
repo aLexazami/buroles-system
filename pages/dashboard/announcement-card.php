@@ -12,7 +12,7 @@ $isSuperAdmin = $user && (int)$user['role_id'] === 99 && (int)$activeRoleId === 
 
   <!-- 🟢 Create Announcement Button (Super Admin only) -->
   <?php if ($isSuperAdmin): ?>
-    <div class="absolute top-0 left-0 flex justify-end items-center gap-x-2 z-10">
+    <div class="absolute top-0 left-0 flex justify-end items-center gap-x-2 ">
       <button id="openAnnouncementModal"
         class="relative group flex items-center justify-center p-2 transition cursor-pointer hover:scale-110"
         aria-label="Create Announcement">

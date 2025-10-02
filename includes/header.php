@@ -91,27 +91,28 @@ $hideSidebarButtonPages = ['feedback-details.php'];
 
         <!-- Nav Items -->
         <?php foreach ($navItems as $item): ?>
-          <?php $isActive = basename($item['link']) === $currentPage; ?>
+          <?php
+          $isActive = basename($item['link']) === $currentPage;
+          $isLogout = $item['isLogout'] ?? false;
+          ?>
           <div class="relative">
-            <a href="<?= $item['link'] ?>" class="group flex items-center p-2 text-sm rounded-sm <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>">
+            <a href="<?= $item['link'] ?>"
+              class="group flex items-center p-2 text-sm rounded-sm <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>">
               <div class="relative">
                 <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 invert">
-                <span data-badge="<?= $item['label'] ?>" class="absolute -top-3 -right-2 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center" style="<?= empty($item['count']) ? 'display:none;' : '' ?>">
-                  <?= $item['count'] ?>
-                </span>
+                <?php if (!empty($item['count'])): ?>
+                  <span data-badge="<?= $item['label'] ?>"
+                    class="absolute -top-3 -right-2 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+                    <?= $item['count'] ?>
+                  </span>
+                <?php endif; ?>
               </div>
-              <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0 whitespace-nowrap">
+              <span class="absolute top-10 opacity-0 translate-y-1 z-10 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0 whitespace-nowrap">
                 <?= $item['label'] ?>
               </span>
             </a>
           </div>
         <?php endforeach; ?>
-
-        <!-- Logout -->
-        <a href="/controllers/log-out.php" class="group flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-600">
-          <img src="/assets/img/logout.png" alt="Logout" class="h-5 w-5">
-          <span class="absolute top-10 opacity-0 translate-y-1 transition-all duration-300 text-sm bg-white text-emerald-800 px-2 py-1 rounded group-hover:opacity-100 group-hover:translate-y-0">Logout</span>
-        </a>
       </div>
 
       <!-- Mobile Menu -->
