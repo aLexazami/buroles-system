@@ -145,8 +145,12 @@ $hideSidebarButtonPages = ['feedback-details.php'];
           <?php endif; ?>
 
           <?php foreach ($navItems as $item): ?>
-            <?php $isActive = basename($item['link']) === $currentPage; ?>
-            <a href="<?= $item['link'] ?>" class="menu-link flex items-center justify-between p-2 text-sm rounded-sm text-emerald-800 <?= $isActive ? 'bg-emerald-50 font-bold' : 'hover:bg-emerald-100' ?>">
+            <?php
+            $isActive = basename($item['link']) === $currentPage;
+            $isLogout = $item['isLogout'] ?? false;
+            ?>
+            <a href="<?= $item['link'] ?>"
+              class="menu-link flex items-center justify-between p-2 text-sm rounded-sm text-emerald-800 <?= $isActive ? 'bg-emerald-50 font-bold' : 'hover:bg-emerald-100' ?>">
               <div class="flex items-center gap-3 relative">
                 <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 rounded-full">
                 <span class="text-sm"><?= $item['label'] ?></span>
@@ -159,11 +163,6 @@ $hideSidebarButtonPages = ['feedback-details.php'];
               </div>
             </a>
           <?php endforeach; ?>
-
-          <a href="/controllers/log-out.php" class="menu-link flex items-center p-2 text-sm rounded-sm text-emerald-800 hover:bg-emerald-100">
-            <img src="/assets/img/logout.png" alt="Logout" class="h-5 w-5 rounded-full mr-3">
-            Logout
-          </a>
         </div>
       </div>
     </div>
