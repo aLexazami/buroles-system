@@ -8,7 +8,9 @@ $publicPages = [
     'login.php',
     'reset-password.php',
     'feedback-form.php',
-    'faqs.php'
+    'faqs.php',
+    '404.php',
+    '500.php'
 ];
 
 $currentPage = basename($_SERVER['PHP_SELF']);
