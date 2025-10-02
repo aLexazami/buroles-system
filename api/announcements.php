@@ -2,8 +2,6 @@
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../config/database.php';
 
-header('Content-Type: application/json');
-
 $currentRoleId = $_SESSION['user']['role_id'] ?? null;
 $userId = $_SESSION['user']['id'] ?? null;
 
@@ -12,44 +10,58 @@ $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $offset = ($page - 1) * $limit;
 
 try {
+  // Count total announcements
   if ((int) $currentRoleId === 99) {
     $countStmt = $pdo->query("SELECT COUNT(*) FROM announcements");
     $totalAnnouncements = $countStmt->fetchColumn();
 
     $stmt = $pdo->prepare("
-      SELECT a.id, a.title, a.body, a.target_role_id, a.created_at, u.username AS author
+      SELECT a.id, a.title, a.body, a.target_role_id, r.name AS role_name, a.created_at, u.username AS author
       FROM announcements a
       JOIN users u ON a.created_by = u.id
+      LEFT JOIN roles r ON a.target_role_id = r.id
       ORDER BY a.created_at DESC
-      LIMIT ? OFFSET ?
+      LIMIT :limit OFFSET :offset
     ");
-    $stmt->execute([$limit, $offset]);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
   } else {
-    $countStmt = $pdo->prepare("SELECT COUNT(*) FROM announcements WHERE target_role_id IN (?, 100)");
-    $countStmt->execute([$currentRoleId]);
+    $countStmt = $pdo->prepare("
+      SELECT COUNT(*) FROM announcements
+      WHERE target_role_id = :role_id OR target_role_id = 100
+    ");
+    $countStmt->execute([':role_id' => $currentRoleId]);
     $totalAnnouncements = $countStmt->fetchColumn();
 
     $stmt = $pdo->prepare("
-      SELECT a.id, a.title, a.body, a.target_role_id, a.created_at, u.username AS author
+      SELECT a.id, a.title, a.body, a.target_role_id, r.name AS role_name, a.created_at, u.username AS author
       FROM announcements a
       JOIN users u ON a.created_by = u.id
-      WHERE a.target_role_id IN (?, 100)
+      LEFT JOIN roles r ON a.target_role_id = r.id
+      WHERE a.target_role_id = :role_id OR a.target_role_id = 100
       ORDER BY a.created_at DESC
-      LIMIT ? OFFSET ?
+      LIMIT :limit OFFSET :offset
     ");
-    $stmt->execute([$currentRoleId, $limit, $offset]);
+    $stmt->bindValue(':role_id', $currentRoleId, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
   }
 
   $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $totalPages = ceil($totalAnnouncements / $limit);
 
   foreach ($announcements as &$note) {
-    $readStmt = $pdo->prepare("SELECT 1 FROM announcement_reads WHERE user_id = ? AND announcement_id = ?");
+    // Check if user has read this announcement
+    $readStmt = $pdo->prepare("
+      SELECT 1 FROM announcement_reads
+      WHERE user_id = ? AND announcement_id = ?
+    ");
     $readStmt->execute([$userId, $note['id']]);
-    $alreadyRead = $readStmt->fetchColumn();
+    $note['already_read'] = (bool) $readStmt->fetchColumn();
 
-    $note['is_new'] = !$alreadyRead && strtotime($note['created_at']) >= strtotime('-1 days');
-
+    // Format time ago
     $createdAt = new DateTime($note['created_at']);
     $now = new DateTime();
     $interval = $createdAt->diff($now);

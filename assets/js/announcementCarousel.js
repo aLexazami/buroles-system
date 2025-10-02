@@ -1,54 +1,10 @@
-export function initAnnouncementCarousel() {
-  const slides = document.querySelectorAll('.announcement-slide');
-  const dots = document.querySelectorAll('.dot');
-  const dotTrack = document.getElementById('dot-track');
 
-  if (!dotTrack || slides.length === 0 || dots.length === 0) return; // 🛡️ Prevent error
 
-  const maxVisibleDots = 10;
-  const dotSize = 24;
-  let current = 0;
-
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
-      slide.classList.toggle('hidden', i !== index);
-    });
-
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('opacity-100', i === index);
-      dot.classList.toggle('bg-emerald-500', i === index);
-      dot.classList.toggle('bg-gray-300', i !== index);
-    });
-
-    const offset = Math.max(0, index - Math.floor(maxVisibleDots / 2));
-    dotTrack.style.transform = `translateX(-${offset * dotSize}px)`;
-  }
-
-  document.getElementById('prev-announcement')?.addEventListener('click', () => {
-    current = (current - 1 + slides.length) % slides.length;
-    showSlide(current);
-  });
-
-  document.getElementById('next-announcement')?.addEventListener('click', () => {
-    current = (current + 1) % slides.length;
-    showSlide(current);
-  });
-
-  dots.forEach(dot => {
-    dot.addEventListener('click', () => {
-      current = parseInt(dot.dataset.index);
-      showSlide(current);
-    });
-  });
-
-  showSlide(current);
-}
-
-export function bindAnnouncementReadTracking() {
+export function bindAnnouncementTriggers() {
   document.querySelectorAll('[data-viewer-trigger]').forEach(el => {
-    const id = el.dataset.id;
-
     el.addEventListener('click', () => {
+      const { id, title = '', body = '', roleName = '', date = '' } = el.dataset;
+
       fetch('/api/announcement-read.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -57,22 +13,7 @@ export function bindAnnouncementReadTracking() {
 
       el.classList.remove('bg-emerald-50', 'hover:bg-emerald-100');
       el.classList.add('bg-white', 'hover:bg-gray-100');
-
-      const badge = el.querySelector('span');
-      if (badge && badge.textContent.trim().toLowerCase() === 'new') {
-        badge.remove();
-      }
-    });
-  });
-}
-
-export function bindAnnouncementViewerTriggers() {
-  document.querySelectorAll('[data-viewer-trigger]').forEach(el => {
-    el.addEventListener('click', () => {
-      const title = el.dataset.title || '';
-      const body = el.dataset.body || '';
-      const role = el.dataset.role || '';
-      const date = el.dataset.date || '';
+      el.querySelector('.new-badge')?.remove();
 
       const viewerTitle = document.querySelector('#viewerTitle');
       if (viewerTitle) viewerTitle.textContent = title;
@@ -81,10 +22,9 @@ export function bindAnnouncementViewerTriggers() {
       if (viewerBody) viewerBody.textContent = body;
 
       const viewerMeta = document.querySelector('#viewerMeta');
-      if (viewerMeta) viewerMeta.textContent = `Posted for role ${role} on ${date}`;
+      if (viewerMeta) viewerMeta.textContent = `Posted for ${roleName} on ${date}`;
 
-      const viewer = document.querySelector('#announcement-viewer');
-      if (viewer) viewer.classList.remove('hidden');
+      document.querySelector('#announcement-viewer')?.classList.remove('hidden');
     });
   });
 
@@ -103,67 +43,80 @@ export function setupAnnouncementPagination() {
     fetch(`/api/announcements.php?page=${page}`)
       .then(res => res.json())
       .then(data => {
-        container.innerHTML = data.announcements.map(note => `
-          <div class="relative cursor-pointer p-5 border-l-4 border-emerald-600 transition ${note.is_new ? 'bg-emerald-50 hover:bg-emerald-100' : 'bg-white hover:bg-gray-100'}"
-            data-viewer-trigger
-            data-id="${note.id}"
-            data-title="${note.title}"
-            data-body="${note.body}"
-            data-role="${note.target_role_id}"
-            data-date="${new Date(note.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}">
-            ${note.is_new ? '<span class="new-badge absolute top-2 left-1 text-[8px] bg-green-600 text-white px-2 py-1 rounded-full z-10">New</span>' : ''}
-            <h3 class="font-semibold text-gray-800">${note.title}</h3>
-            <p class="text-xs text-gray-500 italic">${note.time_ago}</p>
-          </div>
-        `).join('');
-
-        pagination.innerHTML = `
-  <nav class="mt-6 flex justify-center items-center gap-2">
-    <button data-page="1"
-      ${data.pagination.current_page <= 1 ? 'disabled aria-disabled="true"' : ''}
-      class="px-3 py-1 rounded cursor-pointer text-sm text-white font-medium transition
-        ${data.pagination.current_page <= 1
-            ? 'border cursor-not-allowed'
-            : 'bg-emerald-800 hover:bg-emerald-700'}">
-      First
-    </button>
-
-    <button data-page="${data.pagination.current_page - 1}"
-      ${data.pagination.current_page <= 1 ? 'disabled aria-disabled="true"' : ''}
-      class="px-3 py-1 rounded cursor-pointer text-sm text-white font-medium transition
-        ${data.pagination.current_page <= 1
-            ? 'border cursor-not-allowed'
-            : 'bg-emerald-800 hover:bg-emerald-700'}">
-      Previous
-    </button>
-
-    <button data-page="${data.pagination.current_page + 1}"
-      ${data.pagination.current_page >= data.pagination.total_pages ? 'disabled aria-disabled="true"' : ''}
-      class="px-3 py-1 rounded cursor-pointer text-sm text-white font-medium transition
-        ${data.pagination.current_page >= data.pagination.total_pages
-            ? 'border  cursor-not-allowed'
-            : 'bg-emerald-800 hover:bg-emerald-700'}">
-      Next
-    </button>
-
-    <button data-page="${data.pagination.total_pages}"
-      ${data.pagination.current_page >= data.pagination.total_pages ? 'disabled aria-disabled="true"' : ''}
-      class="px-3 py-1 rounded cursor-pointer text-sm text-white font-medium transition
-        ${data.pagination.current_page >= data.pagination.total_pages
-            ? 'border  cursor-not-allowed'
-            : 'bg-emerald-800 hover:bg-emerald-700'}">
-      Last
-    </button>
-  </nav>
-`;
+        container.innerHTML = data.announcements.map(renderAnnouncementCard).join('');
+        pagination.innerHTML = renderPagination(data.pagination);
         bindPaginationButtons();
-        bindAnnouncementViewerTriggers();
-        bindAnnouncementReadTracking();
+        bindAnnouncementTriggers();
       })
       .catch(err => {
         container.innerHTML = '<p class="text-red-600">Failed to load announcements.</p>';
         console.error('Error loading announcements:', err);
       });
+  }
+
+  function renderAnnouncementCard(note) {
+    const dateFormatted = new Date(note.created_at).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+
+    const newBadge = !note.already_read
+      ? `<span class="new-badge absolute top-2 left-1 text-[8px] bg-green-600 text-white px-2 py-1 rounded-full z-10">New</span>`
+      : '';
+
+    const deleteButton = window.isSuperAdmin
+      ? `
+        <div class="mt-6 flex justify-end items-center gap-x-2">
+          <form method="POST" action="/actions/announcement/delete-announcement.php">
+            <input type="hidden" name="announcement_id" value="${note.id}">
+            <button type="submit"
+  class="rounded-full p-2 hover:bg-red-100 hover:scale-110 transition-transform duration-200 cursor-pointer"
+  onclick="event.stopPropagation();">
+  <img src="/assets/img/delete-icon.png" alt="Delete Announcement" class="w-5 h-5" />
+</button>
+          </form>
+        </div>
+      `
+      : '';
+
+    return `
+  <div class="relative p-5 border-l-4 border-emerald-600 transition ${note.already_read ? 'bg-white hover:bg-gray-100' : 'bg-emerald-50 hover:bg-emerald-100'}"
+    data-viewer-trigger
+    data-id="${note.id}"
+    data-title="${note.title}"
+    data-body="${note.body}"
+    data-role-name="${note.role_name}"
+    data-date="${dateFormatted}">
+    ${newBadge}
+    <h3 class="font-semibold text-gray-800 break-words">${note.title}</h3>
+    <hr class="mt-5 pt-2 border-gray-300">
+    <p class="text-xs text-gray-500 italic">${note.time_ago}</p>
+    ${deleteButton}
+  </div>
+`;
+  }
+
+  function renderPagination(p) {
+    return `
+      <nav class="mb-5 flex justify-center items-center gap-2">
+        ${renderPageButton('First', 1, p.current_page <= 1)}
+        ${renderPageButton('Previous', p.current_page - 1, p.current_page <= 1)}
+        ${renderPageButton('Next', p.current_page + 1, p.current_page >= p.total_pages)}
+        ${renderPageButton('Last', p.total_pages, p.current_page >= p.total_pages)}
+      </nav>
+    `;
+  }
+
+  function renderPageButton(label, page, disabled) {
+    return `
+      <button data-page="${page}"
+        ${disabled ? 'disabled aria-disabled="true"' : ''}
+        class="px-3 py-1 rounded text-sm text-white font-medium transition ${disabled ? 'border cursor-not-allowed' : 'bg-emerald-800 cursor-pointer hover:bg-emerald-700'
+      }">
+        ${label}
+      </button>
+    `;
   }
 
   function bindPaginationButtons() {

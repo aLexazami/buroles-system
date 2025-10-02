@@ -9,27 +9,38 @@ renderHead('Staff');
 <?php //include __DIR__ . '/../includes/debug-panel.php' ?>
 <body class="bg-gray-200 min-h-screen">
 
-  <!-- Header Section -->
+  <!-- Header -->
   <?php include '../includes/header.php' ?>
 
-  <!-- Main Content Section -->
-  <!-- Main Staff Section-->
-  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
-    <!-- Left Side Navigation -->
-    <?php include '../includes/side-nav-staff.php' ?>
+<!-- Main Layout -->
+<main class="grid grid-cols-1 md:grid-cols-[64px_1fr_300px] lg:grid-cols-[248px_1fr_300px]">
 
-    <!-- Right Side Content -->
-    <section class="w-full p-4">
-      <?php showFlash(); ?>
+  <?php showFlash(); ?>
 
-      <?php include __DIR__ . '/dashboard/dashboard-card.php';?>
-    </section>
-  </main>
+  <!-- Sidebar Left (flush to edge) -->
+  <div class="order-1 lg:order-none h-full">
+    <?php include '../includes/side-nav-admin.php' ?>
+  </div>
 
-  <!--Footer Section-->
+  <!-- Center Content (padded and centered) -->
+  <section class="order-2 lg:order-none lg:col-span-1 px-4 py-4 w-full">
+    <div class="space-y-4 max-w-full">
+      <h1>Header</h>
+    </div>
+  </section>
+
+  <!-- Announcement Card Right (flush to edge) -->
+  <aside class="order-3 lg:order-none h-full">
+    <?php include __DIR__ . '/dashboard/announcement-card.php'; ?>
+  </aside>
+
+</main>
+
+  <!-- Footer -->
   <?php include '../includes/footer.php' ?>
 
-
+  <!-- Scripts -->
+  <script src="../assets/js/update-dashboard.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="../assets/js/date-time.js"></script>
   <script src="/assets/js/auto-dismiss-alert.js"></script>

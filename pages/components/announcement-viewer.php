@@ -23,7 +23,7 @@
         <p id="viewerMeta" class="text-xs text-gray-500 italic text-center"></p>
 
         <!-- Title -->
-        <h2 id="viewerTitle" class="text-lg sm:text-xl md:text-2xl text-center font-bold uppercase"></h2>
+        <h2 id="viewerTitle" class="text-lg sm:text-xl md:text-2xl text-center font-bold uppercase break-words overflow-hidden"></h2>
 
         <!-- Body -->
         <div class="rounded-md p-3 sm:p-4 bg-gray-50">

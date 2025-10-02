@@ -18,7 +18,7 @@ import { setupAvatarPreview } from './avatar-preview.js';
 import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
 import { setupTableSorter } from '/assets/js/table-sorter.js';
-import { initAnnouncementCarousel, setupAnnouncementPagination } from './announcementCarousel.js';
+import { setupAnnouncementPagination } from './announcementCarousel.js';
 import { setupRoleCheckboxToggle } from './checkbox.js';
 
 
@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupRecipientDropdown();
   initNotificationActions();
   initAnnouncementModal();
-  initAnnouncementCarousel();
   initAnnouncementTriggers();
   setupSidebarToggle();
   setupRoleCheckboxToggle();
