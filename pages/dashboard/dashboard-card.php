@@ -63,7 +63,12 @@ include __DIR__ . '/dashboard-data.php';
                 </p>
               </div>
 
-              <?php if (!empty($_SESSION['user']) && (int) $_SESSION['user']['role_id'] === 99): ?>
+              <?php if (
+                !empty($_SESSION['user']) &&
+                (int) $_SESSION['user']['role_id'] === 99 &&
+                isset($_SESSION['active_role_id']) &&
+                (int) $_SESSION['active_role_id'] === 99
+              ): ?>
                 <div class="mt-6 flex justify-end items-center gap-x-2">
                   <div class="relative group">
                     <form method="POST" action="/actions/announcement/delete-announcement.php">
@@ -201,18 +206,3 @@ include __DIR__ . '/dashboard-data.php';
 
 <!-- 📖 Dynamic Announcement Viewer -->
 <?php require __DIR__ . '/../components/announcement-viewer.php'; ?>
-<script>
-  const allCheckbox = document.querySelector('input[value="100"]');
-  const otherCheckboxes = document.querySelectorAll('.role-checkbox:not([value="100"])');
-
-  allCheckbox.addEventListener('change', () => {
-    if (allCheckbox.checked) {
-      otherCheckboxes.forEach(cb => {
-        cb.checked = false;
-        cb.disabled = true;
-      });
-    } else {
-      otherCheckboxes.forEach(cb => cb.disabled = false);
-    }
-  });
-</script>

@@ -43,3 +43,23 @@ export function initAnnouncementCarousel() {
 
   showSlide(current);
 }
+
+export function setupAnnouncementCarousel() {
+  document.querySelectorAll('[data-viewer-trigger]').forEach(el => {
+    const id = el.dataset.id;
+
+    el.addEventListener('click', () => {
+      fetch('/ajax/mark-announcement-read.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `announcement_id=${encodeURIComponent(id)}`
+      });
+
+      el.classList.remove('bg-emerald-50', 'hover:bg-emerald-100');
+      el.classList.add('bg-white', 'hover:bg-gray-100');
+
+      const badge = el.querySelector('.new-badge');
+      if (badge) badge.remove();
+    });
+  });
+}
