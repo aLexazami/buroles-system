@@ -18,7 +18,7 @@ import { setupAvatarPreview } from './avatar-preview.js';
 import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
 import { setupTableSorter } from '/assets/js/table-sorter.js';
-import { initAnnouncementCarousel, setupAnnouncementCarousel } from './announcementCarousel.js';
+import { initAnnouncementCarousel, setupAnnouncementPagination } from './announcementCarousel.js';
 import { setupRoleCheckboxToggle } from './checkbox.js';
 
 
@@ -49,10 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnnouncementModal();
   initAnnouncementCarousel();
   initAnnouncementTriggers();
-  setupAnnouncementCarousel();
   setupSidebarToggle();
   setupRoleCheckboxToggle();
-
+  setupAnnouncementPagination();
 
   // Badge Updater
   startBadgePolling();

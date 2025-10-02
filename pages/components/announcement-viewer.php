@@ -1,5 +1,5 @@
 <!-- 📖 Dynamic Announcement Viewer -->
-<div id="announcementViewer" class="fixed inset-0 z-50 hidden overflow-y-auto items-start justify-center px-4 sm:px-6">
+<div id="announcement-viewer" class="fixed inset-0 z-50 hidden overflow-y-auto items-start justify-center px-4 sm:px-6">
 
   <!-- Fullscreen overlay -->
   <div class="fixed inset-0 bg-black opacity-50 z-0"></div>
