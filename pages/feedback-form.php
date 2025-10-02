@@ -198,10 +198,10 @@ renderHead('Feedback Form', true);
             <i>CC1. Which of the following best describes your awareness of a Citizen’s Charter?</i>
           </label>
           <div class="space-y-2">
-            <label class="block"><input type="radio" name="cc-1" value="1" class="mr-2"> I know what a Citizen’s Charter is and I saw this office’s Citizen’s Charter.</label>
-            <label class="block"><input type="radio" name="cc-1" value="2" class="mr-2"> I know what a Citizen’s Charter is but I did not see this office’s Citizen’s Charter.</label>
-            <label class="block"><input type="radio" name="cc-1" value="3" class="mr-2"> I learned of the Citizen’s Charter only when I saw this office’s Citizen’s Charter.</label>
-            <label class="block"><input type="radio" name="cc-1" value="4" class="mr-2"> I do not know what a Citizen’s Charter is and I did not see one in this office.</label>
+            <label class="block"><input type="radio" name="cc-1" value="1" class="mr-2">1.) I know what a Citizen’s Charter is and I saw this office’s Citizen’s Charter.</label>
+            <label class="block"><input type="radio" name="cc-1" value="2" class="mr-2">2.) I know what a Citizen’s Charter is but I did not see this office’s Citizen’s Charter.</label>
+            <label class="block"><input type="radio" name="cc-1" value="3" class="mr-2">3.) I learned of the Citizen’s Charter only when I saw this office’s Citizen’s Charter.</label>
+            <label class="block"><input type="radio" name="cc-1" value="4" class="mr-2">4.) I do not know what a Citizen’s Charter is and I did not see one in this office.</label>
           </div>
         </div>
 
@@ -211,11 +211,11 @@ renderHead('Feedback Form', true);
             <i>CC2. If aware of Citizen’s Charter, would you say that the CC of this office was …?</i>
           </label>
           <div class="space-y-2">
-            <label class="block"><input type="radio" name="cc-2" value="1" class="mr-2"> Easy to see</label>
-            <label class="block"><input type="radio" name="cc-2" value="2" class="mr-2"> Somewhat easy to see</label>
-            <label class="block"><input type="radio" name="cc-2" value="3" class="mr-2"> Difficult to see</label>
-            <label class="block"><input type="radio" name="cc-2" value="4" class="mr-2"> Not visible at all</label>
-            <label class="block"><input type="radio" name="cc-2" value="5" class="mr-2"> N/A</label>
+            <label class="block"><input type="radio" name="cc-2" value="1" class="mr-2">1.) Easy to see</label>
+            <label class="block"><input type="radio" name="cc-2" value="2" class="mr-2">2.) Somewhat easy to see</label>
+            <label class="block"><input type="radio" name="cc-2" value="3" class="mr-2">3.) Difficult to see</label>
+            <label class="block"><input type="radio" name="cc-2" value="4" class="mr-2">4.) Not visible at all</label>
+            <label class="block"><input type="radio" name="cc-2" value="5" class="mr-2">5.) N/A</label>
           </div>
         </div>
 
@@ -225,10 +225,10 @@ renderHead('Feedback Form', true);
             <i>CC3. How much did the CC help you in your transaction?</i>
           </label>
           <div class="space-y-2">
-            <label class="block"><input type="radio" name="cc-3" value="1" class="mr-2"> Helped very much</label>
-            <label class="block"><input type="radio" name="cc-3" value="2" class="mr-2"> Somewhat helped</label>
-            <label class="block"><input type="radio" name="cc-3" value="3" class="mr-2"> Did not help</label>
-            <label class="block"><input type="radio" name="cc-3" value="4" class="mr-2"> N/A</label>
+            <label class="block"><input type="radio" name="cc-3" value="1" class="mr-2">1.) Helped very much</label>
+            <label class="block"><input type="radio" name="cc-3" value="2" class="mr-2">2.) Somewhat helped</label>
+            <label class="block"><input type="radio" name="cc-3" value="3" class="mr-2">3.) Did not help</label>
+            <label class="block"><input type="radio" name="cc-3" value="4" class="mr-2">4.) N/A</label>
           </div>
         </div>
 
