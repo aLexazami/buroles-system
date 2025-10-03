@@ -36,7 +36,7 @@ renderHead('Super Admin');
   <?php include('../../includes/header.php'); ?>
 
   <!-- Main Layout -->
-  <main class="grid grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <!-- Sidebar -->
     <?php include('../../includes/side-nav-super-admin.php'); ?>
 
@@ -45,15 +45,15 @@ renderHead('Super Admin');
       <!-- Page Title -->
       <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
         <img src="/assets/img/manage-user.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Manage icon">
-        <h1 class="font-bold text-lg">Manage Password</h1>
+        <h1 class="font-bold text-base sm:text-lg md:text-xl">Manage Password</h1>
       </div>
 
       <!-- Flash Messages -->
       <?php showFlash(); ?>
-      <h2 class="text-lg   text-center bg-gray-200 p-2">Manage password for : <span class="text-emerald-800 font-bold"><?= htmlspecialchars($fullName) ?></span></h2>
+      <h2 class="text-base sm:text-lg text-center bg-gray-200 p-2">Manage password for : <span class="text-emerald-800 font-bold"><?= htmlspecialchars($fullName) ?></span></h2>
       <!--  Form -->
       <div class="p-6 bg-white rounded-bl-lg rounded-br-lg shadow-md">
-        <div class="max-w-lg  m-auto">
+        <div class="max-w-lg w-full mx-auto px-4 sm:px-6">
           <form action="/controllers/update-password.php" method="POST" class="space-y-4">
             <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
             <div class="relative">
@@ -94,7 +94,7 @@ renderHead('Super Admin');
             <?php endif; ?>
             <div class="flex justify-end gap-2">
               <a href="/pages/super-admin/manage-users.php" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</a>
-              <button type="submit" class="px-3 py-1 bg-emerald-700 text-white rounded hover:bg-emerald-500 cursor-pointer">Update</button>
+              <button type="submit" class="px-4 py-2 text-sm sm:text-base bg-emerald-700 text-white rounded hover:bg-emerald-500 cursor-pointer">Update</button>
             </div>
           </form>
         </div>
