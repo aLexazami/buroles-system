@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../includes/bootstrap.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../helpers/email-helper.php';
+require_once __DIR__ . '/../helpers/url-utils.php';
+
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,20 +31,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $token = bin2hex(random_bytes(32));
   $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
-  // Store token in password_resets table
+  error_log("Password reset token generated for user {$user['id']}: $token");
+
+  // Clear any existing tokens for this user
+  $pdo->prepare("DELETE FROM password_resets WHERE user_id = ?")->execute([$user['id']]);
+
+  // Store new token
   $stmt = $pdo->prepare("INSERT INTO password_resets (user_id, token, expires_at) VALUES (?, ?, ?)");
   $stmt->execute([$user['id'], $token, $expires]);
 
   // Send email with reset link
-  $resetLink = "https://yourdomain.com/pages/new-password.php?token=$token";
+  $resetLink = generateResetLink($token);
   $subject = "Password Reset Request";
   $message = "Click the link below to reset your password:\n\n$resetLink\n\nThis link expires in 1 hour.";
 
   // Use helper or native mail()
-sendEmail($email, $subject, $message);
+  sendEmail($email, $subject, $message);
 
-  $_SESSION['reset_message'] = 'Reset link sent! Please check your email.';
+  $_SESSION['reset_message'] = 'Reset link sent to ' . htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
   header('Location: /pages/reset-password.php');
   exit;
 }
-?>

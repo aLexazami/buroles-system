@@ -13,7 +13,7 @@ $reset = getResetRecord($pdo, $token);
 
 if (!$reset || strtotime($reset['expires_at']) < time() || $reset['used']) {
   setFlash('error', 'Invalid, expired, or already used reset link.');
-  header('Location: /index.php' . urlencode($token));
+  header('Location: /index.php?token=' . urlencode($token));
   exit;
 }
 
