@@ -32,7 +32,7 @@ class Database {
                 $message = "Database connection failed: " . $e->getMessage();
 
                 if ($_ENV['APP_ENV'] === 'local') {
-                    die("❌ " . $message);
+                    die("❌ PDO Error: " . $e->getMessage());
                 } else {
                     error_log(date('[Y-m-d H:i:s]') . " " . $message);
                     die("Database connection failed. Please contact the administrator.");

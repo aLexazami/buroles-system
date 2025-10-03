@@ -2,13 +2,25 @@
 // ✅ Load Composer dependencies
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// ✅ Load environment variables from .env
 $dotenvPath = __DIR__ . '/../';
-if (file_exists($dotenvPath . '.env')) {
-    $dotenv = Dotenv\Dotenv::createImmutable($dotenvPath);
+
+// ✅ Load base .env first to get APP_ENV
+$baseEnv = Dotenv\Dotenv::createImmutable($dotenvPath, '.env');
+$baseEnv->load();
+
+// ✅ Decide which env file to load based on APP_ENV
+$envFile = match ($_ENV['APP_ENV'] ?? 'production') {
+    'local' => '.env.local',
+    'production' => '.env.production',
+    default => '.env.production',
+};
+
+$envFullPath = $dotenvPath . $envFile;
+if (file_exists($envFullPath)) {
+    $dotenv = Dotenv\Dotenv::createImmutable($dotenvPath, $envFile);
     $dotenv->load();
 } else {
-    throw new RuntimeException("Missing .env file at $dotenvPath");
+    throw new RuntimeException("Missing $envFile file at $dotenvPath");
 }
 
 // ✅ Define global constants
