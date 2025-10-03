@@ -43,7 +43,7 @@ $hideSidebarButtonPages = ['feedback-details.php'];
 
     <?php if (!in_array($currentPage, $hideSidebarButtonPages)): ?>
       <!-- Mobile Menu Button For Side Nav -->
-      <button id="open-sidebar" class="border p-2 mr-4 md:hidden focus:outline-none cursor-pointer">
+      <button id="open-sidebar" class="p-2 mr-4 md:hidden focus:outline-none cursor-pointer">
         <img src="/assets/img/menu-icon.png" alt="Menu" class="h-8 w-9">
       </button>
     <?php endif; ?>
@@ -56,7 +56,7 @@ $hideSidebarButtonPages = ['feedback-details.php'];
     </div>
 
     <!-- Date and Time (Desktop Only) -->
-    <div class="hidden md:block text-sm font-bold text-right w-full md:w-auto">
+    <div class="hidden md:block md:text-xs lg:text-base truncate font-bold text-right w-full md:w-auto">
       <span id="date-time"></span>
     </div>
 
@@ -72,8 +72,8 @@ $hideSidebarButtonPages = ['feedback-details.php'];
           <button id="menu-btn-desktop" class="flex items-center space-x-3 cursor-pointer">
             <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
             <div>
-              <p class="font-medium"><?= htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']) ?></p>
-              <p class="uppercase text-sm"><?= htmlspecialchars($_SESSION['role_name']) ?></p>
+              <p class="font-medium md:text-sm lg:text-base"><?= htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']) ?></p>
+              <p class="uppercase md:text-xs lg:text-sm"><?= htmlspecialchars($_SESSION['role_name']) ?></p>
             </div>
           </button>
 
@@ -132,12 +132,12 @@ $hideSidebarButtonPages = ['feedback-details.php'];
         </div>
 
         <div id="menu-links"
-          class="hidden absolute top-full right-0 mt-2 w-[35vw] bg-white shadow-lg rounded-sm z-50 p-3 space-y-2  ">
+  class="hidden absolute top-full right-0 mt-2 w-[50vw] sm:w-[30vw]  bg-white shadow-lg rounded-sm z-50 p-3 space-y-2 overflow-x-auto max-w-[95vw]">
           <?php if ($canSwitchRoles && count($availableRoles) > 1): ?>
             <div class="border-b pb-2 mb-2">
-              <p class="text-xs font-semibold text-gray-500 mb-1">Switch Role</p>
+              <p class="text-xs sm:text-sm font-semibold text-gray-500 mb-1">Switch Role</p>
               <?php foreach ($availableRoles as $role): ?>
-                <a href="#" class="block px-3 py-2 text-sm rounded hover:bg-emerald-100 text-emerald-800 <?= $role == $activeRole ? 'font-bold bg-emerald-50' : '' ?>" data-role="<?= $role ?>">
+                <a href="#" class="block px-3 py-2 text-xs sm:text-sm md:text-base rounded hover:bg-emerald-100 text-emerald-800 <?= $role == $activeRole ? 'font-bold bg-emerald-50' : '' ?>" data-role="<?= $role ?>">
                   <?= $role == 1 ? 'Staff' : ($role == 2 ? 'Admin' : 'Super Admin') ?>
                 </a>
               <?php endforeach; ?>
@@ -153,7 +153,7 @@ $hideSidebarButtonPages = ['feedback-details.php'];
               class="menu-link flex items-center justify-between p-2 text-sm rounded-sm text-emerald-800 <?= $isActive ? 'bg-emerald-50 font-bold' : 'hover:bg-emerald-100' ?>">
               <div class="flex items-center gap-3 relative">
                 <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 rounded-full">
-                <span class="text-sm"><?= $item['label'] ?></span>
+                <span class="text-xs sm:text-sm md:text-base break-words"><?= $item['label'] ?></span>
 
                 <?php if (!empty($item['count'])): ?>
                   <span data-badge="<?= $item['label'] ?>" class="absolute -top-2 -right-4 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
@@ -169,9 +169,9 @@ $hideSidebarButtonPages = ['feedback-details.php'];
   </section>
 
   <!-- Date and Time (Mobile Only) -->
-  <div class="block md:hidden text-center text-sm font-bold bg-emerald-950 text-white py-1">
-    <span id="date-time"></span>
-  </div>
+ <div class="block md:hidden text-center font-bold bg-emerald-950 text-white py-1 text-xs sm:text-sm truncate">
+  <span id="date-time"></span>
+</div>
 </header>
 <!-- Role Welcome -->
 <div>
