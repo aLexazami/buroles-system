@@ -15,7 +15,7 @@ import { setupSearchFilter } from './search-filter.js';
 
 // Preview
 import { setupAvatarPreview } from './avatar-preview.js';
-import { initPasswordStrength, toggleVisibility, initPasswordRules } from './password-utils.js';
+import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
 import { setupTableSorter } from '/assets/js/table-sorter.js';
 import { setupAnnouncementPagination } from './announcementCarousel.js';
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnnouncementTriggers();
   setupRoleCheckboxToggle();
   setupAnnouncementPagination();
-  initPasswordRules();
 
   // Badge Updater
   startBadgePolling();
@@ -107,8 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
       delaySeconds
     });
   }
-
-
 
 });
 

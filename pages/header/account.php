@@ -56,6 +56,7 @@ renderHead('My Account');
 
 
   <script type="module" src="/assets/js/app.js"></script>
+  <script src="/assets/js/password-rules-inline.js"></script>
   <script src="/assets/js/auto-dismiss-alert.js"></script>
   <script src="/assets/js/date-time.js"></script>
 </body>

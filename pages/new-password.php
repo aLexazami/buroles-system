@@ -43,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 renderHead('New Password');
 ?>
-
 <body class="bg-gradient-to-b from-white to-emerald-800 min-h-screen flex flex-col">
   <!-- Header Section -->
   <header class="bg-emerald-950 shadow-md sticky top-0 z-10 p-2">
@@ -82,11 +81,17 @@ renderHead('New Password');
             <div class="relative">
               <div class="flex items-center  gap-3 border-2 rounded-lg px-3 py-2">
                 <img src="/assets/img/password.png" class="h-5 w-5" />
-                <input type="password" name="new_password" id="new_password"
+                <input
+                  type="password"
+                  name="new_password"
+                  id="new_password"
+                  data-password-rules
+                  data-rules-selector="#password-rules"
                   class="flex-1 h-12 p-2 border-l-2 focus:outline-none sm:text-base md:text-lg"
-                  placeholder="Enter new password" required />
+                  placeholder="Enter new password"
+                  required />
                 <img src="/assets/img/eye-open.png" alt="Toggle visibility"
-                 class="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 cursor-pointer opacity-70"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 cursor-pointer opacity-70"
                   data-toggle-password="new_password" />
               </div>
             </div>
@@ -106,6 +111,10 @@ renderHead('New Password');
               <li data-rule="special" class="flex flex-wrap items-center gap-2 text-gray-500">
                 <img src="/assets/img/cross-icon.png" class="h-4 w-4 rule-icon" alt="status" />
                 <span>At least one special character (e.g. !@#$%)</span>
+              </li>
+              <li data-rule="match" class="flex flex-wrap items-center gap-2 text-gray-500">
+                <img class=" h-4 w-4 rule-icon" src="/assets/img/cross-icon.png" />
+                <span>Passwords must match</span>
               </li>
             </ul>
             <div id="strengthBar" class="mt-2 h-2 bg-gray-200 rounded overflow-hidden">
@@ -155,6 +164,7 @@ renderHead('New Password');
 
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/auto-dismiss-alert.js"></script>
+  <script src="/assets/js/password-rules-inline.js"></script>
 </body>
 
 </html>

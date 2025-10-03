@@ -26,3 +26,11 @@
 .animate-fade-in {
   animation: fade-in 0.8s ease-out;
 }
+
+@layer base {
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear,
+  input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+  }
+}

@@ -104,8 +104,14 @@
        <div>
          <label for="new_password" class="block text-sm font-bold text-gray-700">New Password</label>
          <div class="relative">
-           <input type="password" name="new_password" id="new_password"
-             class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2 pr-10">
+           <input
+             type="password"
+             name="new_password"
+             id="new_password"
+             data-password-rules
+             data-rules-selector="#update-password-rules"
+             class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2 pr-10" />
+
            <img
              src="/assets/img/eye-open.png"
              alt="Toggle visibility"
@@ -115,11 +121,27 @@
          <div id="strengthBar" class="mt-2 h-2 bg-gray-200 rounded overflow-hidden">
            <div class="h-full transition-all duration-300 w-0"></div>
          </div>
-         <ul class="text-xs text-gray-500 space-y-1 mt-2 ml-1">
-           <li>• Minimum 8 characters</li>
-           <li>• At least one uppercase letter</li>
-           <li>• At least one number</li>
-           <li>• At least one special character (e.g. !@#$%)</li>
+         <ul id="update-password-rules" class="text-xs sm:text-sm md:text-base space-y-1 mt-2 ml-1 text-gray-500">
+           <li data-rule="length" class="flex items-center gap-2 text-gray-500">
+             <img src="/assets/img/cross-icon.png" class="h-4 w-4 rule-icon" alt="status" />
+             <span>Minimum 8 characters</span>
+           </li>
+           <li data-rule="uppercase" class="flex items-center gap-2 text-gray-500">
+             <img src="/assets/img/cross-icon.png" class="h-4 w-4 rule-icon" alt="status" />
+             <span>At least one uppercase letter</span>
+           </li>
+           <li data-rule="number" class="flex items-center gap-2 text-gray-500">
+             <img src="/assets/img/cross-icon.png" class="h-4 w-4 rule-icon" alt="status" />
+             <span>At least one number</span>
+           </li>
+           <li data-rule="special" class="flex items-center gap-2 text-gray-500">
+             <img src="/assets/img/cross-icon.png" class="h-4 w-4 rule-icon" alt="status" />
+             <span>At least one special character (e.g. !@#$%)</span>
+           </li>
+           <li data-rule="match" class="flex items-center gap-2 text-gray-500">
+             <img src="/assets/img/cross-icon.png" class="h-4 w-4 rule-icon" alt="status" />
+             <span>Passwords must match</span>
+           </li>
          </ul>
        </div>
 
@@ -127,8 +149,11 @@
        <div>
          <label for="confirm_password" class="block text-sm font-bold text-gray-700">Confirm Password</label>
          <div class="relative">
-           <input type="password" name="confirm_password" id="confirm_password"
-             class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2 pr-10">
+           <input
+             type="password"
+             name="confirm_password"
+             id="confirm_password"
+             class="mt-1 text-gray-900 block w-full border border-gray-400 rounded-md shadow-sm p-2 pr-10" />
            <img
              src="/assets/img/eye-open.png"
              alt="Toggle visibility"
