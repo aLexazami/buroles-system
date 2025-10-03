@@ -7,7 +7,6 @@ $publicPages = [
     'index.php',
     'login.php',
     'reset-password.php',
-    'new-password.php',
     'feedback-form.php',
     'faqs.php',
     '404.php',
