@@ -100,7 +100,7 @@ renderHead('Feedback Form', true);
           <!-- Uri ng Kliyente -->
           <div>
             <label for="customer_type" class="block font-medium text-sm">Uri ng Kliyente</label>
-            <select id="customer_type" name="customer_type" onchange="updateServiceOptions()"
+            <select id="customer_type" name="customer_type"
               class="w-full border-2 rounded-lg p-2">
               <option value="" disabled selected>Customer Type</option>
               <option value="Business">Business</option>

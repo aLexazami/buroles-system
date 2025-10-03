@@ -27,7 +27,6 @@ import { setupRoleCheckboxToggle } from './checkbox.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 🧭 UI & Role Toggles
-  setupMenuToggle();
   setupRoleSwitcher();
   setupUserActions();
   initDropdownMenus();
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initNotificationActions();
   initAnnouncementModal();
   initAnnouncementTriggers();
-  setupSidebarToggle();
   setupRoleCheckboxToggle();
   setupAnnouncementPagination();
 
@@ -90,6 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
       endpoint: '/ajax/fetch-respondents-table.php'
     });
   }
+
+  if (document.getElementById('menu-btn-mobile') && document.getElementById('menu-links')) {
+    setupMenuToggle();
+  }
+
+  if (document.getElementById('open-sidebar') && document.getElementById('mobile-sidebar')) {
+    setupSidebarToggle();
+  }
+
 
 });
 
