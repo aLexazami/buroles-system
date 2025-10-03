@@ -15,7 +15,7 @@ renderHead('Super Admin');
   <?php include('../../includes/header.php'); ?>
 
   <!-- Main Layout -->
-  <main class="grid grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <!-- Sidebar -->
     <?php include('../../includes/side-nav-super-admin.php'); ?>
 
@@ -31,7 +31,7 @@ renderHead('Super Admin');
       <?php showFlash(); ?>
 
       <!--  Form Component -->
-      <div class="p-6 bg-white rounded-lg shadow-md">
+      <div class="p-4 sm:p-6 bg-white rounded-lg shadow-md w-full max-w-4xl mx-auto">
         <?php include(__DIR__ . '/../../components/user-form.php'); ?>
       </div>
     </section>
