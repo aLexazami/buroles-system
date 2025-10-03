@@ -85,14 +85,16 @@ renderHead('Change Password');
           <!-- New Password -->
           <div>
             <label for="new_password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-            <div class="flex items-center gap-3 border-2 rounded-lg px-3 py-2">
-              <img src="/assets/img/password.png" class="h-5 w-5" />
-              <input type="password" name="new_password" id="new_password"
-                class="flex-1 h-12 p-2 border-l-2 focus:outline-none sm:text-base md:text-lg"
-                placeholder="Enter new password" required />
-              <img src="/assets/img/eye-open.png" alt="Toggle visibility"
-                class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
-                data-toggle-password="new_password" />
+            <div class="relative">
+              <div class="flex items-center gap-3 border-2 rounded-lg px-3 py-2">
+                <img src="/assets/img/password.png" class="h-5 w-5" />
+                <input type="password" name="new_password" id="new_password"
+                  class="flex-1 h-12 p-2 border-l-2 focus:outline-none sm:text-base md:text-lg"
+                  placeholder="Enter new password" required />
+                <img src="/assets/img/eye-open.png" alt="Toggle visibility"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 cursor-pointer opacity-70"
+                  data-toggle-password="new_password" />
+              </div>
             </div>
             <ul id="password-rules" class="text-xs sm:text-sm md:text-base space-y-2 mt-2 ml-1 sm:ml-2 md:ml-4">
               <li data-rule="length" class="flex flex-wrap items-center gap-2 text-gray-500">
@@ -120,14 +122,16 @@ renderHead('Change Password');
           <!-- Confirm Password -->
           <div>
             <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-            <div class="flex items-center gap-3 border-2 rounded-lg px-3 py-2">
-              <img src="/assets/img/password.png" class="h-5 w-5" />
-              <input type="password" name="confirm_password" id="confirm_password"
-                class="flex-1 h-12 p-2 border-l-2 focus:outline-none sm:text-base md:text-lg"
-                placeholder="Confirm new password" required />
-              <img src="/assets/img/eye-open.png" alt="Toggle visibility"
-                class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
-                data-toggle-password="confirm_password" />
+            <div class="relative">
+              <div class="flex items-center gap-3 border-2 rounded-lg px-3 py-2">
+                <img src="/assets/img/password.png" class="h-5 w-5" />
+                <input type="password" name="confirm_password" id="confirm_password"
+                  class="flex-1 h-12 p-2 border-l-2 focus:outline-none sm:text-base md:text-lg"
+                  placeholder="Confirm new password" required />
+                <img src="/assets/img/eye-open.png" alt="Toggle visibility"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 cursor-pointer opacity-70"
+                  data-toggle-password="confirm_password" />
+              </div>
             </div>
           </div>
 
