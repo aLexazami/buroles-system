@@ -346,8 +346,14 @@
   .bottom-0 {
     bottom: calc(var(--spacing) * 0);
   }
+  .bottom-1 {
+    bottom: calc(var(--spacing) * 1);
+  }
   .bottom-4 {
     bottom: calc(var(--spacing) * 4);
+  }
+  .bottom-10 {
+    bottom: calc(var(--spacing) * 10);
   }
   .bottom-full {
     bottom: 100%;
@@ -375,6 +381,9 @@
   }
   .z-10 {
     z-index: 10;
+  }
+  .z-20 {
+    z-index: 20;
   }
   .z-50 {
     z-index: 50;
@@ -679,20 +688,11 @@
   .w-72 {
     width: calc(var(--spacing) * 72);
   }
-  .w-\[35vw\] {
-    width: 35vw;
-  }
   .w-\[50vw\] {
     width: 50vw;
   }
-  .w-\[55vw\] {
-    width: 55vw;
-  }
   .w-\[64px\] {
     width: 64px;
-  }
-  .w-\[90vw\] {
-    width: 90vw;
   }
   .w-fit {
     width: fit-content;
@@ -979,6 +979,9 @@
   .overflow-hidden {
     overflow: hidden;
   }
+  .overflow-visible {
+    overflow: visible;
+  }
   .overflow-x-auto {
     overflow-x: auto;
   }
@@ -1101,9 +1104,6 @@
   }
   .border-yellow-300 {
     border-color: var(--color-yellow-300);
-  }
-  .bg-amber-300 {
-    background-color: var(--color-amber-300);
   }
   .bg-black {
     background-color: var(--color-black);
@@ -1986,41 +1986,6 @@
       width: 30vw;
     }
   }
-  .sm\:w-\[35vw\] {
-    @media (width >= 40rem) {
-      width: 35vw;
-    }
-  }
-  .sm\:w-\[40vw\] {
-    @media (width >= 40rem) {
-      width: 40vw;
-    }
-  }
-  .sm\:w-\[50vw\] {
-    @media (width >= 40rem) {
-      width: 50vw;
-    }
-  }
-  .sm\:w-\[50w\] {
-    @media (width >= 40rem) {
-      width: 50w;
-    }
-  }
-  .sm\:w-\[55vw\] {
-    @media (width >= 40rem) {
-      width: 55vw;
-    }
-  }
-  .sm\:w-\[60vw\] {
-    @media (width >= 40rem) {
-      width: 60vw;
-    }
-  }
-  .sm\:w-\[70vw\] {
-    @media (width >= 40rem) {
-      width: 70vw;
-    }
-  }
   .sm\:w-auto {
     @media (width >= 40rem) {
       width: auto;
@@ -2157,12 +2122,6 @@
       line-height: var(--tw-leading, var(--text-xl--line-height));
     }
   }
-  .sm\:text-xs {
-    @media (width >= 40rem) {
-      font-size: var(--text-xs);
-      line-height: var(--tw-leading, var(--text-xs--line-height));
-    }
-  }
   .md\:static {
     @media (width >= 48rem) {
       position: static;
@@ -2201,31 +2160,6 @@
   .md\:w-48 {
     @media (width >= 48rem) {
       width: calc(var(--spacing) * 48);
-    }
-  }
-  .md\:w-\[30\] {
-    @media (width >= 48rem) {
-      width: 30;
-    }
-  }
-  .md\:w-\[30vw\] {
-    @media (width >= 48rem) {
-      width: 30vw;
-    }
-  }
-  .md\:w-\[35vw\] {
-    @media (width >= 48rem) {
-      width: 35vw;
-    }
-  }
-  .md\:w-\[35w\] {
-    @media (width >= 48rem) {
-      width: 35w;
-    }
-  }
-  .md\:w-\[40vw\] {
-    @media (width >= 48rem) {
-      width: 40vw;
     }
   }
   .md\:w-auto {
@@ -2355,21 +2289,6 @@
       display: inline;
     }
   }
-  .lg\:w-\[30vw\] {
-    @media (width >= 64rem) {
-      width: 30vw;
-    }
-  }
-  .lg\:w-\[35w\] {
-    @media (width >= 64rem) {
-      width: 35w;
-    }
-  }
-  .lg\:w-\[50w\] {
-    @media (width >= 64rem) {
-      width: 50w;
-    }
-  }
   .lg\:w-\[248px\] {
     @media (width >= 64rem) {
       width: 248px;
@@ -2416,43 +2335,15 @@
       line-height: var(--tw-leading, var(--text-base--line-height));
     }
   }
-  .lg\:text-lg {
-    @media (width >= 64rem) {
-      font-size: var(--text-lg);
-      line-height: var(--tw-leading, var(--text-lg--line-height));
-    }
-  }
   .lg\:text-sm {
     @media (width >= 64rem) {
       font-size: var(--text-sm);
       line-height: var(--tw-leading, var(--text-sm--line-height));
     }
   }
-  .lg\:text-xl {
-    @media (width >= 64rem) {
-      font-size: var(--text-xl);
-      line-height: var(--tw-leading, var(--text-xl--line-height));
-    }
-  }
-  .xl\:flex {
-    @media (width >= 80rem) {
-      display: flex;
-    }
-  }
-  .xl\:w-\[25vw\] {
-    @media (width >= 80rem) {
-      width: 25vw;
-    }
-  }
   .xl\:max-w-3xl {
     @media (width >= 80rem) {
       max-width: var(--container-3xl);
-    }
-  }
-  .xl\:text-xl {
-    @media (width >= 80rem) {
-      font-size: var(--text-xl);
-      line-height: var(--tw-leading, var(--text-xl--line-height));
     }
   }
 }

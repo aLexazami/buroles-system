@@ -57,7 +57,7 @@ renderHead('Notifications');
           <form method="POST" action="/actions/notification/delete-selected.php">
 
             <!-- Action Nav -->
-            <div class="flex flex-wrap items-center px-2 py-2 border-b gap-4 overflow-x-auto">
+            <div class="flex flex-wrap items-center px-2 py-2 border-b gap-4">
               <!-- Selection Tools -->
               <div class="flex items-center bg-gray-300 p-2 rounded space-x-4">
                 <!-- Select All Icon with Tooltip -->
