@@ -16,13 +16,17 @@ if (
   isset($roleLabels[$activeRole])
 ):
 ?>
-  <div class="bg-white border border-emerald-600 p-2 shadow-md flex items-center space-x-4 justify-center">
-  <div class="text-emerald-600 text-2xl">👋</div>
-  <div class="flex gap-4">
-    <h1 class="text-md font-bold text-emerald-800">Welcome, <?= $firstName ?>!</h1>
-    <p class="text-md text-gray-600">You are viewing the <strong><?= $roleLabels[$activeRole] ?></strong> Dashboard.</p>
+ <div class="bg-white border border-emerald-600 p-2 shadow-md flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-center sm:text-left">
+  <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 w-full sm:w-auto">
+    <h1 class="text-sm sm:text-base md:text-base lg:text-base font-bold text-emerald-800">
+      Welcome, <?= $firstName ?>!
+    </h1>
+    <p class="text-sm sm:text-base md:text-base lg:text-base text-gray-600">
+      You are viewing the <strong><?= $roleLabels[$activeRole] ?></strong> Dashboard.
+    </p>
   </div>
+</div>
 <?php
-  
+
 endif;
 ?>
