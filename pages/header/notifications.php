@@ -19,10 +19,11 @@ $stmt->execute(['userId' => $userId, 'roleId' => $roleId]);
 $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 renderHead('Notifications');
 ?>
+
 <body class="bg-gray-200 min-h-screen">
   <?php include __DIR__ . '/../../includes/header.php'; ?>
 
-  <main class="grid grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
     <?php
     switch ($_SESSION['active_role_id'] ?? null) {
       case 1:
@@ -43,7 +44,7 @@ renderHead('Notifications');
       <?php showFlash(); ?>
 
       <div class="bg-emerald-700 text-white p-5">
-        <h2 class="text-lg font-semibold">Notifications</h2>
+        <h2 class="text-lg md:text-xl font-semibold">Notifications</h2>
       </div>
       <div class="bg-white p-2 rounded-b-lg shadow space-y-4 min-h-screen">
         <?php if (empty($notifications)): ?>
@@ -56,7 +57,7 @@ renderHead('Notifications');
           <form method="POST" action="/actions/notification/delete-selected.php">
 
             <!-- Action Nav -->
-            <div class="flex flex-wrap items-center px-2 py-2 border-b gap-4">
+            <div class="flex flex-wrap items-center px-2 py-2 border-b gap-4 overflow-x-auto">
               <!-- Selection Tools -->
               <div class="flex items-center bg-gray-300 p-2 rounded space-x-4">
                 <!-- Select All Icon with Tooltip -->
@@ -118,20 +119,25 @@ renderHead('Notifications');
                 $hoverClass = $isUnread ? 'hover:bg-gray-300' : 'hover:bg-gray-100';
                 $bgClass = $isUnread ? 'bg-gray-200' : 'bg-white';
                 ?>
-                <div class="notification-item flex items-start  px-2 py-2 space-x-4 <?= $bgClass ?> rounded shadow <?= $hoverClass ?> transition"
-                  data-unread="<?= $isUnread ? 'true' : 'false' ?>">
-                  <input type="checkbox" name="selected_ids[]" value="<?= $notif['id'] ?>" class=" accent-emerald-600 w-4 h-4 cursor-pointer mt-2">
-                  <a href="/actions/notification/mark-notification-as-read.php?id=<?= $notif['id'] ?>&redirect=<?= urlencode($link) ?>" class="flex items-start gap-4 w-full">
-                    <div class="relative">
-                      <img src="<?= $icon ?>" alt="icon" class="w-6 h-6 mt-1">
+                <div class="notification-item flex items-start px-2 py-2 gap-2 sm:gap-4 <?= $bgClass ?> rounded shadow <?= $hoverClass ?> transition" data-unread="<?= $isUnread ? 'true' : 'false' ?>">
+                  <!-- Checkbox -->
+                  <input type="checkbox" name="selected_ids[]" value="<?= $notif['id'] ?>" class="accent-emerald-600 w-4 h-4 cursor-pointer flex-shrink-0 mt-1">
+
+                  <!-- Icon + Text -->
+                  <a href="/actions/notification/mark-notification-as-read.php?id=<?= $notif['id'] ?>&redirect=<?= urlencode($link) ?>" class="flex items-start gap-2 w-full min-w-0">
+                    <!-- Icon -->
+                    <div class="relative flex-shrink-0 w-8 h-8">
+                      <img src="<?= $icon ?>" alt="icon" class="w-full h-full object-contain">
                       <?php if ($isUnread): ?>
                         <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
                       <?php endif; ?>
                     </div>
-                    <div>
-                      <p class="font-semibold text-emerald-800"><?= $title ?></p>
-                      <p class="text-sm text-gray-700"><?= $body ?></p>
-                      <p class="text-xs text-gray-500 mt-1"><?= $timestamp ?></p>
+
+                    <!-- Text Block -->
+                    <div class="flex-1 min-w-0">
+                      <p class="font-semibold text-emerald-800 break-words whitespace-normal"><?= $title ?></p>
+                      <p class="text-sm md:text-base text-gray-700 break-words whitespace-normal"><?= $body ?></p>
+                      <p class="text-xs md:text-sm text-gray-500 mt-1 break-words whitespace-normal"><?= $timestamp ?></p>
                     </div>
                   </a>
                 </div>
