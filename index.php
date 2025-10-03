@@ -3,9 +3,11 @@ require_once __DIR__ . '/includes/bootstrap.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/helpers/head.php';
+require_once __DIR__ . '/helpers/flash.php';
 renderHead('Login', true);
 ?>
 <body class="bg-gradient-to-b from-white to-emerald-800 min-h-screen flex flex-col">
+  <?php showFlash(); ?>
   <!-- Header Section -->
   <header class="bg-emerald-950 shadow-md sticky top-0 z-10 p-2">
     <section class="max-w-6xl mx-auto flex items-center justify-between">

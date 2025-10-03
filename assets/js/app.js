@@ -15,15 +15,12 @@ import { setupSearchFilter } from './search-filter.js';
 
 // Preview
 import { setupAvatarPreview } from './avatar-preview.js';
-import { initPasswordStrength, toggleVisibility } from './password-utils.js';
+import { initPasswordStrength, toggleVisibility, initPasswordRules } from './password-utils.js';
 import { startBadgePolling } from './badge-updater.js';
 import { setupTableSorter } from '/assets/js/table-sorter.js';
 import { setupAnnouncementPagination } from './announcementCarousel.js';
 import { setupRoleCheckboxToggle } from './checkbox.js';
-
-
-
-
+import { startRedirectCountdown } from './redirect-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 🧭 UI & Role Toggles
@@ -49,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnnouncementTriggers();
   setupRoleCheckboxToggle();
   setupAnnouncementPagination();
+  initPasswordRules();
 
   // Badge Updater
   startBadgePolling();
@@ -96,6 +94,20 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('open-sidebar') && document.getElementById('mobile-sidebar')) {
     setupSidebarToggle();
   }
+
+  // Only run on redirect-success page
+  if (document.getElementById('countdown') && document.getElementById('progressBar')) {
+    const redirectUrl = document.body.dataset.redirectUrl;
+    const delaySeconds = parseInt(document.body.dataset.delaySeconds, 10);
+
+    startRedirectCountdown({
+      countdownId: 'countdown',
+      progressBarId: 'progressBar',
+      redirectUrl,
+      delaySeconds
+    });
+  }
+
 
 
 });

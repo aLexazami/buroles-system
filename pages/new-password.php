@@ -2,52 +2,46 @@
 require_once __DIR__ . '/../includes/bootstrap.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
-require_once __DIR__ . '/../helpers/user-utils.php';
 require_once __DIR__ . '/../helpers/head.php';
-require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/password-utils.php';
+require_once __DIR__ . '/../helpers/flash.php';
 
-if (!isset($_SESSION['user_id'])) {
-  redirectTo('/index.php');
-}
+$token = $_GET['token'] ?? '';
 
-$userId = $_SESSION['user_id'];
+// Validate token
+$reset = getResetRecord($pdo, $token);
 
-if (!mustChangePassword($pdo, $userId)) {
-  redirectTo('/index.php');
+if (!$reset || strtotime($reset['expires_at']) < time() || $reset['used']) {
+  setFlash('error', 'Invalid, expired, or already used reset link.');
+  header('Location: /index.php' . urlencode($token));
+  exit;
 }
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $newPassword = trim($_POST['new_password'] ?? '');
-  $confirmPassword = trim($_POST['confirm_password'] ?? '');
+  $newPassword = trim($_POST['new_password']);
+  $confirmPassword = trim($_POST['confirm_password']);
   $passwordErrors = getPasswordErrors($newPassword);
 
   if ($newPassword !== $confirmPassword) {
     setFlash('error', 'Passwords do not match.');
-    header('Location: /pages/change-password.php');
-    exit;
   } elseif (!empty($passwordErrors)) {
     setFlash('error', 'Password must include: ' . formatPasswordErrors($passwordErrors) . '.');
-    header('Location: /pages/change-password.php');
-    exit;
-  } elseif (updatePassword($pdo, $userId, $newPassword)) {
-    $roleId = getUserRole($pdo, $userId);
-    $redirectTarget = match ($roleId) {
-      1 => '/pages/main-staff.php',
-      2 => '/pages/main-admin.php',
-      99 => '/pages/main-super-admin.php',
-      default => '/index.php',
-    };
-    redirectTo("/pages/redirect-success.php?redirect=" . urlencode($redirectTarget));
   } else {
-    setFlash('error', 'Failed to update password. Please try again.');
-    header('Location: /pages/change-password.php');
+    $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
+    $pdo->prepare("UPDATE users SET password = ? WHERE id = ?")->execute([$hashed, $reset['user_id']]);
+    markTokenUsed($pdo, $token);
+    setFlash('success', 'Password successfully updated. You may now log in.');
+    header('Location: /index.php');
     exit;
   }
+
+  // Redirect back to show flash
+  header('Location: /pages/new-password.php?token=' . urlencode($token));
+  exit;
 }
 
-renderHead('Change Password');
+renderHead('New Password');
 ?>
 
 <body class="bg-gradient-to-b from-white to-emerald-800 min-h-screen flex flex-col">
@@ -74,13 +68,13 @@ renderHead('Change Password');
     </section>
   </header>
 
-  <!-- Main Content Section -->
+  <!-- Main Content -->
   <main class="flex-grow w-full px-4 pt-10">
     <section class="flex justify-center py-10">
       <div class="w-full justify-center flex max-w-2xl xl:max-w-3xl">
         <?php showFlash(); ?>
         <form method="POST" class="bg-white shadow-md rounded-lg p-6 w-full opacity-90 border-2 border-emerald-800 space-y-6">
-          <h2 class="text-emerald-800 text-2xl text-center font-bold">Change Password</h2>
+          <h2 class="text-emerald-800 text-2xl text-center font-bold">Set New Password</h2>
 
           <!-- New Password -->
           <div>
@@ -148,12 +142,10 @@ renderHead('Change Password');
     </section>
   </main>
 
-  <!-- Footer Section -->
+  <!-- Footer -->
   <footer class="bg-emerald-950 w-full mt-auto">
     <section class="text-center py-3 px-4">
-      <p class="text-white text-xs md:text-sm">
-        &copy; 2025 Burol Elementary School. All rights reserved.
-      </p>
+      <p class="text-white text-xs md:text-sm">&copy; 2025 Burol Elementary School. All rights reserved.</p>
     </section>
   </footer>
 

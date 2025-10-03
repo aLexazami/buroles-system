@@ -1,5 +1,5 @@
 <?php
-function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false) {
+function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false, $metaRefresh = null) {
   echo "<!DOCTYPE html>
   <html lang='en'>
   <head>
@@ -15,6 +15,10 @@ function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false) {
     
   if ($noIndex) {
     echo "<meta name='robots' content='noindex, nofollow'>";
+  }
+
+  if ($metaRefresh) {
+    echo "<meta http-equiv='refresh' content='" . htmlspecialchars($metaRefresh, ENT_QUOTES, 'UTF-8') . "'>";
   }
 
   echo "</head>";
