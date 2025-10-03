@@ -16,8 +16,8 @@ if (
   isset($roleLabels[$activeRole])
 ):
 ?>
- <div class="bg-white border border-emerald-600 p-2 shadow-md flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-center sm:text-left">
-  <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 w-full sm:w-auto">
+ <div class="bg-white border border-emerald-600 p-2 shadow-md flex justify-center items-center text-center">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-center gap-1 sm:gap-4 text-center">
     <h1 class="text-sm sm:text-base md:text-base lg:text-base font-bold text-emerald-800">
       Welcome, <?= $firstName ?>!
     </h1>
