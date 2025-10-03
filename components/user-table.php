@@ -73,6 +73,7 @@ require_once __DIR__ . '/../helpers/table-utils.php';
                         <?php if ($isSuperAdmin): ?>
                           <li>
                             <a href="/pages/super-admin/manage-password.php?id=<?= $user['id'] ?>"
+                              data-manage-password="<?= $user['id'] ?>"
                               class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100">
                               <img src="/assets/img/manage-password-icon.png" alt="Manage" class="w-4 h-4"> Manage Password
                             </a>
