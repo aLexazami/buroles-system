@@ -327,3 +327,82 @@ export function initAnnouncementTriggers() {
     if (e.key === 'Escape') closeAnnouncementViewer();
   });
 }
+
+// Share Modal Logic
+export function closeShareModal() {
+  toggleModal('shareModal', false);
+
+  const form = document.getElementById('shareForm');
+  const avatar = document.getElementById('selectedAvatar');
+  const suggestions = document.getElementById('emailSuggestions');
+  const accessSelect = document.getElementById('shareAccessLevel');
+  const description = document.getElementById('accessLevelDescription');
+
+  if (form) form.reset();
+
+  if (avatar) {
+    avatar.src = '/assets/img/add-user.png';
+  }
+
+  if (suggestions) {
+    suggestions.innerHTML = '';
+    suggestions.classList.add('hidden');
+  }
+
+  // Reapply default access description
+  if (accessSelect && description) {
+    const accessDescriptions = {
+      view: 'Can only view the item.',
+      comment: 'Can view and add comments.',
+      edit: 'Can organize, add, and edit files.'
+    };
+    description.textContent = accessDescriptions[accessSelect.value] || '';
+  }
+}
+
+export function openShareModal() {
+  toggleModal('shareModal', true);
+}
+
+export function initShareButton() {
+  const openBtn = document.getElementById('openShareModal');
+  const cancelBtn = document.getElementById('cancelShare');
+  const modal = document.getElementById('shareModal');
+  const accessSelect = document.getElementById('shareAccessLevel');
+  const description = document.getElementById('accessLevelDescription');
+
+  if (openBtn) {
+    openBtn.addEventListener('click', openShareModal);
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', closeShareModal);
+  }
+
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeShareModal();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeShareModal();
+  });
+
+  // Access Level Description Logic
+  if (accessSelect && description) {
+    const accessDescriptions = {
+      view: 'Can only view the item.',
+      comment: 'Can view and add comments.',
+      edit: 'Can organize, add, and edit files.'
+    };
+
+    const updateDescription = () => {
+      const selected = accessSelect.value;
+      description.textContent = accessDescriptions[selected] || '';
+    };
+
+    accessSelect.addEventListener('change', updateDescription);
+    updateDescription(); // Initialize on load
+  }
+}

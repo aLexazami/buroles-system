@@ -10,13 +10,13 @@ $segments     = explode('/', $currentPath);
 $breadcrumbPath = '';
 ?>
 <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
-  <img src="/assets/img/archive-user.png" class="w-5 h-5" alt="Archive icon">
-  <h1 class="font-bold text-lg">Manage File</h1>
+  <img src="/assets/img/archive-user.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Archive icon">
+  <h1 class="font-bold text-md sm:text-lg">Manage File</h1>
 </div>
 <!-- Flash Messages -->
 <?php showFlash(); ?>
 
-<div class="flex flex-col gap-4">
+<div class="flex flex-col">
   <!-- Folder Creation + Upload -->
   <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
     <div class="relative inline-block text-left py-4">
@@ -60,14 +60,14 @@ $breadcrumbPath = '';
         <input type="text" name="folder_name" placeholder="Folder name" class="border px-3 py-3 rounded text-sm sm:text-base" required>
         <input type="hidden" name="path" id="createFolderPath">
         <div class="flex justify-end gap-2 mt-5">
-          <button type="button" id="cancelCreateFolder" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Cancel</button>
-          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Create</button>
+          <button type="button" id="cancelCreateFolder" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Create</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6">
+  <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6 min-h-screen ">
     <!-- Breadcrumb -->
     <div class="text-sm text-gray-500 flex flex-wrap items-center pb-3 gap-2 overflow-x-auto whitespace-nowrap">
       <a href="?user_id=<?= $targetId ?>&path=" class="text-emerald-600 hover:underline">Home</a>
@@ -82,11 +82,12 @@ $breadcrumbPath = '';
     </div>
 
     <!-- Search -->
+    <!-- Unified Search -->
     <div class="flex flex-wrap items-center gap-2 mb-4">
-      <input type="text" id="folderSearch" placeholder="Search"
+      <input type="text" id="unifiedSearch" placeholder="Search folders and files"
         class="border px-3 py-2 rounded w-full max-w-md text-sm" />
-      <button id="clearFolderSearch"
-        class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
+      <button id="clearUnifiedSearch"
+        class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer">
         Clear
       </button>
     </div>
@@ -126,7 +127,7 @@ $breadcrumbPath = '';
         $nextPath   = trim($currentPath . '/' . $folderName, '/');
         $menuId     = 'menu-' . md5($folderName);
         ?>
-        <div class="flex items-center hover:bg-emerald-50 px-2 py-3 sm:py-2 gap-2 folder-item">
+        <div class="flex items-center hover:bg-emerald-50 px-2 py-3 sm:py-2 gap-2 folder-item" data-name="<?= htmlspecialchars($folderName) ?>">
           <!-- Folder Name -->
           <a href="?user_id=<?= $targetId ?>&path=<?= urlencode($nextPath) ?>"
             class="flex items-center gap-2 sm:gap-3 flex-grow"
@@ -160,6 +161,11 @@ $breadcrumbPath = '';
             <!-- Dropdown Menu -->
             <div id="<?= $menuId ?>" class="absolute right-4 sm:right-18 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150 font-semibold">
               <!-- Actions -->
+              <button id="openShareModal"
+                class="flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer">
+                <img src="/assets/img/share-icon.png" alt="Share Icon" class="w-4 h-4" />
+                <span>Share</span>
+              </button>
               <button class="flex items-center gap-3 cursor-pointer px-4 py-2 hover:bg-emerald-100 w-full text-left rename-btn"
                 data-name="<?= htmlspecialchars($folderName) ?>"
                 data-type="folder"
@@ -196,10 +202,10 @@ $breadcrumbPath = '';
           $isImage  = preg_match('/\.(jpg|jpeg|png|gif)$/i', $filename);
           $menuId   = 'menu-' . md5($filename);
           ?>
-          <div class="flex items-center hover:bg-emerald-50 px-2 py-3 sm:py-2 gap-2 file-item">
+          <div class="flex items-center hover:bg-emerald-50 px-2 py-3 sm:py-2 gap-2 file-item" data-name="<?= htmlspecialchars($filename) ?>">
             <!-- File Name -->
             <a href="<?= $fileUrl ?>" target="_blank"
-              class="flex items-center gap-2 sm:gap-3 flex-grow cursor-default"
+              class="flex items-center gap-2 sm:gap-3 flex-grow"
               title="Open <?= htmlspecialchars($filename) ?>">
               <img src="<?= getFileIcon($filename) ?>" alt="File icon" class="w-5 h-5" title="<?= htmlspecialchars($filename) ?>">
               <span class="text-sm font-medium"><?= htmlspecialchars($filename) ?></span>
@@ -223,6 +229,11 @@ $breadcrumbPath = '';
 
               <!-- Dropdown Menu -->
               <div id="<?= $menuId ?>" class="absolute right-4 sm:right-18 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold">
+                <button id="openShareModal"
+                  class="flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer">
+                  <img src="/assets/img/share-icon.png" alt="Share Icon" class="w-4 h-4" />
+                  <span>Share</span>
+                </button>
                 <?php if ($isImage): ?>
                   <a href="<?= $fileUrl ?>" target="_blank" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100 w-full text-left">
                     <img src="/assets/img/preview-icon.png" alt="Key" class="w-4 h-4">
@@ -266,14 +277,59 @@ $breadcrumbPath = '';
 
       <!-- Empty State Messages -->
       <?php if (empty($files) && empty($folders)): ?>
-  <p class="text-gray-500 text-sm py-5 px-4 text-center">This folder is empty.</p>
-<?php elseif (!empty($folders) && empty($files) && !empty($currentPath)): ?>
-  <p class="text-gray-400 text-sm italic py-3 px-4 text-center">No files found, but subfolders are present.</p>
-<?php endif; ?>
+        <p class="text-gray-500 text-sm py-5 px-4 text-center">This folder is empty.</p>
+      <?php elseif (!empty($folders) && empty($files) && !empty($currentPath)): ?>
+        <p class="text-gray-400 text-sm italic py-3 px-4 text-center">No files found, but subfolders are present.</p>
+      <?php endif; ?>
     </div>
   </div>
 </div>
 
+<!-- Share Modal -->
+<div id="shareModal" role="dialog" aria-labelledby="shareModalLabel"
+  class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4">Share <span id="shareModalLabel"></span></h2>
+    <form id="shareForm" method="POST" action="/controllers/share-item.php" class="flex flex-col gap-3">
+      <input type="hidden" name="item_path" id="shareItemPath">
+      <input type="hidden" name="owner_id" id="shareOwnerId" value="<?= $targetId ?>">
+      <input type="hidden" name="is_folder" id="shareIsFolder">
+
+      <!-- Recipient Email -->
+      <div class="relative mb-5">
+        <div class="flex items-center gap-2 border-2 rounded-lg px-3 py-2" id="recipientInputWrapper">
+          <img id="selectedAvatar" src="/assets/img/add-user.png" alt="User Avatar"
+            class="w-5 h-5 sm:w-8 sm:h-8 rounded-full object-cover" />
+          <input type="email" name="recipient_email" id="shareRecipientEmail"
+            class="flex-1 h-10 sm:h-12 p-2 border-l-2 focus:outline-none text-sm sm:text-base"
+            placeholder="Add people" autocomplete="off" required>
+        </div>
+
+        <!-- Suggestions -->
+        <ul id="emailSuggestions"
+          class="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-md max-h-40 overflow-y-auto z-20 text-sm text-gray-700 hidden"></ul>
+      </div>
+
+      <!-- Access Level -->
+      <select name="access_level" id="shareAccessLevel"
+        class="border-2 rounded-lg px-3 py-3  text-sm sm:text-base cursor-pointer" required>
+        <option value="view">Viewer</option>
+        <option value="comment">Comment</option>
+        <option value="edit">Editor</option>
+      </select>
+      <div class="flex items-center gap-2">
+        <img src="/assets/img/info-icon.png" alt="Add User Icon" class="w-3 h-3 " />
+        <small id="accessLevelDescription" class="text-xs text-gray-500"></small>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-5">
+        <button type="button" id="cancelShare" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Share</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- Rename Modal -->
 <div id="renameModal" role="dialog" aria-labelledby="renameTypeLabel"

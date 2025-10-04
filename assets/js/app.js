@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initRenameButtons, initDeleteButtons, initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers } from './modal.js';
+import { initRenameButtons, initDeleteButtons, initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initShareButton, closeShareModal, openShareModal } from './modal.js';
 import { initCreateFolderModal } from './folder-creation.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
@@ -21,6 +21,7 @@ import { setupTableSorter } from '/assets/js/table-sorter.js';
 import { setupAnnouncementPagination } from './announcementCarousel.js';
 import { setupRoleCheckboxToggle } from './checkbox.js';
 import { startRedirectCountdown } from './redirect-utils.js';
+import { initEmailAutocomplete } from './search-autocomplete.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 🧭 UI & Role Toggles
@@ -46,15 +47,20 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnnouncementTriggers();
   setupRoleCheckboxToggle();
   setupAnnouncementPagination();
+  initShareButton();
+  openShareModal();
+  closeShareModal();
+  initEmailAutocomplete();
 
   // Badge Updater
   startBadgePolling();
 
   // 🔍 Search Filters
   setupSearchFilter({
-    inputId: 'folderSearch',
-    clearId: 'clearFolderSearch',
-    selector: '#itemList .item'
+    inputId: 'unifiedSearch',
+    clearId: 'clearUnifiedSearch',
+    selector: '.folder-item, .file-item',
+    scope: 'dataset'
   });
 
   setupSearchFilter({

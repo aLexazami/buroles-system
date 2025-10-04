@@ -24,7 +24,7 @@ $staffUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
       class="border px-3 py-2 rounded w-full sm:max-w-md text-sm" />
     <button
       id="clearStaffSearch"
-      class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
+      class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer">
       Clear
     </button>
   </div>
