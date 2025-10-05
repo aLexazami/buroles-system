@@ -127,3 +127,17 @@ function resolvePreviewUrl(string $roleId, string $userId, string $folderPath, s
 function getUserUploadUrl(string $roleId, string $userId, string $folderPath, string $fileName): string {
   return resolvePreviewUrl($roleId, $userId, $folderPath, $fileName);
 }
+
+/**
+ * Get item ID (file or folder) by its path and owner.
+ */
+function getItemIdByPath(PDO $pdo, string $path, int $ownerId, bool $isFolder): ?int {
+  $table  = $isFolder ? 'folders' : 'files';
+  $column = 'path';
+
+  $stmt = $pdo->prepare("SELECT id FROM $table WHERE $column = ? AND owner_id = ?");
+  $stmt->execute([$path, $ownerId]);
+  $id = $stmt->fetchColumn();
+
+  return $id ?: null;
+}

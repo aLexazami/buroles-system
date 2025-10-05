@@ -297,7 +297,7 @@ $breadcrumbPath = '';
   <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
   <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
     <h2 class="text-xl sm:text-2xl mb-4">Share <span id="shareModalLabel" class="text-emerald-700 font-semibold text-xl sm:text-2xl"></span></h2>
-    <form id="shareForm" method="POST" action="/controllers/share-item.php" class="flex flex-col gap-3">
+    <form id="shareForm" method="POST" action="/controllers/files/share-item.php" class="flex flex-col gap-3">
       <input type="hidden" name="item_path" id="shareItemPath">
       <input type="hidden" name="owner_id" id="shareOwnerId" value="<?= $targetId ?>">
       <input type="hidden" name="is_folder" id="shareIsFolder">

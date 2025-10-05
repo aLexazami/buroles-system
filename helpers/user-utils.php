@@ -21,3 +21,10 @@ function getUserRole(PDO $pdo, int $userId): int {
   $stmt->execute([$userId]);
   return (int) $stmt->fetchColumn();
 }
+
+function getUserByEmail(PDO $pdo, string $email): ?array {
+  $stmt = $pdo->prepare("SELECT id, email, role_id FROM users WHERE email = ?");
+  $stmt->execute([$email]);
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
+  return $user ?: null;
+}
