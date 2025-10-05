@@ -381,7 +381,7 @@ export function initShareButton() {
       const fullPath = path !== '' ? `${path}/${name}` : name;
 
       document.getElementById('shareItemPath').value = fullPath;
-      document.getElementById('shareIsFolder').value = type === 'folder' ? '1' : '0';
+      document.getElementById('shareItemType').value = type;
       document.getElementById('shareOwnerId').value = ownerId;
       document.getElementById('shareModalLabel').textContent = name;
 

@@ -7,6 +7,20 @@ require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/path.php';
 require_once __DIR__ . '/../helpers/folder-utils.php';
 
+// 🔐 Access control
+function canRenameItem(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool {
+  if (in_array($originalRoleId, [2, 99])) return true;
+  return $activeRoleId === 1 && $userId === $targetId;
+}
+
+// 🔁 Redirect helper
+function redirectToManager(string $userId, string $path): void {
+  $url = "/pages/staff/file-manager.php?user_id=$userId";
+  if ($path !== '') $url .= '&path=' . urlencode($path);
+  header("Location: $url");
+  exit;
+}
+
 // 🧠 Extract session and POST data
 $userId         = $_SESSION['user_id'] ?? '';
 $activeRoleId   = $_SESSION['active_role_id'] ?? '';
@@ -21,12 +35,6 @@ $currentPath    = sanitizePath($_POST['path'] ?? '');
 if (!$userId || !$activeRoleId || !$originalRoleId || !$type || !$rawOldName || !$rawNewName) {
   setFlash('error', 'Invalid rename request.');
   return redirectToManager($userId, $currentPath);
-}
-
-// 🔐 Access control
-function canRenameItem(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool {
-  if (in_array($originalRoleId, [2, 99])) return true;
-  return $activeRoleId === 1 && $userId === $targetId;
 }
 
 if (!canRenameItem($userId, $targetId, (int)$activeRoleId, (int)$originalRoleId)) {
@@ -65,24 +73,61 @@ try {
     ? moveFolderRecursively($oldPath, $newPath)
     : rename($oldPath, $newPath);
 
+  // 🧠 Case-only rename workaround
+  if (!$success && strtolower($oldName) === strtolower($newName) && $oldName !== $newName) {
+    $tempName = $newName . '__temp__' . uniqid();
+    $tempPath = resolveUploadPathFromBase($baseDir, $currentPath, $tempName);
+
+    if (rename($oldPath, $tempPath) && rename($tempPath, $newPath)) {
+      $success = true;
+    }
+  }
+
   if (!$success) {
     error_log("Rename failed: $oldPath → $newPath");
     setFlash('error', "Failed to rename $type '$oldName'.");
     return redirectToManager($targetId, $currentPath);
   }
 
-  // 🧠 Update metadata in database
-  $relativeOldPath = $currentPath !== '' ? "$currentPath/$oldName" : $oldName;
-  $relativeNewPath = $currentPath !== '' ? "$currentPath/$newName" : $newName;
+  // 🧠 Build scoped DB paths
+  $relativeOldPath = sanitizePath($currentPath !== '' ? "$currentPath/$oldName" : $oldName);
+  $relativeNewPath = sanitizePath($currentPath !== '' ? "$currentPath/$newName" : $newName);
+
+  $scopedOldPath = "uploads/staff/$userId/" . ltrim($relativeOldPath, '/');
+  $scopedNewPath = "uploads/staff/$userId/" . ltrim($relativeNewPath, '/');
 
   if ($type === 'file') {
     $stmt = $pdo->prepare("UPDATE files SET name = ?, path = ?, updated_at = NOW() WHERE path = ? AND owner_id = ?");
-    $stmt->execute([$newName, $newPath, $oldPath, $userId]);
+    $stmt->execute([$newName, $scopedNewPath, $scopedOldPath, $userId]);
+
+    if ($stmt->rowCount() === 0) {
+      error_log("Rename DB update failed for file: no rows affected for $scopedOldPath");
+    }
+
   } elseif ($type === 'folder') {
     $stmt = $pdo->prepare("UPDATE folders SET name = ?, path = ?, updated_at = NOW() WHERE path = ? AND owner_id = ?");
-    $stmt->execute([$newName, $relativeNewPath, $relativeOldPath, $userId]);
+    $stmt->execute([$newName, $scopedNewPath, $scopedOldPath, $userId]);
+
+    if ($stmt->rowCount() === 0) {
+      error_log("Rename DB update failed for folder name: no rows affected for $scopedOldPath");
+    } else {
+      error_log("Renamed folder name in DB → FROM: $oldName TO: $newName");
+    }
+
+    // 🔁 Cascade path updates for subfolders and files
+    $oldPrefix = $scopedOldPath;
+    $newPrefix = $scopedNewPath;
+
+    $stmt = $pdo->prepare("UPDATE folders SET path = REPLACE(path, ?, ?), updated_at = NOW() WHERE path LIKE ?");
+    $stmt->execute([$oldPrefix, $newPrefix, "$oldPrefix/%"]);
+
+    $stmt = $pdo->prepare("UPDATE files SET path = REPLACE(path, ?, ?), updated_at = NOW() WHERE path LIKE ?");
+    $stmt->execute(["$oldPrefix/", "$newPrefix/", "$oldPrefix/%"]);
+
+    error_log("Cascade rename: $oldPrefix → $newPrefix updated child paths.");
   }
 
+  logRenameAction($type, $scopedOldPath, $scopedNewPath);
   setFlash('success', ucfirst($type) . " renamed to '$newName'.");
 
 } catch (RuntimeException $e) {
@@ -91,12 +136,3 @@ try {
 }
 
 redirectToManager($targetId, $currentPath);
-
-// 🔁 Redirect helper
-function redirectToManager(string $userId, string $path): void {
-  $url = "/pages/staff/file-manager.php?user_id=$userId";
-  if ($path !== '') $url .= '&path=' . urlencode($path);
-  header("Location: $url");
-  exit;
-}
-?>

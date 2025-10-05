@@ -41,13 +41,13 @@ if (!preg_match('/^[a-zA-Z0-9_\- ]+$/', $folderName)) {
 
 // 📁 Build full relative path
 $sanitizedFolderName = sanitizeSegment($folderName);
-$fullRelativePath = $currentPath !== '' ? "$currentPath/$sanitizedFolderName" : $sanitizedFolderName;
+$relativePath = sanitizePath($currentPath !== '' ? "$currentPath/$sanitizedFolderName" : $sanitizedFolderName);
 
 // 📍 Resolve base path
 $basePath = getUploadBaseByRoleUser($activeRoleId, $targetId);
 
 // 🔄 Create folder in filesystem
-if (!createFolder($basePath, $fullRelativePath)) {
+if (!createFolder($basePath, $relativePath)) {
   setFlash('warning', "Folder '$sanitizedFolderName' already exists or could not be created.");
   return redirectToManager($userId, $currentPath);
 }
@@ -59,11 +59,25 @@ function getFolderIdByPath(PDO $pdo, int $ownerId, string $path): ?int {
   return $stmt->fetchColumn() ?: null;
 }
 
-$parentFolderId = $currentPath !== '' ? getFolderIdByPath($pdo, $userId, $currentPath) : null;
+$scopedPath = "uploads/staff/$userId/" . ltrim($relativePath, '/');
+$parentFolderId = $currentPath !== '' ? getFolderIdByPath($pdo, $userId, "uploads/staff/$userId/" . ltrim($currentPath, '/')) : null;
+
+// 🔍 Check for duplicates
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM folders WHERE owner_id = ? AND parent_id " . ($parentFolderId ? "= ?" : "IS NULL") . " AND name = ?");
+$stmt->execute($parentFolderId ? [$userId, $parentFolderId, $sanitizedFolderName] : [$userId, $sanitizedFolderName]);
+$exists = $stmt->fetchColumn();
+
+if ($exists) {
+  setFlash('warning', "Folder '$sanitizedFolderName' already exists in this location.");
+  return redirectToManager($userId, $currentPath);
+}
 
 // 🗂️ Insert folder metadata into database
-$stmt = $pdo->prepare("INSERT INTO folders (name, parent_id, owner_id, path, created_at) VALUES (?, ?, ?, ?, NOW())");
-$stmt->execute([$sanitizedFolderName, $parentFolderId, $userId, $fullRelativePath]);
+$stmt = $pdo->prepare("INSERT INTO folders (name, parent_id, owner_id, path, type, created_at) VALUES (?, ?, ?, ?, 'folder', NOW())");
+$stmt->execute([$sanitizedFolderName, $parentFolderId, $userId, $scopedPath]);
+
+// ✅ Log full path for debug
+logFolderCreation($scopedPath, $basePath . '/' . $relativePath);
 
 setFlash('success', "Folder '$sanitizedFolderName' created successfully.");
 redirectToManager($userId, $currentPath);
@@ -75,4 +89,3 @@ function redirectToManager(int $userId, string $path): void {
   header("Location: $url");
   exit;
 }
-?>

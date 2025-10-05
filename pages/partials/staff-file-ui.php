@@ -163,7 +163,7 @@ $breadcrumbPath = '';
               <!-- Actions -->
               <button class="open-share-btn flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer"
                 data-name="<?= htmlspecialchars($folderName) ?>"
-                data-path="<?= $safePath ?>"
+                data-path="<?= htmlspecialchars($currentPath) ?>"
                 data-type="folder"
                 data-user-id="<?= $targetId ?>">
                 <img src="/assets/img/share-icon.png" alt="Share Icon" class="w-4 h-4" />
@@ -234,7 +234,7 @@ $breadcrumbPath = '';
               <div id="<?= $menuId ?>" class="absolute right-4 sm:right-18 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold">
                 <button class="open-share-btn flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer"
                   data-name="<?= htmlspecialchars($filename) ?>"
-                  data-path="<?= $safePath ?>"
+                  data-path="<?= htmlspecialchars($currentPath) ?>"
                   data-type="file"
                   data-user-id="<?= $targetId ?>">
                   <img src="/assets/img/share-icon.png" alt="Share Icon" class="w-4 h-4" />
@@ -300,7 +300,7 @@ $breadcrumbPath = '';
     <form id="shareForm" method="POST" action="/controllers/files/share-item.php" class="flex flex-col gap-3">
       <input type="hidden" name="item_path" id="shareItemPath">
       <input type="hidden" name="owner_id" id="shareOwnerId" value="<?= $targetId ?>">
-      <input type="hidden" name="is_folder" id="shareIsFolder">
+      <input type="hidden" name="type" id="shareItemType">
 
       <!-- Recipient Email -->
       <div class="relative mb-5">

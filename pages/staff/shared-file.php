@@ -2,8 +2,40 @@
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/flash.php';
+include_once __DIR__ . '/../../includes/shared-tree.php';// for renderSharedTree()
 require_once __DIR__ . '/../../helpers/head.php';
+require_once __DIR__ . '/../../helpers/path.php';          // getUserUploadUrl()
+require_once __DIR__ . '/../../helpers/sharing-utils.php'; // getSharedAccessCached(), buildSharedTree(), fetchSharedItems()
 
+$activeUserId = $_SESSION['user_id'] ?? 0;
+$view = $_GET['view'] ?? 'with'; // 'by' or 'with'
+$sortBy = $_GET['sort'] ?? 'name';
+
+$validSorts = ['name', 'modified'];
+$orderColumn = $sortBy === 'modified' ? 'sf.shared_at' : 'f.name';
+
+// 🧠 Fetch shared items (root-level only)
+$sharedFolders = fetchSharedItems($pdo, 'folder', $view, $activeUserId, $orderColumn, true);
+$sharedFiles   = fetchSharedItems($pdo, 'file', $view, $activeUserId, $orderColumn, true);
+$sharedItems   = array_merge($sharedFolders, $sharedFiles);
+
+foreach ($sharedItems as &$item) {
+  // Strip internal path prefix
+  if (preg_match('#uploads/staff/\d+/#', $item['path'])) {
+    $item['path'] = preg_replace('#^.*uploads/staff/\d+/#', '', $item['path']);
+  }
+
+  // Ensure clean name
+  $item['name'] = basename($item['path']);
+}
+
+//  Build tree for rendering
+$sharedTree = [];
+foreach ($sharedItems as $item) {
+  $sharedTree[$item['name']] = ['__meta' => $item, '__children' => []];
+}
+
+// Render head
 renderHead('Staff');
 ?>
 
@@ -33,8 +65,8 @@ renderHead('Staff');
 
         <!-- Dropdown Menu -->
         <div id="sharedDropdown" class="absolute left-16 -translate-x-1/2 w-32 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
-          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-100 font-semibold">By Me</a>
-          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-100 font-semibold">With Me</a>
+          <a href="?view=by" class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-100 font-semibold">By Me</a>
+          <a href="?view=with" class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-100 font-semibold">With Me</a>
         </div>
       </div>
 
@@ -48,8 +80,6 @@ renderHead('Staff');
             Clear
           </button>
         </div>
-
-
 
         <!-- Sorting -->
         <div class="flex gap-4 mb-4 text-sm text-gray-700">
@@ -76,10 +106,13 @@ renderHead('Staff');
             <div class="w-10"></div>
           </div>
         </div>
-        
+
         <!-- Shared Items -->
         <div class="flex flex-col divide-y divide-gray-300">
-
+          <?php
+          foreach ($sharedItems as $item) {
+  renderSharedItem($item);
+} ?>
         </div>
       </div>
     </section>

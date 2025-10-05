@@ -240,4 +240,51 @@ function moveFolderRecursively(string $source, string $destination): bool {
 
   return rmdir($source);
 }
+
+/**
+ * Recursively fetch all subfolders and files under a given folder ID.
+ *
+ * @param PDO $pdo
+ * @param int $folderId
+ * @return array ['folders' => [...], 'files' => [...]]
+ */
+function getFolderContentsRecursive(PDO $pdo, int $folderId): array {
+  $folders = [];
+  $files = [];
+
+  //  Get immediate files
+  $stmt = $pdo->prepare("SELECT id FROM files WHERE folder_id = ?");
+  $stmt->execute([$folderId]);
+  $files = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+  //  Get immediate subfolders
+  $stmt = $pdo->prepare("SELECT id FROM folders WHERE parent_id = ?");
+  $stmt->execute([$folderId]);
+  $subfolders = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+  foreach ($subfolders as $subId) {
+    $folders[] = $subId;
+
+    //  Recurse into child folders
+    $child = getFolderContentsRecursive($pdo, $subId);
+    $folders = array_merge($folders, $child['folders']);
+    $files = array_merge($files, $child['files']);
+  }
+
+  return ['folders' => $folders, 'files' => $files];
+}
+
+function logFolderCreation(string $dbPath, string $diskPath): void {
+  $logFile = __DIR__ . '/../logs/folder_creation.log';
+  $timestamp = date('Y-m-d H:i:s');
+  $message = "[$timestamp] Folder created → DB: $dbPath | Disk: $diskPath\n";
+  error_log($message, 3, $logFile);
+}
+
+function logRenameAction(string $type, string $oldPath, string $newPath): void {
+  $logFile = __DIR__ . '/../logs/rename_actions.log';
+  $timestamp = date('Y-m-d H:i:s');
+  $message = "[$timestamp] Renamed $type → FROM: $oldPath TO: $newPath\n";
+  error_log($message, 3, $logFile);
+}
 ?>
