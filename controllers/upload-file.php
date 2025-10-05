@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/path.php';
@@ -25,7 +26,7 @@ function canUploadFile(string $userId, string $targetId, int $activeRoleId, int 
   return $activeRoleId === 1 && $userId === $targetId; // Staff managing their own folder
 }
 
-if (!canUploadFile($userId, $targetId, $activeRoleId, $originalRoleId)) {
+if (!canUploadFile($userId, $targetId, (int)$activeRoleId, (int)$originalRoleId)) {
   setFlash('error', 'Access denied. You do not have permission to upload files here.');
   return redirectToManager($userId, $currentPath);
 }
@@ -60,7 +61,7 @@ if (!in_array($mimeType, $allowedTypes)) {
 }
 
 // 📁 Resolve upload path
-$baseDir    = getUploadBaseByRoleUser($activeRoleId, $targetId);
+$baseDir    = getUploadBaseByRoleUser((int)$activeRoleId, $targetId);
 $targetPath = resolveUploadPathFromBase($baseDir, $currentPath, $finalName);
 
 if (!is_dir(dirname($targetPath))) {
@@ -75,13 +76,33 @@ if (file_exists($targetPath)) {
 }
 
 // 🔄 Move file
-if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-  setFlash('success', "File '$finalName' uploaded successfully.");
-} else {
+if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
   error_log("Upload failed: move_uploaded_file() failed for $targetPath");
   setFlash('error', 'Failed to move uploaded file.');
+  return redirectToManager($targetId, $currentPath);
 }
 
+// 🧠 Resolve folder ID from current path
+function getFolderIdByPath(PDO $pdo, int $ownerId, string $path): ?int {
+  $stmt = $pdo->prepare("SELECT id FROM folders WHERE owner_id = ? AND path = ?");
+  $stmt->execute([$ownerId, $path]);
+  return $stmt->fetchColumn() ?: null;
+}
+
+$folderId = getFolderIdByPath($pdo, (int)$userId, $currentPath);
+
+// 🗂️ Insert file metadata into database
+$stmt = $pdo->prepare("INSERT INTO files (name, folder_id, owner_id, path, size, mime_type, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+$stmt->execute([
+  $finalName,
+  $folderId,
+  $userId,
+  $targetPath,
+  $file['size'],
+  $mimeType
+]);
+
+setFlash('success', "File '$finalName' uploaded successfully.");
 redirectToManager($targetId, $currentPath);
 
 // 🔁 Redirect helper

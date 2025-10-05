@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/path.php';
@@ -22,20 +23,20 @@ if (!$userId || !$activeRoleId || !$originalRoleId || !$type || !$rawOldName || 
   return redirectToManager($userId, $currentPath);
 }
 
-// 🔐 Access control: only true staff or elevated roles can rename
+// 🔐 Access control
 function canRenameItem(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool {
   if (in_array($originalRoleId, [2, 99])) return true;
   return $activeRoleId === 1 && $userId === $targetId;
 }
 
-if (!canRenameItem($userId, $targetId, $activeRoleId, $originalRoleId)) {
+if (!canRenameItem($userId, $targetId, (int)$activeRoleId, (int)$originalRoleId)) {
   setFlash('error', 'Access denied. You do not have permission to rename items here.');
   return redirectToManager($userId, $currentPath);
 }
 
 try {
   // 📁 Resolve base path
-  $baseDir = getUploadBaseByRoleUser($activeRoleId, $targetId);
+  $baseDir = getUploadBaseByRoleUser((int)$activeRoleId, $targetId);
 
   // 🧼 Sanitize filenames
   $oldName      = trim($rawOldName, '/');
@@ -60,9 +61,29 @@ try {
   }
 
   // 🔄 Perform rename
-  if (!handleRename($type, $oldPath, $newPath, $oldName, $newName)) {
+  $success = is_dir($oldPath)
+    ? moveFolderRecursively($oldPath, $newPath)
+    : rename($oldPath, $newPath);
+
+  if (!$success) {
+    error_log("Rename failed: $oldPath → $newPath");
+    setFlash('error', "Failed to rename $type '$oldName'.");
     return redirectToManager($targetId, $currentPath);
   }
+
+  // 🧠 Update metadata in database
+  $relativeOldPath = $currentPath !== '' ? "$currentPath/$oldName" : $oldName;
+  $relativeNewPath = $currentPath !== '' ? "$currentPath/$newName" : $newName;
+
+  if ($type === 'file') {
+    $stmt = $pdo->prepare("UPDATE files SET name = ?, path = ?, updated_at = NOW() WHERE path = ? AND owner_id = ?");
+    $stmt->execute([$newName, $newPath, $oldPath, $userId]);
+  } elseif ($type === 'folder') {
+    $stmt = $pdo->prepare("UPDATE folders SET name = ?, path = ?, updated_at = NOW() WHERE path = ? AND owner_id = ?");
+    $stmt->execute([$newName, $relativeNewPath, $relativeOldPath, $userId]);
+  }
+
+  setFlash('success', ucfirst($type) . " renamed to '$newName'.");
 
 } catch (RuntimeException $e) {
   error_log("Rename error: " . $e->getMessage());
@@ -70,32 +91,6 @@ try {
 }
 
 redirectToManager($targetId, $currentPath);
-
-// 🔧 Rename logic
-function handleRename(string $type, string $oldPath, string $newPath, string $oldName, string $newName): bool {
-  if (!file_exists($oldPath)) {
-    setFlash('error', ucfirst($type) . " '$oldName' not found.");
-    return false;
-  }
-
-  if (file_exists($newPath)) {
-    setFlash('warning', "A $type named '$newName' already exists.");
-    return false;
-  }
-
-  $success = is_dir($oldPath)
-    ? moveFolderRecursively($oldPath, $newPath)
-    : rename($oldPath, $newPath);
-
-  if ($success) {
-    setFlash('success', ucfirst($type) . " renamed to '$newName'.");
-    return true;
-  } else {
-    error_log("Rename failed: $oldPath → $newPath");
-    setFlash('error', "Failed to rename $type '$oldName'.");
-    return false;
-  }
-}
 
 // 🔁 Redirect helper
 function redirectToManager(string $userId, string $path): void {

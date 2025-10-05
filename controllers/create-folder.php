@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/folder-utils.php';
@@ -24,7 +25,7 @@ if (!$userId || !$activeRoleId || !$originalRoleId) {
 // 🔐 Access control
 if (!canCreateFolder($userId, $targetId, $activeRoleId, $originalRoleId)) {
   setFlash('error', 'Access denied. You do not have permission to create folders here.');
-  return redirectToManager($userId, $currentPath); // ✅ Redirect to self
+  return redirectToManager($userId, $currentPath);
 }
 
 // ✅ Validate folder name
@@ -45,14 +46,26 @@ $fullRelativePath = $currentPath !== '' ? "$currentPath/$sanitizedFolderName" : 
 // 📍 Resolve base path
 $basePath = getUploadBaseByRoleUser($activeRoleId, $targetId);
 
-// 🔄 Create folder
-if (createFolder($basePath, $fullRelativePath)) {
-  setFlash('success', "Folder '$sanitizedFolderName' created successfully.");
-} else {
+// 🔄 Create folder in filesystem
+if (!createFolder($basePath, $fullRelativePath)) {
   setFlash('warning', "Folder '$sanitizedFolderName' already exists or could not be created.");
+  return redirectToManager($userId, $currentPath);
 }
 
-// ✅ Redirect to self to preserve UI state
+// 🧠 Resolve parent folder ID from current path
+function getFolderIdByPath(PDO $pdo, int $ownerId, string $path): ?int {
+  $stmt = $pdo->prepare("SELECT id FROM folders WHERE owner_id = ? AND path = ?");
+  $stmt->execute([$ownerId, $path]);
+  return $stmt->fetchColumn() ?: null;
+}
+
+$parentFolderId = $currentPath !== '' ? getFolderIdByPath($pdo, $userId, $currentPath) : null;
+
+// 🗂️ Insert folder metadata into database
+$stmt = $pdo->prepare("INSERT INTO folders (name, parent_id, owner_id, path, created_at) VALUES (?, ?, ?, ?, NOW())");
+$stmt->execute([$sanitizedFolderName, $parentFolderId, $userId, $fullRelativePath]);
+
+setFlash('success', "Folder '$sanitizedFolderName' created successfully.");
 redirectToManager($userId, $currentPath);
 
 // 🔁 Redirect helper
@@ -62,3 +75,4 @@ function redirectToManager(int $userId, string $path): void {
   header("Location: $url");
   exit;
 }
+?>

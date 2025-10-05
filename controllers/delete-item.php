@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/folder-utils.php';
@@ -21,32 +22,34 @@ if (!$userId || !$activeRoleId || !$originalRoleId || !$type || !$name) {
   return redirectToManager($userId, $currentPath);
 }
 
-// 🔐 Access control: only true staff or elevated roles can delete
+// 🔐 Access control
 function canDeleteItem(string $userId, string $targetId, int $activeRoleId, int $originalRoleId): bool {
   if (in_array($originalRoleId, [2, 99])) return true;
   return $activeRoleId === 1 && $userId === $targetId;
 }
 
-if (!canDeleteItem($userId, $targetId, $activeRoleId, $originalRoleId)) {
+if (!canDeleteItem($userId, $targetId, (int)$activeRoleId, (int)$originalRoleId)) {
   setFlash('error', 'Access denied. You do not have permission to delete items here.');
   return redirectToManager($userId, $currentPath);
 }
 
+// 🧠 Resolve full path
+$baseDir    = getUploadBaseByRoleUser((int)$activeRoleId, $targetId);
+$targetPath = resolveUploadPathFromBase($baseDir, $currentPath, $name);
+
+if (!$targetPath || !file_exists($targetPath)) {
+  error_log("Deletion failed: path not found → $targetPath");
+  setFlash('error', "Item '$name' could not be found.");
+  return redirectToManager($targetId, $currentPath);
+}
+
+// 🧠 Resolve folder path for DB lookup
+$fullRelativePath = $currentPath !== '' ? "$currentPath/$name" : $name;
+
 try {
-  // 📁 Resolve base path
-  $baseDir    = getUploadBaseByRoleUser($activeRoleId, $targetId);
-  $targetPath = resolveUploadPathFromBase($baseDir, $currentPath, $name);
-
-  if (!$targetPath || !file_exists($targetPath)) {
-    error_log("Deletion failed: path not found → $targetPath");
-    setFlash('error', "Item '$name' could not be found.");
-    return redirectToManager($targetId, $currentPath);
-  }
-
-  // 🔄 Perform deletion
   $success = match ($type) {
-    'file'   => handleFileDeletion($targetPath, $name),
-    'folder' => handleFolderDeletion($targetPath, $name),
+    'file'   => handleFileDeletion($pdo, $targetPath, $fullRelativePath, $userId),
+    'folder' => handleFolderDeletion($pdo, $targetPath, $fullRelativePath, $userId),
     default  => handleUnknownType($type)
   };
 
@@ -62,28 +65,37 @@ try {
 redirectToManager($targetId, $currentPath);
 
 // ✅ Helpers
-function handleFileDeletion(string $targetPath, string $name): bool {
+function handleFileDeletion(PDO $pdo, string $targetPath, string $relativePath, string $ownerId): bool {
   if (is_file($targetPath)) {
     unlink($targetPath);
-    setFlash('success', "File '$name' deleted successfully.");
+
+    // Delete metadata
+    $stmt = $pdo->prepare("DELETE FROM files WHERE path = ? AND owner_id = ?");
+    $stmt->execute([$targetPath, $ownerId]);
+
+    setFlash('success', "File deleted successfully.");
     return true;
   }
-  setFlash('error', "File '$name' could not be found.");
+  setFlash('error', "File could not be found.");
   return false;
 }
 
-function handleFolderDeletion(string $targetPath, string $name): bool {
+function handleFolderDeletion(PDO $pdo, string $targetPath, string $relativePath, string $ownerId): bool {
   if (is_dir($targetPath)) {
     if (deleteFolderRecursive($targetPath)) {
-      setFlash('success', "Folder '$name' deleted successfully.");
+      // Delete metadata
+      $stmt = $pdo->prepare("DELETE FROM folders WHERE path = ? AND owner_id = ?");
+      $stmt->execute([$relativePath, $ownerId]);
+
+      setFlash('success', "Folder deleted successfully.");
       return true;
     } else {
       error_log("Folder deletion failed: $targetPath");
-      setFlash('error', "Failed to delete folder '$name'.");
+      setFlash('error', "Failed to delete folder.");
       return false;
     }
   }
-  setFlash('error', "Folder '$name' could not be found.");
+  setFlash('error', "Folder could not be found.");
   return false;
 }
 
