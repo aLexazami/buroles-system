@@ -365,31 +365,56 @@ export function openShareModal() {
 }
 
 export function initShareButton() {
-  const openBtn = document.getElementById('openShareModal');
   const cancelBtn = document.getElementById('cancelShare');
   const modal = document.getElementById('shareModal');
   const accessSelect = document.getElementById('shareAccessLevel');
   const description = document.getElementById('accessLevelDescription');
 
-  if (openBtn) {
-    openBtn.addEventListener('click', openShareModal);
-  }
+  // 🟢 Attach to all share buttons
+  document.querySelectorAll('.open-share-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const name = btn.dataset.name;
+      const path = btn.dataset.path;
+      const type = btn.dataset.type;
+      const ownerId = btn.dataset.userId;
 
+      const fullPath = path !== '' ? `${path}/${name}` : name;
+
+      document.getElementById('shareItemPath').value = fullPath;
+      document.getElementById('shareIsFolder').value = type === 'folder' ? '1' : '0';
+      document.getElementById('shareOwnerId').value = ownerId;
+      document.getElementById('shareModalLabel').textContent = name;
+
+      // Reset form fields
+      document.getElementById('shareRecipientEmail').value = '';
+      document.getElementById('shareAccessLevel').value = 'view';
+      document.getElementById('selectedAvatar').src = '/assets/img/add-user.png';
+      document.getElementById('emailSuggestions').innerHTML = '';
+      document.getElementById('emailSuggestions').classList.add('hidden');
+
+      // Show modal
+      toggleModal('shareModal', true);
+    });
+  });
+
+  // 🟢 Cancel button
   if (cancelBtn) {
     cancelBtn.addEventListener('click', closeShareModal);
   }
 
+  // 🟢 Click outside to close
   if (modal) {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeShareModal();
     });
   }
 
+  // 🟢 Escape key to close
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeShareModal();
   });
 
-  // Access Level Description Logic
+  // 🟢 Access Level Description Logic
   if (accessSelect && description) {
     const accessDescriptions = {
       view: 'Can only view the item.',

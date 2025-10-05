@@ -161,8 +161,11 @@ $breadcrumbPath = '';
             <!-- Dropdown Menu -->
             <div id="<?= $menuId ?>" class="absolute right-4 sm:right-18 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150 font-semibold">
               <!-- Actions -->
-              <button id="openShareModal"
-                class="flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer">
+              <button class="open-share-btn flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer"
+                data-name="<?= htmlspecialchars($folderName) ?>"
+                data-path="<?= $safePath ?>"
+                data-type="folder"
+                data-user-id="<?= $targetId ?>">
                 <img src="/assets/img/share-icon.png" alt="Share Icon" class="w-4 h-4" />
                 <span>Share</span>
               </button>
@@ -229,8 +232,11 @@ $breadcrumbPath = '';
 
               <!-- Dropdown Menu -->
               <div id="<?= $menuId ?>" class="absolute right-4 sm:right-18 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold">
-                <button id="openShareModal"
-                  class="flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer">
+                <button class="open-share-btn flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer"
+                  data-name="<?= htmlspecialchars($filename) ?>"
+                  data-path="<?= $safePath ?>"
+                  data-type="file"
+                  data-user-id="<?= $targetId ?>">
                   <img src="/assets/img/share-icon.png" alt="Share Icon" class="w-4 h-4" />
                   <span>Share</span>
                 </button>
@@ -290,7 +296,7 @@ $breadcrumbPath = '';
   class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
   <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
   <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
-    <h2 class="text-xl sm:text-2xl mb-4">Share <span id="shareModalLabel"></span></h2>
+    <h2 class="text-xl sm:text-2xl mb-4">Share <span id="shareModalLabel" class="text-emerald-700 font-semibold text-xl sm:text-2xl"></span></h2>
     <form id="shareForm" method="POST" action="/controllers/share-item.php" class="flex flex-col gap-3">
       <input type="hidden" name="item_path" id="shareItemPath">
       <input type="hidden" name="owner_id" id="shareOwnerId" value="<?= $targetId ?>">
