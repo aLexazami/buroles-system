@@ -20,7 +20,7 @@ $pendingRequests = 3;
   <?php include '../includes/header.php' ?>
 
   <!-- Main Layout -->
-  <main class="grid grid-cols-1 md:grid-cols-[64px_1fr_300px] lg:grid-cols-[248px_1fr_300px]">
+  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr_300px] lg:grid-cols-[auto_1fr_300px]">
 
     <?php showFlash(); ?>
 

@@ -168,7 +168,7 @@ function fetchSharedItems(PDO $pdo, string $type, string $view, int $userId, str
   }
 
   $sql = "
-    SELECT f.name, f.path, sf.access_level, sf.shared_at, $selectUser, '$type' AS type
+    SELECT sf.id AS id, f.name, f.path, sf.access_level, sf.shared_at, $selectUser, '$type' AS type
     FROM $table sf
     JOIN $itemTable f ON sf.$itemColumn = f.id
     JOIN users u ON sf." . ($view === 'by' ? 'shared_with' : 'shared_by') . " = u.id

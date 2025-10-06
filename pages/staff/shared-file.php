@@ -7,31 +7,26 @@ require_once __DIR__ . '/../../helpers/path.php';
 require_once __DIR__ . '/../../helpers/sharing-utils.php';
 
 $activeUserId = $_SESSION['user_id'] ?? 0;
-$view         = $_GET['view'] ?? 'with'; // 'by' or 'with'
+$view         = $_GET['view'] ?? 'with';
 $sortBy       = $_GET['sort'] ?? 'name';
 
-$validSorts   = ['name', 'modified'];
 $orderColumn  = $sortBy === 'modified' ? 'sf.shared_at' : 'f.name';
 
-// 🧠 Fetch shared items (root-level only)
+// ✅ Fetch only active shares (revoked entries are deleted)
 $sharedFolders = fetchSharedItems($pdo, 'folder', $view, $activeUserId, $orderColumn, true);
 $sharedFiles   = fetchSharedItems($pdo, 'file', $view, $activeUserId, $orderColumn, true);
-$sharedItems   = array_merge($sharedFolders, $sharedFiles);
 
-// 🧹 Normalize paths and names
+// ✅ Merge and normalize
+$sharedItems = array_merge($sharedFolders, $sharedFiles);
+
 foreach ($sharedItems as $i => $item) {
   if (isset($item['path'])) {
+    // Strip base path and extract name
     $sharedItems[$i]['path'] = preg_replace('#^.*uploads/staff/\d+/#', '', $item['path']);
     $sharedItems[$i]['name'] = basename($sharedItems[$i]['path']);
   } else {
     $sharedItems[$i]['name'] = 'Unnamed';
   }
-}
-
-// 🧩 Build tree for rendering (optional)
-$sharedTree = [];
-foreach ($sharedItems as $item) {
-  $sharedTree[$item['path']] = ['__meta' => $item, '__children' => []];
 }
 
 renderHead('Staff');
@@ -41,7 +36,7 @@ renderHead('Staff');
   <?php include('../../includes/header.php'); ?>
   <?php showFlash(); ?>
 
-  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
+ <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
     <?php include('../../includes/side-nav-staff.php'); ?>
 
     <section class="p-4 sm:p-6 md:p-8">
@@ -81,17 +76,15 @@ renderHead('Staff');
         </div>
 
         <!-- Header Row -->
-        <div class="flex flex-wrap px-2 py-2 items-center w-full text-sm text-gray-600 border-b">
-          <div class="flex flex-wrap items-center w-full justify-between gap-2 sm:gap-0">
-            <div class="flex items-center gap-2 sm:gap-3 flex-grow">
-              <span class="font-medium">Name</span>
-            </div>
-            <div class="hidden sm:flex items-center text-center font-medium gap-2 sm:gap-3">
-              <span class="w-24 text-xs sm:text-sm"><?= $view === 'by' ? 'Shared to' : 'Shared by' ?></span>
-              <span class="w-32 text-xs sm:text-sm">Date shared</span>
-            </div>
-            <div class="w-10"></div>
+        <div class="flex px-2 py-2 items-center w-full text-sm text-gray-600 border-b">
+          <div class="flex items-center gap-2 sm:gap-3 flex-grow min-w-0">
+            <span class="font-medium">Name</span>
           </div>
+          <div class="hidden sm:flex items-center gap-2 sm:gap-3 w-[20rem] justify-between">
+            <span class="w-[12rem] text-xs sm:text-sm"><?= $view === 'by' ? 'Shared to' : 'Shared by' ?></span>
+            <span class="w-[8rem] text-xs sm:text-sm">Date shared</span>
+          </div>
+          <div class="w-10 text-xs sm:text-sm text-center font-medium">Action</div>
         </div>
 
         <!-- Shared Items -->
@@ -120,30 +113,67 @@ renderHead('Staff');
             $email  = $view === 'by' ? $item['recipient_email'] ?? 'Unknown' : $item['shared_by_email'] ?? 'Unknown';
             $avatar = $view === 'by' ? $item['recipient_avatar'] ?? '/assets/img/default-avatar.png' : $item['shared_by_avatar'] ?? '/assets/img/default-avatar.png';
             ?>
-            <div class="flex flex-wrap px-2 py-2 items-center w-full text-sm text-gray-700">
-              <div class="flex items-center gap-2 sm:gap-3 flex-grow">
-                <img src="/assets/img/<?= $icon ?>" class="w-4 h-4" alt="<?= $isFolder ? 'Folder' : ($ext !== '' ? strtoupper($ext) . ' file' : 'Unknown file') ?> icon" />
-                <a href="<?= $link ?>" class="text-sm text-emerald-700 hover:underline"><?= htmlspecialchars($name ?: 'Unnamed') ?></a>
+            <a href="<?= $link ?>" class="group flex px-2 py-2 items-center w-full text-sm text-gray-700 hover:bg-emerald-50 transition" style="text-decoration: none;">
+              <!-- Name + Icon -->
+              <div class="flex items-center gap-2 sm:gap-3 flex-grow min-w-0">
+                <img src="/assets/img/<?= $icon ?>" class="w-4 h-4" alt="<?= $isFolder ? 'Folder' : strtoupper($ext) . ' file' ?>" />
+                <span class="text-sm text-emerald-700 group-hover:underline"><?= htmlspecialchars($name ?: 'Unnamed') ?></span>
               </div>
-              <div class="hidden sm:flex items-center text-center gap-2 sm:gap-3">
-                <img src="<?= htmlspecialchars($avatar) ?>" class="w-5 h-5 rounded-full" alt="Avatar" />
-                <span class="w-24 text-xs sm:text-sm"><?= htmlspecialchars($email) ?></span>
-                <span class="w-32 text-xs sm:text-sm"><?= htmlspecialchars(date('Y-m-d', strtotime($item['shared_at'] ?? ''))) ?></span>
+
+              <!-- Metadata -->
+              <div class="hidden sm:flex items-center gap-2 sm:gap-3 w-[20rem] justify-between">
+                <div class="flex items-center w-[12rem] min-w-0">
+                  <img src="<?= htmlspecialchars($avatar) ?>" class="w-5 h-5 rounded-full shrink-0" alt="Avatar" />
+                  <span
+                    class="ml-2 text-xs sm:text-sm block max-w-full sm:max-w-[10rem] lg:max-w-none truncate overflow-hidden whitespace-nowrap"
+                    title="<?= htmlspecialchars($email) ?>">
+                    <?= htmlspecialchars($email) ?>
+                  </span>
+                </div>
+                <span class="w-[8rem] text-xs sm:text-sm">
+                  <?= htmlspecialchars(date('Y-m-d', strtotime($item['shared_at'] ?? ''))) ?>
+                </span>
               </div>
-              <div class="w-10 flex justify-end">
-                <?php if ($accessLevel === 'owner'): ?>
-                  <form method="POST" action="/controllers/files/revoke-share.php" class="inline">
-                    <input type="hidden" name="item_id" value="<?= $item['id'] ?>">
-                    <input type="hidden" name="type" value="<?= $item['type'] ?>">
-                    <input type="hidden" name="shared_with" value="<?= $item['shared_with'] ?>">
-                    <button type="submit" class="text-red-600 text-xs hover:underline">Revoke</button>
-                  </form>
+
+              <!-- Action -->
+              <div class="w-10 flex justify-end relative" onclick="event.stopPropagation();">
+                <?php if ($view === 'by'): ?>
+                  <button class="menu-toggle cursor-pointer hover:bg-emerald-300 rounded-full p-2" data-id="<?= htmlspecialchars($item['id']) ?>">
+                    <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
+                  </button>
+                  <div class="menu-dropdown absolute right-0 top-8 bg-white border rounded shadow-lg hidden z-50 text-sm w-40">
+                    <button class="revoke-btn w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
+                      data-id="<?= htmlspecialchars($item['id']) ?>"
+                      data-type="<?= htmlspecialchars($item['type']) ?>"
+                      data-name="<?= htmlspecialchars($item['name']) ?>"
+                      data-shared-with="<?= htmlspecialchars($item['shared_with']) ?>">
+                      Revoke Access
+                    </button>
+                  </div>
                 <?php endif; ?>
               </div>
-            </div>
+            </a>
           <?php endforeach; ?>
         </div>
-      </div>
+
+        <!-- Revoke Confirmation Modal -->
+        <div id="revokeModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden z-50">
+          <div class="bg-white rounded shadow-lg p-6 w-full max-w-md">
+            <h2 class="text-lg font-bold mb-2">Confirm Revocation</h2>
+            <p class="text-sm text-gray-700 mb-4">
+              Are you sure you want to revoke access to <span id="revokeItemName" class="font-semibold"></span>?
+            </p>
+            <form method="POST" action="/controllers/files/revoke-share.php">
+              <input type="hidden" name="item_id" id="revokeItemId">
+              <input type="hidden" name="type" id="revokeItemType">
+              <input type="hidden" name="shared_with" id="revokeSharedWith">
+              <div class="flex justify-end gap-2">
+                <button type="button" id="cancelRevoke" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded text-sm">Confirm</button>
+              </div>
+            </form>
+          </div>
+        </div>
     </section>
   </main>
 
@@ -154,16 +184,27 @@ renderHead('Staff');
   <script src="/assets/js/date-time.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('sharedBtn');
+      const sharedBtn = document.getElementById('sharedBtn');
       const dropdown = document.getElementById('sharedDropdown');
 
-      btn.addEventListener('click', (e) => {
+      sharedBtn.addEventListener('click', e => {
         e.stopPropagation();
         dropdown.classList.toggle('hidden');
       });
 
       document.addEventListener('click', () => {
         dropdown.classList.add('hidden');
+        document.querySelectorAll('.menu-dropdown').forEach(d => d.classList.add('hidden'));
+      });
+
+      // Dot menu toggle
+      document.querySelectorAll('.menu-toggle').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const dropdown = btn.nextElementSibling;
+          document.querySelectorAll('.menu-dropdown').forEach(d => d.classList.add('hidden'));
+          dropdown.classList.toggle('hidden');
+        });
       });
     });
   </script>

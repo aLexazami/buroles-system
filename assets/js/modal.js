@@ -431,3 +431,41 @@ export function initShareButton() {
     updateDescription(); // Initialize on load
   }
 }
+
+// Revoke Modal Logic
+export function setupRevokeModal() {
+  const revokeItemName = document.getElementById('revokeItemName');
+  const revokeItemId = document.getElementById('revokeItemId');
+  const revokeItemType = document.getElementById('revokeItemType');
+  const revokeSharedWith = document.getElementById('revokeSharedWith');
+  const cancelRevoke = document.getElementById('cancelRevoke');
+  const revokeModal = document.getElementById('revokeModal');
+
+  // Only run if modal exists on the page
+  if (
+    revokeItemName &&
+    revokeItemId &&
+    revokeItemType &&
+    revokeSharedWith &&
+    cancelRevoke &&
+    revokeModal
+  ) {
+    document.querySelectorAll('.revoke-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        revokeItemName.textContent = btn.dataset.name;
+        revokeItemId.value = btn.dataset.id;
+        revokeItemType.value = btn.dataset.type;
+        revokeSharedWith.value = btn.dataset.sharedWith;
+        toggleModal('revokeModal', true);
+      });
+    });
+
+    cancelRevoke.addEventListener('click', () => {
+      toggleModal('revokeModal', false);
+    });
+
+    revokeModal.addEventListener('click', e => {
+      if (e.target === revokeModal) toggleModal('revokeModal', false);
+    });
+  }
+}

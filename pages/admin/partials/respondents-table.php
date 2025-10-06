@@ -1,10 +1,8 @@
 <?php
 require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../../includes/fetch-feedback-data.php';
 
 $markRead = $pdo->prepare("UPDATE feedback_respondents SET is_read = TRUE WHERE is_read = FALSE");
 $markRead->execute();
-ob_start();
 ?>
 
 <?php if (empty($results)): ?>
@@ -55,5 +53,3 @@ ob_start();
   </tbody>
 </table>
 <?php endif; ?>
-
-<?php echo ob_get_clean(); ?>

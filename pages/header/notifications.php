@@ -23,7 +23,7 @@ renderHead('Notifications');
 <body class="bg-gray-200 min-h-screen">
   <?php include __DIR__ . '/../../includes/header.php'; ?>
 
-  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
     <?php
     switch ($_SESSION['active_role_id'] ?? null) {
       case 1:

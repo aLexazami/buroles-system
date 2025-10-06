@@ -10,7 +10,7 @@ renderHead('Admin');
   <?php include('../../includes/header.php'); ?>
 
   <!-- Responsive Layout -->
-  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
     <?php include('../../includes/side-nav-admin.php'); ?>
 
     <section class="m-4">

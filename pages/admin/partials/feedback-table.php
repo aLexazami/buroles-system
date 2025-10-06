@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../config/database.php';
 require_once __DIR__ . '/../../../includes/fetch-feedback-data.php';
-
-ob_start();
 ?>
 
 <?php if (empty($results)): ?>
@@ -65,5 +63,3 @@ ob_start();
   </tbody>
 </table>
 <?php endif; ?>
-
-<?php echo ob_get_clean(); ?>

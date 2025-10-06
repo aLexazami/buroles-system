@@ -15,7 +15,7 @@ renderHead('Super Admin');
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
-  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
     <?php include('../../includes/side-nav-super-admin.php'); ?>
 
     <section class="m-4">

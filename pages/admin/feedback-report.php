@@ -11,7 +11,7 @@ renderHead('Admin');
   <?php include('../../includes/header.php'); ?>
 
   <!-- Feedback Respondents Main Content Section -->
-  <main class="grid grid-cols-1 md:grid-cols-[248px_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
     <!-- Left Side Navigation Section -->
     <?php include '../../includes/side-nav-admin.php' ?>
 
