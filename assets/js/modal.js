@@ -328,6 +328,7 @@ export function initAnnouncementTriggers() {
   });
 }
 
+
 // Share Modal Logic
 export function closeShareModal() {
   toggleModal('shareModal', false);
@@ -365,70 +366,126 @@ export function openShareModal() {
 }
 
 export function initShareButton() {
-  const cancelBtn = document.getElementById('cancelShare');
   const modal = document.getElementById('shareModal');
+  const cancelBtn = document.getElementById('cancelShare');
   const accessSelect = document.getElementById('shareAccessLevel');
   const description = document.getElementById('accessLevelDescription');
+  const emailInput = document.getElementById('shareRecipientEmail');
+  const suggestionsBox = document.getElementById('emailSuggestions');
+  const avatarPreview = document.getElementById('selectedAvatar');
+  const ownerEmail = document.getElementById('shareOwnerId')?.value || '';
 
-  // 🟢 Attach to all share buttons
+  const accessDescriptions = {
+    view: 'Can only view the item.',
+    comment: 'Can view and add comments.',
+    edit: 'Can organize, add, and edit files.'
+  };
+
+  function updateDescription() {
+    if (description && accessSelect) {
+      description.textContent = accessDescriptions[accessSelect.value] || '';
+    }
+  }
+
+  function resetShareModalFields(name, path, type, ownerId) {
+    const fullPath = path !== '' ? `${path}/${name}` : name;
+
+    document.getElementById('shareItemPath').value = fullPath;
+    document.getElementById('shareItemType').value = type;
+    document.getElementById('shareOwnerId').value = ownerId;
+    document.getElementById('shareModalLabel').textContent = name;
+
+    emailInput.value = '';
+    accessSelect.value = 'view';
+    if (avatarPreview) avatarPreview.src = '/assets/img/add-user.png';
+    suggestionsBox.innerHTML = '';
+    suggestionsBox.classList.add('hidden');
+    updateDescription();
+  }
+
+  // 🔹 Email-only suggestion logic (stable dropdown)
+let debounceTimer;
+if (emailInput && suggestionsBox) {
+  emailInput.addEventListener('input', () => {
+    const query = emailInput.value.trim();
+    clearTimeout(debounceTimer);
+
+    if (query.length < 1) {
+      suggestionsBox.innerHTML = '';
+      suggestionsBox.classList.add('hidden');
+      if (avatarPreview) avatarPreview.src = '/assets/img/add-user.png';
+      return;
+    }
+
+    debounceTimer = setTimeout(() => {
+      fetch(`/ajax/search-staff.php?query=${encodeURIComponent(query)}&exclude=${encodeURIComponent(ownerEmail)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!Array.isArray(data) || data.length === 0) {
+            suggestionsBox.innerHTML = '<li class="px-3 py-2 text-gray-400">No matches found</li>';
+            suggestionsBox.classList.remove('hidden');
+            return;
+          }
+
+          suggestionsBox.innerHTML = '';
+          data.forEach(email => {
+            const item = document.createElement('li');
+            item.className = 'px-3 py-2 hover:bg-emerald-100 cursor-pointer';
+            item.textContent = email;
+            item.addEventListener('click', () => {
+              emailInput.value = email;
+              suggestionsBox.innerHTML = '';
+              suggestionsBox.classList.add('hidden');
+              if (avatarPreview) avatarPreview.src = '/assets/img/add-user.png';
+            });
+            suggestionsBox.appendChild(item);
+          });
+
+          suggestionsBox.classList.remove('hidden');
+        })
+        .catch(err => {
+          console.error('Suggestion fetch error:', err);
+          // Don't hide the box immediately — let the user keep typing
+        });
+    }, 300);
+  });
+
+  // Optional: hide suggestions only when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!suggestionsBox.contains(e.target) && e.target !== emailInput) {
+      suggestionsBox.classList.add('hidden');
+    }
+  });
+}
+
+  // 🔹 Attach to all share buttons
   document.querySelectorAll('.open-share-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const name = btn.dataset.name;
-      const path = btn.dataset.path;
-      const type = btn.dataset.type;
-      const ownerId = btn.dataset.userId;
-
-      const fullPath = path !== '' ? `${path}/${name}` : name;
-
-      document.getElementById('shareItemPath').value = fullPath;
-      document.getElementById('shareItemType').value = type;
-      document.getElementById('shareOwnerId').value = ownerId;
-      document.getElementById('shareModalLabel').textContent = name;
-
-      // Reset form fields
-      document.getElementById('shareRecipientEmail').value = '';
-      document.getElementById('shareAccessLevel').value = 'view';
-      document.getElementById('selectedAvatar').src = '/assets/img/add-user.png';
-      document.getElementById('emailSuggestions').innerHTML = '';
-      document.getElementById('emailSuggestions').classList.add('hidden');
-
-      // Show modal
+      const { name, path, type, userId: ownerId } = btn.dataset;
+      resetShareModalFields(name, path, type, ownerId);
       toggleModal('shareModal', true);
     });
   });
 
-  // 🟢 Cancel button
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', closeShareModal);
-  }
+  // 🔹 Cancel button
+  if (cancelBtn) cancelBtn.addEventListener('click', closeShareModal);
 
-  // 🟢 Click outside to close
+  // 🔹 Click outside to close
   if (modal) {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeShareModal();
     });
   }
 
-  // 🟢 Escape key to close
+  // 🔹 Escape key to close
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeShareModal();
   });
 
-  // 🟢 Access Level Description Logic
+  // 🔹 Access level description
   if (accessSelect && description) {
-    const accessDescriptions = {
-      view: 'Can only view the item.',
-      comment: 'Can view and add comments.',
-      edit: 'Can organize, add, and edit files.'
-    };
-
-    const updateDescription = () => {
-      const selected = accessSelect.value;
-      description.textContent = accessDescriptions[selected] || '';
-    };
-
     accessSelect.addEventListener('change', updateDescription);
-    updateDescription(); // Initialize on load
+    updateDescription();
   }
 }
 
