@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../helpers/path.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php';
 require_once __DIR__ . '/../../helpers/file-utils.php';
+require_once __DIR__ . '/../../helpers/logging-utils.php';
 require_once __DIR__ . '/../../helpers/head.php';
 
 $userId         = (int)($_SESSION['user_id'] ?? 0);
@@ -30,14 +31,48 @@ function canManageFolder(int $userId, int $targetId, int $activeRoleId, int $ori
 if ($isSharedView) {
   require_once __DIR__ . '/../../helpers/sharing-utils.php';
 
-  $itemId = getItemIdByPath($pdo, $currentPath, $targetId, true);
-  $hasAccess = $itemId ? getSharedAccess($pdo, $targetId, $userId, $itemId) : false;
+  // 🧠 Try resolving folder ID using partial path match
+  $pathPattern = "%/$currentPath";
+  $stmt = $pdo->prepare("SELECT id, path, owner_id FROM folders WHERE path LIKE ? ORDER BY id DESC LIMIT 1");
+  $stmt->execute([$pathPattern]);
+  $folderRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  if (!$hasAccess) {
+  if (!$folderRow || !$folderRow['id']) {
+    setFlash('error', 'Shared folder not found.');
+    header("Location: shared-file.php");
+    exit;
+  }
+
+  $folderId = (int)$folderRow['id'];
+  $sharedById = (int)$folderRow['owner_id'];
+
+  function resolveSharedAccess(PDO $pdo, int $userId, string $currentPath, int $sharedById): array|false
+  {
+    $segments = explode('/', $currentPath);
+    while (!empty($segments)) {
+      $testPath = implode('/', $segments);
+      $fullPath = "uploads/staff/$sharedById/$testPath";
+      $itemId = getItemIdByPath($pdo, $fullPath, $sharedById, true);
+      if ($itemId) {
+        $access = getSharedAccess($pdo, $userId, 'folder', $itemId);
+        if ($access) {
+          return ['itemId' => $itemId, 'access' => $access, 'resolvedPath' => $fullPath];
+        }
+      }
+      array_pop($segments); // move up one level
+    }
+    return false;
+  }
+
+  $accessInfo = resolveSharedAccess($pdo, $userId, $currentPath, $sharedById);
+  if (!$accessInfo) {
     setFlash('error', 'Access denied. You do not have access to this shared folder.');
     header("Location: shared-file.php");
     exit;
   }
+  $itemId = $accessInfo['itemId'];
+  $hasAccess = $accessInfo['access'];
+  $fullPath = $accessInfo['resolvedPath'];
 
   // 🧠 Get sharer name
   $stmt = $pdo->prepare("
@@ -45,20 +80,29 @@ if ($isSharedView) {
     FROM users
     WHERE id = ?
   ");
-  $stmt->execute([$targetId]);
+  $stmt->execute([$sharedById]);
   $sharedByName = $stmt->fetchColumn() ?: 'Unknown';
+
+  // 📁 Resolve upload path using sharer
+  $uploadBase = getUploadBasePathOnly('1', $sharedById);
+
+  $targetId = $sharedById; // override for shared view
+  $activeRoleId = 1;       // staff role for shared owner
+
+} else {
+  // 🔒 Role-based access check
+  if (!canManageFolder($userId, $targetId, $activeRoleId, $originalRoleId)) {
+    setFlash('error', 'Access denied. You do not have permission to manage this folder.');
+    header("Location: file-manager.php?user_id=$userId");
+    exit;
+  }
+
+  // 📁 Resolve upload path using viewer
+  $uploadBase = getUploadBasePathOnly($activeRoleId, $targetId);
 }
 
-// 🔒 Role-based access check (skip if shared view)
-if (!$isSharedView && !canManageFolder($userId, $targetId, $activeRoleId, $originalRoleId)) {
-  setFlash('error', 'Access denied. You do not have permission to manage this folder.');
-  header("Location: file-manager.php?user_id=$userId");
-  exit;
-}
-
-// 📁 Resolve upload path
-$uploadBase = getUploadBasePathOnly($isSharedView ? 1 : $activeRoleId, $targetId);
-$fullPath   = $uploadBase . '/' . $currentPath;
+// ✅ Resolve full path for listing
+$fullPath = $uploadBase . '/' . $currentPath;
 
 // 📂 Folder creation (POST only)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['folder_name'])) {
@@ -83,14 +127,18 @@ $folders  = $contents['folders'];
 $files    = $contents['files'];
 
 // 🔃 Sort folders
-usort($folders, fn($a, $b) =>
+usort(
+  $folders,
+  fn($a, $b) =>
   $sortBy === 'modified'
     ? strtotime($b['modified']) <=> strtotime($a['modified'])
     : strcasecmp($a['name'], $b['name'])
 );
 
 // 🔃 Sort files
-usort($files, fn($a, $b) =>
+usort(
+  $files,
+  fn($a, $b) =>
   $sortBy === 'modified'
     ? strtotime($b['modified']) <=> strtotime($a['modified'])
     : strcasecmp($a['name'], $b['name'])
@@ -127,6 +175,12 @@ renderHead('Staff');
       if ($showMultiUserView && !isset($_GET['user_id'])) {
         include('../partials/admin-staff-overview.php');
       } else {
+        // 🔑 Pass access context to staff-file-ui.php
+        $GLOBALS['accessLevel']   = $isSharedView ? $hasAccess : 'owner';
+        $GLOBALS['isSharedView']  = $isSharedView;
+        $GLOBALS['targetId']      = $targetId;
+        $GLOBALS['currentPath']   = $currentPath;
+
         include('../partials/staff-file-ui.php');
       }
       ?>

@@ -3,7 +3,7 @@ session_start();
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/flash.php';
-require_once __DIR__ . '/../../helpers/user-utils.php';     // getUserByEmail(), getItemIdByPath()
+require_once __DIR__ . '/../../helpers/user-utils.php';     // getUserByEmail(),
 require_once __DIR__ . '/../../helpers/path.php';           // sanitizePath()
 require_once __DIR__ . '/../../helpers/folder-utils.php';   // getFolderContentsRecursive()
 
@@ -52,6 +52,16 @@ if (!$itemId) {
   return redirectToManager($ownerId);
 }
 
+// ✅ Validate metadata before sharing
+$metaTable = $isFolder ? 'folders' : 'files';
+$stmt = $pdo->prepare("SELECT name, path FROM $metaTable WHERE id = ?");
+$stmt->execute([$itemId]);
+$meta = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$meta || !$meta['name'] || !$meta['path']) {
+  setFlash('error', ucfirst($type) . ' metadata missing. Cannot share.');
+  return redirectToManager($ownerId);
+}
+
 // 🗂️ Insert into sharing table (if not already shared)
 $table  = $isFolder ? 'shared_folders' : 'shared_files';
 $column = $isFolder ? 'folder_id' : 'file_id';
@@ -71,6 +81,15 @@ if ($isFolder) {
   $stmt = $pdo->prepare("SELECT COUNT(*) FROM shared_folders WHERE folder_id = ? AND shared_with = ?");
   $insert = $pdo->prepare("INSERT INTO shared_folders (folder_id, shared_by, shared_with, access_level) VALUES (?, ?, ?, ?)");
   foreach ($contents['folders'] as $folderId) {
+    // ✅ Validate folder metadata
+    $check = $pdo->prepare("SELECT name, path FROM folders WHERE id = ?");
+    $check->execute([$folderId]);
+    $meta = $check->fetch(PDO::FETCH_ASSOC);
+    if (!$meta || !$meta['name'] || !$meta['path']) {
+      logShareAction('skipped-folder', $ownerId, $recipientUser['id'], "ID: $folderId (missing metadata)");
+      continue;
+    }
+
     $stmt->execute([$folderId, $recipientUser['id']]);
     if ($stmt->fetchColumn() == 0) {
       $insert->execute([$folderId, $ownerId, $recipientUser['id'], $accessLevel]);
@@ -81,6 +100,15 @@ if ($isFolder) {
   $stmt = $pdo->prepare("SELECT COUNT(*) FROM shared_files WHERE file_id = ? AND shared_with = ?");
   $insert = $pdo->prepare("INSERT INTO shared_files (file_id, shared_by, shared_with, access_level, is_root) VALUES (?, ?, ?, ?, 0)");
   foreach ($contents['files'] as $fileId) {
+    // ✅ Validate file metadata
+    $check = $pdo->prepare("SELECT name, path FROM files WHERE id = ?");
+    $check->execute([$fileId]);
+    $meta = $check->fetch(PDO::FETCH_ASSOC);
+    if (!$meta || !$meta['name'] || !$meta['path']) {
+      logShareAction('skipped-file', $ownerId, $recipientUser['id'], "ID: $fileId (missing metadata)");
+      continue;
+    }
+
     $stmt->execute([$fileId, $recipientUser['id']]);
     if ($stmt->fetchColumn() == 0) {
       $insert->execute([$fileId, $ownerId, $recipientUser['id'], $accessLevel]);

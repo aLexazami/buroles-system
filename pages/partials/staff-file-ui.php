@@ -1,12 +1,28 @@
 <?php
+require_once __DIR__ . '/../../helpers/sharing-utils.php';
+
+$userId       = $_SESSION['user_id'] ?? 0;
+$accessLevel  = $GLOBALS['accessLevel'] ?? 'owner';
+$targetId     = $GLOBALS['targetId'] ?? 0;
+$currentPath  = $GLOBALS['currentPath'] ?? '';
+
+$isSharedView = isset($_GET['shared']) && $_GET['shared'] === '1';
+$ownerId      = $targetId;
+$linkUserId   = $isSharedView ? $ownerId : $userId;
+$sharedParam  = $isSharedView ? '&shared=1' : '';
+
+error_log("🧠 UI Render → user: $userId, target: $targetId, access: $accessLevel, shared: " . ($isSharedView ? 'yes' : 'no'));
+
+$canEdit     = in_array($accessLevel, ['owner', 'editor'], true);
+$canComment  = $accessLevel === 'comment';
+$accessLabel = getAccessLabel($accessLevel);
+
 $trueRoleId   = (int)($_SESSION['original_role_id'] ?? 0);
 $activeRoleId = (int)($_SESSION['active_role_id'] ?? 1);
 $roleId       = (string)$activeRoleId;
-$userId       = (int)($_SESSION['user_id'] ?? 0);
-$targetId     = (int)($_GET['user_id'] ?? $userId);
-$currentPath  = sanitizePath($_GET['path'] ?? '');
-$safePath    = htmlspecialchars(trim($currentPath, '/'));
-$segments     = explode('/', $currentPath);
+
+$safePath       = htmlspecialchars(trim($currentPath, '/'));
+$segments       = explode('/', $currentPath);
 $breadcrumbPath = '';
 ?>
 <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
@@ -18,7 +34,7 @@ $breadcrumbPath = '';
 
 <div class="flex flex-col">
   <!-- Folder Creation + Upload -->
-  <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+  <?php if ($canEdit): ?>
     <div class="relative inline-block text-left py-4">
       <button type="button" id="newDropdownToggle"
         class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 cursor-pointer text-sm sm:text-base"
@@ -68,6 +84,7 @@ $breadcrumbPath = '';
   </div>
 
   <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6 min-h-screen ">
+    <span class="text-xs text-gray-500 italic">Access: <?= $accessLabel ?></span>
     <!-- Breadcrumb -->
     <div class="text-sm text-gray-500 flex flex-wrap items-center pb-3 gap-2 overflow-x-auto whitespace-nowrap">
       <a href="?user_id=<?= $targetId ?>&path=" class="text-emerald-600 hover:underline">Home</a>
@@ -126,10 +143,13 @@ $breadcrumbPath = '';
         $folderName = $folder['name'];
         $nextPath   = trim($currentPath . '/' . $folderName, '/');
         $menuId     = 'menu-' . md5($folderName);
+
+        // ✅ Log the link being generated
+        logFolderLink("/pages/staff/file-manager.php?user_id=$linkUserId&path=$nextPath$sharedParam", $folderName, $isSharedView ? 'SharedView' : 'OwnerView');
         ?>
         <div class="flex items-center hover:bg-emerald-50 px-2 py-3 sm:py-2 gap-2 folder-item" data-name="<?= htmlspecialchars($folderName) ?>">
           <!-- Folder Name -->
-          <a href="?user_id=<?= $targetId ?>&path=<?= urlencode($nextPath) ?>"
+          <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=<?= urlencode($nextPath) ?><?= $sharedParam ?>"
             class="flex items-center gap-2 sm:gap-3 flex-grow"
             title="Open folder <?= htmlspecialchars($folderName) ?>">
             <img src="/assets/img/folder.png" alt="Folder" class="w-5 h-5" title="<?= htmlspecialchars($folderName) ?>">
@@ -148,8 +168,17 @@ $breadcrumbPath = '';
             <span class="w-24 text-center"><?= formatSize($folder['size']) ?></span>
           </div>
 
+          <?php if ($canComment): ?>
+            <button class="flex items-center gap-2 px-3 py-2 text-sm text-emerald-700 hover:underline comment-btn"
+              data-name="<?= htmlspecialchars($filename) ?>"
+              data-path="<?= htmlspecialchars($currentPath) ?>"
+              data-user-id="<?= $targetId ?>">
+              💬 Comment
+            </button>
+          <?php endif; ?>
+
           <!-- Dot Menu -->
-          <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+          <?php if ($canEdit): ?>
             <div class="w-10 flex justify-end">
               <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
                 data-target="<?= $menuId ?>"
@@ -186,6 +215,7 @@ $breadcrumbPath = '';
                 Delete
               </button>
 
+
               <!-- Mobile Metadata (Only visible on mobile, below actions) -->
               <div class="block sm:hidden px-4 py-2 text-gray-600 border-t">
                 <p class="text-xs"><strong>Files:</strong> <?= $folder['fileCount'] ?><?= $folder['fileCount'] === 0 ? ' (empty)' : '' ?></p>
@@ -220,8 +250,17 @@ $breadcrumbPath = '';
               <span class="w-24 text-center"><?= formatSize($file['size']) ?></span>
             </div>
 
+            <?php if ($canComment): ?>
+              <button class="flex items-center gap-2 px-3 py-2 text-sm text-emerald-700 hover:underline comment-btn"
+                data-name="<?= htmlspecialchars($filename) ?>"
+                data-path="<?= htmlspecialchars($currentPath) ?>"
+                data-user-id="<?= $targetId ?>">
+                💬 Comment
+              </button>
+            <?php endif; ?>
+
             <!-- Dot Menu -->
-            <?php if ((int)$activeRoleId === 1 && (int)$userId === (int)$targetId): ?>
+            <?php if ($canEdit): ?>
               <div class="w-10 flex justify-end">
                 <button class="cursor-pointer menu-toggle hover:bg-emerald-300 rounded-full p-2"
                   data-target="<?= $menuId ?>"
@@ -276,6 +315,19 @@ $breadcrumbPath = '';
                   <p class="text-xs"><strong>Size:</strong> <?= formatSize($file['size']) ?></p>
                 </div>
               </div>
+            <?php endif; ?>
+            <!-- 💬 Comments (visible to all with access) -->
+            <?php if (!empty($file['id'])): ?>
+              <?php
+              $comments = getFileComments($pdo, (int)$file['id']);
+              foreach ($comments as $comment) {
+                echo '<div class="ml-8 text-xs text-gray-600 italic">💬 '
+                  . htmlspecialchars($comment['comment_text'])
+                  . '<small class="text-gray-400 ml-2">('
+                  . htmlspecialchars($comment['commenter_email'])
+                  . ')</small></div>';
+              }
+              ?>
             <?php endif; ?>
           </div>
         <?php endforeach; ?>
@@ -389,3 +441,34 @@ $breadcrumbPath = '';
     </form>
   </div>
 </div>
+
+<!-- Comment Modal -->
+<div id="commentModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4">Comment on <span id="commentFileLabel" class="text-emerald-700 font-semibold"></span></h2>
+    <form id="commentForm" method="POST" action="/controllers/files/comment-item.php" class="flex flex-col gap-3">
+      <input type="hidden" name="file_name" id="commentFileName">
+      <input type="hidden" name="path" id="commentPath">
+      <input type="hidden" name="user_id" value="<?= $targetId ?>">
+      <textarea name="comment" rows="4" class="border px-3 py-2 rounded text-sm sm:text-base" placeholder="Write your comment..." required></textarea>
+      <div class="flex justify-end gap-2 mt-5">
+        <button type="button" id="cancelComment" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Post</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.comment-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('commentFileLabel').textContent = btn.dataset.name;
+      document.getElementById('commentFileName').value = btn.dataset.name;
+      document.getElementById('commentPath').value = btn.dataset.path;
+      document.getElementById('commentModal').classList.remove('hidden');
+    });
+  });
+  document.getElementById('cancelComment').addEventListener('click', () => {
+    document.getElementById('commentModal').classList.add('hidden');
+  });
+</script>

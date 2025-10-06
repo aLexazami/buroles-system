@@ -1,0 +1,5 @@
+[2025-10-06 09:47:04] [SharedView] Folder link → Folder B → /pages/staff/file-manager.php?user_id=2&path=Folder A/Folder B&shared=1
+[2025-10-06 09:47:05] [SharedView] Folder link → Folder C → /pages/staff/file-manager.php?user_id=2&path=Folder A/Folder B/Folder C&shared=1
+[2025-10-06 09:48:22] [SharedView] Folder link → Folder B → /pages/staff/file-manager.php?user_id=2&path=Folder A/Folder B&shared=1
+[2025-10-06 09:48:28] [SharedView] Folder link → Folder C → /pages/staff/file-manager.php?user_id=2&path=Folder A/Folder B/Folder C&shared=1
+[2025-10-06 09:48:32] [OwnerView] Folder link → Folder C → /pages/staff/file-manager.php?user_id=2&path=Folder A/Folder B/Folder C

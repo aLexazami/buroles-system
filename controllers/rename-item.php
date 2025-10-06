@@ -5,6 +5,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/path.php';
+require_once __DIR__ . '/../helpers/logging-utils.php';
 require_once __DIR__ . '/../helpers/folder-utils.php';
 
 // 🔐 Access control

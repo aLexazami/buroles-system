@@ -274,17 +274,4 @@ function getFolderContentsRecursive(PDO $pdo, int $folderId): array {
   return ['folders' => $folders, 'files' => $files];
 }
 
-function logFolderCreation(string $dbPath, string $diskPath): void {
-  $logFile = __DIR__ . '/../logs/folder_creation.log';
-  $timestamp = date('Y-m-d H:i:s');
-  $message = "[$timestamp] Folder created → DB: $dbPath | Disk: $diskPath\n";
-  error_log($message, 3, $logFile);
-}
-
-function logRenameAction(string $type, string $oldPath, string $newPath): void {
-  $logFile = __DIR__ . '/../logs/rename_actions.log';
-  $timestamp = date('Y-m-d H:i:s');
-  $message = "[$timestamp] Renamed $type → FROM: $oldPath TO: $newPath\n";
-  error_log($message, 3, $logFile);
-}
 ?>
