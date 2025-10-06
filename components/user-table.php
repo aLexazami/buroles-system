@@ -27,7 +27,7 @@ require_once __DIR__ . '/../helpers/table-utils.php';
         <?php foreach ($users as $user): ?>
           <tr class="border-y border-gray-300 hover:bg-emerald-50">
             <td class="px-4 py-2 text-red-500 font-medium sm:text-sm md:text-base"><?= htmlspecialchars($user['id']) ?></td>
-            <td class="px-4 py-2 sm:text-sm md:text-base">
+            <td class="px-4 py-2 sm:text-sm md:text-base whitespace-nowrap">
               <?= htmlspecialchars(trim($user['last_name'] . ', ' . $user['first_name'] . ' ' . ($user['middle_name'] ?? ''))) ?>
             </td>
             <td class="px-4 py-2 sm:text-sm md:text-base"><?= htmlspecialchars($user['username']) ?></td>
@@ -37,7 +37,7 @@ require_once __DIR__ . '/../helpers/table-utils.php';
                 <?= htmlspecialchars($user['role_name']) ?>
               </span>
             </td>
-            <td class="px-4 py-2 sm:text-sm md:text-base space-x-1">
+            <td class="px-4 py-2 sm:text-sm md:text-base space-x-1 whitespace-nowrap">
               <?php if (!empty($user['is_archived'])): ?>
                 <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs sm:text-sm">Archived</span>
               <?php endif; ?>

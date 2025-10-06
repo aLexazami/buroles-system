@@ -15,10 +15,10 @@ renderHead('Super Admin');
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
-  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
+ <main class="flex w-full overflow-x-auto min-h-screen">
     <?php include('../../includes/side-nav-super-admin.php'); ?>
 
-    <section class="m-4">
+    <section class="w-full m-4">
       <!-- Page Header -->
       <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
         <img src="/assets/img/archive-user.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Archive icon">

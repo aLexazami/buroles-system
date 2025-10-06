@@ -31,7 +31,7 @@ renderHead('Super Admin');
       <?php showFlash(); ?>
 
       <!--  Form Component -->
-      <div class="p-4 sm:p-6 bg-white rounded-lg shadow-md w-full max-w-4xl mx-auto">
+      <div class="p-4 sm:p-6 bg-white rounded-lg shadow-md">
         <?php include(__DIR__ . '/../../components/user-form.php'); ?>
       </div>
     </section>

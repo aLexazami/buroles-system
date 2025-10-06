@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/table-utils.php';
-require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 require_once __DIR__ . '/../../helpers/head.php';
 renderHead('Admin');
 ?>
@@ -10,10 +9,10 @@ renderHead('Admin');
   <?php include('../../includes/header.php'); ?>
 
   <!-- Responsive Layout -->
-  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
+  <main class="flex min-h-screen w-full overflow-x-auto">
     <?php include('../../includes/side-nav-admin.php'); ?>
 
-    <section class="m-4">
+    <section class="w-full m-4">
       <!-- Page Title -->
       <div class="bg-emerald-300 p-2 flex justify-center items-center gap-2 mb-5">
         <img src="/assets/img/feedback-respondent.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Feedback icon">

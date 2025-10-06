@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/../../../config/database.php';
-
 $markRead = $pdo->prepare("UPDATE feedback_respondents SET is_read = TRUE WHERE is_read = FALSE");
 $markRead->execute();
 ?>

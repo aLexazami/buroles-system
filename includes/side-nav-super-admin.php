@@ -34,7 +34,7 @@ $navItems = [
 </div>
 
 <!-- Desktop Sidebar -->
-<aside class="hidden md:flex flex-col bg-gray-300  h-full min-h-screen w-[64px] lg:w-[248px]">
+<aside class="hidden md:flex flex-col bg-gray-300 min-h-screen w-[64px] lg:w-[248px] shrink-0">
 
   <!-- Profile Block (visible only on lg and up) -->
   <div class="hidden lg:flex flex-col items-center py-6">

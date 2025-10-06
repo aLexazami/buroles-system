@@ -1,8 +1,3 @@
-<?php
-require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../../includes/fetch-feedback-data.php';
-?>
-
 <?php if (empty($results)): ?>
   <div class="text-center py-10 text-gray-500 italic flex flex-col items-center gap-2">
   <img src="/assets/img/empty-box.png" class="w-10 h-10 opacity-50" alt="Empty">
