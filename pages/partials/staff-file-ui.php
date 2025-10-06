@@ -85,18 +85,34 @@ $breadcrumbPath = '';
 
   <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6 min-h-screen ">
     <span class="text-xs text-gray-500 italic">Access: <?= $accessLabel ?></span>
+
     <!-- Breadcrumb -->
     <div class="text-sm text-gray-500 flex flex-wrap items-center pb-3 gap-2 overflow-x-auto whitespace-nowrap">
-      <a href="?user_id=<?= $targetId ?>&path=" class="text-emerald-600 hover:underline">Home</a>
-      <?php foreach ($segments as $index => $segment): ?>
-        <?php if ($segment === '') continue;
-        $breadcrumbPath .= ($index > 0 ? '/' : '') . $segment; ?>
+      <?php
+      $breadcrumbPath = '';
+      $startIndex = $isSharedView ? 0 : -1; // -1 means show "Home" for owner
+      if (!$isSharedView): ?>
+        <img src="/assets/img/folder-icon.png" alt="Root" class="w-4 h-4">
+        <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=" class="text-emerald-600 hover:underline">Home</a>
+      <?php endif; ?>
+
+      <?php foreach ($segments as $index => $segment):
+        if ($segment === '') continue;
+        if ($isSharedView && $index === 0) {
+          // First segment is the shared root, skip label
+          $breadcrumbPath = $segment;
+        } else {
+          $breadcrumbPath .= ($breadcrumbPath === '' ? '' : '/') . $segment;
+        }
+      ?>
         <span>/</span>
-        <a href="?user_id=<?= $targetId ?>&path=<?= urlencode($breadcrumbPath) ?>" class="text-emerald-600 hover:underline">
+        <img src="/assets/img/folder-icon.png" alt="Folder" class="w-4 h-4">
+        <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=<?= urlencode($breadcrumbPath) ?><?= $sharedParam ?>" class="text-emerald-600 hover:underline">
           <?= htmlspecialchars($segment) ?>
         </a>
       <?php endforeach; ?>
     </div>
+
 
     <!-- Search -->
     <!-- Unified Search -->
