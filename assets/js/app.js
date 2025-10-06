@@ -1,5 +1,5 @@
 // UI & Role Toggles
-import { setupMenuToggle, setupSidebarToggle } from './menu-toggle.js';
+import { setupMenuToggle, setupSidebarToggle, initMenuToggle } from './menu-toggle.js';
 import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   closeShareModal();
   initEmailAutocomplete();
   setupRevokeModal();
+  initMenuToggle();
 
   // Badge Updater
   startBadgePolling();

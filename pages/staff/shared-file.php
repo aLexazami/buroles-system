@@ -104,7 +104,7 @@ renderHead('Staff');
             $avatar = $view === 'by' ? $item['recipient_avatar'] ?? '/assets/img/default-avatar.png' : $item['shared_by_avatar'] ?? '/assets/img/default-avatar.png';
             ?>
             <div class="shared-row group flex px-2 py-2 items-center w-full text-sm text-gray-700 hover:bg-emerald-50 transition cursor-pointer"
-     data-link="<?= $link ?>">
+              data-link="<?= $link ?>">
               <!-- Name + Icon -->
               <div class="flex items-center gap-2 sm:gap-3 flex-grow min-w-0">
                 <img src="<?= htmlspecialchars($icon) ?>" class="w-4 h-4" alt="<?= $isFolder ? 'Folder' : strtoupper($ext) . ' file' ?>" />
@@ -127,17 +127,20 @@ renderHead('Staff');
               <!-- Action -->
               <div class="w-10 flex justify-end relative" onclick="event.stopPropagation();">
                 <?php if ($view === 'by'): ?>
-                  <button class="menu-toggle cursor-pointer hover:bg-emerald-300 rounded-full p-2" data-id="<?= htmlspecialchars($item['id']) ?>">
-                    <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
-                  </button>
-                  <div class="menu-dropdown absolute right-0 top-8 bg-white border rounded shadow-lg hidden z-50 text-sm w-40">
-                    <button class="revoke-btn w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
-                      data-id="<?= htmlspecialchars($item['id']) ?>"
-                      data-type="<?= htmlspecialchars($item['type']) ?>"
-                      data-name="<?= htmlspecialchars($item['name']) ?>"
-                      data-shared-with="<?= htmlspecialchars($item['shared_with']) ?>">
-                      Revoke Access
+                  <div class="relative">
+                    <button class="menu-toggle cursor-pointer hover:bg-emerald-300 rounded-full p-2" data-id="<?= htmlspecialchars($item['id']) ?>">
+                      <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
                     </button>
+                    <div class="menu-dropdown absolute right-8 top-0  bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold z-10">
+                      <button class="revoke-btn flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left w-full cursor-pointer"
+                        data-id="<?= htmlspecialchars($item['id']) ?>"
+                        data-type="<?= htmlspecialchars($item['type']) ?>"
+                        data-name="<?= htmlspecialchars($item['name']) ?>"
+                        data-shared-with="<?= htmlspecialchars($item['shared_with']) ?>">
+                        <img src="/assets/img/revoke-icon.png" alt="Revoke Icon" class="w-4 h-4" />
+                        Revoke Access
+                      </button>
+                    </div>
                   </div>
                 <?php endif; ?>
               </div>
@@ -183,32 +186,16 @@ renderHead('Staff');
         sharedDropdown.classList.toggle('hidden');
       });
 
-      // Global click to close dropdowns
-      document.addEventListener('click', () => {
-        sharedDropdown.classList.add('hidden');
-        document.querySelectorAll('.menu-dropdown').forEach(d => d.classList.add('hidden'));
-      });
-
-      // Dot menu toggle
-      document.querySelectorAll('.menu-toggle').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          const dropdown = btn.nextElementSibling;
-          document.querySelectorAll('.menu-dropdown').forEach(d => d.classList.add('hidden'));
-          dropdown.classList.toggle('hidden');
-        });
-      });
-
       // Row click handler (excluding action buttons)
       document.querySelectorAll('.shared-row').forEach(row => {
-  row.addEventListener('click', e => {
-    const isActionClick = e.target.closest('.menu-toggle') || e.target.closest('.menu-dropdown');
-    if (!isActionClick) {
-      const link = row.dataset.link;
-      if (link) window.location.href = link;
-    }
-  });
-});
+        row.addEventListener('click', e => {
+          const isActionClick = e.target.closest('.menu-toggle') || e.target.closest('.menu-dropdown');
+          if (!isActionClick) {
+            const link = row.dataset.link;
+            if (link) window.location.href = link;
+          }
+        });
+      });
     });
   </script>
 </body>

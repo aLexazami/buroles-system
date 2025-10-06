@@ -215,7 +215,7 @@ if ($ownerId) {
             </div>
 
             <!-- Dropdown Menu -->
-            <div id="<?= $menuId ?>" class="absolute right-4 sm:right-18 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150 font-semibold">
+            <div id="<?= $menuId ?>" class="absolute right-17 sm:right-23 bg-white rounded shadow-lg hidden text-sm w-44 transition ease-out duration-150 font-semibold">
               <!-- Actions -->
               <button class="open-share-btn flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left  w-full cursor-pointer"
                 data-name="<?= htmlspecialchars($folderName) ?>"

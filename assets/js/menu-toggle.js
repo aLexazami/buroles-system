@@ -80,3 +80,46 @@ export function setupSidebarToggle() {
     }
   });
 }
+
+// menu-toggle.js in shared-file.js
+export function initMenuToggle() {
+  const toggles = document.querySelectorAll('.menu-toggle');
+  const dropdowns = document.querySelectorAll('.menu-dropdown');
+
+  if (toggles.length === 0 && dropdowns.length === 0) return;
+
+  let activeDropdown = null;
+
+  toggles.forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+
+      const wrapper = btn.closest('.relative');
+      const dropdown = wrapper ? wrapper.querySelector('.menu-dropdown') : null;
+
+      if (dropdown) {
+        const isVisible = !dropdown.classList.contains('hidden');
+        document.querySelectorAll('.menu-dropdown').forEach(d => d.classList.add('hidden'));
+        if (!isVisible) {
+          dropdown.classList.remove('hidden');
+          activeDropdown = dropdown;
+        } else {
+          activeDropdown = null;
+        }
+      }
+    });
+  });
+
+  dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', e => {
+      e.stopPropagation();
+    });
+  });
+
+  document.addEventListener('click', () => {
+    if (activeDropdown) {
+      activeDropdown.classList.add('hidden');
+      activeDropdown = null;
+    }
+  });
+}
