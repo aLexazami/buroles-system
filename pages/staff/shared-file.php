@@ -150,22 +150,23 @@ renderHead('Staff');
       </div>
 
       <!-- Revoke Confirmation Modal -->
-      <div id="revokeModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden z-50">
-        <div class="bg-white rounded shadow-lg p-6 w-full max-w-md">
-          <h2 class="text-lg font-bold mb-2">Confirm Revocation</h2>
-          <p class="text-sm text-gray-700 mb-4">
-            Are you sure you want to revoke access to <span id="revokeItemName" class="font-semibold"></span>?
-          </p>
-          <form method="POST" action="/controllers/files/revoke-share.php">
-            <input type="hidden" name="item_id" id="revokeItemId">
-            <input type="hidden" name="type" id="revokeItemType">
-            <input type="hidden" name="shared_with" id="revokeSharedWith">
-            <div class="flex justify-end gap-2">
-              <button type="button" id="cancelRevoke" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">Cancel</button>
-              <button type="submit" class="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded text-sm">Confirm</button>
-            </div>
-          </form>
-        </div>
+      <div id="revokeModal" role="dialog" aria-labelledby="revokeModalLabel" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+        <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+          <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+            <h2 class="text-xl sm:text-2xl mb-4">Confirm Revocation</h2>
+            <p class="text-sm text-gray-700 mb-4">
+              Are you sure you want to revoke access to <span id="revokeItemName" class="font-bold text-emerald-600"></span>?
+            </p>
+            <form method="POST" action="/controllers/files/revoke-share.php">
+              <input type="hidden" name="item_id" id="revokeItemId">
+              <input type="hidden" name="type" id="revokeItemType">
+              <input type="hidden" name="shared_with" id="revokeSharedWith">
+              <div class="flex justify-end gap-2  mt-5">
+                <button type="button" id="cancelRevoke" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+                <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Confirm</button>
+              </div>
+            </form>
+          </div>
       </div>
     </section>
   </main>
