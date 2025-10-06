@@ -12,8 +12,6 @@ $ownerId      = $targetId;
 $linkUserId   = $isSharedView ? $ownerId : $userId;
 $sharedParam  = $isSharedView ? '&shared=1' : '';
 
-error_log("🧠 UI Render → user: $userId, target: $targetId, access: $accessLevel, shared: " . ($isSharedView ? 'yes' : 'no'));
-
 $canEdit     = in_array($accessLevel, ['owner', 'editor'], true);
 $canComment  = $accessLevel === 'comment';
 $accessLabel = getAccessLabel($accessLevel);
@@ -26,16 +24,11 @@ $safePath       = htmlspecialchars(trim($currentPath, '/'));
 $segments       = explode('/', $currentPath);
 $breadcrumbPath = '';
 
-
 $ownerEmail = '';
 if ($ownerId) {
-  try {
-    $stmt = $pdo->prepare("SELECT email FROM users WHERE id = :id AND is_archived = 0 LIMIT 1");
-    $stmt->execute(['id' => $ownerId]);
-    $ownerEmail = $stmt->fetchColumn() ?: '';
-  } catch (Exception $e) {
-    error_log("Owner email fetch error: " . $e->getMessage());
-  }
+  $stmt = $pdo->prepare("SELECT email FROM users WHERE id = :id AND is_archived = 0 LIMIT 1");
+  $stmt->execute(['id' => $ownerId]);
+  $ownerEmail = $stmt->fetchColumn() ?: '';
 }
 ?>
 <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
@@ -104,23 +97,31 @@ if ($ownerId) {
       <?php
       $breadcrumbPath = '';
       $startIndex = $isSharedView ? 0 : -1; // -1 means show "Home" for owner
+      $normalizedCurrentPath = trim($currentPath, '/');
+
       if (!$isSharedView): ?>
         <img src="/assets/img/folder.png" alt="Root" class="w-4 h-4">
-        <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=" class="text-emerald-600 hover:underline">Home</a>
+        <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=" class="<?= $normalizedCurrentPath === '' ? 'text-white bg-emerald-600 px-2 py-1 rounded' : 'text-emerald-600 hover:underline' ?>">
+          Home
+        </a>
       <?php endif; ?>
 
       <?php foreach ($segments as $index => $segment):
         if ($segment === '') continue;
         if ($isSharedView && $index === 0) {
-          // First segment is the shared root, skip label
           $breadcrumbPath = $segment;
         } else {
           $breadcrumbPath .= ($breadcrumbPath === '' ? '' : '/') . $segment;
         }
+
+        $isActive = trim($breadcrumbPath, '/') === $normalizedCurrentPath;
+        $linkClass = $isActive
+          ? 'text-white bg-emerald-600 px-2 py-1 rounded transition duration-150 ease-in-out'
+          : 'text-emerald-600 hover:underline transition duration-150 ease-in-out';
       ?>
         <span>/</span>
         <img src="/assets/img/folder.png" alt="Folder" class="w-4 h-4">
-        <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=<?= urlencode($breadcrumbPath) ?><?= $sharedParam ?>" class="text-emerald-600 hover:underline">
+        <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=<?= urlencode($breadcrumbPath) ?><?= $sharedParam ?>" class="<?= $linkClass ?>">
           <?= htmlspecialchars($segment) ?>
         </a>
       <?php endforeach; ?>
