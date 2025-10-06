@@ -236,3 +236,41 @@ ORDER BY fc.commented_at DESC
   $stmt->execute([$fileId]);
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function fetchUnifiedSharedItems(PDO $pdo, int $userId): array {
+  $byMe = array_merge(
+    fetchSharedItems($pdo, 'folder', 'by', $userId, 'sf.shared_at', true),
+    fetchSharedItems($pdo, 'file',   'by', $userId, 'sf.shared_at', true)
+  );
+  $withMe = array_merge(
+    fetchSharedItems($pdo, 'folder', 'with', $userId, 'sf.shared_at', true),
+    fetchSharedItems($pdo, 'file',   'with', $userId, 'sf.shared_at', true)
+  );
+
+  foreach ($byMe as &$item)   { $item['origin'] = 'by'; }
+  foreach ($withMe as &$item) { $item['origin'] = 'with'; }
+
+  return array_merge($byMe, $withMe);
+}
+
+function normalizeSharedItems(array $items): array {
+  foreach ($items as &$item) {
+    $item['path'] = isset($item['path']) ? preg_replace('#^.*uploads/staff/\d+/#', '', $item['path']) : '';
+    $item['name'] = $item['path'] ? basename($item['path']) : 'Unnamed';
+  }
+  return $items;
+}
+
+function sortSharedItems(array $items, string $sortBy, string $sortOrder): array {
+  usort($items, function ($a, $b) use ($sortBy, $sortOrder) {
+    $direction = $sortOrder === 'asc' ? 1 : -1;
+
+    return match ($sortBy) {
+      'name'     => $direction * strcasecmp($a['name'], $b['name']),
+      'modified' => $direction * (strtotime($a['shared_at'] ?? '') <=> strtotime($b['shared_at'] ?? '')),
+      default    => 0,
+    };
+  });
+
+  return $items;
+}

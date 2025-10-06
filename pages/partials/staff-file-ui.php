@@ -84,15 +84,15 @@ $breadcrumbPath = '';
   </div>
 
   <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6 min-h-screen ">
-    <span class="text-xs text-gray-500 italic">Access: <?= $accessLabel ?></span>
+    <span class="text-xs text-emerald-800 font-bold bg-emerald-100 rounded-md p-2">Access: <?= $accessLabel ?></span>
 
     <!-- Breadcrumb -->
-    <div class="text-sm text-gray-500 flex flex-wrap items-center pb-3 gap-2 overflow-x-auto whitespace-nowrap">
+    <div class="text-sm text-gray-500 flex flex-wrap items-center pb-3 gap-2 overflow-x-auto whitespace-nowrap mt-4">
       <?php
       $breadcrumbPath = '';
       $startIndex = $isSharedView ? 0 : -1; // -1 means show "Home" for owner
       if (!$isSharedView): ?>
-        <img src="/assets/img/folder-icon.png" alt="Root" class="w-4 h-4">
+        <img src="/assets/img/folder.png" alt="Root" class="w-4 h-4">
         <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=" class="text-emerald-600 hover:underline">Home</a>
       <?php endif; ?>
 
@@ -106,7 +106,7 @@ $breadcrumbPath = '';
         }
       ?>
         <span>/</span>
-        <img src="/assets/img/folder-icon.png" alt="Folder" class="w-4 h-4">
+        <img src="/assets/img/folder.png" alt="Folder" class="w-4 h-4">
         <a href="/pages/staff/file-manager.php?user_id=<?= $linkUserId ?>&path=<?= urlencode($breadcrumbPath) ?><?= $sharedParam ?>" class="text-emerald-600 hover:underline">
           <?= htmlspecialchars($segment) ?>
         </a>
@@ -130,8 +130,8 @@ $breadcrumbPath = '';
       <!-- Sorting Controls -->
       <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-700 pb-5">
         <span>Sort by:</span>
-        <a href="?path=<?= urlencode($currentPath) ?>&sort=name" class="hover:underline <?= $sortBy === 'name' ? 'font-bold' : '' ?>">Name</a>
-        <a href="?path=<?= urlencode($currentPath) ?>&sort=modified" class="hover:underline <?= $sortBy === 'modified' ? 'font-bold' : '' ?>">Modified</a>
+        <a href="?path=<?= urlencode($currentPath) ?>&sort=name" class="hover:underline <?= $sortBy === 'name' ? 'font-bold underline' : '' ?>">Name</a>
+        <a href="?path=<?= urlencode($currentPath) ?>&sort=modified" class="hover:underline <?= $sortBy === 'modified' ? 'font-bold underline' : '' ?>">Modified</a>
       </div>
 
       <!-- Header Row -->

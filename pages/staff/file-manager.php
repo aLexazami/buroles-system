@@ -156,16 +156,15 @@ renderHead('Staff');
     <section class="p-4 sm:p-6 md:p-8">
       <?php if ($isSharedView): ?>
         <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 mb-6 rounded-md shadow-sm">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-5">
             <p class="text-sm">
               📁 You’re viewing a folder shared by <strong><?= htmlspecialchars($sharedByName) ?></strong>.
             </p>
             <a href="/pages/staff/shared-file.php"
+              aria-label="Back to Shared Files"
               class="inline-flex items-center gap-1 text-sm font-medium text-yellow-700 hover:text-yellow-900 hover:underline transition">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Shared Files
+              <img src="/assets/img/back-icon.png" alt="Back" class="w-4 h-4" />
+              <span class="hidden sm:inline">Back to Shared Files</span>
             </a>
           </div>
         </div>

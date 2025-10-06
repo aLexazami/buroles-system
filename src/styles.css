@@ -378,6 +378,9 @@
   .left-16 {
     left: calc(var(--spacing) * 16);
   }
+  .left-18 {
+    left: calc(var(--spacing) * 18);
+  }
   .z-0 {
     z-index: 0;
   }
@@ -443,6 +446,9 @@
   }
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
+  }
+  .mt-3 {
+    margin-top: calc(var(--spacing) * 3);
   }
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
@@ -887,6 +893,9 @@
   }
   .justify-evenly {
     justify-content: space-evenly;
+  }
+  .justify-start {
+    justify-content: flex-start;
   }
   .gap-1 {
     gap: calc(var(--spacing) * 1);

@@ -19,3 +19,10 @@ function logFolderLink(string $linkPath, string $folderName, string $context = '
   $message   = "[$timestamp] [$context] Folder link → $folderName → $linkPath\n";
   error_log($message, 3, $logFile);
 }
+
+function logSuggestionFetch(string $query, string $excludeEmail, string $context = 'JS'): void {
+  $logFile   = __DIR__ . '/../logs/suggestion_fetch.log';
+  $timestamp = date('Y-m-d H:i:s');
+  $message   = "[$timestamp] [$context] Suggestion fetch → query: \"$query\" exclude: \"$excludeEmail\"\n";
+  error_log($message, 3, $logFile);
+}
