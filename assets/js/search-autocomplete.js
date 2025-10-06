@@ -8,6 +8,8 @@ export function initEmailAutocomplete() {
 
   let allUsers = [];
   let isReady = false;
+  let activeIndex = -1;
+  let debounceTimer = null;
 
   // 🔹 Fetch users once
   fetch(`/controllers/fetch-all-users.php?exclude=${encodeURIComponent(ownerEmail)}`)
@@ -25,6 +27,7 @@ export function initEmailAutocomplete() {
   // 🔹 Render suggestion list
   function renderSuggestions(matches) {
     suggestions.innerHTML = '';
+    activeIndex = -1;
 
     matches.forEach((user, index) => {
       const li = document.createElement('li');
@@ -46,41 +49,58 @@ export function initEmailAutocomplete() {
     suggestions.classList.remove('hidden');
   }
 
-  // 🔹 Input listener
+  // 🔹 Debounced input listener
   input.addEventListener('input', () => {
     if (!isReady) return;
 
-    const query = input.value.trim().toLowerCase();
-    suggestions.innerHTML = '';
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const query = input.value.trim().toLowerCase();
+      suggestions.innerHTML = '';
 
-    if (query.length === 0) {
-      avatar.src = '/assets/img/add-user.png';
-      suggestions.classList.add('hidden');
-      return;
-    }
+      if (query.length === 0) {
+        avatar.src = '/assets/img/add-user.png';
+        suggestions.classList.add('hidden');
+        return;
+      }
 
-    const matches = allUsers.filter(user =>
-      user.email.toLowerCase().includes(query)
-    );
+      const matches = allUsers.filter(user =>
+        user.email.toLowerCase().includes(query)
+      );
 
-    if (matches.length === 0) {
-      suggestions.classList.add('hidden');
-      return;
-    }
+      if (matches.length === 0) {
+        suggestions.classList.add('hidden');
+        return;
+      }
 
-    renderSuggestions(matches);
+      renderSuggestions(matches);
+    }, 300); // 300ms debounce
   });
 
-  // 🔹 Enter key behavior
+  // 🔹 Keyboard navigation
   input.addEventListener('keydown', (e) => {
-    const isEnter = e.key === 'Enter';
+    const items = suggestions.querySelectorAll('li');
     const isDropdownVisible = !suggestions.classList.contains('hidden');
 
-    if (isEnter && isDropdownVisible) {
+    if (!isDropdownVisible || items.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
       e.preventDefault();
-      const firstItem = suggestions.querySelector('li');
-      if (firstItem) firstItem.click();
+      activeIndex = (activeIndex + 1) % items.length;
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (activeIndex >= 0 && items[activeIndex]) {
+        items[activeIndex].click();
+      }
+      return;
     }
+
+    items.forEach((item, index) => {
+      item.classList.toggle('highlighted', index === activeIndex);
+    });
   });
 
   // 🔹 Click outside to hide

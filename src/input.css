@@ -34,3 +34,7 @@
     display: none !important;
   }
 }
+
+#emailSuggestions li.highlighted {
+  background-color: #d1fae5; /* emerald-100 */
+}
