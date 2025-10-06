@@ -373,7 +373,6 @@ export function initShareButton() {
   const emailInput = document.getElementById('shareRecipientEmail');
   const suggestionsBox = document.getElementById('emailSuggestions');
   const avatarPreview = document.getElementById('selectedAvatar');
-  const ownerEmail = document.getElementById('shareOwnerId')?.value || '';
 
   const accessDescriptions = {
     view: 'Can only view the item.',
@@ -398,67 +397,13 @@ export function initShareButton() {
     emailInput.value = '';
     accessSelect.value = 'view';
     if (avatarPreview) avatarPreview.src = '/assets/img/add-user.png';
-    suggestionsBox.innerHTML = '';
-    suggestionsBox.classList.add('hidden');
+    if (suggestionsBox) {
+      suggestionsBox.innerHTML = '';
+      suggestionsBox.classList.add('hidden');
+    }
     updateDescription();
   }
 
-  // 🔹 Email-only suggestion logic (stable dropdown)
-let debounceTimer;
-if (emailInput && suggestionsBox) {
-  emailInput.addEventListener('input', () => {
-    const query = emailInput.value.trim();
-    clearTimeout(debounceTimer);
-
-    if (query.length < 1) {
-      suggestionsBox.innerHTML = '';
-      suggestionsBox.classList.add('hidden');
-      if (avatarPreview) avatarPreview.src = '/assets/img/add-user.png';
-      return;
-    }
-
-    debounceTimer = setTimeout(() => {
-      fetch(`/ajax/search-staff.php?query=${encodeURIComponent(query)}&exclude=${encodeURIComponent(ownerEmail)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (!Array.isArray(data) || data.length === 0) {
-            suggestionsBox.innerHTML = '<li class="px-3 py-2 text-gray-400">No matches found</li>';
-            suggestionsBox.classList.remove('hidden');
-            return;
-          }
-
-          suggestionsBox.innerHTML = '';
-          data.forEach(email => {
-            const item = document.createElement('li');
-            item.className = 'px-3 py-2 hover:bg-emerald-100 cursor-pointer';
-            item.textContent = email;
-            item.addEventListener('click', () => {
-              emailInput.value = email;
-              suggestionsBox.innerHTML = '';
-              suggestionsBox.classList.add('hidden');
-              if (avatarPreview) avatarPreview.src = '/assets/img/add-user.png';
-            });
-            suggestionsBox.appendChild(item);
-          });
-
-          suggestionsBox.classList.remove('hidden');
-        })
-        .catch(err => {
-          console.error('Suggestion fetch error:', err);
-          // Don't hide the box immediately — let the user keep typing
-        });
-    }, 300);
-  });
-
-  // Optional: hide suggestions only when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!suggestionsBox.contains(e.target) && e.target !== emailInput) {
-      suggestionsBox.classList.add('hidden');
-    }
-  });
-}
-
-  // 🔹 Attach to all share buttons
   document.querySelectorAll('.open-share-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const { name, path, type, userId: ownerId } = btn.dataset;
@@ -467,22 +412,20 @@ if (emailInput && suggestionsBox) {
     });
   });
 
-  // 🔹 Cancel button
-  if (cancelBtn) cancelBtn.addEventListener('click', closeShareModal);
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', closeShareModal);
+  }
 
-  // 🔹 Click outside to close
   if (modal) {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeShareModal();
     });
   }
 
-  // 🔹 Escape key to close
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeShareModal();
   });
 
-  // 🔹 Access level description
   if (accessSelect && description) {
     accessSelect.addEventListener('change', updateDescription);
     updateDescription();

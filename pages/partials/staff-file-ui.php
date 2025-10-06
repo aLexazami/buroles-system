@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../helpers/sharing-utils.php';
+require_once __DIR__ . '/../../config/database.php';
 
 $userId       = $_SESSION['user_id'] ?? 0;
 $accessLevel  = $GLOBALS['accessLevel'] ?? 'owner';
@@ -24,6 +25,18 @@ $roleId       = (string)$activeRoleId;
 $safePath       = htmlspecialchars(trim($currentPath, '/'));
 $segments       = explode('/', $currentPath);
 $breadcrumbPath = '';
+
+
+$ownerEmail = '';
+if ($ownerId) {
+  try {
+    $stmt = $pdo->prepare("SELECT email FROM users WHERE id = :id AND is_archived = 0 LIMIT 1");
+    $stmt->execute(['id' => $ownerId]);
+    $ownerEmail = $stmt->fetchColumn() ?: '';
+  } catch (Exception $e) {
+    error_log("Owner email fetch error: " . $e->getMessage());
+  }
+}
 ?>
 <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
   <img src="/assets/img/archive-user.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Archive icon">
@@ -368,6 +381,7 @@ $breadcrumbPath = '';
     <form id="shareForm" method="POST" action="/controllers/files/share-item.php" class="flex flex-col gap-3">
       <input type="hidden" name="item_path" id="shareItemPath">
       <input type="hidden" name="owner_id" id="shareOwnerId" value="<?= $targetId ?>">
+      <input type="hidden" id="shareOwnerEmail" value="<?= htmlspecialchars($ownerEmail) ?>">
       <input type="hidden" name="type" id="shareItemType">
 
       <!-- Recipient Email -->
