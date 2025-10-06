@@ -172,9 +172,6 @@ if ($ownerId) {
         $folderName = $folder['name'];
         $nextPath   = trim($currentPath . '/' . $folderName, '/');
         $menuId     = 'menu-' . md5($folderName);
-
-        // ✅ Log the link being generated
-        logFolderLink("/pages/staff/file-manager.php?user_id=$linkUserId&path=$nextPath$sharedParam", $folderName, $isSharedView ? 'SharedView' : 'OwnerView');
         ?>
         <div class="flex items-center hover:bg-emerald-50 px-2 py-3 sm:py-2 gap-2 folder-item" data-name="<?= htmlspecialchars($folderName) ?>">
           <!-- Folder Name -->

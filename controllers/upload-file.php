@@ -12,14 +12,6 @@ function canUploadFile(string $userId, string $targetId, int $activeRoleId, int 
   return $activeRoleId === 1 && $userId === $targetId;
 }
 
-// ✅ Logging helper (optional)
-function logUploadAction(string $filename, string $scopedPath): void {
-  $logFile = __DIR__ . '/../logs/upload_actions.log';
-  $timestamp = date('Y-m-d H:i:s');
-  $message = "[$timestamp] Uploaded file → $filename → $scopedPath\n";
-  error_log($message, 3, $logFile);
-}
-
 // 🔁 Redirect helper
 function redirectToManager(string $userId, string $path): void {
   $url = "/pages/staff/file-manager.php?user_id=$userId";
@@ -71,7 +63,6 @@ $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
 $finalName = $extension ? "$filename.$extension" : $filename;
 
 if (!in_array($mimeType, $allowedTypes)) {
-  error_log("Upload rejected: user=$userId role=$activeRoleId MIME=$mimeType");
   setFlash('error', 'Unsupported file type.');
   return redirectToManager($targetId, $currentPath);
 }
@@ -83,7 +74,6 @@ $relativePath = sanitizePath($currentPath !== '' ? "$currentPath/$finalName" : $
 $scopedPath   = "uploads/staff/$userId/" . ltrim($relativePath, '/');
 
 if (!is_dir(dirname($targetPath))) {
-  error_log("Upload failed: missing folder → " . dirname($targetPath));
   setFlash('error', 'Target folder does not exist.');
   return redirectToManager($targetId, $currentPath);
 }
@@ -95,7 +85,6 @@ if (file_exists($targetPath)) {
 
 // 🔄 Move file
 if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-  error_log("Upload failed: move_uploaded_file() failed for $targetPath");
   setFlash('error', 'Failed to move uploaded file.');
   return redirectToManager($targetId, $currentPath);
 }
@@ -121,6 +110,5 @@ $stmt->execute([
   $mimeType
 ]);
 
-logUploadAction($finalName, $scopedPath);
 setFlash('success', "File '$finalName' uploaded successfully.");
 redirectToManager($targetId, $currentPath);

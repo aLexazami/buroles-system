@@ -15,7 +15,7 @@ $sharedWith  = $_POST['shared_with'] ?? null;
 $sharedBy    = $_SESSION['user_id'] ?? 0;
 
 if (!$sharedId || !$type || !$sharedWith || !in_array($type, ['file', 'folder'], true)) {
-  setFlash('Missing or invalid data for revocation.', 'error');
+  setFlash('error','Missing or invalid data for revocation.');
   header('Location: /pages/staff/shared-file.php');
   exit;
 }

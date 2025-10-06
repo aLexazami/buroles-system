@@ -13,13 +13,6 @@ function logRenameAction(string $type, string $oldPath, string $newPath): void {
   error_log($message, 3, $logFile);
 }
 
-function logFolderLink(string $linkPath, string $folderName, string $context = 'UI'): void {
-  $logFile   = __DIR__ . '/../logs/folder_links.log';
-  $timestamp = date('Y-m-d H:i:s');
-  $message   = "[$timestamp] [$context] Folder link → $folderName → $linkPath\n";
-  error_log($message, 3, $logFile);
-}
-
 function logSuggestionFetch(string $query, string $excludeEmail, string $context = 'JS'): void {
   $logFile   = __DIR__ . '/../logs/suggestion_fetch.log';
   $timestamp = date('Y-m-d H:i:s');

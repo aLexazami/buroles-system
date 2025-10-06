@@ -13,14 +13,6 @@ function canDeleteItem(string $userId, string $targetId, int $activeRoleId, int 
   return $activeRoleId === 1 && $userId === $targetId;
 }
 
-// ✅ Logging helper
-function logDeletionAction(string $type, string $scopedPath): void {
-  $logFile = __DIR__ . '/../logs/deletion_actions.log';
-  $timestamp = date('Y-m-d H:i:s');
-  $message = "[$timestamp] Deleted $type → $scopedPath\n";
-  error_log($message, 3, $logFile);
-}
-
 // 🔁 Redirect helper
 function redirectToManager(string $userId, string $path): void {
   $url = "/pages/staff/file-manager.php?user_id=$userId";
@@ -54,7 +46,6 @@ $baseDir    = getUploadBaseByRoleUser((int)$activeRoleId, $targetId);
 $targetPath = resolveUploadPathFromBase($baseDir, $currentPath, $name);
 
 if (!$targetPath || !file_exists($targetPath)) {
-  error_log("Deletion failed: path not found → $targetPath");
   setFlash('error', "Item '$name' could not be found.");
   return redirectToManager($targetId, $currentPath);
 }
@@ -69,13 +60,7 @@ try {
     'folder' => handleFolderDeletion($pdo, $targetPath, $scopedPath, $userId),
     default  => handleUnknownType($type)
   };
-
-  if ($success) {
-    logDeletionAction($type, $scopedPath);
-  }
-
-} catch (RuntimeException $e) {
-  error_log("Deletion error: " . $e->getMessage());
+} catch (RuntimeException) {
   setFlash('error', 'An error occurred while deleting the item.');
 }
 
@@ -88,10 +73,6 @@ function handleFileDeletion(PDO $pdo, string $targetPath, string $scopedPath, st
 
     $stmt = $pdo->prepare("DELETE FROM files WHERE path = ? AND owner_id = ?");
     $stmt->execute([$scopedPath, $ownerId]);
-
-    if ($stmt->rowCount() === 0) {
-      error_log("File deletion DB update failed: no rows affected for $scopedPath");
-    }
 
     setFlash('success', "File deleted successfully.");
     return true;
@@ -108,20 +89,13 @@ function handleFolderDeletion(PDO $pdo, string $targetPath, string $scopedPath, 
   }
 
   if (!deleteFolderRecursive($targetPath)) {
-    error_log("Folder deletion failed: $targetPath");
     setFlash('error', "Failed to delete folder.");
     return false;
   }
 
-  // Delete folder metadata
   $stmt = $pdo->prepare("DELETE FROM folders WHERE (path = ? OR path LIKE ?) AND owner_id = ?");
   $stmt->execute([$scopedPath, "$scopedPath/%", $ownerId]);
 
-  if ($stmt->rowCount() === 0) {
-    error_log("Folder deletion DB update failed: no rows affected for $scopedPath");
-  }
-
-  // Delete file metadata
   $stmt = $pdo->prepare("DELETE FROM files WHERE path LIKE ? AND owner_id = ?");
   $stmt->execute(["$scopedPath/%", $ownerId]);
 
@@ -130,7 +104,6 @@ function handleFolderDeletion(PDO $pdo, string $targetPath, string $scopedPath, 
 }
 
 function handleUnknownType(string $type): bool {
-  error_log("Unknown deletion type: $type");
   setFlash('error', 'Unknown item type.');
   return false;
 }
