@@ -33,16 +33,22 @@ export function initEmailAutocomplete() {
       const li = document.createElement('li');
       li.className = 'flex items-center gap-2 px-2 py-1 hover:bg-emerald-100 cursor-pointer rounded';
       if (index === 0) li.classList.add('highlighted');
+
       li.innerHTML = `
         <img src="${user.avatar_path || '/assets/img/default-avatar.png'}" class="w-6 h-6 rounded-full" alt="Avatar">
-        <span>${user.email}</span>
+        <div class="flex flex-col">
+          <span class="font-medium">${user.full_name || 'Unnamed'}</span>
+          <span class="text-sm text-gray-500">${user.email}</span>
+        </div>
       `;
+
       li.addEventListener('click', () => {
         input.value = user.email;
         avatar.src = user.avatar_path || '/assets/img/add-user.png';
         suggestions.innerHTML = '';
         suggestions.classList.add('hidden');
       });
+
       suggestions.appendChild(li);
     });
 
@@ -65,7 +71,8 @@ export function initEmailAutocomplete() {
       }
 
       const matches = allUsers.filter(user =>
-        user.email.toLowerCase().includes(query)
+        user.email.toLowerCase().includes(query) ||
+        (user.full_name && user.full_name.toLowerCase().includes(query))
       );
 
       if (matches.length === 0) {
@@ -74,7 +81,7 @@ export function initEmailAutocomplete() {
       }
 
       renderSuggestions(matches);
-    }, 300); // 300ms debounce
+    }, 300);
   });
 
   // 🔹 Keyboard navigation
@@ -101,6 +108,11 @@ export function initEmailAutocomplete() {
     items.forEach((item, index) => {
       item.classList.toggle('highlighted', index === activeIndex);
     });
+
+    const highlighted = suggestions.querySelector('li.highlighted');
+    if (highlighted) {
+      highlighted.scrollIntoView({ block: 'nearest' });
+    }
   });
 
   // 🔹 Click outside to hide
