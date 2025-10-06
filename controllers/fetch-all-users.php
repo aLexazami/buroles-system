@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 $exclude = trim($_GET['exclude'] ?? '');
 
 try {
-  $sql = "SELECT first_name, middle_name, last_name, email, avatar_path FROM users WHERE is_archived = 0";
+  $sql = "SELECT first_name, middle_name, last_name, email, avatar_path FROM users WHERE is_archived = 0 AND role_id = 1";
   $params = [];
 
   if (!empty($exclude)) {
@@ -20,7 +20,6 @@ try {
   $stmt->execute($params);
   $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // Construct full_name for each user
   foreach ($results as &$user) {
     $user['full_name'] = trim(
       $user['first_name'] . ' ' .
