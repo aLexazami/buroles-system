@@ -113,29 +113,43 @@ function redirectAfterDeletion(int $userId, string $deletedPath): void {
 }
 
 function handleFileDeletion(PDO $pdo, string $targetPath, string $scopedPath, int $ownerId): bool {
-  if (is_file($targetPath)) {
-    unlink($targetPath);
-    $stmt = $pdo->prepare("DELETE FROM files WHERE path = ? AND owner_id = ?");
-    $stmt->execute([$scopedPath, $ownerId]);
-
-    logFolderEvent('File deleted successfully', [
+  if (!is_file($targetPath)) {
+    logFolderEvent('File not found during deletion', [
       'userId' => $ownerId,
       'scopedPath' => $scopedPath,
       'targetPath' => $targetPath
-    ], false);
+    ], true);
 
-    setFlash('success', "File deleted successfully.");
-    return true;
+    setFlash('error', "File could not be found.");
+    return false;
   }
 
-  logFolderEvent('File not found during deletion', [
+  // ✅ Delete file from disk
+  unlink($targetPath);
+
+  // ✅ Get file ID by scoped path
+  $stmt = $pdo->prepare("SELECT id FROM files WHERE path = ? AND owner_id = ?");
+  $stmt->execute([$scopedPath, $ownerId]);
+  $fileId = $stmt->fetchColumn();
+
+  if ($fileId) {
+    // ✅ Delete related shared_files entries
+    $stmt = $pdo->prepare("DELETE FROM shared_files WHERE file_id = ?");
+    $stmt->execute([$fileId]);
+  }
+
+  // ✅ Delete file metadata
+  $stmt = $pdo->prepare("DELETE FROM files WHERE path = ? AND owner_id = ?");
+  $stmt->execute([$scopedPath, $ownerId]);
+
+  logFolderEvent('File deleted successfully', [
     'userId' => $ownerId,
     'scopedPath' => $scopedPath,
     'targetPath' => $targetPath
-  ], true);
+  ], false);
 
-  setFlash('error', "File could not be found.");
-  return false;
+  setFlash('success', "File deleted successfully.");
+  return true;
 }
 
 function handleFolderDeletion(PDO $pdo, string $targetPath, string $scopedPath, int $ownerId): bool {
@@ -150,6 +164,7 @@ function handleFolderDeletion(PDO $pdo, string $targetPath, string $scopedPath, 
     return false;
   }
 
+  // ✅ Delete folder from disk
   if (!deleteFolderRecursive($targetPath)) {
     logFolderEvent('Failed to delete folder from disk', [
       'userId' => $ownerId,
@@ -161,6 +176,27 @@ function handleFolderDeletion(PDO $pdo, string $targetPath, string $scopedPath, 
     return false;
   }
 
+  // ✅ Get all folder IDs to delete
+  $stmt = $pdo->prepare("SELECT id FROM folders WHERE (path = ? OR path LIKE ?) AND owner_id = ?");
+  $stmt->execute([$scopedPath, "$scopedPath/%", $ownerId]);
+  $folderIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+  if (!empty($folderIds)) {
+    $inClause = implode(',', array_map('intval', $folderIds));
+    $pdo->exec("DELETE FROM shared_folders WHERE folder_id IN ($inClause)");
+  }
+
+  // ✅ Get all file IDs to delete
+  $stmt = $pdo->prepare("SELECT id FROM files WHERE path LIKE ? AND owner_id = ?");
+  $stmt->execute(["$scopedPath/%", $ownerId]);
+  $fileIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+  if (!empty($fileIds)) {
+    $inClause = implode(',', array_map('intval', $fileIds));
+    $pdo->exec("DELETE FROM shared_files WHERE file_id IN ($inClause)");
+  }
+
+  // ✅ Delete from folders and files
   $stmt = $pdo->prepare("DELETE FROM folders WHERE (path = ? OR path LIKE ?) AND owner_id = ?");
   $stmt->execute([$scopedPath, "$scopedPath/%", $ownerId]);
 

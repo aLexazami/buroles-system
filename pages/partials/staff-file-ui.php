@@ -610,7 +610,7 @@ if ($ownerId) {
         class="border-2 rounded-lg px-3 py-3  text-sm sm:text-base cursor-pointer" required>
         <option value="view">Viewer</option>
         <option value="comment">Comment</option>
-        <option value="edit">Editor</option>
+        <option value="editor">Editor</option>
       </select>
       <div class="flex items-center gap-2">
         <img src="/assets/img/info-icon.png" alt="Add User Icon" class="w-3 h-3 " />

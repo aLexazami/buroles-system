@@ -355,7 +355,7 @@ export function closeShareModal() {
     const accessDescriptions = {
       view: 'Can only view the item.',
       comment: 'Can view and add comments.',
-      edit: 'Can organize, add, and edit files.'
+      editor: 'Can organize, add, and edit files.'
     };
     description.textContent = accessDescriptions[accessSelect.value] || '';
   }
@@ -377,7 +377,7 @@ export function initShareButton() {
   const accessDescriptions = {
     view: 'Can only view the item.',
     comment: 'Can view and add comments.',
-    edit: 'Can organize, add, and edit files.'
+    editor: 'Can organize, add, and edit files.'
   };
 
   function updateDescription() {

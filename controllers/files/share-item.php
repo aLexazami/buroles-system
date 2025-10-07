@@ -18,6 +18,13 @@ $itemPath    = sanitizePath($_POST['item_path'] ?? '');
 $type        = $_POST['type'] ?? '';
 $recipient   = trim($_POST['recipient_email'] ?? '');
 $accessLevel = $_POST['access_level'] ?? 'view';
+$validLevels = ['view', 'comment', 'editor'];
+
+if (!in_array($accessLevel, $validLevels, true)) {
+  logDebug("❌ Invalid access level: $accessLevel");
+  setFlash('error', 'Invalid access level selected.');
+  return redirectToManager($ownerId);
+}
 
 if (!$ownerId || !$itemPath || !$recipient || !$accessLevel || !in_array($type, ['file', 'folder'])) {
   setFlash('error', 'Missing or invalid sharing data.');

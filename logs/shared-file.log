@@ -3584,3 +3584,108 @@
 [2025-10-07 23:28:10] Access resolved for uploads/staff/2/Folder A/Folder B → direct → level=owner
 [2025-10-07 23:28:10] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B/buroles.jpg → no matching item or parent
 [2025-10-07 23:28:11] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:08:50] Access failed: uploads/staff/2/uploads/staff/2/Folder 1 → no matching item or parent
+[2025-10-08 00:08:50] Access failed: uploads/staff/2/uploads/staff/2/Folder 2 → no matching item or parent
+[2025-10-08 00:08:50] Access failed: uploads/staff/2/uploads/staff/2/Folder 3 → no matching item or parent
+[2025-10-08 00:08:50] Access failed: uploads/staff/2/uploads/staff/2/Folder 4 → no matching item or parent
+[2025-10-08 00:08:50] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:08:50] Access failed: uploads/staff/2/uploads/staff/2/Folder B → no matching item or parent
+[2025-10-08 00:08:56] Access failed: uploads/staff/2/uploads/staff/2/Folder 2 → no matching item or parent
+[2025-10-08 00:08:56] Access failed: uploads/staff/2/uploads/staff/2/Folder 3 → no matching item or parent
+[2025-10-08 00:08:56] Access failed: uploads/staff/2/uploads/staff/2/Folder 4 → no matching item or parent
+[2025-10-08 00:08:56] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:08:56] Access failed: uploads/staff/2/uploads/staff/2/Folder B → no matching item or parent
+[2025-10-08 00:08:58] Access failed: uploads/staff/2/uploads/staff/2/Folder 3 → no matching item or parent
+[2025-10-08 00:08:58] Access failed: uploads/staff/2/uploads/staff/2/Folder 4 → no matching item or parent
+[2025-10-08 00:08:58] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:08:58] Access failed: uploads/staff/2/uploads/staff/2/Folder B → no matching item or parent
+[2025-10-08 00:09:15] Access failed: uploads/staff/2/uploads/staff/2/Folder 3 → no matching item or parent
+[2025-10-08 00:09:15] Access failed: uploads/staff/2/uploads/staff/2/Folder 4 → no matching item or parent
+[2025-10-08 00:09:15] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:09:15] Access failed: uploads/staff/2/uploads/staff/2/Folder B → no matching item or parent
+[2025-10-08 00:09:17] Access failed: uploads/staff/2/uploads/staff/2/Folder 4 → no matching item or parent
+[2025-10-08 00:09:17] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:09:17] Access failed: uploads/staff/2/uploads/staff/2/Folder B → no matching item or parent
+[2025-10-08 00:09:20] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:09:20] Access failed: uploads/staff/2/uploads/staff/2/Folder B → no matching item or parent
+[2025-10-08 00:09:23] Access failed: uploads/staff/2/uploads/staff/2/Folder B → no matching item or parent
+[2025-10-08 00:10:31] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:10:35] Sharing folder → uploads/staff/2/Folder A → recipient=13 (abigail123@gmail.com) → access=view
+[2025-10-08 00:10:35] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:10:42] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:10:43] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:10:43] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:10:47] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:10:47] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:10:47] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:10:48] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:10:56] Sharing folder → uploads/staff/2/Folder A → recipient=13 (abigail123@gmail.com) → access=edit
+[2025-10-08 00:13:02] ❌ Invalid access level: edit
+[2025-10-08 00:13:03] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:13:14] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:13:20] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:14:39] ❌ Invalid access level: edit
+[2025-10-08 00:14:39] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:14:57] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:15:15] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:15:19] Sharing folder → uploads/staff/2/Folder A → recipient=13 (abigail123@gmail.com) → access=editor
+[2025-10-08 00:15:19] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:04] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:16] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:16] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:16:20] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:20] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:16:20] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:16:22] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:36] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:37] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:37] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:16:40] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:40] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:16:40] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:16:47] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:16:52] Sharing folder → uploads/staff/2/Folder A → recipient=13 (abigail123@gmail.com) → access=editor
+[2025-10-08 00:16:52] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:17:29] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:17:38] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:17:55] Sharing folder → uploads/staff/2/Folder A → recipient=13 (abigail123@gmail.com) → access=editor
+[2025-10-08 00:17:55] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:24:00] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:24:55] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:24:59] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:25:01] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:25:01] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:25:01] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:25:06] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:25:06] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:25:06] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:25:06] Access failed: uploads/staff/2/uploads/staff/2/Folder A/buroles.jpg → no matching item or parent
+[2025-10-08 00:25:16] Sharing file → uploads/staff/2/Folder A/buroles.jpg → recipient=13 (abigail123@gmail.com) → access=view
+[2025-10-08 00:25:16] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:25:26] Fetched shared items: 0
+[2025-10-08 00:25:27] Fetched shared items: 2
+[2025-10-08 00:25:27] Validating item: type=file, path=uploads/staff/2/Folder A/buroles.jpg, owner=2, viewer=2
+[2025-10-08 00:25:27] Access resolved for uploads/staff/2/Folder A/buroles.jpg → direct → level=owner
+[2025-10-08 00:25:27] Access granted: {"itemId":6,"accessLevel":"owner","accessLabel":"Owner","accessColor":"emerald","canEdit":true,"canComment":true}
+[2025-10-08 00:25:27] Validating item: type=folder, path=uploads/staff/2/Folder A, owner=2, viewer=2
+[2025-10-08 00:25:27] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:25:27] Access granted: {"itemId":1,"accessLevel":"owner","accessLabel":"Owner","accessColor":"emerald","canEdit":true,"canComment":true}
+[2025-10-08 00:26:00] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:26:02] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:26:02] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:26:02] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:26:02] Access failed: uploads/staff/2/uploads/staff/2/Folder A/buroles.jpg → no matching item or parent
+[2025-10-08 00:26:05] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:26:05] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:26:05] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:26:21] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:26:21] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:26:21] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:26:21] Access failed: uploads/staff/2/uploads/staff/2/Folder A/buroles.jpg → no matching item or parent
+[2025-10-08 00:26:22] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:26:36] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
+[2025-10-08 00:26:36] Access resolved for uploads/staff/2/Folder A → direct → level=owner
+[2025-10-08 00:26:36] Access failed: uploads/staff/2/uploads/staff/2/Folder A/Folder B → no matching item or parent
+[2025-10-08 00:26:36] Access failed: uploads/staff/2/uploads/staff/2/Folder A/buroles.jpg → no matching item or parent
+[2025-10-08 00:26:40] Sharing file → uploads/staff/2/Folder A/buroles.jpg → recipient=13 (abigail123@gmail.com) → access=view
+[2025-10-08 00:26:40] Access failed: uploads/staff/2/uploads/staff/2/Folder A → no matching item or parent
