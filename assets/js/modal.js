@@ -469,3 +469,98 @@ export function setupRevokeModal() {
     });
   }
 }
+
+
+// Comment Modal Logic
+export function initCommentModal() {
+  const modal = document.getElementById('commentModal');
+  const label = document.getElementById('commentFileLabel');
+  const nameInput = document.getElementById('commentFileName');
+  const pathInput = document.getElementById('commentPath');
+  const typeInput = document.getElementById('commentType');
+  const folderIdInput = document.getElementById('commentFolderId');
+  const parentIdInput = document.getElementById('commentParentId');
+  const textarea = modal?.querySelector('textarea[name="comment"]');
+  const cancelBtn = document.getElementById('cancelComment');
+
+  if (!modal || !label || !nameInput || !pathInput || !typeInput || !folderIdInput || !parentIdInput || !textarea || !cancelBtn) return;
+
+  function resetFields() {
+    label.textContent = '';
+    nameInput.value = '';
+    pathInput.value = '';
+    typeInput.value = 'file';
+    folderIdInput.value = '';
+    parentIdInput.value = '';
+    textarea.value = '';
+    textarea.style.height = 'auto';
+  }
+
+  function openModal({ name = '', path = '', type = 'file', folderId = '', parentId = '' }) {
+    resetFields();
+    label.textContent = name || 'Unnamed';
+    nameInput.value = name;
+    pathInput.value = path;
+    typeInput.value = type;
+    folderIdInput.value = folderId;
+    parentIdInput.value = parentId;
+    toggleModal('commentModal', true);
+    setTimeout(() => textarea.focus(), 100);
+  }
+
+  function closeModal() {
+    resetFields();
+    toggleModal('commentModal', false);
+  }
+
+  function handleTrigger(btn) {
+    const type = btn.dataset.type || 'file';
+    const name = btn.dataset.folderName || btn.dataset.name || '';
+    const path = btn.dataset.path || '';
+    const folderId = btn.dataset.folderId || '';
+    const parentId = btn.dataset.parentId || '';
+
+    openModal({ name, path, type, folderId, parentId });
+  }
+
+  document.querySelectorAll('.comment-btn, .reply-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleTrigger(btn));
+  });
+
+  cancelBtn.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('flex')) {
+      closeModal();
+    }
+  });
+}
+
+
+// Delete Comment Modal Logic
+export function initDeleteCommentModal() {
+  const modalId = 'deleteCommentModal';
+  const typeInput = document.getElementById('deleteCommentType');
+  const idInput = document.getElementById('deleteCommentId');
+  const pathInput = document.getElementById('deleteCommentPath');
+  const previewLabel = document.getElementById('deleteCommentPreview');
+  const cancelBtn = document.getElementById('cancelCommentDelete');
+
+  if (!typeInput || !idInput || !pathInput || !previewLabel || !cancelBtn) return;
+
+  document.querySelectorAll('.comment-delete-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      typeInput.value = btn.dataset.type || 'file';
+      idInput.value = btn.dataset.commentId || '';
+      pathInput.value = btn.dataset.path || '';
+      previewLabel.textContent = btn.dataset.commentText || 'this comment';
+      toggleModal(modalId, true);
+    });
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    toggleModal(modalId, false);
+  });
+}
+

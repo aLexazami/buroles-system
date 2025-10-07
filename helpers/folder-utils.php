@@ -163,9 +163,16 @@ function formatModifiedTime(string $path): string {
  */
 function isSafePath(string $path): bool {
   $realBase = realpath(__DIR__ . '/../uploads');
-  $realPath = realpath($path);
+  if (!file_exists($path)) return false;
 
-  return $realPath !== false && str_starts_with($realPath, $realBase);
+  $realPath = realpath($path);
+  if ($realPath === false || $realBase === false) return false;
+
+  // Normalize slashes for Windows compatibility
+  $realPath = str_replace('\\', '/', $realPath);
+  $realBase = str_replace('\\', '/', $realBase);
+
+  return str_starts_with($realPath, $realBase);
 }
 
 /**
@@ -274,4 +281,17 @@ function getFolderContentsRecursive(PDO $pdo, int $folderId): array {
   return ['folders' => $folders, 'files' => $files];
 }
 
+function getFolderIdByPath(PDO $pdo, string $path, int $ownerId): int|false
+{
+  static $folderCache = [];
+
+  $cacheKey = "$ownerId:$path";
+  if (isset($folderCache[$cacheKey])) return $folderCache[$cacheKey];
+
+  $stmt = $pdo->prepare("SELECT id FROM folders WHERE path = ? AND owner_id = ? LIMIT 1");
+  $stmt->execute([$path, $ownerId]);
+  $folderId = $stmt->fetchColumn();
+
+  return $folderCache[$cacheKey] = $folderId ? (int)$folderId : false;
+}
 ?>

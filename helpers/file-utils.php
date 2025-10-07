@@ -35,4 +35,23 @@ function countUserFiles(string $basePath): int {
 
   return $count;
 }
+
+function getFileIdByPath(PDO $pdo, string $path, int $ownerId): int|false
+{
+  static $fileCache = [];
+
+  // 🛡️ Corruption check
+  if (str_contains($path, 'C:\\') || str_contains($path, '/helpers/')) {
+    error_log("❌ Path corruption detected in getFileIdByPath → $path");
+  }
+
+  $cacheKey = "$ownerId:$path";
+  if (isset($fileCache[$cacheKey])) return $fileCache[$cacheKey];
+
+  $stmt = $pdo->prepare("SELECT id FROM files WHERE path = ? AND owner_id = ? LIMIT 1");
+  $stmt->execute([$path, $ownerId]);
+  $fileId = $stmt->fetchColumn();
+
+  return $fileCache[$cacheKey] = $fileId ? (int)$fileId : false;
+}
 ?>

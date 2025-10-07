@@ -9,12 +9,20 @@ require_once __DIR__ . '/../../helpers/folder-utils.php';
 require_once __DIR__ . '/../../helpers/file-utils.php';
 require_once __DIR__ . '/../../helpers/logging-utils.php';
 require_once __DIR__ . '/../../helpers/head.php';
+require_once __DIR__ . '/../../helpers/access-utils.php';
 
 $userId         = (int)($_SESSION['user_id'] ?? 0);
 $activeRoleId   = (int)($_SESSION['active_role_id'] ?? 0);
 $originalRoleId = $_SESSION['original_role_id'] ?? '';
 $targetId       = (int)($_GET['user_id'] ?? $userId);
-$currentPath    = sanitizePath($_GET['path'] ?? '');
+
+// ✅ Normalize scoped path to relative
+$rawPath = sanitizePath($_GET['path'] ?? '');
+$expectedPrefix = "uploads/staff/$targetId/";
+$currentPath = str_starts_with($rawPath, $expectedPrefix)
+  ? substr($rawPath, strlen($expectedPrefix))
+  : $rawPath;
+
 $sortBy         = $_GET['sort'] ?? 'name';
 $isSharedView   = isset($_GET['shared']) && $_GET['shared'] === '1';
 
@@ -27,84 +35,49 @@ function canManageFolder(int $userId, int $targetId, int $activeRoleId, int $ori
   return in_array($originalRoleId, [2, 99]) || ($activeRoleId === 1 && $userId === $targetId);
 }
 
-// 🔐 Shared access validation
+// 🔐 Shared access view
 if ($isSharedView) {
-  require_once __DIR__ . '/../../helpers/sharing-utils.php';
+  $scopedPath = "uploads/staff/$targetId/" . ltrim($currentPath, '/');
 
-  // 🧠 Try resolving folder ID using partial path match
-  $pathPattern = "%/$currentPath";
-  $stmt = $pdo->prepare("SELECT id, path, owner_id FROM folders WHERE path LIKE ? ORDER BY id DESC LIMIT 1");
-  $stmt->execute([$pathPattern]);
-  $folderRow = $stmt->fetch(PDO::FETCH_ASSOC);
-
-  if (!$folderRow || !$folderRow['id']) {
-    setFlash('error', 'Shared folder not found.');
-    header("Location: shared-file.php");
-    exit;
-  }
-
-  $folderId = (int)$folderRow['id'];
-  $sharedById = (int)$folderRow['owner_id'];
-
-  function resolveSharedAccess(PDO $pdo, int $userId, string $currentPath, int $sharedById): array|false
-  {
-    $segments = explode('/', $currentPath);
-    while (!empty($segments)) {
-      $testPath = implode('/', $segments);
-      $fullPath = "uploads/staff/$sharedById/$testPath";
-      $itemId = getItemIdByPath($pdo, $fullPath, $sharedById, true);
-      if ($itemId) {
-        $access = getSharedAccess($pdo, $userId, 'folder', $itemId);
-        if ($access) {
-          return ['itemId' => $itemId, 'access' => $access, 'resolvedPath' => $fullPath];
-        }
-      }
-      array_pop($segments); // move up one level
-    }
-    return false;
-  }
-
-  $accessInfo = resolveSharedAccess($pdo, $userId, $currentPath, $sharedById);
-  if (!$accessInfo) {
+  $resolved = resolveItemAccess($pdo, $userId, 'folder', $scopedPath, $targetId);
+  if (!$resolved || !$resolved['accessLevel']) {
     setFlash('error', 'Access denied. You do not have access to this shared folder.');
     header("Location: shared-file.php");
     exit;
   }
-  $itemId = $accessInfo['itemId'];
-  $hasAccess = $accessInfo['access'];
-  $fullPath = $accessInfo['resolvedPath'];
 
-  // 🧠 Get sharer name
+  $itemId      = $resolved['itemId'];
+  $hasAccess   = $resolved['accessLevel'];
+  $accessLabel = $resolved['accessLabel'];
+  $fullPath    = "uploads/staff/$targetId/$currentPath";
+  $ownerId     = $targetId;
+
   $stmt = $pdo->prepare("
     SELECT CONCAT_WS(' ', first_name, middle_name, last_name) AS full_name
     FROM users
     WHERE id = ?
   ");
-  $stmt->execute([$sharedById]);
+  $stmt->execute([$targetId]);
   $sharedByName = $stmt->fetchColumn() ?: 'Unknown';
 
-  // 📁 Resolve upload path using sharer
-  $uploadBase = getUploadBasePathOnly('1', $sharedById);
-
-  $targetId = $sharedById; // override for shared view
-  $activeRoleId = 1;       // staff role for shared owner
-
+  $uploadBase = getUploadBasePathOnly('1', $targetId);
+  $activeRoleId = 1; // force staff role
 } else {
-  // 🔒 Role-based access check
   if (!canManageFolder($userId, $targetId, $activeRoleId, $originalRoleId)) {
     setFlash('error', 'Access denied. You do not have permission to manage this folder.');
     header("Location: file-manager.php?user_id=$userId");
     exit;
   }
 
-  // 📁 Resolve upload path using viewer
-  $uploadBase = getUploadBasePathOnly($activeRoleId, $targetId);
+  $uploadBase   = getUploadBasePathOnly($activeRoleId, $targetId);
+  $accessLabel  = 'Owner';
+  $ownerId      = $targetId;
+  $hasAccess    = 'owner';
 }
 
-// ✅ Resolve full path for listing
 $fullPath = $uploadBase . '/' . $currentPath;
 
-// 📂 Folder creation (POST only)
+// 📂 Folder creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['folder_name'])) {
   ensureUploadBaseExists($activeRoleId, $targetId);
 
@@ -126,19 +99,13 @@ $contents = listFolderItems($fullPath);
 $folders  = $contents['folders'];
 $files    = $contents['files'];
 
-// 🔃 Sort folders
-usort(
-  $folders,
-  fn($a, $b) =>
+usort($folders, fn($a, $b) =>
   $sortBy === 'modified'
     ? strtotime($b['modified']) <=> strtotime($a['modified'])
     : strcasecmp($a['name'], $b['name'])
 );
 
-// 🔃 Sort files
-usort(
-  $files,
-  fn($a, $b) =>
+usort($files, fn($a, $b) =>
   $sortBy === 'modified'
     ? strtotime($b['modified']) <=> strtotime($a['modified'])
     : strcasecmp($a['name'], $b['name'])
@@ -174,16 +141,16 @@ renderHead('Staff');
       if ($showMultiUserView && !isset($_GET['user_id'])) {
         include('../partials/admin-staff-overview.php');
       } else {
-        // 🔑 Pass access context to staff-file-ui.php
-        $GLOBALS['accessLevel']   = $isSharedView ? $hasAccess : 'owner';
+        // ✅ Pass full access context to staff-file-ui.php
+        $GLOBALS['accessLevel']   = $hasAccess;
         $GLOBALS['isSharedView']  = $isSharedView;
         $GLOBALS['targetId']      = $targetId;
         $GLOBALS['currentPath']   = $currentPath;
+        $GLOBALS['ownerId']       = $ownerId;
 
         include('../partials/staff-file-ui.php');
       }
       ?>
-
     </section>
   </main>
 
@@ -193,5 +160,4 @@ renderHead('Staff');
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
 </body>
-
 </html>

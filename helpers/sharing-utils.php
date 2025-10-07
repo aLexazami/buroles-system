@@ -1,46 +1,31 @@
 <?php
-
-/**
- * Determine the access level a user has to a specific file or folder,
- * considering direct shares, inherited shares from parent folders, and ownership.
- *
- * @param PDO    $pdo     The PDO database connection.
- * @param int    $userId  The ID of the user whose access is being checked.
- * @param string $type    Either 'file' or 'folder'.
- * @param int    $itemId  The ID of the file or folder.
- *
- * @return string|false   Returns 'owner', 'edit', 'view', or false if no access.
- */
 function getSharedAccess(PDO $pdo, int $userId, string $type, int $itemId): string|false
 {
   static $accessCache = [];
   $cacheKey = "$type:$itemId:$userId";
   if (isset($accessCache[$cacheKey])) return $accessCache[$cacheKey];
 
-  error_log("🔍 Access check → user: $userId, type: $type, itemId: $itemId");
-
-  // 🔍 Check ownership
+  // 🔍 Resolve ownership and parent folder
   if ($type === 'file') {
-    $stmt = $pdo->prepare("SELECT owner_id, folder_id FROM files WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT owner_id, folder_id, path FROM files WHERE id = ?");
   } else {
-    $stmt = $pdo->prepare("SELECT owner_id, parent_id FROM folders WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT owner_id, parent_id, path FROM folders WHERE id = ?");
   }
   $stmt->execute([$itemId]);
   $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  if (!$item) {
-    error_log("❌ Access denied → item not found.");
-    return $accessCache[$cacheKey] = false;
-  }
+  if (!$item) return $accessCache[$cacheKey] = false;
 
   if ((int)$item['owner_id'] === $userId) {
-    error_log("✅ Access granted: owner");
     return $accessCache[$cacheKey] = 'owner';
   }
 
+  $itemPath = $item['path'] ?? '';
+  $folderId = $type === 'file' ? (int)$item['folder_id'] : (int)$item['parent_id'];
+
   // 🔍 Check direct share
   $shareTable  = $type === 'file' ? 'shared_files' : 'shared_folders';
-  $shareColumn = $type === 'file' ? 'file_id'     : 'folder_id';
+  $shareColumn = $type === 'file' ? 'file_id'       : 'folder_id';
 
   $stmt = $pdo->prepare("
     SELECT access_level
@@ -49,58 +34,47 @@ function getSharedAccess(PDO $pdo, int $userId, string $type, int $itemId): stri
   ");
   $stmt->execute([$itemId, $userId]);
   $direct = $stmt->fetchColumn();
+  if ($direct) return $accessCache[$cacheKey] = $direct;
 
-  if ($direct) {
-    error_log("✅ Access granted: direct ($direct)");
-    return $accessCache[$cacheKey] = $direct;
-  }
-
-  // 🔁 Traverse parent folders for inherited access
-  $folderId = $type === 'file' ? (int)$item['folder_id'] : (int)$item['parent_id'];
-
+  // 🔁 Traverse upward for inherited access
   while ($folderId) {
-    error_log("🔁 Traversing folder $folderId");
-
-    // Check inherited share
     $stmt = $pdo->prepare("
-      SELECT access_level
+      SELECT access_level, is_root
       FROM shared_folders
       WHERE folder_id = ? AND shared_with = ? AND is_revoked = 0
     ");
     $stmt->execute([$folderId, $userId]);
-    $inherited = $stmt->fetchColumn();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($inherited) {
-      error_log("✅ Access granted: inherited ($inherited) from folder $folderId");
-      return $accessCache[$cacheKey] = $inherited;
-    }
+    if ($row) return $accessCache[$cacheKey] = $row['access_level'];
 
-    // Traverse up
-    $stmt = $pdo->prepare("SELECT parent_id FROM folders WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT parent_id, is_root FROM folders WHERE id = ?");
     $stmt->execute([$folderId]);
-    $parentId = $stmt->fetchColumn();
-    $folderId = $parentId !== null ? (int)$parentId : 0;
+    $meta = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$meta || (int)$meta['is_root'] === 1) break;
+    $folderId = (int)$meta['parent_id'];
   }
 
-  error_log("❌ Access denied → no ownership, direct, or inherited access.");
+  // 🔽 Check downward inheritance from shared root folders
+  if ($itemPath !== '') {
+    $stmt = $pdo->prepare("
+      SELECT sf.access_level
+      FROM shared_folders sf
+      JOIN folders f ON f.id = sf.folder_id
+      WHERE sf.shared_with = ? AND sf.is_revoked = 0 AND sf.is_root = 1
+        AND f.path <> '' AND ? LIKE CONCAT(f.path, '%')
+      ORDER BY LENGTH(f.path) DESC
+      LIMIT 1
+    ");
+    $stmt->execute([$userId, $itemPath]);
+    $inherited = $stmt->fetchColumn();
+    if ($inherited) return $accessCache[$cacheKey] = $inherited;
+  }
+
   return $accessCache[$cacheKey] = false;
 }
 
-function getAccessByPath(PDO $pdo, int $viewerId, string $path, string $type): string|false
-{
-  $table = $type === 'file' ? 'files' : 'folders';
-  $stmt = $pdo->prepare("SELECT id FROM $table WHERE path = ?");
-  $stmt->execute([$path]);
-  $itemId = $stmt->fetchColumn();
-  return $itemId ? getSharedAccess($pdo, $viewerId, $type, (int)$itemId) : false;
-}
-
-function resolveUserId(PDO $pdo, string $email): int|false
-{
-  $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-  $stmt->execute([$email]);
-  return $stmt->fetchColumn() ?: false;
-}
 
 function canEdit(PDO $pdo, int $userId, string $type, int $itemId): bool
 {
@@ -111,18 +85,13 @@ function canEdit(PDO $pdo, int $userId, string $type, int $itemId): bool
 function canComment(PDO $pdo, int $userId, string $type, int $itemId): bool
 {
   $access = getSharedAccess($pdo, $userId, $type, $itemId);
-  return $access === 'comment';
+  return in_array($access, ['owner', 'editor', 'comment'], true);
 }
 
-function getAccessLabel(string|false $access): string
+function canView(PDO $pdo, int $userId, string $type, int $itemId): bool
 {
-  return match ($access) {
-    'owner'   => 'Owner',
-    'editor'  => 'Can Edit',
-    'comment' => 'Can Comment',
-    'view'    => 'View Only',
-    default   => 'No Access',
-  };
+  $access = getSharedAccess($pdo, $userId, $type, $itemId);
+  return in_array($access, ['owner', 'editor', 'comment', 'view'], true);
 }
 
 function revokeShare(PDO $pdo, string $type, int $itemId, int $sharedWith): bool
@@ -133,51 +102,62 @@ function revokeShare(PDO $pdo, string $type, int $itemId, int $sharedWith): bool
   return $stmt->execute([$itemId, $sharedWith]);
 }
 
-/**
- * Cached version of getSharedAccess to minimize database queries.
- */
-function getSharedAccessCached(PDO $pdo, int $userId, string $type, int $itemId, array &$cache): string|false
-{
-  $key = "$type:$itemId";
+function fetchSharedItems(
+  PDO $pdo,
+  string $type,
+  string $view,
+  int $userId,
+  string $orderColumn,
+  bool $rootOnly = false
+): array {
+  // Determine table and column names
+  $shareTable   = $type === 'file' ? 'shared_files'   : 'shared_folders';
+  $itemTable    = $type === 'file' ? 'files'          : 'folders';
+  $itemIdColumn = $type === 'file' ? 'file_id'        : 'folder_id';
 
-  if (isset($cache[$key])) {
-    return $cache[$key]; // ✅ Return cached result
-  }
+  // Determine user context
+  $isByView = $view === 'by';
+  $userColumn = $isByView ? 'shared_by' : 'shared_with';
+  $joinUserColumn = $isByView ? 'shared_with' : 'shared_by';
 
-  $access = getSharedAccess($pdo, $userId, $type, $itemId);
-  $cache[$key] = $access; // ✅ Store in cache
+  // Select user metadata
+  $userFields = $isByView
+    ? "u.email AS recipient_email, u.avatar_path AS recipient_avatar"
+    : "u.email AS shared_by_email, u.avatar_path AS shared_by_avatar";
 
-  return $access;
-}
-
-
-function fetchSharedItems(PDO $pdo, string $type, string $view, int $userId, string $orderColumn, bool $rootOnly = false): array
-{
-  $table      = $type === 'file' ? 'shared_files' : 'shared_folders';
-  $itemTable  = $type === 'file' ? 'files' : 'folders';
-  $itemColumn = $type === 'file' ? 'file_id' : 'folder_id';
-
-  // ✅ Select name and email for both views
-  $selectUser = $view === 'by'
-    ? "u.email AS recipient_email, u.avatar_path AS recipient_avatar, sf.shared_by, sf.shared_with"
-    : "u.email AS shared_by_email, u.avatar_path AS shared_by_avatar, sf.shared_by, sf.shared_with";
-
-  $whereClause = "sf." . ($view === 'by' ? 'shared_by' : 'shared_with') . " = ?";
+  // Build WHERE clause
+  $where = "sf.$userColumn = :userId AND sf.is_revoked = 0";
   if ($rootOnly) {
-    $whereClause .= " AND sf.is_root = 1";
+    $where .= " AND sf.is_root = 1";
   }
 
+  // Build SQL query
   $sql = "
-    SELECT sf.id AS id, f.name, f.path, sf.access_level, sf.shared_at, $selectUser, '$type' AS type
-    FROM $table sf
-    JOIN $itemTable f ON sf.$itemColumn = f.id
-    JOIN users u ON sf." . ($view === 'by' ? 'shared_with' : 'shared_by') . " = u.id
-    WHERE $whereClause
+    SELECT
+      sf.id AS id,
+      f.name,
+      f.path,
+      f.owner_id,
+      sf.access_level,
+      sf.shared_at,
+      sf.shared_by,
+      sf.shared_with,
+      $userFields,
+      :type AS type
+    FROM $shareTable sf
+    JOIN $itemTable f ON sf.$itemIdColumn = f.id
+    JOIN users u ON sf.$joinUserColumn = u.id
+    WHERE $where
     ORDER BY $orderColumn
   ";
 
+  // Prepare and execute
   $stmt = $pdo->prepare($sql);
-  $stmt->execute([$userId]);
+  $stmt->execute([
+    'userId' => $userId,
+    'type'   => $type,
+  ]);
+
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -198,13 +178,15 @@ function renderSharedItem(array $item): void
       default => 'file-icon.png',
     };
   }
-  $userId = $item['shared_by'] ?? $item['shared_with'] ?? $GLOBALS['activeUserId'];
+
+  $userId   = $item['shared_by'] ?? $item['shared_with'] ?? $GLOBALS['activeUserId'];
+  $ownerId  = $item['owner_id'] ?? $item['shared_by'] ?? $GLOBALS['activeUserId']; // ✅ Correct placement
 
   $path = $item['path'] ?? '';
   $name = $item['name'] ?? '';
   $link = $isFolder
-    ? "/pages/staff/file-manager.php?shared=1&user_id={$userId}&path=" . urlencode($path)
-    : getUserUploadUrl('1', $userId, dirname($path), $name);
+    ? "/pages/staff/file-manager.php?shared=1&user_id={$ownerId}&path=" . urlencode($path)
+    : getUserUploadUrl('1', $ownerId, dirname($path), $name);
 
   echo '<div class="flex items-center gap-2">';
   echo '<img src="/assets/img/' . $icon . '" class="w-4 h-4" alt="' . ($isFolder ? 'Folder' : strtoupper($ext) . ' file') . ' icon" />';
@@ -227,7 +209,11 @@ function renderOrphanedNode(string $name): void
 function getFileComments(PDO $pdo, int $fileId): array
 {
   $stmt = $pdo->prepare("
-    SELECT fc.comment_text, fc.commented_at, u.email AS commenter_email
+    SELECT
+  fc.id,
+  fc.comment_text,
+  fc.commented_at,
+  u.email AS commenter_email
 FROM file_comments fc
 JOIN users u ON fc.commenter_id = u.id
 WHERE fc.file_id = ?
@@ -237,7 +223,77 @@ ORDER BY fc.commented_at DESC
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function fetchUnifiedSharedItems(PDO $pdo, int $userId): array {
+function getFolderComments(PDO $pdo, int $folderId): array
+{
+  $stmt = $pdo->prepare("
+    SELECT fc.comment_text, u.email AS commenter_email
+    FROM folder_comments fc
+    JOIN users u ON fc.commenter_id = u.id
+    WHERE fc.folder_id = ?
+    ORDER BY fc.commented_at ASC
+  ");
+  $stmt->execute([$folderId]);
+  return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getThreadedFileComments(PDO $pdo, int $fileId): array {
+  // Fetch top-level comments
+  $stmt = $pdo->prepare("
+    SELECT fc.id, fc.comment_text, fc.commented_at, u.email AS commenter_email
+    FROM file_comments fc
+    JOIN users u ON fc.commenter_id = u.id
+    WHERE fc.file_id = ? AND fc.parent_comment_id IS NULL AND fc.is_deleted = FALSE
+    ORDER BY fc.commented_at ASC
+  ");
+  $stmt->execute([$fileId]);
+  $topLevel = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  // Fetch replies for each top-level comment
+  foreach ($topLevel as &$comment) {
+    $stmt = $pdo->prepare("
+      SELECT fc.comment_text, fc.commented_at, u.email AS commenter_email
+      FROM file_comments fc
+      JOIN users u ON fc.commenter_id = u.id
+      WHERE fc.parent_comment_id = ? AND fc.is_deleted = FALSE
+      ORDER BY fc.commented_at ASC
+    ");
+    $stmt->execute([$comment['id']]);
+    $comment['replies'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  return $topLevel;
+}
+
+function getThreadedFolderComments(PDO $pdo, int $folderId): array {
+  // Top-level comments
+  $stmt = $pdo->prepare("
+    SELECT fc.id, fc.comment_text, fc.commented_at, u.email AS commenter_email
+    FROM folder_comments fc
+    JOIN users u ON fc.commenter_id = u.id
+    WHERE fc.folder_id = ? AND fc.parent_comment_id IS NULL AND fc.is_deleted = FALSE
+    ORDER BY fc.commented_at ASC
+  ");
+  $stmt->execute([$folderId]);
+  $topLevel = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  // Replies per comment
+  foreach ($topLevel as &$comment) {
+    $stmt = $pdo->prepare("
+      SELECT fc.comment_text, fc.commented_at, u.email AS commenter_email
+      FROM folder_comments fc
+      JOIN users u ON fc.commenter_id = u.id
+      WHERE fc.parent_comment_id = ? AND fc.is_deleted = FALSE
+      ORDER BY fc.commented_at ASC
+    ");
+    $stmt->execute([$comment['id']]);
+    $comment['replies'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  return $topLevel;
+}
+
+function fetchUnifiedSharedItems(PDO $pdo, int $userId): array
+{
   $byMe = array_merge(
     fetchSharedItems($pdo, 'folder', 'by', $userId, 'sf.shared_at', true),
     fetchSharedItems($pdo, 'file',   'by', $userId, 'sf.shared_at', true)
@@ -247,21 +303,36 @@ function fetchUnifiedSharedItems(PDO $pdo, int $userId): array {
     fetchSharedItems($pdo, 'file',   'with', $userId, 'sf.shared_at', true)
   );
 
-  foreach ($byMe as &$item)   { $item['origin'] = 'by'; }
-  foreach ($withMe as &$item) { $item['origin'] = 'with'; }
+  foreach ($byMe as &$item) {
+    $item['origin'] = 'by';
+  }
+  foreach ($withMe as &$item) {
+    $item['origin'] = 'with';
+  }
 
   return array_merge($byMe, $withMe);
 }
 
-function normalizeSharedItems(array $items): array {
+function normalizeSharedItems(array $items): array
+{
   foreach ($items as &$item) {
-    $item['path'] = isset($item['path']) ? preg_replace('#^.*uploads/staff/\d+/#', '', $item['path']) : '';
+    // Preserve original path for access and link generation
+    $item['full_path'] = $item['path'] ?? '';
+
+    // Normalize path for display (strip scoped prefix)
+    $item['path'] = isset($item['path'])
+      ? preg_replace('#^.*uploads/staff/\d+/#', '', $item['path'])
+      : '';
+
+    // Extract display name from normalized path
     $item['name'] = $item['path'] ? basename($item['path']) : 'Unnamed';
   }
+
   return $items;
 }
 
-function sortSharedItems(array $items, string $sortBy, string $sortOrder): array {
+function sortSharedItems(array $items, string $sortBy, string $sortOrder): array
+{
   usort($items, function ($a, $b) use ($sortBy, $sortOrder) {
     $direction = $sortOrder === 'asc' ? 1 : -1;
 

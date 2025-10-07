@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../helpers/flash.php';
 require_once __DIR__ . '/../../helpers/user-utils.php';
 require_once __DIR__ . '/../../helpers/path.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php';
+require_once __DIR__ . '/../../helpers/logger.php';
 
 function redirectToManager(int $userId): void {
   header("Location: /pages/staff/file-manager.php?user_id=$userId");
@@ -29,7 +30,8 @@ if (!$recipientUser || (int)$recipientUser['role_id'] !== 1) {
   return redirectToManager($ownerId);
 }
 
-$scopedPath = "uploads/staff/$ownerId/" . ltrim($itemPath, '/');
+$scopedPath = getScopedPath('1', (string)$ownerId, $itemPath);
+logDebug("Sharing $type → $scopedPath → recipient={$recipientUser['id']} ({$recipientUser['email']}) → access=$accessLevel");
 $isFolder = $type === 'folder';
 $itemId = getItemIdByPath($pdo, $scopedPath, $ownerId, $isFolder);
 

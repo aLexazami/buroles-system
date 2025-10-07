@@ -68,10 +68,10 @@ if (!in_array($mimeType, $allowedTypes)) {
 }
 
 // 📁 Resolve upload path
-$baseDir      = getUploadBaseByRoleUser((int)$activeRoleId, $targetId);
+$baseDir      = getUploadBaseByRoleUser((string)$activeRoleId, $targetId);
 $targetPath   = resolveUploadPathFromBase($baseDir, $currentPath, $finalName);
 $relativePath = sanitizePath($currentPath !== '' ? "$currentPath/$finalName" : $finalName);
-$scopedPath   = "uploads/staff/$userId/" . ltrim($relativePath, '/');
+$scopedPath   = getScopedPath('1', (string)$userId, $relativePath);
 
 if (!is_dir(dirname($targetPath))) {
   setFlash('error', 'Target folder does not exist.');
@@ -91,7 +91,7 @@ if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
 
 // 🧠 Resolve folder ID from current path
 function getFolderIdByPath(PDO $pdo, int $ownerId, string $path): ?int {
-  $scopedFolderPath = "uploads/staff/$ownerId/" . ltrim($path, '/');
+  $scopedFolderPath = getScopedPath('1', (string)$ownerId, $path);
   $stmt = $pdo->prepare("SELECT id FROM folders WHERE owner_id = ? AND path = ?");
   $stmt->execute([$ownerId, $scopedFolderPath]);
   return $stmt->fetchColumn() ?: null;

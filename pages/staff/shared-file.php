@@ -6,20 +6,64 @@ require_once __DIR__ . '/../../helpers/path.php';
 require_once __DIR__ . '/../../helpers/sharing-utils.php';
 require_once __DIR__ . '/../../helpers/file-utils.php';
 require_once __DIR__ . '/../../helpers/head.php';
+require_once __DIR__ . '/../../helpers/access-utils.php';
+require_once __DIR__ . '/../../helpers/logger.php';
 
 $activeUserId = $_SESSION['user_id'] ?? 0;
-$view         = $_GET['view'] ?? 'with'; // 'by' or 'with'
-$sortBy       = $_GET['sort'] ?? 'modified'; // 'name' or 'modified'
-$sortOrder    = $_GET['sort_order'] ?? 'desc'; // 'asc' or 'desc'
+$userId = $activeUserId;
+
+$view       = $_GET['view'] ?? 'with';       // 'by' or 'with'
+$sortBy     = $_GET['sort'] ?? 'modified';   // 'name' or 'modified'
+$sortOrder  = $_GET['sort_order'] ?? 'desc'; // 'asc' or 'desc'
 
 // ✅ Fetch folders and files separately
-$sharedFolders = fetchSharedItems($pdo, 'folder', $view, $activeUserId, 'sf.shared_at', true);
-$sharedFiles   = fetchSharedItems($pdo, 'file',   $view, $activeUserId, 'sf.shared_at', true);
+$sharedFolders = fetchSharedItems($pdo, 'folder', $view, $userId, 'sf.shared_at', true);
+$sharedFiles   = fetchSharedItems($pdo, 'file',   $view, $userId, 'sf.shared_at', true);
 
-// ✅ Merge and normalize
+// ✅ Merge and preserve full path before normalization
 $sharedItems = array_merge($sharedFolders, $sharedFiles);
-$sharedItems = normalizeSharedItems($sharedItems);
+logDebug("Fetched shared items: " . count($sharedItems));
+
+
+foreach ($sharedItems as &$item) {
+  $item['full_path'] = $item['path'] ?? ''; // preserve original path for access resolution
+}
+unset($item); // break reference
+
+// ✅ Sort before validation
 $sharedItems = sortSharedItems($sharedItems, $sortBy, $sortOrder);
+
+// ✅ Access validation
+$validatedItems = [];
+foreach ($sharedItems as $item) {
+  $type     = $item['type'] ?? '';
+  $path     = $item['full_path'] ?? '';
+  $ownerId  = $item['owner_id'] ?? $item['shared_by'] ?? $userId;
+
+  logDebug("Validating item: type=$type, path=$path, owner=$ownerId, viewer=$userId");
+
+  $resolved = resolveItemAccess($pdo, $userId, $type, $path, $ownerId);
+
+
+  if (!$resolved) {
+    logDebug("Access denied for path: $path");
+    continue;
+  }
+
+  logDebug("Access granted: " . json_encode($resolved));
+
+  $item['accessLevel'] = $resolved['accessLevel'];
+  $item['accessLabel'] = $resolved['accessLabel'];
+  $item['accessColor'] = $resolved['accessColor'];
+  $item['owner_id']    = $ownerId;
+  // ✅ Generate link to file-manager.php for shared access
+  $item['link'] = "/pages/staff/file-manager.php?shared=1&user_id={$ownerId}&path=" . urlencode($path);
+  $validatedItems[] = $item;
+}
+
+error_log("Validated items count: " . count($validatedItems));
+
+$sharedItems = normalizeSharedItems($validatedItems); // ✅ Normalize after validation
 
 renderHead('Staff');
 ?>
@@ -90,25 +134,31 @@ renderHead('Staff');
         <div class="flex flex-col divide-y divide-black-200">
           <?php foreach ($sharedItems as $item): ?>
             <?php
-            $isFolder     = ($item['type'] ?? '') === 'folder';
-            $name         = $item['name'] ?? '';
-            $path         = $item['path'] ?? '';
-            $accessLevel  = $item['access_level'] ?? 'none';
-            $ext          = $name !== '' ? strtolower(pathinfo($name, PATHINFO_EXTENSION)) : '';
-            $icon = $isFolder ? '/assets/img/folder.png' : getFileIcon($name);
-            $userId = $item['shared_by'] ?? $activeUserId;
-            $link   = $isFolder
-              ? "/pages/staff/file-manager.php?shared=1&user_id={$userId}&path=" . urlencode($path)
-              : getUserUploadUrl('1', $userId, dirname($path), $name);
+            $isFolder    = ($item['type'] ?? '') === 'folder';
+            $name        = $item['name'] ?? '';
+            $fullPath    = $item['full_path'] ?? $item['path'] ?? '';
+            $relativePath = preg_replace('#^uploads/staff/\d+/#', '', $fullPath); // ✅ strip scoped prefix
+            $accessLevel = $item['access_level'] ?? 'none';
+            $ext         = $name !== '' ? strtolower(pathinfo($name, PATHINFO_EXTENSION)) : '';
+            $icon        = $isFolder ? '/assets/img/folder.png' : getFileIcon($name);
+            $ownerId     = $item['owner_id'] ?? $item['shared_by'] ?? $activeUserId;
+
+            $link = $isFolder
+              ? "/pages/staff/file-manager.php?shared=1&user_id={$ownerId}&path=" . urlencode($relativePath)
+              : getUserUploadUrl('1', $ownerId, dirname($relativePath), $name);
+
             $email  = $view === 'by' ? $item['recipient_email'] ?? 'Unknown' : $item['shared_by_email'] ?? 'Unknown';
             $avatar = $view === 'by' ? $item['recipient_avatar'] ?? '/assets/img/default-avatar.png' : $item['shared_by_avatar'] ?? '/assets/img/default-avatar.png';
             ?>
             <div class="shared-row group flex px-2 py-2 items-center w-full text-sm text-gray-700 hover:bg-emerald-50 transition cursor-pointer"
-              data-link="<?= $link ?>">
+              data-link="<?= htmlspecialchars($link) ?>">
               <!-- Name + Icon -->
               <div class="flex items-center gap-2 sm:gap-3 flex-grow min-w-0">
                 <img src="<?= htmlspecialchars($icon) ?>" class="w-4 h-4" alt="<?= $isFolder ? 'Folder' : strtoupper($ext) . ' file' ?>" />
                 <span class="text-sm font-medium"><?= htmlspecialchars($name ?: 'Unnamed') ?></span>
+                <span class="ml-2 text-xs text-<?= $item['accessColor'] ?? 'gray' ?>-600 italic">
+                  <?= $item['accessLabel'] ?? '' ?>
+                </span>
               </div>
               <!-- Metadata -->
               <div class="hidden sm:flex items-center gap-2 sm:gap-3 w-[20rem] justify-between">
@@ -131,7 +181,7 @@ renderHead('Staff');
                     <button class="menu-toggle cursor-pointer hover:bg-emerald-300 rounded-full p-2" data-id="<?= htmlspecialchars($item['id']) ?>">
                       <img src="/assets/img/dots-icon.png" alt="Menu" class="w-5 h-5">
                     </button>
-                    <div class="menu-dropdown absolute right-8 top-0  bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold z-10">
+                    <div class="menu-dropdown absolute right-8 top-0 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold z-10">
                       <button class="revoke-btn flex items-center gap-3 px-4 py-2 rounded hover:bg-emerald-100 text-sm text-left w-full cursor-pointer"
                         data-id="<?= htmlspecialchars($item['id']) ?>"
                         data-type="<?= htmlspecialchars($item['type']) ?>"
@@ -146,27 +196,30 @@ renderHead('Staff');
               </div>
             </div>
           <?php endforeach; ?>
+          <?php if (empty($sharedItems)): ?>
+            <div class="text-center text-sm text-gray-500 italic py-4">No shared items available.</div>
+          <?php endif; ?>
         </div>
       </div>
 
       <!-- Revoke Confirmation Modal -->
       <div id="revokeModal" role="dialog" aria-labelledby="revokeModalLabel" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
         <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-          <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
-            <h2 class="text-xl sm:text-2xl mb-4">Confirm Revocation</h2>
-            <p class="text-sm text-gray-700 mb-4">
-              Are you sure you want to revoke access to <span id="revokeItemName" class="font-bold text-emerald-600"></span>?
-            </p>
-            <form method="POST" action="/controllers/files/revoke-share.php">
-              <input type="hidden" name="item_id" id="revokeItemId">
-              <input type="hidden" name="type" id="revokeItemType">
-              <input type="hidden" name="shared_with" id="revokeSharedWith">
-              <div class="flex justify-end gap-2  mt-5">
-                <button type="button" id="cancelRevoke" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
-                <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Confirm</button>
-              </div>
-            </form>
-          </div>
+        <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+          <h2 class="text-xl sm:text-2xl mb-4">Confirm Revocation</h2>
+          <p class="text-sm text-gray-700 mb-4">
+            Are you sure you want to revoke access to <span id="revokeItemName" class="font-bold text-emerald-600"></span>?
+          </p>
+          <form method="POST" action="/controllers/files/revoke-share.php">
+            <input type="hidden" name="item_id" id="revokeItemId">
+            <input type="hidden" name="type" id="revokeItemType">
+            <input type="hidden" name="shared_with" id="revokeSharedWith">
+            <div class="flex justify-end gap-2  mt-5">
+              <button type="button" id="cancelRevoke" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+              <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Confirm</button>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
   </main>

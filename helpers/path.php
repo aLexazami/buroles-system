@@ -90,8 +90,15 @@ function sanitizePath(string $path): string {
 function resolveUploadPathFromBase(string $baseDir, string $parentPath, string $itemName): string {
   $safeParent = sanitizePath($parentPath);
   $safeItem   = sanitizeSegment($itemName);
-  $subPath    = $safeParent !== '' ? "$safeParent/$safeItem" : $safeItem;
-  $fullPath   = $baseDir . '/' . $subPath;
+
+  // 🛡️ Guard against corrupted input
+  if (str_contains($safeParent, 'uploads/') || str_contains($safeParent, 'C:\\') || str_contains($safeParent, '\\uploads\\')) {
+    error_log("❌ resolveUploadPathFromBase: corrupted parentPath → $safeParent");
+    return '';
+  }
+
+  $subPath  = $safeParent !== '' ? "$safeParent/$safeItem" : $safeItem;
+  $fullPath = $baseDir . '/' . $subPath;
 
   if (!file_exists($fullPath)) {
     error_log("resolveUploadPathFromBase: path not found → $fullPath");
@@ -140,4 +147,24 @@ function getItemIdByPath(PDO $pdo, string $path, int $ownerId, bool $isFolder): 
   $id = $stmt->fetchColumn();
 
   return $id ?: null;
+}
+
+function getScopedPath(string $roleId, string $userId, string $relativePath): string {
+  $roleSlug = getRoleSlug($roleId);
+  return "uploads/$roleSlug/$userId/" . ltrim($relativePath, '/');
+}
+
+// helpers/path-utils.php
+function extractRelativePath(string $scopedPath, string $userId): string {
+  $prefix = "uploads/staff/$userId/";
+  return str_starts_with($scopedPath, $prefix)
+    ? ltrim(substr($scopedPath, strlen($prefix)), '/')
+    : $scopedPath;
+}
+
+function normalizeRelativePath(string $userId, string $path): string {
+  $expectedPrefix = "uploads/staff/$userId/";
+  return str_starts_with($path, $expectedPrefix)
+    ? substr($path, strlen($expectedPrefix))
+    : $path;
 }
