@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initRenameButtons, initDeleteButtons, initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initShareButton, closeShareModal, openShareModal, setupRevokeModal, initCommentModal, initDeleteCommentModal } from './modal.js';
+import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers } from './modal.js';
 import { initCreateFolderModal } from './folder-creation.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
@@ -22,17 +22,21 @@ import { setupAnnouncementPagination } from './announcementCarousel.js';
 import { setupRoleCheckboxToggle } from './checkbox.js';
 import { startRedirectCountdown } from './redirect-utils.js';
 import { initEmailAutocomplete } from './search-autocomplete.js';
+import { loadFolder } from './file-manager.js';
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 📁 File Manager Initialization
+  const folderId = document.body.dataset.folderId || null;
+  loadFolder(folderId);
+
   // 🧭 UI & Role Toggles
   setupRoleSwitcher();
   setupUserActions();
   initDropdownMenus();
 
   // 📁 File Manager Actions
-  initRenameButtons();
-  initDeleteButtons();
-  initCreateFolderModal();
   initUploadActions();
   initExportDropdown();
   initPasswordButtons();
@@ -43,18 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPasswordVisibilityToggles();
   setupRecipientDropdown();
   initNotificationActions();
+  setupRoleCheckboxToggle();
+  setupMobileActionToggle();
+  setupAnnouncementPagination();
+  initEmailAutocomplete();
+  initMenuToggle();
+
+
+  // 📁 Modal Initializers
   initAnnouncementModal();
   initAnnouncementTriggers();
-  setupRoleCheckboxToggle();
-  setupAnnouncementPagination();
-  initShareButton();
-  openShareModal();
-  closeShareModal();
-  initEmailAutocomplete();
-  setupRevokeModal();
-  initMenuToggle();
-  initCommentModal();
-  initDeleteCommentModal();
+  initCreateFolderModal();
+
+
 
   // Badge Updater
   startBadgePolling();

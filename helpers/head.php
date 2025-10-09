@@ -12,7 +12,7 @@ function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false, $m
     <meta name='description' content='Burol Elementary School Dashboard'>
     <meta name='author' content='Burol Dev Team'>
     <meta name='theme-color' content='#2c3e50'>";
-    
+
   if ($noIndex) {
     echo "<meta name='robots' content='noindex, nofollow'>";
   }
@@ -20,6 +20,9 @@ function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false, $m
   if ($metaRefresh) {
     echo "<meta http-equiv='refresh' content='" . htmlspecialchars($metaRefresh, ENT_QUOTES, 'UTF-8') . "'>";
   }
+
+  // ✅ Load PDF.js library
+  echo "<script src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js'></script>";
 
   echo "</head>";
 }

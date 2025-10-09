@@ -1,4 +1,6 @@
 // Modal Helpers
+import { formatSize, formatDate } from './file-manager.js';
+
 function toggleModal(modalId, show) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
@@ -14,6 +16,7 @@ function toggleModal(modalId, show) {
   document.body.classList.toggle('overflow-hidden', show);
 }
 
+/*
 //  Rename Modal Logic
 export function openRenameModal(name, type, userId, path) {
   toggleModal('renameModal', true);
@@ -114,7 +117,7 @@ export function initDeleteButtons() {
     if (e.key === 'Escape') closeDeleteModal();
   });
 }
-
+*/
 
 //  Password Modal Logic
 let pendingPasswordHref = '';
@@ -328,7 +331,7 @@ export function initAnnouncementTriggers() {
   });
 }
 
-
+/*
 // Share Modal Logic
 export function closeShareModal() {
   toggleModal('shareModal', false);
@@ -431,7 +434,8 @@ export function initShareButton() {
     updateDescription();
   }
 }
-
+*/
+/*
 // Revoke Modal Logic
 export function setupRevokeModal() {
   const revokeItemName = document.getElementById('revokeItemName');
@@ -469,9 +473,9 @@ export function setupRevokeModal() {
     });
   }
 }
+*/
 
-
-// Comment Modal Logic
+/*
 export function initCommentModal() {
   const modal = document.getElementById('commentModal');
   const label = document.getElementById('commentFileLabel');
@@ -535,8 +539,9 @@ export function initCommentModal() {
     }
   });
 }
+*/
 
-
+/*
 // Delete Comment Modal Logic
 export function initDeleteCommentModal() {
   const modalId = 'deleteCommentModal';
@@ -563,4 +568,101 @@ export function initDeleteCommentModal() {
     toggleModal(modalId, false);
   });
 }
+  */
 
+// ************************************************************************ //
+
+// 💬 Comment Files  Modal Logic
+export function openCommentModal(fileId) {
+  const modal = document.getElementById('commentModal');
+  const input = document.getElementById('comment-file-id');
+  if (!modal || !input) return;
+
+  input.value = fileId;
+  toggleModal('commentModal', true);
+}
+
+export function closeCommentModal() {
+  toggleModal('commentModal', false);
+}
+
+export function initCommentButtons() {
+  document.querySelectorAll('.comment-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const fileId = btn.dataset.fileId;
+      openCommentModal(fileId);
+    });
+  });
+
+  document.getElementById('cancelComment')?.addEventListener('click', closeCommentModal);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('commentModal');
+      if (modal?.classList.contains('flex')) closeCommentModal();
+    }
+  });
+}
+
+// 🔗 Share Modal Logic
+export function openShareModal(fileId) {
+  const modal = document.getElementById('shareModal');
+  const input = document.getElementById('share-file-id');
+  if (!modal || !input) return;
+
+  input.value = fileId;
+  toggleModal('shareModal', true);
+}
+
+export function closeShareModal() {
+  toggleModal('shareModal', false);
+}
+
+export function initShareButtons() {
+  document.querySelectorAll('.share-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const fileId = btn.dataset.fileId;
+      openShareModal(fileId);
+    });
+  });
+
+  document.getElementById('cancelShare')?.addEventListener('click', closeShareModal);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('shareModal');
+      if (modal?.classList.contains('flex')) closeShareModal();
+    }
+  });
+}
+
+export function openFileInfoModal(item) {
+  const modal = document.getElementById('file-info-modal');
+  const title = modal.querySelector('.info-title');
+  const content = modal.querySelector('.info-content');
+  const closeBtn = modal.querySelector('#closeInfo');
+
+  if (!modal || !title || !content || !closeBtn) return;
+
+  title.textContent = item.name || 'File Info';
+
+  content.innerHTML = `
+    <div class="text-sm text-gray-700 space-y-2">
+      <div><strong>Name:</strong> ${item.name}</div>
+      <div><strong>Type:</strong> ${item.type}</div>
+      <div><strong>Size:</strong> ${formatSize(item.size)}</div>
+      <div><strong>Updated:</strong> ${formatDate(item.updated_at)}</div>
+      <div><strong>Owner:</strong> ${item.owner_first_name} ${item.owner_last_name}</div>
+      <div><strong>MIME Type:</strong> ${item.mime_type || '—'}</div>
+      <div><strong>Path:</strong> ${item.path}</div>
+    </div>
+  `;
+
+  modal.classList.remove('hidden');
+  document.body.classList.add('overflow-hidden');
+
+  closeBtn.onclick = () => {
+    modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  };
+}

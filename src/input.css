@@ -38,3 +38,18 @@
 #emailSuggestions li.highlighted {
   background-color: #d1fae5; /* emerald-100 */
 }
+
+@media (max-width: 400px) {
+  #file-preview-content {
+    padding: 1rem;
+    max-height: 80vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .pdf-container canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+

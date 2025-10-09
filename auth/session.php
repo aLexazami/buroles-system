@@ -2,6 +2,10 @@
 require_once __DIR__ . '/../includes/bootstrap.php'; // Loads Dotenv and Composer autoload
 require_once __DIR__ . '/../helpers/flash.php';      // Optional: for messaging
 
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
 // 🔓 Public pages that require no authentication
 $publicPages = [
     'index.php',
@@ -11,7 +15,7 @@ $publicPages = [
     'new-password.php',
     'faqs.php',
     '404.php',
-    '500.php'
+    '500.php',
 ];
 
 $currentPage = basename($_SERVER['PHP_SELF']);
