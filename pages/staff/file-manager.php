@@ -21,33 +21,67 @@ renderHead('Staff');
     <?php include('../../includes/side-nav-staff.php'); ?>
 
     <section class="p-4 sm:p-6 md:p-8">
-      <div class="space-y-6">
-        <h1 class="text-2xl font-semibold text-gray-800">📁 File Manager</h1>
+      <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
+        <img src="/assets/img/manage-file.png" class="w-5 h-5" alt="Manage icon">
+        <h1 class="font-bold text-md sm:text-lg">Manage File</h1>
+      </div>
 
+      <div class="flex flex-col gap-2">
         <!-- Tabs -->
-        <div class="flex space-x-4 border-b pb-2">
-          <a href="?view=my-files" class="<?= $view === 'my-files' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600' ?>">My Files</a>
-          <a href="?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600' ?>">Shared with Me</a>
-          <a href="?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600' ?>">Shared by Me</a>
+        <div class="flex space-x-4 border-b pb-2 text-sm sm:text-md">
+          <a href="?view=my-files" class="<?= $view === 'my-files' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">My Files</a>
+          <a href="?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared with Me</a>
+          <a href="?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared by Me</a>
         </div>
 
-        <!-- Breadcrumb -->
-        <div id="breadcrumb" class="flex flex-wrap items-center text-sm text-gray-600 space-x-1"></div>
 
         <!-- Toolbar -->
         <div class="flex flex-wrap items-center justify-between gap-4">
           <?php if ($view === 'my-files'): ?>
-            <div class="flex gap-2">
-              <button onclick="openUploadModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">📤 Upload</button>
-              <button onclick="openCreateFolderModal()" class="bg-gray-100 text-gray-800 px-4 py-2 rounded hover:bg-gray-200">📂 New Folder</button>
+            <div class="relative inline-block text-left py-4">
+              <!-- ➕ Trigger Button -->
+              <button type="button" id="action-trigger" class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 cursor-pointer text-sm sm:text-base" aria-label="Open new item menu" title="Create new folder or upload file">
+                <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4 mr-2">
+                <span>New</span>
+              </button>
+
+              <!-- 🔽 Dropdown Menu -->
+              <ul id="action-menu" class="absolute left-0 mt-2 w-40 sm:w-48 bg-white border border-gray-200 rounded shadow-lg hidden z-50">
+                <li>
+                  <button id="openUploadBtn" class="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm sm:text-base cursor-pointer">
+                    <img src="/assets/img/file-upload.png" alt="Upload" class="w-5 h-5">
+                    <span>File Upload</span>
+                  </button>
+                </li>
+                <li>
+                  <button data-action="create-folder" class="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-emerald-100 text-sm sm:text-base cursor-pointer">
+                    <img src="/assets/img/new-folder.png" alt="New Folder" class="w-5 h-5">
+                    <span>New Folder</span>
+                  </button>
+                </li>
+              </ul>
             </div>
           <?php endif; ?>
-          <input type="text" placeholder="Search files..." class="w-full sm:w-64 px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
         </div>
 
+        <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6">
 
-        <!-- ✅ Dynamic File List Container -->
-        <div id="file-list" class="divide-y divide-gray-200 mt-4"></div>
+          <!-- Breadcrumb -->
+          <div id="breadcrumb" class="flex flex-wrap items-center text-sm text-emerald-600 hover:underline space-x-1 mb-3"></div>
+
+          <!-- Search -->
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <input type="text" id="folderSearch" placeholder="Search"
+              class="border px-3 py-2 rounded w-full max-w-md text-sm" />
+            <button id="clearFolderSearch"
+              class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer">
+              Clear
+            </button>
+          </div>
+
+          <!-- ✅ Dynamic File List Container -->
+          <div id="file-list" class="divide-y divide-gray-200 mt-4"></div>
+        </div>
 
       </div>
     </section>
@@ -218,54 +252,48 @@ renderHead('Staff');
   </div>
 
   <!-- 📤 Upload Modal -->
-  <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-      <h2 class="text-xl font-semibold mb-4">Upload File</h2>
+  <div id="uploadModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
+      <h2 class="text-xl sm:text-2xl mb-4">Choose a file to upload</h2>
       <form action="/controllers/file-manager/upload.php" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" required class="block w-full mb-4 border rounded px-3 py-2">
+        <div class="relative mb-4">
+          <!-- Unified clickable area -->
+          <label for="uploadInput" class="flex items-center border rounded bg-white cursor-pointer text-sm hover:bg-emerald-100 text-emerald-700">
+            <span class="font-medium bg-emerald-800 py-2 px-2 text-white">Browse</span>
+            <span id="fileName" class="text-gray-500 pl-2">No file chosen</span>
+          </label>
+          <input type="file" id="uploadInput" name="file" required class="hidden">
+          <div id="previewContainer" class="mt-2"></div>
+        </div>
         <input type="hidden" name="folder_id" value="<?= htmlspecialchars($folderId) ?>">
         <div class="flex justify-end gap-2">
-          <button type="button" onclick="closeUploadModal()" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Upload</button>
+          <button type="button" id="cancelUploadBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Upload</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- 📂 Create Folder Modal -->
-  <div id="createFolderModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-      <h2 class="text-xl font-semibold mb-4">Create New Folder</h2>
+  <div id="createFolderModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
+      <h2 class="text-xl sm:text-2xl mb-4">Create New Folder</h2>
       <form action="/controllers/file-manager/create-folder.php" method="POST">
         <input type="text" name="folder_name" placeholder="Folder name" required class="block w-full mb-4 border rounded px-3 py-2">
         <input type="hidden" name="parent_id" value="<?= htmlspecialchars($folderId) ?>">
         <div class="flex justify-end gap-2">
-          <button type="button" onclick="closeCreateFolderModal()" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Create</button>
+          <button type="button" id="cancelCreateFolderBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Create</button>
         </div>
       </form>
     </div>
   </div>
+
   <script src="/assets/js/auto-dismiss-alert.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
-  <script>
-    function openUploadModal() {
-      document.getElementById('uploadModal').classList.remove('hidden');
-    }
-
-    function closeUploadModal() {
-      document.getElementById('uploadModal').classList.add('hidden');
-    }
-
-    function openCreateFolderModal() {
-      document.getElementById('createFolderModal').classList.remove('hidden');
-    }
-
-    function closeCreateFolderModal() {
-      document.getElementById('createFolderModal').classList.add('hidden');
-    }
-  </script>
 </body>
 
 </html>

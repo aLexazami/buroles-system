@@ -123,6 +123,7 @@ export function initMenuToggle() {
     }
   });
 }
+
 // for Mobile Menu Toggle in file-manager.php
 export function setupMobileActionToggle() {
   const toggleBtn = document.getElementById('mobileActionToggle');
@@ -133,4 +134,23 @@ export function setupMobileActionToggle() {
   toggleBtn.onclick = () => {
     menu.classList.toggle('hidden');
   };
+}
+
+// Action Menu in file-manager.php
+export function initActionMenu() {
+  const trigger = document.getElementById('action-trigger');
+  const menu = document.getElementById('action-menu');
+
+  if (!trigger || !menu) return;
+
+  // Toggle menu
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('hidden');
+  });
+
+  // Close on outside click
+  document.addEventListener('click', () => {
+    menu.classList.add('hidden');
+  });
 }

@@ -666,3 +666,43 @@ export function openFileInfoModal(item) {
     document.body.classList.remove('overflow-hidden');
   };
 }
+
+// Upload Modal in File Manager
+export function initUploadModal() {
+  const cancelBtn = document.getElementById('cancelUploadBtn');
+  const openBtn = document.getElementById('openUploadBtn');
+  const uploadInput = document.getElementById('uploadInput');
+  const fileNameDisplay = document.getElementById('fileName');
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('uploadModal', false);
+      if (uploadInput) uploadInput.value = '';
+      if (fileNameDisplay) fileNameDisplay.textContent = 'No file chosen';
+    });
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener('click', () => toggleModal('uploadModal', true));
+  }
+
+  if (uploadInput && fileNameDisplay) {
+    uploadInput.addEventListener('change', () => {
+      const file = uploadInput.files[0];
+      fileNameDisplay.textContent = file ? file.name : 'No file chosen';
+    });
+  }
+}
+
+// Create Folder Modal in File Manager
+export function initCreateFolderModal() {
+  const cancelBtn = document.getElementById('cancelCreateFolderBtn');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => toggleModal('createFolderModal', false));
+  }
+
+  const openBtn = document.querySelector('[data-action="create-folder"]');
+  if (openBtn) {
+    openBtn.addEventListener('click', () => toggleModal('createFolderModal', true));
+  }
+}

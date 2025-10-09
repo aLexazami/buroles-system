@@ -1,11 +1,10 @@
 // UI & Role Toggles
-import { setupMenuToggle, setupSidebarToggle, initMenuToggle } from './menu-toggle.js';
+import { setupMenuToggle, setupSidebarToggle, initMenuToggle, initActionMenu, setupMobileActionToggle } from './menu-toggle.js';
 import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers } from './modal.js';
-import { initCreateFolderModal } from './folder-creation.js';
+import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal } from './modal.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
@@ -47,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPasswordVisibilityToggles();
   setupRecipientDropdown();
   initNotificationActions();
+  initActionMenu();
   setupRoleCheckboxToggle();
   setupMobileActionToggle();
   setupAnnouncementPagination();
@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnnouncementModal();
   initAnnouncementTriggers();
   initCreateFolderModal();
+  initUploadModal();
 
 
 
