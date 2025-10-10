@@ -124,17 +124,7 @@ export function initMenuToggle() {
   });
 }
 
-// for Mobile Menu Toggle in file-manager.php
-export function setupMobileActionToggle() {
-  const toggleBtn = document.getElementById('mobileActionToggle');
-  const menu = document.getElementById('mobileActionMenu');
 
-  if (!toggleBtn || !menu) return;
-
-  toggleBtn.onclick = () => {
-    menu.classList.toggle('hidden');
-  };
-}
 
 // Action Menu in file-manager.php
 export function initActionMenu() {

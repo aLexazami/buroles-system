@@ -1,19 +1,27 @@
-// Modal Helpers
+
 import { formatSize, formatDate } from './file-manager.js';
 
-function toggleModal(modalId, show) {
+// Modal Helpers
+export function toggleModal(modalId, show) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
 
   if (show) {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    void modal.offsetHeight;
+    modal.classList.remove('opacity-0');
+    modal.classList.add('opacity-100');
+    document.body.classList.add('overflow-hidden');
   } else {
-    modal.classList.remove('flex');
-    modal.classList.add('hidden');
+    modal.classList.remove('opacity-100');
+    modal.classList.add('opacity-0');
+    setTimeout(() => {
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }, 200);
   }
-
-  document.body.classList.toggle('overflow-hidden', show);
 }
 
 //  Password Modal Logic
@@ -242,6 +250,12 @@ export function openCommentModal(fileId) {
 
 export function closeCommentModal() {
   toggleModal('commentModal', false);
+
+  const modal = document.getElementById('commentModal');
+  if (!modal) return;
+
+  const form = modal.querySelector('form');
+  if (form) form.reset(); // ✅ Clears textarea and hidden input
 }
 
 export function initCommentButtons() {
@@ -294,11 +308,12 @@ export function initShareButtons() {
   });
 }
 
+// Info Modal in File Manager
 export function openFileInfoModal(item) {
   const modal = document.getElementById('file-info-modal');
-  const title = modal.querySelector('.info-title');
-  const content = modal.querySelector('.info-content');
-  const closeBtn = modal.querySelector('#closeInfo');
+  const title = modal?.querySelector('.info-title');
+  const content = modal?.querySelector('.info-content');
+  const closeBtn = modal?.querySelector('#closeInfo');
 
   if (!modal || !title || !content || !closeBtn) return;
 
@@ -316,14 +331,13 @@ export function openFileInfoModal(item) {
     </div>
   `;
 
-  modal.classList.remove('hidden');
-  document.body.classList.add('overflow-hidden');
+  // ✅ Show modal using helper
+  toggleModal('file-info-modal', true);
 
-  closeBtn.onclick = () => {
-    modal.classList.add('hidden');
-    document.body.classList.remove('overflow-hidden');
-  };
+  // ✅ Close modal using helper
+  closeBtn.onclick = () => toggleModal('file-info-modal', false);
 }
+
 
 // Upload Modal in File Manager
 export function initUploadModal() {

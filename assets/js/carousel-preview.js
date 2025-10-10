@@ -1,6 +1,5 @@
 import {
   setPreviewState,
-  getCurrentItem,
   moveToNext,
   moveToPrevious,
   hasNext,
@@ -8,6 +7,7 @@ import {
   moveToNextPreviewable,
   moveToPreviousPreviewable
 } from './carousel-state.js';
+import { toggleModal } from './modal.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
@@ -149,13 +149,14 @@ function renderPreviewOverlay(item) {
     renderPDFPreview(item.id);
   }
 
-  overlay.classList.remove('hidden');
-  document.body.classList.add('overflow-hidden');
+  // ✅ Show overlay using reusable helper
+  toggleModal('preview-overlay', true);
 
   setupPreviewListeners();
   setupPreviewActions(item);
   setupPreviewNavigation(renderPreviewOverlay);
 }
+
 
 // 📄 Render multi-page PDF
 function renderPDFPreview(fileId) {
@@ -386,24 +387,64 @@ function renderPDFPreview(fileId) {
 
 // 🧩 Setup listeners
 function setupPreviewListeners() {
-  setupMobileActionMenu();
+  setupMobileActionToggle()
   setupSwipeNavigation(); // ✅ added back
 }
 
-// 📱 Mobile action menu toggle
-function setupMobileActionMenu() {
+// for Mobile Menu Toggle in file-manager.php
+export function setupMobileActionToggle() {
   const toggleBtn = document.getElementById('mobileActionToggle');
   const menu = document.getElementById('mobileActionMenu');
-  if (!toggleBtn || !menu) return;
+  const overlay = document.getElementById('preview-overlay');
 
-  toggleBtn.onclick = () => {
-    menu.classList.toggle('hidden');
+  if (!toggleBtn || !menu || !overlay) return;
+
+  // Ensure menu starts off-screen
+  menu.style.transform = 'translateY(100%)';
+
+  // Show menu
+  const showMenu = () => {
+    menu.classList.remove('hidden');
+    menu.classList.add('flex');
+    void menu.offsetHeight; // Force reflow
+    menu.style.transform = 'translateY(0)';
+    document.body.classList.add('overflow-hidden');
   };
 
-  // Optional: close menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!menu.contains(e.target) && !toggleBtn.contains(e.target)) {
+  // Hide menu
+  const hideMenu = () => {
+    menu.style.transform = 'translateY(100%)';
+    setTimeout(() => {
+      menu.classList.remove('flex');
       menu.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }, 200);
+  };
+
+  // Toggle on button click
+  toggleBtn.onclick = () => {
+    const isHidden = menu.classList.contains('hidden');
+    isHidden ? showMenu() : hideMenu();
+  };
+
+  // Swipe down to close (passive listener to avoid Chrome warning)
+  let startY = 0;
+  menu.addEventListener('touchstart', (e) => {
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  menu.addEventListener('touchend', (e) => {
+    const endY = e.changedTouches[0].clientY;
+    const deltaY = endY - startY;
+    if (deltaY > 50) hideMenu();
+  });
+
+  // Tap outside to close
+  overlay.addEventListener('click', (e) => {
+    const isInsideMenu = menu.contains(e.target);
+    const isToggleBtn = toggleBtn.contains(e.target);
+    if (!isInsideMenu && !isToggleBtn && !menu.classList.contains('hidden')) {
+      hideMenu();
     }
   });
 }

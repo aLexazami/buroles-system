@@ -90,7 +90,7 @@ renderHead('Staff');
   <?php include('../../includes/footer.php'); ?>
 
   <!-- 📁 File Preview Modal -->
-  <div id="preview-overlay" class="fixed inset-0 z-50 hidden w-full h-full bg-[rgba(0,0,0,0.6)] backdrop-blur-sm flex flex-col ">
+  <div id="preview-overlay" class="fixed inset-0 z-50 hidden w-full h-full bg-[rgba(0,0,0,0.6)] backdrop-blur-sm flex-col ">
 
     <!-- 🔝 Top Bar -->
     <div class="sticky top-0 z-50 w-full px-4 sm:px-10 py-2 flex justify-between items-center bg-[rgba(0,0,0,0.5)]">
@@ -108,7 +108,7 @@ renderHead('Staff');
 
         <!-- Title with Icon -->
         <div class="preview-title text-white text-lg font-semibold truncate flex items-center space-x-2">
-          <img id="fileTypeIcon" src="/assets/img/file-icon.png" alt="File Type" class="w-4 h-4 sm:w-5 sm:h-5" />
+          <img id="fileTypeIcon" src="/assets/img/file-icons/file-icon.png" alt="File Type" class="w-4 h-4 sm:w-5 sm:h-5" />
           <span id="fileTitle" class="text-sm sm:text-md">Preview Title</span>
         </div>
       </div>
@@ -155,10 +155,11 @@ renderHead('Staff');
     </div>
 
     <!-- 📱 Bottom Sheet Menu -->
-    <div id="mobileActionMenu" class="fixed bottom-0 left-0 w-full h-1/2 bg-white rounded-t-xl shadow-lg z-40 hidden flex flex-col justify-start px-4 py-6 space-y-4">
+    <div id="mobileActionMenu"
+     class="transition-transform duration-200 ease-out will-change-transform fixed bottom-0 left-0 w-full h-1/2 bg-white rounded-t-xl shadow-md z-50 hidden flex-col justify-start px-4 py-6 space-y-2">
       <!-- 💬 Comment -->
       <button id="commentPreviewMobile" class="flex items-center w-full px-4 py-2 hover:bg-gray-100 text-gray-700 space-x-3">
-        <img src="/assets/img/comment-icon.png" alt="Comment" class="w-5 h-5" />
+        <img src="/assets/img/comment.png" alt="Comment" class="w-5 h-5" />
         <span class="text-sm font-medium">Comment</span>
       </button>
 
@@ -169,7 +170,7 @@ renderHead('Staff');
       </button>
 
       <!-- ⬇ Download -->
-      <button id="downloadPreviewMobile" class="flex items-center w-full px-4 py-2 hover:bg-gray-100 text-green-600 space-x-3">
+      <button id="downloadPreviewMobile" class="flex items-center w-full px-4 py-2 hover:bg-gray-100 text-gray-700 space-x-3">
         <img src="/assets/img/download-icon.png" alt="Download" class="w-5 h-5" />
         <span class="text-sm font-medium">Download</span>
       </button>
@@ -203,37 +204,39 @@ renderHead('Staff');
     </div>
   </div>
 
-
   <!-- ℹ️ File Info Modal -->
-  <div id="file-info-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-      <h2 class="info-title text-xl font-semibold mb-4">File Info</h2>
+  <div id="file-info-modal"  class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+      <h2 class="info-title text-md sm:text-lg font-semibold mb-4 text-emerald-700">File Info</h2>
       <div class="info-content mb-4"></div>
       <div class="flex justify-end">
-        <button id="closeInfo" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Close</button>
+        <button id="closeInfo" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Close</button>
       </div>
     </div>
   </div>
 
   <!-- 💬 Comment Modal -->
-  <div id="commentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-      <h2 class="text-xl font-semibold mb-4">Add Comment</h2>
+  <div id="commentModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Add Comment</h2>
       <form action="/controllers/file-manager/comment.php" method="POST">
         <input type="hidden" name="file_id" id="comment-file-id">
-        <textarea name="comment" rows="4" required class="w-full border rounded px-3 py-2 mb-4" placeholder="Write your comment..."></textarea>
+        <textarea name="comment" rows="8" required class="w-full border rounded px-3 py-2 mb-4 resize-none" placeholder="Write your comment..." ></textarea>
         <div class="flex justify-end gap-2">
-          <button type="button" id="cancelComment" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Post</button>
+          <button type="button" id="cancelComment" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Post</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- 🔗 Share Modal -->
-  <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-      <h2 class="text-xl font-semibold mb-4">Share File</h2>
+  <div id="shareModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Share File</h2>
       <form action="/controllers/file-manager/share.php" method="POST">
         <input type="hidden" name="file_id" id="share-file-id">
         <input type="email" name="recipient_email" required class="w-full border rounded px-3 py-2 mb-4" placeholder="Recipient's email">
@@ -244,15 +247,15 @@ renderHead('Staff');
           <option value="delete">Delete</option>
         </select>
         <div class="flex justify-end gap-2">
-          <button type="button" id="cancelShare" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">Share</button>
+          <button type="button" id="cancelShare" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Share</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- 📤 Upload Modal -->
-  <div id="uploadModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+  <div id="uploadModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
       <h2 class="text-xl sm:text-2xl mb-4">Choose a file to upload</h2>
@@ -276,7 +279,7 @@ renderHead('Staff');
   </div>
 
   <!-- 📂 Create Folder Modal -->
-  <div id="createFolderModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+  <div id="createFolderModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
       <h2 class="text-xl sm:text-2xl mb-4">Create New Folder</h2>

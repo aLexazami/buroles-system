@@ -1,5 +1,5 @@
 // UI & Role Toggles
-import { setupMenuToggle, setupSidebarToggle, initMenuToggle, initActionMenu, setupMobileActionToggle } from './menu-toggle.js';
+import { setupMenuToggle, setupSidebarToggle, initMenuToggle, initActionMenu } from './menu-toggle.js';
 import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initNotificationActions();
   initActionMenu();
   setupRoleCheckboxToggle();
-  setupMobileActionToggle();
   setupAnnouncementPagination();
   initEmailAutocomplete();
   initMenuToggle();
