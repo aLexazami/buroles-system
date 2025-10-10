@@ -12,11 +12,16 @@ export function loadFolder(folderId) {
       initShareButtons();   // ✅ Attach share listeners
     })
     .catch(err => {
-      console.error('Failed to load folder contents:', err);
-      document.getElementById('file-list').innerHTML = `
-        <div class="text-center text-red-500 py-12">Failed to load folder contents.</div>
-      `;
-    });
+  console.error('Failed to load folder contents:', err);
+  const fileList = document.getElementById('file-list');
+  if (fileList) {
+    fileList.innerHTML = `
+      <div class="text-center text-red-500 py-12">Failed to load folder contents.</div>
+    `;
+  } else {
+    console.warn('file-list container not found.');
+  }
+});
 
   // Load breadcrumb trail
   fetch('/controllers/file-manager/getBreadcrumbTrail.php?folder_id=' + folderId)
@@ -31,7 +36,15 @@ export function loadFolder(folderId) {
 
 export function renderBreadcrumb(trail) {
   const container = document.getElementById('breadcrumb');
+  if (!document.getElementById('breadcrumb')) return;
+
   container.innerHTML = ''; // Clear existing
+
+   if (items.length === 0) {
+    container.innerHTML = `<div class="text-center text-gray-500 py-12">No files found in this folder.</div>`;
+    return;
+  }
+
 
   trail.forEach((folder, index) => {
     const link = document.createElement('a');
@@ -42,7 +55,7 @@ export function renderBreadcrumb(trail) {
 
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      loadFolder(folder.id); // Load that folder's contents
+      loadFolder(folder.id);
     });
 
     container.appendChild(link);
@@ -57,7 +70,8 @@ export function renderBreadcrumb(trail) {
 
 export function renderItems(items) {
   const container = document.getElementById('file-list');
-  container.innerHTML = '';
+if (!document.getElementById('file-list')) return;
+container.innerHTML = '';
 
   if (items.length === 0) {
     container.innerHTML = `<div class="text-center text-gray-500 py-12">No files found in this folder.</div>`;

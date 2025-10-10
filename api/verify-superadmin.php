@@ -6,7 +6,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 $password = $input['password'] ?? '';
 $userId = (int)($input['user_id'] ?? 0);
 
-$isSuperAdmin = ($_SESSION['role_id'] ?? 0) === 99;
+$isSuperAdmin = ($_SESSION['role_id'] ?? 0) === 2;
 
 if (!$isSuperAdmin) {
   echo json_encode(['success' => false]);

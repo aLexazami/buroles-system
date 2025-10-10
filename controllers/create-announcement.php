@@ -15,12 +15,12 @@ if (!$user || !in_array($user['role_id'], [1, 2, 99])) {
 $title = trim($_POST['title'] ?? '');
 $body = trim($_POST['body'] ?? '');
 $roleIds = $_POST['role_ids'] ?? [];
-$validRoles = [1, 2, 99, 100];
+$validRoles = [1, 2, 100];
 $filteredRoles = array_filter($roleIds, fn($r) => in_array((int)$r, $validRoles));
 
 if ($title === '' || $body === '' || empty($filteredRoles)) {
   setFlash('error', 'Title, body, and at least one audience role are required.');
-  header('Location: /pages/main-super-admin.php');
+  header('Location: /pages/main-admin.php');
   exit;
 }
 
@@ -28,7 +28,6 @@ if ($title === '' || $body === '' || empty($filteredRoles)) {
 $roleLinkMap = [
   1 => '/pages/main-staff.php',
   2 => '/pages/main-admin.php',
-  99 => '/pages/main-super-admin.php'
 ];
 
 try {
@@ -94,12 +93,12 @@ try {
   }
 
   setFlash('success', 'Announcement posted successfully.');
-  header('Location: /pages/main-super-admin.php');
+  header('Location: /pages/main-admin.php');
   exit;
 
 } catch (PDOException $e) {
   error_log('Announcement creation failed: ' . $e->getMessage());
   setFlash('error', 'Server error. Please try again.');
-  header('Location: /pages/main-super-admin.php');
+  header('Location: /pages/main-admin.php');
   exit;
 }

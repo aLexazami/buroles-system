@@ -11,7 +11,7 @@ $offset = ($page - 1) * $limit;
 
 try {
   // Count total announcements
-  if ((int) $currentRoleId === 99) {
+  if ((int) $currentRoleId === 2) {
     $countStmt = $pdo->query("SELECT COUNT(*) FROM announcements");
     $totalAnnouncements = $countStmt->fetchColumn();
 

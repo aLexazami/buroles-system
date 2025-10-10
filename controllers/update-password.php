@@ -4,7 +4,7 @@ require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/role-checker.php';
 
-if (!hasRoleSlug('admin') && !hasRoleSlug('super_admin')) {
+if (!hasRoleSlug('admin') && !hasRoleSlug('admin')) {
     header('Location: /unauthorized.php');
     exit;
 }
@@ -17,19 +17,19 @@ $confirmPassword = trim($_POST['confirm_password'] ?? '');
 
 if (!is_numeric($userId)) {
     setFlash('error', 'Invalid user ID.');
-    header("Location: /pages/super-admin/manage-password.php");
+    header("Location: /pages/admin/manage-password.php");
     exit;
 }
 
 if (!$userId || !$newPassword || !$confirmPassword) {
     setFlash('error', 'Missing fields.');
-    header("Location: /pages/super-admin/manage-password.php?id=" . urlencode($userId));
+    header("Location: /pages/admin/manage-password.php?id=" . urlencode($userId));
     exit;
 }
 
 if ($newPassword !== $confirmPassword) {
     setFlash('error', 'Passwords do not match.');
-    header("Location: /pages/super-admin/manage-password.php?id=" . urlencode($userId));
+    header("Location: /pages/admin/manage-password.php?id=" . urlencode($userId));
     exit;
 }
 
@@ -56,7 +56,7 @@ if ($unlockUser) {
 
 if ($stmt->rowCount() === 0) {
     setFlash('error', 'No changes made. User may not exist.');
-    header("Location: /pages/super-admin/manage-password.php?id=" . urlencode($userId));
+    header("Location: /pages/admin/manage-password.php?id=" . urlencode($userId));
     exit;
 }
 
@@ -70,5 +70,5 @@ $auditStmt = $pdo->prepare("
 $auditStmt->execute([$userId, $adminId, $ipAddress, $reason]);
 
 setFlash('success', 'Password updated successfully.');
-header("Location: /pages/super-admin/manage-users.php");
+header("Location: /pages/admin/manage-users.php");
 exit;

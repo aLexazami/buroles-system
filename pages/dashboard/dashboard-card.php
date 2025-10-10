@@ -11,9 +11,9 @@ include __DIR__ . '/dashboard-data.php';
     <?php
     if (
       !empty($_SESSION['user']) &&
-      (int) $_SESSION['user']['role_id'] === 99 &&
+      (int) $_SESSION['user']['role_id'] === 2 &&
       isset($_SESSION['active_role_id']) &&
-      (int) $_SESSION['active_role_id'] === 99
+      (int) $_SESSION['active_role_id'] === 2
     ):
     ?>
       <!-- Create Announcement Icon -->
@@ -65,9 +65,9 @@ include __DIR__ . '/dashboard-data.php';
 
               <?php if (
                 !empty($_SESSION['user']) &&
-                (int) $_SESSION['user']['role_id'] === 99 &&
+                (int) $_SESSION['user']['role_id'] === 2 &&
                 isset($_SESSION['active_role_id']) &&
-                (int) $_SESSION['active_role_id'] === 99
+                (int) $_SESSION['active_role_id'] === 2
               ): ?>
                 <div class="mt-6 flex justify-end items-center gap-x-2">
                   <div class="relative group">

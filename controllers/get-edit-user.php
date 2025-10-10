@@ -1,7 +1,7 @@
 <?php
 $id = $_GET['id'] ?? null;
 if (!$id || !is_numeric($id)) {
-  header("Location: /pages/super-admin/manage-user.php?error=invalid_id");
+  header("Location: /pages/admin/manage-user.php?error=invalid_id");
   exit;
 }
 

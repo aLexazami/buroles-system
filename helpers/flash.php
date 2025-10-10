@@ -6,6 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Prevent redeclaration if included multiple times
 if (!function_exists('setFlash')) {
+  // Alert-style flash message (success, error, warning)
   function setFlash($type, $message)
   {
     $_SESSION['flash'][] = [
@@ -14,6 +15,7 @@ if (!function_exists('setFlash')) {
     ];
   }
 
+  // Render alert-style flash messages
   function showFlash()
   {
     if (empty($_SESSION['flash'])) return;
@@ -38,7 +40,9 @@ if (!function_exists('setFlash')) {
 
     foreach ($_SESSION['flash'] as $flash) {
       $type = $flash['type'];
-      $message = htmlspecialchars($flash['message']);
+      $message = is_string($flash['message'])
+  ? htmlspecialchars($flash['message'])
+  : htmlspecialchars(json_encode($flash['message'], JSON_UNESCAPED_UNICODE));
       $style = $styleMap[$type] ?? [
         'class' => 'bg-gray-100 border-gray-300 text-gray-800',
         'button' => 'text-gray-700 hover:text-gray-900',
@@ -46,14 +50,29 @@ if (!function_exists('setFlash')) {
       ];
 
       echo "<div role='alert' aria-live='assertive' data-alert
-    class='fixed top-4 sm:top-15 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm sm:max-w-md px-4 py-3 border-2 rounded shadow-lg {$style['class']} flex items-center justify-between transition-all duration-300'>
-    <div class='flex items-center space-x-3'>
-      <img src='{$style['icon']}' alt='{$type} icon' class='w-4 sm:w-5 h-4 sm:h-5'>
-<span class='text-xs sm:text-sm font-medium text-gray-800'>{$message}</span>
-    </div>
-  </div>";
+        class='fixed top-4 sm:top-15 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm sm:max-w-md px-4 py-3 border-2 rounded shadow-lg {$style['class']} flex items-center justify-between transition-all duration-300'>
+        <div class='flex items-center space-x-3'>
+          <img src='{$style['icon']}' alt='{$type} icon' class='w-4 sm:w-5 h-4 sm:h-5'>
+          <span class='text-xs sm:text-sm font-medium text-gray-800'>{$message}</span>
+        </div>
+      </div>";
     }
 
     unset($_SESSION['flash']);
+  }
+}
+
+// Structured flash data for forms (form_data, form_errors)
+if (!function_exists('setFlashData')) {
+  function setFlashData($key, $value)
+  {
+    $_SESSION['flash_data'][$key] = $value;
+  }
+
+  function getFlash($key)
+  {
+    $value = $_SESSION['flash_data'][$key] ?? null;
+    unset($_SESSION['flash_data'][$key]);
+    return $value;
   }
 }

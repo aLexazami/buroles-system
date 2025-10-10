@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/database.php';
 header('Content-Type: application/json');
 
 // Ensure only super admins can unlock accounts
-if (!isset($_SESSION['role_id']) || (int)$_SESSION['role_id'] !== 99) {
+if (!isset($_SESSION['role_id']) || (int)$_SESSION['role_id'] !== 2) {
   echo json_encode(['success' => false, 'error' => 'Unauthorized']);
   exit;
 }

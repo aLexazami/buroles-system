@@ -5,9 +5,9 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 
 // 🛡️ Authorization: Only Super Admin (role_id 99)
-if (empty($_SESSION['user']) || (int) $_SESSION['user']['role_id'] !== 99) {
+if (empty($_SESSION['user']) || (int) $_SESSION['user']['role_id'] !== 2) {
   setFlash('error', 'Unauthorized access.');
-  header('Location: /pages/main-super-admin.php');
+  header('Location: /pages/main-admin.php');
   exit;
 }
 
@@ -15,7 +15,7 @@ if (empty($_SESSION['user']) || (int) $_SESSION['user']['role_id'] !== 99) {
 $announcementId = $_POST['announcement_id'] ?? null;
 if (!is_numeric($announcementId)) {
   setFlash('error', 'Invalid announcement ID.');
-  header('Location: /pages/main-super-admin.php');
+  header('Location: /pages/main-admin.php');
   exit;
 }
 
@@ -26,13 +26,13 @@ try {
 
   // ✅ Flash success and redirect
   setFlash('success', 'Announcement deleted successfully.');
-  header('Location: /pages/main-super-admin.php');
+  header('Location: /pages/main-admin.php');
   exit;
 
 } catch (PDOException $e) {
   // 🐞 Log error and fail gracefully
   error_log('Announcement deletion failed: ' . $e->getMessage());
   setFlash('error', 'Server error. Please try again.');
-  header('Location: /pages/main-super-admin.php');
+  header('Location: /pages/main-admin.php');
   exit;
 }

@@ -8,14 +8,14 @@ require_once __DIR__ . '/../../helpers/head.php';
 // Context for the table
 $title = "User Management";
 $showActions = true;
-renderHead('Super Admin');
+renderHead('Admin');
 ?>
 <?php //include __DIR__ . '/../../includes/debug-panel.php'?>
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
   <main class="flex w-full overflow-x-auto min-h-screen">
-    <?php include('../../includes/side-nav-super-admin.php'); ?>
+    <?php include('../../includes/side-nav-admin.php'); ?>
 
     <section class="w-full m-4">
       <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
@@ -54,7 +54,7 @@ renderHead('Super Admin');
       <div id="passwordModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
         <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
         <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
-          <h2 class="text-xl sm:text-2xl font-semibold mb-8">Super Admin Verification</h2>
+          <h2 class="text-xl sm:text-2xl font-semibold mb-8">Admin Verification</h2>
           <div class="relative">
             <input type="password" id="superAdminPasswordInput" class="w-full border px-3 py-2 rounded mb-4" placeholder="Enter your password">
             <img

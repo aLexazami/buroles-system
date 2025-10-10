@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../helpers/head.php';
 // Context for the table
 $title = "Archived Users";
 $showActions = true;
-renderHead('Super Admin');
+renderHead('Admin');
 ?>
 <?php //include __DIR__ . '/../../includes/debug-panel.php'?>
 
@@ -16,7 +16,7 @@ renderHead('Super Admin');
   <?php include('../../includes/header.php'); ?>
 
  <main class="flex w-full overflow-x-auto min-h-screen">
-    <?php include('../../includes/side-nav-super-admin.php'); ?>
+    <?php include('../../includes/side-nav-admin.php'); ?>
 
     <section class="w-full m-4">
       <!-- Page Header -->

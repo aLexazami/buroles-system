@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/role-checker.php';
 require_once __DIR__ . '/../../helpers/head.php';
 
-if (!hasRoleSlug('admin') && !hasRoleSlug('super_admin')) {
+if (!hasRoleSlug('admin') && !hasRoleSlug('admin')) {
   header('Location: /unauthorized.php');
   exit;
 }
@@ -28,7 +28,7 @@ if (!$user) {
 
 $middleInitial = $user['middle_name'] ? strtoupper($user['middle_name'][0]) . '.' : '';
 $fullName = trim("{$user['first_name']} {$middleInitial} {$user['last_name']}");
-renderHead('Super Admin');
+renderHead('Admin');
 ?>
 <?php //include __DIR__ . '/../../includes/debug-panel.php'?>
 <body class="bg-gray-100 min-h-screen flex flex-col">
@@ -38,7 +38,7 @@ renderHead('Super Admin');
   <!-- Main Layout -->
   <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
     <!-- Sidebar -->
-    <?php include('../../includes/side-nav-super-admin.php'); ?>
+    <?php include('../../includes/side-nav-admin.php'); ?>
 
     <!-- Content -->
     <section class="m-4">
@@ -93,7 +93,7 @@ renderHead('Super Admin');
               <input type="hidden" name="unlock_user" value="1">
             <?php endif; ?>
             <div class="flex justify-end gap-2">
-              <a href="/pages/super-admin/manage-users.php" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</a>
+              <a href="/pages/admin/manage-users.php" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100">Cancel</a>
               <button type="submit" class="px-4 py-2 text-sm sm:text-base bg-emerald-700 text-white rounded hover:bg-emerald-500 cursor-pointer">Update</button>
             </div>
           </form>

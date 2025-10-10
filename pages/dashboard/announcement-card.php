@@ -1,7 +1,7 @@
 <?php
 $user = $_SESSION['user'] ?? null;
 $activeRoleId = $_SESSION['active_role_id'] ?? null;
-$isSuperAdmin = $user && (int)$user['role_id'] === 99 && (int)$activeRoleId === 99;
+$isSuperAdmin = $user && (int)$user['role_id'] === 2 && (int)$activeRoleId === 2;
 ?>
 
 <div class="bg-gray-300 h-full relative">
@@ -98,10 +98,6 @@ $isSuperAdmin = $user && (int)$user['role_id'] === 99 && (int)$activeRoleId === 
               <label class="inline-flex items-center gap-2">
                 <input type="checkbox" name="role_ids[]" value="2" class="role-checkbox accent-emerald-600">
                 <span>Admin</span>
-              </label>
-              <label class="inline-flex items-center gap-2">
-                <input type="checkbox" name="role_ids[]" value="99" class="role-checkbox accent-emerald-600">
-                <span>Super Admin</span>
               </label>
             </div>
           </div>

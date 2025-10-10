@@ -2,9 +2,12 @@
 $currentPage = basename($_SERVER['PHP_SELF']);
 $navItems = [
   ['label' => 'Dashboard', 'href' => '/pages/main-admin.php', 'icon' => 'home.png'],
+  ['label' => 'Create Account', 'href' => '/pages/admin/create-account.php', 'icon' => 'create-account.png'],
+  ['label' => 'Manage Users', 'href' => '/pages/admin/manage-users.php', 'icon' => 'manage-user.png'],
+  ['label' => 'Archived Users', 'href' => '/pages/admin/archived-users.php', 'icon' => 'archive-user.png'],
   ['label' => 'Feedback Respondents', 'href' => '/pages/admin/feedback-respondents.php', 'icon' => 'feedback-respondent.png'],
   ['label' => 'Feedback Summary', 'href' => '/pages/admin/feedback-summary.php', 'icon' => 'feedback-summary.png'],
-  ['label' => 'Feedback Report', 'href' => '/pages/admin/feedback-report.php', 'icon' => 'feedback-report.png'],
+  ['label' => 'Feedback Report', 'href' => '/pages/admin/feedback-report.php', 'icon' => 'feedback-report.png']
 ];
 ?>
 
@@ -50,12 +53,12 @@ $navItems = [
   </div>
 
   <!-- Navigation -->
-  <nav class="space-y-2 px-2 py-4">
+  <nav class="space-y-4 pl-1 lg:pl-8 mt-1 md:mt-8 py-4">
     <?php foreach ($navItems as $item): ?>
       <?php $isActive = $currentPage === basename($item['href']); ?>
       <a href="<?= $item['href'] ?>"
         class="group flex flex-col lg:flex-row items-center lg:justify-start justify-center gap-1 lg:gap-3 py-2 hover:text-emerald-600 <?= $isActive ? 'text-emerald-600 font-bold' : 'text-black' ?>">
-        <img src="/assets/img/<?= $item['icon'] ?>" class="w-6 h-6" alt="<?= $item['label'] ?>">
+        <img src="/assets/img/<?= $item['icon'] ?>" class="w-4 h-4" alt="<?= $item['label'] ?>">
         <span class="text-[10px] lg:text-sm hidden lg:inline"><?= $item['label'] ?></span>
       </a>
     <?php endforeach; ?>

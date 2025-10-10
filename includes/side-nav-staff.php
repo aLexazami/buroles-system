@@ -3,7 +3,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 $navItems = [
   ['label' => 'Dashboard', 'href' => '/pages/main-staff.php', 'icon' => 'home.png'],
   ['label' => 'Manage File', 'href' => '/pages/staff/file-manager.php', 'icon' => 'manage-file.png'],
-  ['label' => 'Shared File', 'href' => '/pages/staff/shared-file.php', 'icon' => 'shared-icon.png'],
 ];
 ?>
 
@@ -46,12 +45,12 @@ $navItems = [
   </div>
 
   <!-- Navigation -->
-  <nav class="space-y-2 px-2 py-4">
+  <nav class="space-y-4 pl-1 lg:pl-8 mt-1 md:mt-8 py-4">
     <?php foreach ($navItems as $item): ?>
       <?php $isActive = $currentPage === basename($item['href']); ?>
       <a href="<?= $item['href'] ?>"
         class="group flex flex-col lg:flex-row items-center lg:justify-start justify-center gap-1 lg:gap-3 py-2 hover:text-emerald-600 <?= $isActive ? 'text-emerald-600 font-bold' : 'text-black' ?>">
-        <img src="/assets/img/<?= $item['icon'] ?>" class="w-6 h-6" alt="<?= $item['label'] ?>">
+        <img src="/assets/img/<?= $item['icon'] ?>" class="w-4 h-4" alt="<?= $item['label'] ?>">
         <span class="text-[10px] lg:text-sm hidden lg:inline"><?= $item['label'] ?></span>
       </a>
     <?php endforeach; ?>
