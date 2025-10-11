@@ -1,5 +1,7 @@
 
-import { formatSize, formatDate } from './file-manager.js';
+import { formatSize, formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI , renderItems } from './file-manager.js';
+import { insertItemSorted, getItems } from './stores/fileStore.js';
+import { renderFlash } from './flash.js';
 
 // Modal Helpers
 export function toggleModal(modalId, show) {
@@ -338,7 +340,6 @@ export function openFileInfoModal(item) {
   closeBtn.onclick = () => toggleModal('file-info-modal', false);
 }
 
-
 // Upload Modal in File Manager
 export function initUploadModal() {
   const cancelBtn = document.getElementById('cancelUploadBtn');
@@ -366,6 +367,47 @@ export function initUploadModal() {
   }
 }
 
+export function initUploadHandler() {
+  const form = document.getElementById('uploadForm');
+  const fileNameDisplay = document.getElementById('fileName');
+
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/controllers/file-manager/upload.php', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        renderFlash('error', data.error || 'Upload failed');
+        return;
+      }
+
+      if (data.item) {
+        insertItemSorted(data.item);         // ✅ Update store
+        renderItems(getItems());             // ✅ Re-render UI
+        toggleModal('uploadModal', false);
+        form.reset();
+        if (fileNameDisplay) fileNameDisplay.textContent = 'No file chosen';
+        renderFlash('success', 'File uploaded successfully');
+      }
+    } catch (err) {
+      console.error('Upload error:', err);
+      renderFlash('error', 'Error uploading file');
+    }
+  });
+}
+
+
+
 // Create Folder Modal in File Manager
 export function initCreateFolderModal() {
   const cancelBtn = document.getElementById('cancelCreateFolderBtn');
@@ -378,3 +420,109 @@ export function initCreateFolderModal() {
     openBtn.addEventListener('click', () => toggleModal('createFolderModal', true));
   }
 }
+
+export function initFolderCreationHandler() {
+  const form = document.getElementById('createFolderForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    fetch('/controllers/file-manager/create-folder.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.item) {
+          insertItemSorted(data.item);       // ✅ Update store
+          renderItems(getItems());           // ✅ Re-render UI
+          toggleModal('createFolderModal', false);
+          form.reset();
+          renderFlash('success', 'Folder created successfully');
+        } else {
+          renderFlash('error', data.error || 'Failed to create folder');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error creating folder');
+      });
+  });
+}
+
+// Delete Confirmation Modal in File Manager
+export function showDeleteModal(itemId) {
+  document.getElementById('delete-item-id').value = itemId;
+  toggleModal('deleteModal', true);
+}
+
+export function setupDeleteModal() {
+  const modal = document.getElementById('deleteModal');
+  const cancelBtn = document.getElementById('cancelDelete');
+  const confirmBtn = document.getElementById('confirmDeleteBtn');
+
+  cancelBtn.addEventListener('click', () => {
+    toggleModal('deleteModal', false);
+  });
+
+  confirmBtn.addEventListener('click', async () => {
+    const itemId = document.getElementById('delete-item-id').value;
+
+    toggleModal('deleteModal', false); // ✅ Close immediately for responsiveness
+
+    try {
+      const result = await handleFileAction('delete', { id: itemId });
+
+      // ✅ Show success message directly
+      renderFlash('success', result.message || 'Item deleted successfully');
+
+      // ✅ Delay refresh to allow flash message or animation to settle
+      setTimeout(() => {
+        refreshCurrentFolder();
+      }, 300);
+
+
+    } catch (err) {
+      console.error('Delete failed:', err);
+      renderFlash('error', err.message || 'An error occurred while deleting the item.');
+    }
+  });
+}
+
+// Restore Items in File Manager
+export function showRestoreModal(itemId) {
+  document.getElementById('restore-item-id').value = itemId;
+  toggleModal('restoreModal', true);
+}
+
+export function setupRestoreModal() {
+  const cancelBtn = document.getElementById('cancelRestore');
+  const confirmBtn = document.getElementById('confirmRestoreBtn');
+
+  cancelBtn.addEventListener('click', () => {
+    toggleModal('restoreModal', false);
+  });
+
+  confirmBtn.addEventListener('click', async () => {
+    const itemId = document.getElementById('restore-item-id').value;
+    toggleModal('restoreModal', false);
+
+    try {
+      const result = await handleFileAction('restore', { id: itemId });
+
+      if (result.success) {
+        renderFlash('success', 'File restored successfully');
+        removeItemFromUI(itemId);
+        refreshCurrentFolder();
+      } else {
+        renderFlash('error', 'Restore failed');
+      }
+    } catch (err) {
+      console.error('Restore failed:', err);
+      renderFlash('error', err.message || 'Server error during restore');
+    }
+  });
+}
+

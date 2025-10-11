@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Test</title>
+</head>
+<body>
+  <h1>Upload Test</h1>
+  <input type="file" id="uploadInput" />
+  <script>
+    if (!sessionStorage.getItem('uploadTestMarker')) {
+      sessionStorage.setItem('uploadTestMarker', 'set');
+      console.log('🧪 First load');
+    } else {
+      console.log('🔁 Reload detected');
+    }
+
+    window.addEventListener('beforeunload', (e) => {
+      console.log('⚠️ Page is about to reload');
+    });
+
+    document.getElementById('uploadInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      console.log('📁 File selected:', file.name);
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('/controllers/file-manager/upload.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const raw = await response.text();
+        console.log('📦 Raw response:', raw);
+      } catch (err) {
+        console.error('❌ Upload error:', err);
+      }
+    });
+  </script>
+</body>
+</html>

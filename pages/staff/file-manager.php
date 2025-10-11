@@ -9,13 +9,15 @@ $userId = $_SESSION['user_id'];
 $view = $_GET['view'] ?? 'my-files'; // 'shared-with-me', 'shared-by-me', 'my-files'
 $folderId = $_GET['folder'] ?? null;
 
-$files = getFilesForView($userId, $view, $folderId);
 
 renderHead('Staff');
 ?>
 
-<body data-folder-id="<?= htmlspecialchars($folderId ?? '') ?>" class="bg-gray-200 min-h-screen flex flex-col">
+<body data-folder-id="<?= htmlspecialchars($folderId ?? '') ?>" data-view="<?= htmlspecialchars($view) ?>" class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
+  <!-- Flash Message -->
+  <div id="flashContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2 w-full max-w-sm sm:max-w-md"></div>
+  <?php showFlash(); ?>
 
   <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
     <?php include('../../includes/side-nav-staff.php'); ?>
@@ -32,6 +34,7 @@ renderHead('Staff');
           <a href="?view=my-files" class="<?= $view === 'my-files' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">My Files</a>
           <a href="?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared with Me</a>
           <a href="?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared by Me</a>
+          <a href="?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-red-600 text-red-600 font-medium' : 'text-gray-600 hover:text-red-600' ?>">Trash</a>
         </div>
 
 
@@ -64,11 +67,10 @@ renderHead('Staff');
           <?php endif; ?>
         </div>
 
-        <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6">
 
+        <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6  w-full min-h-[400px] transition-all duration-300">
           <!-- Breadcrumb -->
           <div id="breadcrumb" class="flex flex-wrap items-center text-sm text-emerald-600 hover:underline space-x-1 mb-3"></div>
-
           <!-- Search -->
           <div class="flex flex-wrap items-center gap-2 mb-4">
             <input type="text" id="folderSearch" placeholder="Search"
@@ -78,10 +80,10 @@ renderHead('Staff');
               Clear
             </button>
           </div>
-
           <!-- ✅ Dynamic File List Container -->
-          <div id="file-list" class="divide-y divide-gray-200 mt-4"></div>
+          <div id="file-list" class="divide-y divide-gray-400 mt-4 transition-all duration-300"></div>
         </div>
+
 
       </div>
     </section>
@@ -156,7 +158,7 @@ renderHead('Staff');
 
     <!-- 📱 Bottom Sheet Menu -->
     <div id="mobileActionMenu"
-     class="transition-transform duration-200 ease-out will-change-transform fixed bottom-0 left-0 w-full h-1/2 bg-white rounded-t-xl shadow-md z-50 hidden flex-col justify-start px-4 py-6 space-y-2">
+      class="transition-transform duration-200 ease-out will-change-transform fixed bottom-0 left-0 w-full h-1/2 bg-white rounded-t-xl shadow-md z-50 hidden flex-col justify-start px-4 py-6 space-y-2">
       <!-- 💬 Comment -->
       <button id="commentPreviewMobile" class="flex items-center w-full px-4 py-2 hover:bg-gray-100 text-gray-700 space-x-3">
         <img src="/assets/img/comment.png" alt="Comment" class="w-5 h-5" />
@@ -205,7 +207,7 @@ renderHead('Staff');
   </div>
 
   <!-- ℹ️ File Info Modal -->
-  <div id="file-info-modal"  class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div id="file-info-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
       <h2 class="info-title text-md sm:text-lg font-semibold mb-4 text-emerald-700">File Info</h2>
@@ -223,7 +225,7 @@ renderHead('Staff');
       <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Add Comment</h2>
       <form action="/controllers/file-manager/comment.php" method="POST">
         <input type="hidden" name="file_id" id="comment-file-id">
-        <textarea name="comment" rows="8" required class="w-full border rounded px-3 py-2 mb-4 resize-none" placeholder="Write your comment..." ></textarea>
+        <textarea name="comment" rows="8" required class="w-full border rounded px-3 py-2 mb-4 resize-none" placeholder="Write your comment..."></textarea>
         <div class="flex justify-end gap-2">
           <button type="button" id="cancelComment" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
           <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Post</button>
@@ -259,7 +261,7 @@ renderHead('Staff');
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
       <h2 class="text-xl sm:text-2xl mb-4">Choose a file to upload</h2>
-      <form action="/controllers/file-manager/upload.php" method="POST" enctype="multipart/form-data">
+      <form id="uploadForm" enctype="multipart/form-data">
         <div class="relative mb-4">
           <!-- Unified clickable area -->
           <label for="uploadInput" class="flex items-center border rounded bg-white cursor-pointer text-sm hover:bg-emerald-100 text-emerald-700">
@@ -283,7 +285,7 @@ renderHead('Staff');
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
       <h2 class="text-xl sm:text-2xl mb-4">Create New Folder</h2>
-      <form action="/controllers/file-manager/create-folder.php" method="POST">
+      <form id="createFolderForm" action="/controllers/file-manager/create-folder.php" method="POST">
         <input type="text" name="folder_name" placeholder="Folder name" required class="block w-full mb-4 border rounded px-3 py-2">
         <input type="hidden" name="parent_id" value="<?= htmlspecialchars($folderId) ?>">
         <div class="flex justify-end gap-2">
@@ -291,6 +293,34 @@ renderHead('Staff');
           <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Create</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- 🗑️ Delete Confirmation Modal -->
+  <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Confirm Move to Trash</h2>
+      <p class="text-sm text-gray-700 mb-6">Are you sure you want to move this item on trash?</p>
+      <input type="hidden" id="delete-item-id">
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelDelete" class="px-3 py-1 text-emerald-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="button" id="confirmDeleteBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Move</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ♻️ Restore Confirmation Modal -->
+  <div id="restoreModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Confirm Restore</h2>
+      <p class="text-sm text-gray-700 mb-6">Are you sure you want to restore this item?</p>
+      <input type="hidden" id="restore-item-id">
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelRestore" class="px-3 py-1 text-emerald-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="button" id="confirmRestoreBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Restore</button>
+      </div>
     </div>
   </div>
 

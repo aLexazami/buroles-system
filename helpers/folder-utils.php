@@ -294,4 +294,51 @@ function getFolderIdByPath(PDO $pdo, string $path, int $ownerId): int|false
 
   return $folderCache[$cacheKey] = $folderId ? (int)$folderId : false;
 }
+
+/***********************************************************************************************************************/
+function deleteDiskFilesByFolderId(PDO $pdo, int $userId, string $folderId): void {
+  $stmt = $pdo->prepare("SELECT path FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'file'");
+  $stmt->execute([$folderId, $userId]);
+  $paths = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+  foreach ($paths as $dbPath) {
+    $realPath = __DIR__ . "/../../" . ltrim($dbPath, '/');
+    if (is_file($realPath)) {
+      unlink($realPath);
+    }
+  }
+}
+
+function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId): bool {
+  try {
+    $pdo->beginTransaction();
+
+    // Step 1: Delete all files in this folder (from disk + DB)
+    deleteDiskFilesByFolderId($pdo, $userId, $folderId); // modular call
+
+    $stmt = $pdo->prepare("DELETE FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'file'");
+    $stmt->execute([$folderId, $userId]);
+
+    // Step 2: Recursively delete subfolders
+    $stmt = $pdo->prepare("SELECT id FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'folder'");
+    $stmt->execute([$folderId, $userId]);
+    $subfolders = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    foreach ($subfolders as $subfolderId) {
+      deleteFolderAndContents($pdo, $userId, $subfolderId); // recursion
+    }
+
+    // Step 3: Delete this folder from DB
+    $stmt = $pdo->prepare("DELETE FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
+    $stmt->execute([$folderId, $userId]);
+
+    $pdo->commit();
+    return true;
+
+  } catch (Exception $e) {
+    $pdo->rollBack();
+    error_log("Folder deletion failed: " . $e->getMessage());
+    return false;
+  }
+}
 ?>
