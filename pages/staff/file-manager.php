@@ -30,8 +30,11 @@ renderHead('Staff');
 
       <div class="flex flex-col gap-2">
         <!-- Tabs -->
+        <?php
+        $folderParam = $view === 'my-files' && $folderId ? '&folder=' . urlencode($folderId) : '';
+        ?>
         <div class="flex space-x-4 border-b pb-2 text-sm sm:text-md">
-          <a href="?view=my-files" class="<?= $view === 'my-files' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">My Files</a>
+          <a href="?view=my-files<?= $folderParam ?>" class="<?= $view === 'my-files' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">My Files</a>
           <a href="?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared with Me</a>
           <a href="?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared by Me</a>
           <a href="?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-red-600 text-red-600 font-medium' : 'text-gray-600 hover:text-red-600' ?>">Trash</a>
@@ -68,7 +71,7 @@ renderHead('Staff');
         </div>
 
 
-        <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6  w-full min-h-[400px] transition-all duration-300">
+        <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6  w-full min-h-[555px] transition-all duration-300">
           <!-- Breadcrumb -->
           <div id="breadcrumb" class="flex flex-wrap items-center text-sm text-emerald-600 hover:underline space-x-1 mb-3"></div>
           <!-- Search -->
@@ -320,6 +323,20 @@ renderHead('Staff');
       <div class="flex justify-end gap-2">
         <button type="button" id="cancelRestore" class="px-3 py-1 text-emerald-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
         <button type="button" id="confirmRestoreBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Restore</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🗑️ Permanent Delete Confirmation Modal -->
+  <div id="permanentDeleteModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-red-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-red-700">Confirm Permanent Delete</h2>
+      <p class="text-sm text-gray-700 mb-6">This action cannot be undone. Are you sure?</p>
+      <input type="hidden" id="permanent-delete-item-id">
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelPermanentDelete" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="button" id="confirmPermanentDeleteBtn" class="px-3 py-1 text-white bg-red-600 rounded hover:bg-red-700 text-sm cursor-pointer">Delete</button>
       </div>
     </div>
   </div>

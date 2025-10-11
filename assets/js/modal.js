@@ -378,6 +378,10 @@ export function initUploadHandler() {
 
     const formData = new FormData(form);
 
+    // 📁 Inject current folderId as folder_id
+    const currentFolderId = document.body.dataset.folderId || '';
+    formData.set('folder_id', currentFolderId);
+
     try {
       const response = await fetch('/controllers/file-manager/upload.php', {
         method: 'POST',
@@ -406,8 +410,6 @@ export function initUploadHandler() {
   });
 }
 
-
-
 // Create Folder Modal in File Manager
 export function initCreateFolderModal() {
   const cancelBtn = document.getElementById('cancelCreateFolderBtn');
@@ -429,6 +431,10 @@ export function initFolderCreationHandler() {
     e.preventDefault();
 
     const formData = new FormData(form);
+
+    // 📁 Inject current folderId as parent_id
+    const currentFolderId = document.body.dataset.folderId || '';
+    formData.set('parent_id', currentFolderId);
 
     fetch('/controllers/file-manager/create-folder.php', {
       method: 'POST',
@@ -453,8 +459,15 @@ export function initFolderCreationHandler() {
 }
 
 // Delete Confirmation Modal in File Manager
-export function showDeleteModal(itemId) {
+export function showDeleteModal(itemId, itemName = '') {
   document.getElementById('delete-item-id').value = itemId;
+
+  // Optional: show item name in modal
+  const nameDisplay = document.getElementById('delete-item-name');
+  if (nameDisplay) {
+    nameDisplay.textContent = itemName;
+  }
+
   toggleModal('deleteModal', true);
 }
 
@@ -469,21 +482,21 @@ export function setupDeleteModal() {
 
   confirmBtn.addEventListener('click', async () => {
     const itemId = document.getElementById('delete-item-id').value;
+    const currentView = document.body.dataset.view || 'my-files';
 
-    toggleModal('deleteModal', false); // ✅ Close immediately for responsiveness
+    toggleModal('deleteModal', false); // ✅ Close immediately
 
     try {
-      const result = await handleFileAction('delete', { id: itemId });
+      const result = await handleFileAction('delete', {
+        id: itemId,
+        view: currentView // ✅ Pass view context
+      });
 
-      // ✅ Show success message directly
       renderFlash('success', result.message || 'Item deleted successfully');
 
-      // ✅ Delay refresh to allow flash message or animation to settle
       setTimeout(() => {
         refreshCurrentFolder();
       }, 300);
-
-
     } catch (err) {
       console.error('Delete failed:', err);
       renderFlash('error', err.message || 'An error occurred while deleting the item.');
@@ -526,3 +539,31 @@ export function setupRestoreModal() {
   });
 }
 
+// Permanent Delete in File Manager
+export function showPermanentDeleteModal(itemId) {
+  document.getElementById('permanent-delete-item-id').value = itemId;
+  toggleModal('permanentDeleteModal', true);
+}
+
+export function setupPermanentDeleteModal() {
+  const cancelBtn = document.getElementById('cancelPermanentDelete');
+  const confirmBtn = document.getElementById('confirmPermanentDeleteBtn');
+
+  cancelBtn.addEventListener('click', () => {
+    toggleModal('permanentDeleteModal', false);
+  });
+
+  confirmBtn.addEventListener('click', async () => {
+    const itemId = document.getElementById('permanent-delete-item-id').value;
+    toggleModal('permanentDeleteModal', false);
+
+    try {
+      const result = await handleFileAction('deletePermanent', { id: itemId });
+      renderFlash('success', result.message || 'Item permanently deleted');
+      refreshCurrentFolder();
+    } catch (err) {
+      console.error('Permanent delete failed:', err);
+      renderFlash('error', err.message || 'Failed to delete item permanently');
+    }
+  });
+}

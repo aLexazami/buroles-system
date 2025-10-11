@@ -122,7 +122,6 @@ function getPermissionsForFile(array $file, string $view, int $userId, PDO $pdo)
   return array_unique($permissions);
 }
 
-
 function canPerformAction($userId, $fileId, $action)
 {
   global $pdo;

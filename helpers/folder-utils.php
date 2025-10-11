@@ -314,21 +314,58 @@ function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId): bool 
     $pdo->beginTransaction();
 
     // Step 1: Delete all files in this folder (from disk + DB)
-    deleteDiskFilesByFolderId($pdo, $userId, $folderId); // modular call
-
-    $stmt = $pdo->prepare("DELETE FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'file'");
+    $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'file'");
     $stmt->execute([$folderId, $userId]);
+    $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Step 2: Recursively delete subfolders
-    $stmt = $pdo->prepare("SELECT id FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'folder'");
-    $stmt->execute([$folderId, $userId]);
-    $subfolders = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    foreach ($files as $file) {
+      $realPath = __DIR__ . "/../../" . ltrim($file['path'], '/');
+      if (is_file($realPath)) unlink($realPath);
 
-    foreach ($subfolders as $subfolderId) {
-      deleteFolderAndContents($pdo, $userId, $subfolderId); // recursion
+      // 📝 Log file deletion BEFORE DB removal
+      $log = $pdo->prepare("
+        INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+        VALUES (UUID(), ?, ?, ?, 'delete-permanent', ?, 'dashboard')
+      ");
+      $log->execute([
+        $file['id'],
+        $file['name'],
+        $userId,
+        'File permanently deleted'
+      ]);
+
+      // 🗑️ Delete file from DB
+      $del = $pdo->prepare("DELETE FROM files WHERE id = ?");
+      $del->execute([$file['id']]);
     }
 
-    // Step 3: Delete this folder from DB
+    // Step 2: Recursively delete subfolders
+    $stmt = $pdo->prepare("SELECT id, name FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'folder'");
+    $stmt->execute([$folderId, $userId]);
+    $subfolders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($subfolders as $subfolder) {
+      deleteFolderAndContents($pdo, $userId, $subfolder['id']); // recursion
+    }
+
+    // Step 3: Fetch folder name for logging
+    $stmt = $pdo->prepare("SELECT name FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
+    $stmt->execute([$folderId, $userId]);
+    $folderName = $stmt->fetchColumn() ?? 'Folder';
+
+    // 📝 Log folder deletion BEFORE DB removal
+    $log = $pdo->prepare("
+      INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+      VALUES (UUID(), ?, ?, ?, 'delete-permanent', ?, 'dashboard')
+    ");
+    $log->execute([
+      $folderId,
+      $folderName,
+      $userId,
+      'Folder permanently deleted'
+    ]);
+
+    // 🗑️ Delete folder from DB
     $stmt = $pdo->prepare("DELETE FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
     $stmt->execute([$folderId, $userId]);
 
@@ -338,6 +375,64 @@ function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId): bool 
   } catch (Exception $e) {
     $pdo->rollBack();
     error_log("Folder deletion failed: " . $e->getMessage());
+    return false;
+  }
+}
+
+function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId): bool {
+  try {
+    // Soft delete this folder first
+    $update = $pdo->prepare("UPDATE files SET is_deleted = 1, updated_at = NOW() WHERE id = ?");
+    $update->execute([$folderId]);
+
+    $log = $pdo->prepare("
+      INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+      SELECT UUID(), id, name, ?, 'delete', 'Folder soft-deleted recursively', 'dashboard'
+      FROM files WHERE id = ?
+    ");
+    $log->execute([$userId, $folderId]);
+
+    // Soft delete all files directly inside this folder
+    $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE parent_id = ? AND type = 'file'");
+    $stmt->execute([$folderId]);
+    $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($files as $file) {
+      $realPath = __DIR__ . "/../../" . ltrim($file['path'], '/');
+      $trashPath = "/srv/burol-storage/$userId/trash/" . basename($realPath);
+      $trashFullPath = __DIR__ . "/../../" . ltrim($trashPath, '/');
+
+      if (is_file($realPath)) {
+        rename($realPath, $trashFullPath);
+      }
+
+      $update = $pdo->prepare("UPDATE files SET is_deleted = 1, path = ?, updated_at = NOW() WHERE id = ?");
+      $update->execute([$trashPath, $file['id']]);
+
+      $log = $pdo->prepare("
+        INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+        VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
+      ");
+      $log->execute([
+        $file['id'],
+        $file['name'],
+        $userId,
+        'File soft-deleted as part of folder deletion'
+      ]);
+    }
+
+    // Recursively soft delete all subfolders
+    $stmt = $pdo->prepare("SELECT id FROM files WHERE parent_id = ? AND type = 'folder'");
+    $stmt->execute([$folderId]);
+    $subfolders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($subfolders as $subfolder) {
+      softDeleteFolderAndContents($pdo, $userId, $subfolder['id']);
+    }
+
+    return true;
+  } catch (Exception $e) {
+    error_log("Soft folder deletion failed: " . $e->getMessage());
     return false;
   }
 }

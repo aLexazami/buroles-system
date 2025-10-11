@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
-require_once __DIR__ . '/../../helpers/folder-utils.php'; // deleteFolderAndContents()
+require_once __DIR__ . '/../../helpers/folder-utils.php';       // softDeleteFolderAndContents()
 
 header('Content-Type: application/json');
 
@@ -18,6 +18,7 @@ try {
   // 🔐 Check ownership or delegated delete permission
   $check = $pdo->prepare("
     SELECT
+      f.name,
       f.type,
       f.path,
       CASE
@@ -40,15 +41,30 @@ try {
 
   $type = $result['type'];
   $path = $result['path'];
+  $name = $result['name'];
   $source = ($result['effective_permission'] === 'owner') ? 'owner-delete' : 'delegated-delete';
 
   $success = false;
 
   if ($type === 'folder') {
-    // 🧹 Recursively delete folder and contents
-    $success = deleteFolderAndContents($pdo, $userId, $fileId);
+    // 🧹 Soft delete folder and contents
+    $success = softDeleteFolderAndContents($pdo, $userId, $fileId);
+
+    // 📝 Log folder soft deletion
+    if ($success) {
+      $log = $pdo->prepare("
+        INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+        VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
+      ");
+      $log->execute([
+        $fileId,
+        $name,
+        $userId,
+        "Folder soft-deleted via $source"
+      ]);
+    }
   } elseif ($type === 'file') {
-    // 🧹 Move file to trash instead of deleting
+    // 🧹 Move file to trash
     $realPath = __DIR__ . "/../../" . ltrim($path, '/');
     $trashPath = "/srv/burol-storage/$userId/trash/" . basename($realPath);
     $trashFullPath = __DIR__ . "/../../" . ltrim($trashPath, '/');
@@ -65,14 +81,19 @@ try {
     // 🗑️ Soft delete in DB and update path
     $stmt = $pdo->prepare("UPDATE files SET is_deleted = 1, path = ?, updated_at = NOW() WHERE id = ?");
     $success = $stmt->execute([$trashPath, $fileId]);
-  }
 
-  // 📝 Log the action
-  $log = $pdo->prepare("
-    INSERT INTO logs (id, file_id, user_id, action, details, source)
-    VALUES (UUID(), ?, ?, 'delete', ?, 'dashboard')
-  ");
-  $log->execute([$fileId, $userId, "Soft delete triggered via $source"]);
+    // 📝 Log soft file deletion
+    $log = $pdo->prepare("
+      INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+      VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
+    ");
+    $log->execute([
+      $fileId,
+      $name,
+      $userId,
+      "Soft delete triggered via $source"
+    ]);
+  }
 
   echo json_encode([
     'success' => $success,

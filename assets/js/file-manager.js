@@ -1,14 +1,15 @@
 // file-manager.js
-import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal } from './modal.js';
+import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal } from './modal.js';
 import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
+import { renderFlash } from './flash.js';
 
 export function refreshCurrentFolder() {
   const currentView = document.body.dataset.view || 'my-files';
 
   if (currentView === 'trash') {
-    loadTrashView(); // ✅ define this next
+    loadTrashView(document.body.dataset.folderId); // ✅ pass folderId
   } else {
     const currentFolderId = getCurrentFolderId();
     loadFolder(currentFolderId);
@@ -19,56 +20,94 @@ export function getCurrentFolderId() {
   return document.body.dataset.folderId || null;
 }
 
-export function loadFolder(folderId = null) {
+export async function loadFolder(folderId = null) {
   const currentView = document.body.dataset.view || 'my-files';
+  const normalizedFolderId = folderId && typeof folderId === 'string' ? folderId : '';
 
-  const url = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
-  url.searchParams.set('view', currentView);
-  url.searchParams.set('folder_id', folderId ?? '');
+  // 🧠 Sync folder state to <body>
+  document.body.dataset.folderId = normalizedFolderId;
 
-  fetch(url.toString())
-    .then(res => res.json())
-    .then(data => {
-      setItems(data.items); // ✅ store all items
-      renderItems(getItems()); // ✅ render full list
-      initCommentButtons();
-      initShareButtons();
-    })
-    .catch(err => {
-      console.error('Failed to load folder contents:', err);
-      const fileList = document.getElementById('file-list');
-      if (fileList) {
-        fileList.innerHTML = `<div class="text-center text-red-500 py-12">Failed to load folder contents.</div>`;
-      }
-    });
+  try {
+    // 📁 Fetch folder contents
+    const contentsUrl = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
+    contentsUrl.searchParams.set('view', currentView);
+    contentsUrl.searchParams.set('folder_id', normalizedFolderId);
 
-  fetch(`/controllers/file-manager/getBreadcrumbTrail.php?folder_id=${folderId || ''}`)
-    .then(res => res.json())
-    .then(trail => {
-      renderBreadcrumb(trail);
-    })
-    .catch(err => {
-      console.error('Failed to load breadcrumb trail:', err);
-    });
+    const contentsRes = await fetch(contentsUrl.toString());
+    const contentsData = await contentsRes.json();
+
+    setItems(contentsData.items);
+    renderItems(getItems());
+    initCommentButtons();
+    initShareButtons();
+  } catch (err) {
+    console.error('Failed to load folder contents:', err);
+    const fileList = document.getElementById('file-list');
+    if (fileList) {
+      fileList.innerHTML = `<div class="text-center text-red-500 py-12">Failed to load folder contents.</div>`;
+    }
+  }
+
+  try {
+    // 🧭 Fetch breadcrumb trail
+    const breadcrumbUrl = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
+    breadcrumbUrl.searchParams.set('folder_id', normalizedFolderId);
+
+    const breadcrumbRes = await fetch(breadcrumbUrl.toString());
+    const breadcrumbTrail = await breadcrumbRes.json();
+
+    renderBreadcrumb(breadcrumbTrail);
+  } catch (err) {
+    console.error('Failed to load breadcrumb trail:', err);
+  }
 }
 
-export function loadTrashView() {
-  const url = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
-  url.searchParams.set('view', 'trash');
+export async function loadTrashView(folderId = null) {
+  const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
+  document.body.dataset.folderId = normalizedFolderId;
+  document.body.dataset.view = 'trash';
 
-  fetch(url.toString())
-    .then(res => res.json())
-    .then(data => {
-      setItems(data.items);
-      renderItems(getItems());
-    })
-    .catch(err => {
-      console.error('Failed to load trash contents:', err);
-      const fileList = document.getElementById('file-list');
-      if (fileList) {
-        fileList.innerHTML = `<div class="text-center text-red-500 py-12">Failed to load trash contents.</div>`;
-      }
-    });
+  try {
+    // 📁 Fetch trash contents scoped to folder
+    const url = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
+    url.searchParams.set('view', 'trash');
+    url.searchParams.set('folder_id', normalizedFolderId);
+
+    const res = await fetch(url.toString());
+    const data = await res.json();
+
+    // 🧠 Store deletion status for fallback logic
+    document.body.dataset.folderIsDeleted = data.folder_is_deleted ? 'true' : 'false';
+
+    // 🧩 Render items and initialize buttons
+    setItems(data.items);
+    renderItems(getItems());
+    initCommentButtons();
+    initShareButtons();
+  } catch (err) {
+    console.error('Failed to load trash contents:', err);
+    const fileList = document.getElementById('file-list');
+    if (fileList) {
+      fileList.innerHTML = `
+        <div class="text-center text-red-500 py-12">
+          Failed to load trash contents.
+        </div>
+      `;
+    }
+  }
+
+  try {
+    // 🧭 Breadcrumb for trash folders
+    const breadcrumbUrl = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
+    breadcrumbUrl.searchParams.set('folder_id', normalizedFolderId);
+
+    const breadcrumbRes = await fetch(breadcrumbUrl.toString());
+    const breadcrumbTrail = await breadcrumbRes.json();
+
+    renderBreadcrumb(breadcrumbTrail);
+  } catch (err) {
+    console.error('Failed to load breadcrumb trail:', err);
+  }
 }
 
 export function insertItem(newItem, options = {}) {
@@ -111,17 +150,22 @@ export function createFileRow(item, isTrashView = false) {
   const row = document.createElement('div');
   row.className = 'flex items-center justify-between p-2 hover:bg-emerald-50 cursor-pointer';
   row.dataset.itemId = item.id;
+  row.dataset.parentId = item.parent_id || '';
   row.setAttribute('role', 'listitem');
 
-  if (!isTrashView) {
-    row.addEventListener('click', () => {
-      if (item.type === 'folder') {
-        loadFolder(item.id);
+  // 🧭 Click behavior
+  row.addEventListener('click', () => {
+    if (item.type === 'folder') {
+      const currentView = document.body.dataset.view || 'my-files';
+      if (currentView === 'trash') {
+        loadTrashView(item.id); // ✅ navigate inside trash folder
       } else {
-        openFilePreview(item);
+        loadFolder(item.id);
       }
-    });
-  }
+    } else {
+      openFilePreview(item);
+    }
+  });
 
   // 📄 Icon + Label
   const icon = document.createElement('img');
@@ -157,6 +201,7 @@ export function createFileRow(item, isTrashView = false) {
   menu.className = 'file-list-menu absolute right-8 sm:right-10 top-0 sm:top-1 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold';
   menu.setAttribute('role', 'menu');
 
+  // 🧠 Menu toggle logic
   menuButton.addEventListener('click', (e) => {
     e.stopPropagation();
     const isHidden = menu.classList.contains('hidden');
@@ -216,9 +261,8 @@ export function createFileRow(item, isTrashView = false) {
     }
 
     if (item.permissions?.includes('delete')) {
-      menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'text-emerald-600 cursor-pointer', () => showDeleteModal(item.id)));
+      menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'text-emerald-600 cursor-pointer', () => showDeleteModal(item.id, item.name)));
     }
-
   }
 
   menuWrapper.appendChild(menuButton);
@@ -235,25 +279,52 @@ export function renderItems(items) {
 
   container.innerHTML = '';
 
+  const isTrashView = document.body.dataset.view === 'trash';
+  const folderIsDeleted = document.body.dataset.folderIsDeleted === 'true';
+  const parentId = document.body.dataset.folderId;
+
+  const allItemsAreDeleted = items.every(item => item.is_deleted === true || item.is_deleted === '1');
+
+  // 🧠 Trash view fallback: folder is deleted and either no items or all children are deleted
+  if (isTrashView && folderIsDeleted && (items.length === 0 || allItemsAreDeleted)) {
+  const folderName = 'This folder'; // Optional: fetch from breadcrumb if available
+
+  container.innerHTML = `
+    <div class="text-center text-gray-500 py-12">
+      ${folderName} is in the trash. Its contents are also deleted.<br>
+      <span class="text-emerald-600 font-medium">Restore the folder first to view its contents.</span><br>
+      <button id="restore-folder-btn" class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition">
+        Restore Folder
+      </button>
+    </div>
+  `;
+
+  // 🧠 Attach restore logic manually
+  const restoreBtn = document.getElementById('restore-folder-btn');
+  if (restoreBtn) {
+    restoreBtn.addEventListener('click', () => {
+      showRestoreModal(document.body.dataset.folderId);
+    });
+  }
+
+  return;
+}
+
+  // 🧼 Generic empty state
   if (items.length === 0) {
     renderEmptyState(container);
     return;
   }
 
-  const isTrashView = document.body.dataset.view === 'trash';
-
-  // ✅ Sort items alphabetically by name
+  // ✅ Sort and render items
   const sortedItems = [...items].sort((a, b) => {
-    // Folders first
     if (a.type === 'folder' && b.type !== 'folder') return -1;
     if (a.type !== 'folder' && b.type === 'folder') return 1;
-
-    // Then sort alphabetically by name
     return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
   });
 
   sortedItems.forEach(item => {
-    const row = createFileRow(item, isTrashView); // ✅ simplified call
+    const row = createFileRow(item, isTrashView);
     container.appendChild(row);
   });
 }
@@ -398,32 +469,34 @@ export async function handleFileAction(action, payload = {}, retries = 1) {
   if (!endpoint) throw new Error(`Unknown action: ${action}`);
 
   // ✅ Optimistic UI update for delete and restore
-if ((action === 'delete' || action === 'restore') && payload.id) {
-  const rollback = () => {
-    refreshCurrentFolder();
-    renderFlash('error', `${action === 'restore' ? 'Restore' : 'Delete'} failed. Item reloaded.`);
-  };
+  if ((action === 'delete' || action === 'restore' || action === 'deletePermanent') && payload.id) {
+    const rollback = () => {
+      refreshCurrentFolder();
+      renderFlash('error', `${action === 'restore' ? 'Restore' : 'Delete'} failed. Item reloaded.`);
+    };
 
-  removeItemFromUI(payload.id);
+    // 🧹 Remove item and its children from UI
+    removeItemFromUI(payload.id);
+    removeChildrenFromUI?.(payload.id); // ✅ optional helper if you have one
 
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
 
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message || 'Action failed');
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Action failed');
 
-      return { success: true, optimistic: true, rollback };
-    } catch (err) {
-      rollback();
-      throw err;
+        return { success: true, optimistic: true, rollback };
+      } catch (err) {
+        rollback();
+        throw err;
+      }
     }
   }
-}
 
   // Default fallback for non-optimistic actions
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -449,9 +522,18 @@ export function removeItemFromUI(id) {
 
   const container = document.getElementById('file-list');
   const remaining = container.querySelectorAll('[data-item-id]');
+
   if (remaining.length === 0) {
-    renderEmptyState(container);
+    refreshCurrentFolder(); // ✅ triggers correct fallback logic
   }
+}
+
+function removeChildrenFromUI(parentId) {
+  const container = document.getElementById('file-list');
+  if (!container) return;
+
+  const rows = container.querySelectorAll(`[data-parent-id="${parentId}"]`);
+  rows.forEach(row => row.remove());
 }
 
 /*Extract fallback into a reusable helper*/

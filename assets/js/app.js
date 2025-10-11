@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal,setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal} from './modal.js';
+import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal,setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal} from './modal.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initUploadModal();
   setupDeleteModal();
   setupRestoreModal();
+  setupPermanentDeleteModal()
 
   // Handler
   initFolderCreationHandler();
