@@ -29,6 +29,9 @@ try {
     exit;
   }
 
+  // 🔐 Begin transaction
+  $pdo->beginTransaction();
+
   // 📝 Log deletion BEFORE removing from DB
   $log = $pdo->prepare("
     INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
@@ -43,12 +46,14 @@ try {
 
   if ($file['type'] === 'folder') {
     // 🗂️ Recursively delete folder and contents
-    $success = deleteFolderAndContents($pdo, $userId, $fileId);
+    $success = deleteFolderAndContents($pdo, $userId, $fileId, false); // false = not root transaction
     if (!$success) {
-      http_response_code(500);
-      echo json_encode(['success' => false, 'message' => 'Folder deletion failed']);
-      exit;
+      throw new Exception("Folder deletion failed — see logs for details");
     }
+
+    // 🗑️ Delete folder itself
+    $stmt = $pdo->prepare("DELETE FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
+    $stmt->execute([$fileId, $userId]);
   } else {
     // 🧹 Delete file from disk
     $fullPath = __DIR__ . "/../../" . ltrim($file['path'], '/');
@@ -61,9 +66,15 @@ try {
     $stmt->execute([$fileId]);
   }
 
+  // ✅ Commit transaction
+  $pdo->commit();
   http_response_code(200);
   echo json_encode(['success' => true, 'message' => 'Item permanently deleted']);
 } catch (Exception $e) {
+  if ($pdo->inTransaction()) {
+    $pdo->rollBack();
+  }
+  error_log("❌ Permanent delete failed: " . $e->getMessage());
   http_response_code(500);
   echo json_encode(['success' => false, 'message' => 'Server error: ' . $e->getMessage()]);
 }

@@ -13,72 +13,98 @@ function deleteDiskFilesByFolderId(PDO $pdo, int $userId, string $folderId): voi
   }
 }
 
-function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId): bool {
+function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bool $isRootCall = true): bool {
   try {
-    $pdo->beginTransaction();
+    if ($isRootCall) {
+      error_log("🟢 BEGIN transaction for folder $folderId");
+      $pdo->beginTransaction();
+    }
 
-    // Step 1: Delete all files in this folder (from disk + DB)
-    $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'file'");
+    // Confirm folder exists
+    $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
+    $stmt->execute([$folderId, $userId]);
+    $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$folder) {
+      error_log("❌ Folder not found: $folderId");
+      throw new Exception("Folder not found");
+    }
+
+    error_log("📁 Deleting contents of folder: {$folder['name']} ($folderId)");
+
+    // Delete files (skip standalone-deleted ones)
+    $stmt = $pdo->prepare("
+      SELECT id, name, path, is_deleted, deleted_by_parent
+      FROM files
+      WHERE parent_id = ? AND owner_id = ? AND type = 'file'
+    ");
     $stmt->execute([$folderId, $userId]);
     $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($files as $file) {
+      if ($file['is_deleted'] && $file['deleted_by_parent'] == 0) {
+        error_log("⏭️ Skipping standalone-deleted file: {$file['name']} ({$file['id']})");
+        continue;
+      }
+
+      error_log("🗑️ Deleting file: {$file['name']} ({$file['id']})");
       $realPath = __DIR__ . "/../../" . ltrim($file['path'], '/');
       if (is_file($realPath)) unlink($realPath);
 
-      // 📝 Log file deletion BEFORE DB removal
       $log = $pdo->prepare("
         INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
         VALUES (UUID(), ?, ?, ?, 'delete-permanent', ?, 'dashboard')
       ");
-      $log->execute([
-        $file['id'],
-        $file['name'],
-        $userId,
-        'File permanently deleted'
-      ]);
+      $log->execute([$file['id'], $file['name'], $userId, 'File permanently deleted']);
 
-      // 🗑️ Delete file from DB
       $del = $pdo->prepare("DELETE FROM files WHERE id = ?");
       $del->execute([$file['id']]);
     }
 
-    // Step 2: Recursively delete subfolders
-    $stmt = $pdo->prepare("SELECT id, name FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'folder'");
+    // Delete subfolders (skip standalone-deleted ones)
+    $stmt = $pdo->prepare("
+      SELECT id, is_deleted, deleted_by_parent
+      FROM files
+      WHERE parent_id = ? AND owner_id = ? AND type = 'folder'
+    ");
     $stmt->execute([$folderId, $userId]);
     $subfolders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($subfolders as $subfolder) {
-      deleteFolderAndContents($pdo, $userId, $subfolder['id']); // recursion
+      if ($subfolder['is_deleted'] && $subfolder['deleted_by_parent'] == 0) {
+        error_log("⏭️ Skipping standalone-deleted folder: {$subfolder['id']}");
+        continue;
+      }
+
+      error_log("🔁 Recursing into subfolder: {$subfolder['id']}");
+      $success = deleteFolderAndContents($pdo, $userId, $subfolder['id'], false);
+      if (!$success) {
+        throw new Exception("Failed to delete subfolder: " . $subfolder['id']);
+      }
     }
 
-    // Step 3: Fetch folder name for logging
-    $stmt = $pdo->prepare("SELECT name FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
-    $stmt->execute([$folderId, $userId]);
-    $folderName = $stmt->fetchColumn() ?? 'Folder';
-
-    // 📝 Log folder deletion BEFORE DB removal
+    // Log and delete folder
     $log = $pdo->prepare("
       INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
       VALUES (UUID(), ?, ?, ?, 'delete-permanent', ?, 'dashboard')
     ");
-    $log->execute([
-      $folderId,
-      $folderName,
-      $userId,
-      'Folder permanently deleted'
-    ]);
+    $log->execute([$folderId, $folder['name'], $userId, 'Folder permanently deleted']);
 
-    // 🗑️ Delete folder from DB
     $stmt = $pdo->prepare("DELETE FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
     $stmt->execute([$folderId, $userId]);
 
-    $pdo->commit();
-    return true;
+    if ($isRootCall) {
+      $pdo->commit();
+      error_log("✅ COMMIT transaction for folder $folderId");
+    }
 
+    return true;
   } catch (Exception $e) {
-    $pdo->rollBack();
-    error_log("Folder deletion failed: " . $e->getMessage());
+    if ($isRootCall && $pdo->inTransaction()) {
+      $pdo->rollBack();
+      error_log("🔴 ROLLBACK transaction for folder $folderId");
+    }
+    error_log("❌ Folder deletion failed: " . $e->getMessage());
     return false;
   }
 }

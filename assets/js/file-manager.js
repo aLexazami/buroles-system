@@ -158,7 +158,7 @@ export function createFileRow(item, isTrashView = false) {
     if (item.type === 'folder') {
       const currentView = document.body.dataset.view || 'my-files';
       if (currentView === 'trash') {
-        loadTrashView(item.id); // ✅ navigate inside trash folder
+        loadTrashView(item.id);
       } else {
         loadFolder(item.id);
       }
@@ -167,20 +167,35 @@ export function createFileRow(item, isTrashView = false) {
     }
   });
 
-  // 📄 Icon + Label
+  // 📄 Icon
   const icon = document.createElement('img');
   icon.src = getItemIcon(item);
   icon.alt = item.type;
-  icon.className = 'w-5 h-5 mr-3';
+  icon.className = 'w-5 h-5';
 
+  // 📄 Label
   const label = document.createElement('span');
   label.textContent = item.name;
-  label.className = 'text-gray-800 font-medium';
+  label.className = 'text-gray-800 font-medium truncate';
 
+  // 🏷️ Badge (conditionally visible)
+  const badge = document.createElement('span');
+  badge.textContent = `Removed From: ${item.original_parent_name}`;
+  badge.className = 'hidden min-[650px]:inline-block text-xs text-gray-600 bg-emerald-100 px-2 py-1 rounded-md';
+
+  // 📦 Label stack
+  const labelStack = document.createElement('div');
+  labelStack.className = 'flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2';
+  labelStack.appendChild(label);
+  if (isTrashView && item.original_parent_name) {
+    labelStack.appendChild(badge);
+  }
+
+  // 📦 Label wrapper
   const labelWrapper = document.createElement('div');
-  labelWrapper.className = 'flex items-center gap-2';
+  labelWrapper.className = 'flex items-center gap-3 min-w-0';
   labelWrapper.appendChild(icon);
-  labelWrapper.appendChild(label);
+  labelWrapper.appendChild(labelStack);
 
   // ⋯ Menu
   const menuWrapper = document.createElement('div');
