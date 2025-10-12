@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/path.php'; // ensureVirtualPathExists(), resolveDiskPath()
 /***********************************************************************************************************************/
 function deleteDiskFilesByFolderId(PDO $pdo, int $userId, string $folderId): void {
   $stmt = $pdo->prepare("SELECT path FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'file'");
@@ -109,18 +110,27 @@ function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bool $
   }
 }
 
-function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bool $inherited = false): bool {
+function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bool $inherited = false, ?string $trashBasePath = null): bool {
   try {
     $stmt = $pdo->prepare("SELECT path, name FROM files WHERE id = ?");
     $stmt->execute([$folderId]);
     $folder = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$folder) return false;
 
-    $originalPath = $folder['path'];
-    $trashPath = "/srv/burol-storage/$userId/trash/$folderId";
+    $originalPath = rtrim($folder['path'], '/');
     $deletedByParent = $inherited ? 1 : 0;
 
-    // ✅ Soft delete this folder
+    // Determine trash root for this folder
+    $trashRoot = $trashBasePath ?? "/srv/burol-storage/$userId/trash/$folderId";
+    $trashPath = $trashRoot;
+    $trashFullPath = resolveDiskPath($trashPath);
+
+    // ✅ Ensure trash folder exists — even if empty
+    if (!is_dir($trashFullPath)) {
+      mkdir($trashFullPath, 0775, true);
+    }
+
+    // ✅ Soft delete this folder in DB
     $update = $pdo->prepare("
       UPDATE files
       SET is_deleted = 1,
@@ -155,12 +165,15 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
       $meta = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
       if ($meta && $meta['is_deleted'] && $meta['deleted_by_parent'] == 0) {
-        continue; // ✅ Skip standalone-deleted files
+        continue;
       }
 
-      $realPath = __DIR__ . "/../../" . ltrim($file['path'], '/');
-      $trashFilePath = "/srv/burol-storage/$userId/trash/" . basename($realPath);
-      $trashFullPath = __DIR__ . "/../../" . ltrim($trashFilePath, '/');
+      $realPath = resolveDiskPath($file['path']);
+      $relativePath = substr($file['path'], strlen($originalPath));
+      $trashFilePath = rtrim($trashPath, '/') . $relativePath;
+      $trashFullPath = resolveDiskPath($trashFilePath);
+
+      ensureVirtualPathExists($trashFilePath);
 
       if (is_file($realPath)) {
         rename($realPath, $trashFullPath);
@@ -190,21 +203,54 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
     }
 
     // 🔁 Recursively soft delete subfolders
-    $stmt = $pdo->prepare("SELECT id, name FROM files WHERE parent_id = ? AND type = 'folder'");
+    $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE parent_id = ? AND type = 'folder'");
     $stmt->execute([$folderId]);
     $subfolders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($subfolders as $subfolder) {
-      // 🧠 Check if already deleted independently
       $stmtCheck = $pdo->prepare("SELECT is_deleted, deleted_by_parent FROM files WHERE id = ?");
       $stmtCheck->execute([$subfolder['id']]);
       $meta = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
       if ($meta && $meta['is_deleted'] && $meta['deleted_by_parent'] == 0) {
-        continue; // ✅ Skip standalone-deleted folders
+        continue;
       }
 
-      softDeleteFolderAndContents($pdo, $userId, $subfolder['id'], true); // ✅ inherited
+      // ✅ Compute trash path for subfolder
+      $subfolderTrashPath = rtrim($trashPath, '/') . '/' . $subfolder['id'];
+      $subfolderTrashFullPath = resolveDiskPath($subfolderTrashPath);
+
+      // ✅ Ensure subfolder exists on disk — even if empty
+      if (!is_dir($subfolderTrashFullPath)) {
+        mkdir($subfolderTrashFullPath, 0775, true);
+      }
+
+      // ✅ Update subfolder path in DB
+      $update = $pdo->prepare("
+        UPDATE files
+        SET is_deleted = 1,
+            original_path = path,
+            path = ?,
+            deleted_by_parent = 1,
+            updated_at = NOW()
+        WHERE id = ?
+      ");
+      $update->execute([$subfolderTrashPath, $subfolder['id']]);
+
+      // ✅ Log subfolder deletion
+      $log = $pdo->prepare("
+        INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+        VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
+      ");
+      $log->execute([
+        $subfolder['id'],
+        $subfolder['name'],
+        $userId,
+        'Subfolder soft-deleted as part of folder deletion'
+      ]);
+
+      // ✅ Recursively delete contents
+      softDeleteFolderAndContents($pdo, $userId, $subfolder['id'], true, $subfolderTrashPath);
     }
 
     return true;
@@ -218,4 +264,73 @@ function isValidFolderName(string $name): bool {
   return !preg_match('/[\\\\\\/:\*\?"<>|]/', $name);
 }
 
+function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void {
+  $stmt = $pdo->prepare("SELECT path, original_path FROM files WHERE id = ?");
+  $stmt->execute([$folderId]);
+  $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  $restorePath = $folder['original_path'] ?? $folder['path'];
+  ensureVirtualPathExists($restorePath);
+
+  $stmt = $pdo->prepare("
+    UPDATE files
+    SET is_deleted = 0,
+        path = original_path,
+        original_path = NULL,
+        deleted_by_parent = 0,
+        updated_at = NOW()
+    WHERE id = ?
+  ");
+  $stmt->execute([$folderId]);
+
+  logRestore($pdo, $userId, $folderId, 'Folder restored from trash');
+
+  // 🔁 Restore children with deleted_by_parent = 1
+  $stmt = $pdo->prepare("
+    SELECT id, type FROM files
+    WHERE parent_id = ? AND is_deleted = 1 AND deleted_by_parent = 1
+  ");
+  $stmt->execute([$folderId]);
+  $children = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  foreach ($children as $child) {
+    if ($child['type'] === 'folder') {
+      restoreFolderAndContents($pdo, $userId, $child['id']);
+    } else {
+      restoreFile($pdo, $userId, $child['id']);
+    }
+  }
+
+  // 🧠 Restore orphaned fallback items only if their parent is restored or null
+  $stmt = $pdo->prepare("
+    SELECT f.id, f.type
+    FROM files f
+    LEFT JOIN files p ON f.parent_id = p.id
+    WHERE f.is_deleted = 1
+      AND f.deleted_by_parent = 0
+      AND f.original_path LIKE CONCAT(?, '/%')
+      AND (
+        f.parent_id IS NULL
+        OR (p.is_deleted = 0 AND p.original_path IS NOT NULL AND f.original_path LIKE CONCAT(p.original_path, '/%'))
+      )
+  ");
+  $stmt->execute([$restorePath]);
+  $orphans = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  foreach ($orphans as $orphan) {
+    if ($orphan['type'] === 'folder') {
+      restoreFolderAndContents($pdo, $userId, $orphan['id']);
+    } else {
+      restoreFile($pdo, $userId, $orphan['id']);
+    }
+  }
+}
+
+function logRestore(PDO $pdo, int $userId, string $fileId, string $details): void {
+  $stmt = $pdo->prepare("
+    INSERT INTO logs (id, file_id, user_id, action, details, source)
+    VALUES (UUID(), ?, ?, 'restore', ?, 'dashboard')
+  ");
+  $stmt->execute([$fileId, $userId, $details]);
+}
 ?>
