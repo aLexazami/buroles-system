@@ -430,6 +430,16 @@ export function initFolderCreationHandler() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    const folderNameInput = form.querySelector('[name="folder_name"]');
+    const folderName = folderNameInput?.value.trim() || '';
+    const INVALID_CHARS = '\\ / : * ? " < > |';
+
+    if (!isFolderNameValid(folderName)) {
+      renderFlash('error', `A file name can't contain any of the following characters: ${INVALID_CHARS}`);
+      folderNameInput?.focus();
+      return;
+    }
+
     const formData = new FormData(form);
 
     // 📁 Inject current folderId as parent_id
@@ -450,12 +460,17 @@ export function initFolderCreationHandler() {
           renderFlash('success', 'Folder created successfully');
         } else {
           renderFlash('error', data.error || 'Failed to create folder');
+          folderNameInput?.focus(); // ✅ Focus input on error
         }
       })
       .catch(() => {
         renderFlash('error', 'Error creating folder');
       });
   });
+}
+
+function isFolderNameValid(name) {
+  return !/[\\/:*?"<>|]/.test(name);
 }
 
 // Delete Confirmation Modal in File Manager
@@ -520,6 +535,7 @@ export function setupRestoreModal() {
 
   confirmBtn.addEventListener('click', async () => {
     const itemId = document.getElementById('restore-item-id').value;
+    confirmBtn.disabled = true; // ✅ Prevent double-click
     toggleModal('restoreModal', false);
 
     try {
@@ -534,7 +550,16 @@ export function setupRestoreModal() {
       }
     } catch (err) {
       console.error('Restore failed:', err);
-      renderFlash('error', err.message || 'Server error during restore');
+
+      if (err.message?.includes('File missing from trash')) {
+        renderFlash('info', 'Item may have already been restored or removed.');
+      } else {
+        renderFlash('error', err.message || 'Server error during restore');
+      }
+
+      refreshCurrentFolder(); // ✅ Ensure UI stays in sync
+    } finally {
+      confirmBtn.disabled = false; // ✅ Re-enable after attempt
     }
   });
 }

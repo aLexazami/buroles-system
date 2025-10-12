@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
-require_once __DIR__ . '/../../helpers/folder-utils.php';       // softDeleteFolderAndContents()
+require_once __DIR__ . '/../../helpers/folder-utils.php'; // softDeleteFolderAndContents()
 
 header('Content-Type: application/json');
 
@@ -47,7 +47,7 @@ try {
   $success = false;
 
   if ($type === 'folder') {
-    // 🧹 Soft delete folder and contents
+    // 🧹 Soft delete folder and contents (inherited deletion)
     $success = softDeleteFolderAndContents($pdo, $userId, $fileId);
 
     // 📝 Log folder soft deletion
@@ -78,8 +78,16 @@ try {
       rename($realPath, $trashFullPath);
     }
 
-    // 🗑️ Soft delete in DB and update path
-    $stmt = $pdo->prepare("UPDATE files SET is_deleted = 1, path = ?, updated_at = NOW() WHERE id = ?");
+    // 🗑️ Soft delete in DB and preserve original path
+    $stmt = $pdo->prepare("
+      UPDATE files
+      SET is_deleted = 1,
+          original_path = path,
+          path = ?,
+          deleted_by_parent = 0,
+          updated_at = NOW()
+      WHERE id = ?
+    ");
     $success = $stmt->execute([$trashPath, $fileId]);
 
     // 📝 Log soft file deletion
