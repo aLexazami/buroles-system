@@ -15,7 +15,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 export function getPreviewHTML(item) {
   const currentView = document.body.dataset.view || 'my-files';
   const currentFolder = document.body.dataset.folderId || '';
-  const fileUrl = `preview.php?id=${item.id}&view=${encodeURIComponent(currentView)}&folder=${encodeURIComponent(currentFolder)}`;
+
+  const previewUrl = `preview.php?id=${item.id}&view=${encodeURIComponent(currentView)}&folder=${encodeURIComponent(currentFolder)}`;
+  const downloadUrl = `download.php?id=${item.id}&view=${encodeURIComponent(currentView)}&folder=${encodeURIComponent(currentFolder)}`;
+
   const mime = item.mime_type || '';
   console.log('MIME Type:', mime);
 
@@ -34,44 +37,58 @@ export function getPreviewHTML(item) {
     'application/vnd.openxmlformats-officedocument.presentationml.presentation'
   ]);
 
+  const archiveTypes = new Set([
+    'application/zip',
+    'application/x-rar-compressed',
+    'application/x-7z-compressed',
+    'application/x-tar',
+    'application/gzip'
+  ]);
+
   const renderers = {
     image: `
-  <div class="w-full flex justify-center items-center min-h-full">
-    <img src="${fileUrl}" class="max-w-full max-h-[80vh] object-contain rounded shadow" />
-  </div>
-`,
+      <div class="w-full flex justify-center items-center min-h-full">
+        <img src="${previewUrl}" class="max-w-full max-h-[80vh] object-contain rounded shadow" />
+      </div>
+    `,
     pdf: `
-  <div class="pdf-container w-full flex flex-col items-center px-4 space-y-4">
-    <!-- Canvases will be injected here -->
-  </div>
-`,
+      <div class="pdf-container w-full flex flex-col items-center px-4 space-y-4">
+        <!-- Canvases will be injected here -->
+      </div>
+    `,
     video: `
-  <div class="w-full flex justify-center items-center min-h-full px-4 py-4">
-    <video controls src="${fileUrl}" class="w-full max-h-[80vh] rounded shadow"></video>
-  </div>
-`,
+      <div class="w-full flex justify-center items-center min-h-full px-4 py-4">
+        <video controls src="${previewUrl}" class="w-full max-h-[80vh] rounded shadow"></video>
+      </div>
+    `,
     audio: `
-  <div class="w-full flex justify-center items-center min-h-full px-4 py-4">
-    <audio controls src="${fileUrl}" class="w-full max-w-2xl"></audio>
-  </div>
-`,
+      <div class="w-full flex justify-center items-center min-h-full px-4 py-4">
+        <audio controls src="${previewUrl}" class="w-full max-w-2xl"></audio>
+      </div>
+    `,
     text: `
-  <div class="w-full flex justify-center items-center min-h-full px-4 py-4">
-    <iframe src="${fileUrl}" class="w-full h-[80vh] border rounded shadow"></iframe>
-  </div>
-`,
+      <div class="w-full flex justify-center items-center min-h-full px-4 py-4">
+        <iframe src="${previewUrl}" class="w-full h-[80vh] border rounded shadow"></iframe>
+      </div>
+    `,
     office: `
-  <div class="w-full flex justify-center items-center min-h-full px-4 py-4 text-center text-sm text-gray-500">
-    Office file preview not supported inline.<br>
-    <a href="${fileUrl}" class="text-blue-600 underline">Download</a>
-  </div>
-`,
+      <div class="w-full flex justify-center items-center min-h-full px-4 py-4 text-center text-sm text-white">
+        Office file preview not supported inline.<br>
+        <a href="${downloadUrl}" class="text-emerald-400 font-semibold underline">Download</a>
+      </div>
+    `,
+    archive: `
+      <div class="w-full flex justify-center items-center min-h-full px-4 py-4 text-center text-sm text-white">
+        Archive preview not supported.<br>
+        <a href="${downloadUrl}" class="text-emerald-400 font-semibold underline">Download Archive</a>
+      </div>
+    `,
     fallback: `
-  <div class="w-full flex justify-center items-center min-h-full px-4 py-4 text-center text-sm text-gray-500">
-    Preview not available for this file type.<br>
-    <a href="${fileUrl}" class="text-blue-600 underline">Download</a>
-  </div>
-`,
+      <div class="w-full flex justify-center items-center min-h-full px-4 py-4 text-center text-sm text-white">
+        Preview not available for this file type.<br>
+        <a href="${downloadUrl}" class="text-emerald-400 font-semibold underline">Download</a>
+      </div>
+    `,
   };
 
   if (isImage) return renderers.image;
@@ -80,6 +97,7 @@ export function getPreviewHTML(item) {
   if (isAudio) return renderers.audio;
   if (isText) return renderers.text;
   if (officeTypes.has(mime)) return renderers.office;
+  if (archiveTypes.has(mime)) return renderers.archive;
 
   return renderers.fallback;
 }
@@ -89,7 +107,7 @@ export function openFilePreview(item, items = []) {
   if (!items || items.length === 0) return;
   setPreviewState(items, item.id);
   renderPreviewOverlay(item);
-  
+
 }
 
 // 🎬 Render preview overlay
@@ -115,7 +133,7 @@ function renderPreviewOverlay(item) {
 
   if (icon) {
     const mime = item.mime_type || '';
-    let iconPath = '/assets/img/file-icon.png'; // default
+    let iconPath = '/assets/img/file-icons/file-icon.png'; // default
 
     if (mime.startsWith('image/')) {
       iconPath = '/assets/img/file-icons/image-icon.png';
@@ -135,6 +153,8 @@ function renderPreviewOverlay(item) {
       mime === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ) {
       iconPath = '/assets/img/file-icons/excel.png';
+    } else if (mime === 'application/zip') {
+      iconPath = '/assets/img/file-icons/zip-icon.png';
     } else if (item.type === 'folder') {
       iconPath = '/assets/img/folder.png';
     }
@@ -142,10 +162,9 @@ function renderPreviewOverlay(item) {
     icon.src = iconPath;
     icon.alt = mime || 'File Type';
   }
-
   // ✅ Render preview content
   preview.innerHTML = item.type === 'folder'
-    ? `<div class="text-sm text-gray-500">Preview not available for folders.</div>`
+    ? `<div class="text-sm text-white">Preview not available for folders.</div>`
     : getPreviewHTML(item);
 
   if (item.mime_type === 'application/pdf') {
@@ -465,10 +484,20 @@ function setupPreviewActions(item) {
     };
   }
 
+  const currentView = document.body.dataset.view || 'my-files';
+  const currentFolder = document.body.dataset.folderId || '';
+
   const downloadBtn = document.getElementById('downloadPreview');
   if (downloadBtn) {
     downloadBtn.onclick = () => {
-      window.open(`preview.php?id=${item.id}`, '_blank');
+      const mime = item.mime_type || '';
+      const isPreviewable = mime.startsWith('image/') || mime.startsWith('video/') || mime.startsWith('audio/') || mime.startsWith('text/') || mime === 'application/pdf';
+
+      const targetUrl = isPreviewable
+        ? `preview.php?id=${item.id}&view=${encodeURIComponent(currentView)}&folder=${encodeURIComponent(currentFolder)}`
+        : `download.php?id=${item.id}&view=${encodeURIComponent(currentView)}&folder=${encodeURIComponent(currentFolder)}`;
+
+      window.open(targetUrl, '_blank');
     };
   }
 
