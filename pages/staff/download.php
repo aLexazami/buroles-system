@@ -8,7 +8,7 @@ if (!isset($_GET['id'])) {
   exit;
 }
 
-$fileId = intval($_GET['id']);
+$fileId = $_GET['id']; // ✅ UUID-safe — no intval()
 $currentUserId = $_SESSION['user_id'] ?? null;
 
 // 📄 Fetch file metadata
@@ -38,6 +38,10 @@ $storedPath = $file['path']; // e.g. /srv/burol-storage/2/filename.docx
 $relativePath = ltrim(str_replace('/srv/burol-storage/', '', $storedPath), '/');
 $fullPath = __DIR__ . '/../../srv/burol-storage/' . $relativePath;
 
+// 🧾 Log resolved path for debugging
+error_log("Download request: file_id=$fileId, user_id=$currentUserId");
+error_log("Resolved path: $fullPath");
+
 if (!file_exists($fullPath)) {
   http_response_code(404);
   echo "File not found on disk.";
@@ -46,7 +50,7 @@ if (!file_exists($fullPath)) {
 
 // 🧠 MIME and filename
 $mimeType = $file['mime_type'] ?: mime_content_type($fullPath);
-$originalName = basename($file['name'] ?? $fullPath);
+$originalName = $file['name'] ?? basename($fullPath);
 
 // 📦 Serve file as download
 header('Content-Type: ' . $mimeType);

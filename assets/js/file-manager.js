@@ -1,5 +1,5 @@
 // file-manager.js
-import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal,showRenameModal } from './modal.js';
+import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal } from './modal.js';
 import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
@@ -279,7 +279,14 @@ export function createFileRow(item, isTrashView = false) {
     menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => showRestoreModal(item.id)));
     menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => showPermanentDeleteModal(item.id)));
   } else {
-    menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, `/download.php?id=${item.id}`));
+    const currentView = document.body.dataset.view || 'my-files';
+    const currentFolder = document.body.dataset.folderId || '';
+
+    const downloadUrl = item.type === 'folder'
+      ? `/pages/staff/download-folder.php?id=${item.id}&view=${currentView}&folder=${currentFolder}`
+      : `/pages/staff/download.php?id=${item.id}&view=${currentView}&folder=${currentFolder}`;
+
+    menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, downloadUrl));
 
     if (item.permissions?.includes('delete')) {
       menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
