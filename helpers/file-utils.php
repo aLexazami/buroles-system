@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/folder-utils.php'; // getRecursiveFolderSize()
 /* ****************************************************************************************** */
 function getFilesForView(
   PDO $pdo,
@@ -11,7 +12,7 @@ function getFilesForView(
   $params = [':userId' => $userId];
   $where = [];
   $joins = '';
-  $select = 'f.*';
+  $select = 'f.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name';
   $order = "ORDER BY f.$sortBy $sortDir";
 
   // 📁 Folder filter — only apply for non-trash views
@@ -27,7 +28,10 @@ function getFilesForView(
   // 🔍 View-specific filters
   switch ($view) {
     case 'shared-with-me':
-      $joins = 'JOIN access_control ac ON ac.file_id = f.id';
+      $joins = '
+        JOIN access_control ac ON ac.file_id = f.id
+        JOIN users u ON f.owner_id = u.id
+      ';
       $where[] = 'ac.user_id = :userId';
       $where[] = 'ac.is_revoked = FALSE';
       $where[] = 'f.is_deleted = FALSE';
@@ -35,20 +39,25 @@ function getFilesForView(
       break;
 
     case 'shared-by-me':
-      $joins = 'JOIN access_control ac ON ac.file_id = f.id';
-      $select = 'f.*, ac.user_id AS shared_with, ac.permission';
+      $joins = '
+        JOIN access_control ac ON ac.file_id = f.id
+        JOIN users u ON f.owner_id = u.id
+      ';
+      $select .= ', ac.user_id AS shared_with, ac.permission';
       $where[] = 'ac.granted_by = :userId';
       $where[] = 'ac.is_revoked = FALSE';
       $where[] = 'f.is_deleted = FALSE';
       break;
 
     case 'trash':
+      $joins = 'JOIN users u ON f.owner_id = u.id';
       $where[] = 'f.owner_id = :userId';
       $where[] = 'f.is_deleted = TRUE';
-      $where[] = 'f.deleted_by_parent = 0'; // ✅ Only show standalone deletions
+      $where[] = 'f.deleted_by_parent = 0';
       break;
 
     default: // 'my-files'
+      $joins = 'JOIN users u ON f.owner_id = u.id';
       $where[] = 'f.owner_id = :userId';
       $where[] = 'f.is_deleted = FALSE';
       break;
@@ -79,6 +88,11 @@ function getFilesForView(
       $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ? AND owner_id = ?");
       $stmtParent->execute([$file['parent_id'], $userId]);
       $file['parent_name'] = $stmtParent->fetchColumn();
+    }
+
+    // 📦 Optional: hydrate folder size
+    if ($file['type'] === 'folder') {
+      $file['size'] = getRecursiveFolderSize($pdo, $file['id'], $userId);
     }
   }
 

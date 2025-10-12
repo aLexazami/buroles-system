@@ -11,6 +11,34 @@ function deleteFolderOnDisk(string $virtualPath): void {
   deleteDirectory($diskPath);
 }
 
+function getRecursiveFolderSize(PDO $pdo, string $folderId, int $userId): int {
+  $totalSize = 0;
+
+  // Get all direct files
+  $stmt = $pdo->prepare("
+    SELECT size FROM files
+    WHERE parent_id = ? AND owner_id = ? AND type = 'file' AND is_deleted = 0
+  ");
+  $stmt->execute([$folderId, $userId]);
+  $sizes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+  foreach ($sizes as $size) {
+    $totalSize += (int) $size;
+  }
+
+  // Recurse into subfolders
+  $stmt = $pdo->prepare("
+    SELECT id FROM files
+    WHERE parent_id = ? AND owner_id = ? AND type = 'folder' AND is_deleted = 0
+  ");
+  $stmt->execute([$folderId, $userId]);
+  $subfolders = $stmt->fetchAll(PDO::FETCH_COLUMN);
+  foreach ($subfolders as $subId) {
+    $totalSize += getRecursiveFolderSize($pdo, $subId, $userId);
+  }
+
+  return $totalSize;
+}
+
 function getFolderMetadata(PDO $pdo, string $folderId, int $userId): ?array {
   $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
   $stmt->execute([$folderId, $userId]);

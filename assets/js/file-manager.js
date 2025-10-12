@@ -334,16 +334,54 @@ export function renderItems(items) {
   });
 }
 
+export async function fetchFolderSize(folderId) {
+  const res = await fetch('/api/get-folder-size.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: folderId })
+  });
+  const data = await res.json();
+  return data.success ? formatSize(data.size) : '—';
+}
 
 export function formatSize(bytes) {
-  if (bytes === 0) return '—';
+  if (typeof bytes !== 'number' || isNaN(bytes)) return '—';
+  if (bytes === 0) return '0 B (0 bytes)';
+
   const units = ['B', 'KB', 'MB', 'GB'];
   let i = 0;
-  while (bytes >= 1024 && i < units.length - 1) {
-    bytes /= 1024;
+  let display = bytes;
+
+  while (display >= 1024 && i < units.length - 1) {
+    display /= 1024;
     i++;
   }
-  return `${bytes.toFixed(1)} ${units[i]}`;
+
+  return `${display.toFixed(1)} ${units[i]} (${bytes} bytes)`;
+}
+
+export async function resolveItemSize(item) {
+  if (item.type === 'folder') {
+    if (typeof item.size === 'number' && !isNaN(item.size)) {
+      return formatSize(item.size); // ✅ Use prehydrated size
+    }
+
+    // 🧠 Fallback to API if size is missing
+    try {
+      const res = await fetch('/api/get-folder-size.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: item.id })
+      });
+      const data = await res.json();
+      return data.success ? formatSize(data.size) : '—';
+    } catch (err) {
+      console.warn('⚠️ Folder size fetch failed:', err);
+      return '—';
+    }
+  }
+
+  return formatSize(item.size);
 }
 
 export function renderBreadcrumb(trail) {
