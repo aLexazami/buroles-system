@@ -1,21 +1,27 @@
 <?php
 /* ****************************************************************************************** */
-function getFilesForView($userId, $view = 'my-files', $folderId = null, $sortBy = 'updated_at', $sortDir = 'DESC')
-{
-  global $pdo;
-
-  $params = [];
+function getFilesForView(
+  PDO $pdo,
+  int $userId,
+  string $view = 'my-files',
+  ?string $folderId = null,
+  string $sortBy = 'updated_at',
+  string $sortDir = 'DESC'
+): array {
+  $params = [':userId' => $userId];
   $where = [];
   $joins = '';
   $select = 'f.*';
   $order = "ORDER BY f.$sortBy $sortDir";
 
-  // 📁 Folder filter
-  if ($folderId) {
-    $where[] = 'f.parent_id = :folderId';
-    $params[':folderId'] = $folderId;
-  } else {
-    $where[] = 'f.parent_id IS NULL';
+  // 📁 Folder filter — only apply for non-trash views
+  if ($view !== 'trash') {
+    if ($folderId) {
+      $where[] = 'f.parent_id = :folderId';
+      $params[':folderId'] = $folderId;
+    } else {
+      $where[] = 'f.parent_id IS NULL';
+    }
   }
 
   // 🔍 View-specific filters
@@ -26,7 +32,6 @@ function getFilesForView($userId, $view = 'my-files', $folderId = null, $sortBy 
       $where[] = 'ac.is_revoked = FALSE';
       $where[] = 'f.is_deleted = FALSE';
       $where[] = 'f.owner_id != :userId';
-      $params[':userId'] = $userId;
       break;
 
     case 'shared-by-me':
@@ -35,19 +40,17 @@ function getFilesForView($userId, $view = 'my-files', $folderId = null, $sortBy 
       $where[] = 'ac.granted_by = :userId';
       $where[] = 'ac.is_revoked = FALSE';
       $where[] = 'f.is_deleted = FALSE';
-      $params[':userId'] = $userId;
       break;
 
     case 'trash':
       $where[] = 'f.owner_id = :userId';
       $where[] = 'f.is_deleted = TRUE';
-      $params[':userId'] = $userId;
+      $where[] = 'f.deleted_by_parent = 0'; // ✅ Only show standalone deletions
       break;
 
     default: // 'my-files'
       $where[] = 'f.owner_id = :userId';
       $where[] = 'f.is_deleted = FALSE';
-      $params[':userId'] = $userId;
       break;
   }
 
@@ -68,9 +71,24 @@ function getFilesForView($userId, $view = 'my-files', $folderId = null, $sortBy 
   $stmt->execute();
   $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // ✅ Inject permissions using helper
+  // ✅ Inject permissions and parent name
   foreach ($files as &$file) {
     $file['permissions'] = getPermissionsForFile($file, $view, $userId, $pdo);
+
+    if ($file['parent_id']) {
+      $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ? AND owner_id = ?");
+      $stmtParent->execute([$file['parent_id'], $userId]);
+      $file['parent_name'] = $stmtParent->fetchColumn();
+    }
+  }
+
+  // 🌳 Inject trash hierarchy
+  if ($view === 'trash') {
+    foreach ($files as &$file) {
+      if ($file['type'] === 'folder') {
+        $file['children'] = getTrashedChildren($pdo, $file['id'], $userId);
+      }
+    }
   }
 
   return $files;
@@ -139,7 +157,6 @@ function canPerformAction($userId, $fileId, $action)
   return $stmt->fetchColumn() > 0;
 }
 
-
 function formatSize($bytes)
 {
   if ($bytes < 1024) return $bytes . ' B';
@@ -150,4 +167,83 @@ function formatSize($bytes)
 function formatDate($timestamp)
 {
   return date('M d, Y', strtotime($timestamp));
+}
+
+function getTrashedChildren(
+  PDO $pdo,
+  ?string $folderId,
+  int $userId,
+  int $depth = 0,
+  int $maxDepth = 10,
+  string $sortBy = 'updated_at',
+  string $sortDir = 'DESC'
+): array {
+  if ($depth > $maxDepth) return [];
+
+  // 🧠 Build dynamic query for root or nested folders
+  $query = "
+    SELECT id, name, type, path, size, mime_type, updated_at, parent_id
+    FROM files
+    WHERE " . ($folderId ? "parent_id = ?" : "parent_id IS NULL") . "
+      AND is_deleted = TRUE
+      AND deleted_by_parent = TRUE
+      AND owner_id = ?
+    ORDER BY $sortBy $sortDir
+  ";
+
+  $stmt = $pdo->prepare($query);
+  $folderId ? $stmt->execute([$folderId, $userId]) : $stmt->execute([$userId]);
+  $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  foreach ($items as &$item) {
+    // 🧩 Inject restore preview info
+    $item['restore_preview'] = [
+      'path' => $item['path'],
+      'size' => $item['size'],
+      'mime_type' => $item['mime_type'],
+      'updated_at' => $item['updated_at']
+    ];
+
+    // 🧩 Inject depth for UI rendering (optional)
+    $item['depth'] = $depth;
+
+    // 🌳 Recursively fetch children if folder
+    if ($item['type'] === 'folder') {
+      $item['children'] = getTrashedChildren($pdo, $item['id'], $userId, $depth + 1, $maxDepth, $sortBy, $sortDir);
+    }
+  }
+
+  return $items;
+}
+
+/******* BREADCRUMB TRAIL ******** */
+function getFolderTrail(PDO $pdo, string $folderId, int $userId): array {
+  $trail = [];
+  $currentId = $folderId;
+
+  while ($currentId) {
+    $stmt = $pdo->prepare("SELECT id, name, parent_id FROM files WHERE id = ? AND owner_id = ?");
+    $stmt->execute([$currentId, $userId]);
+    $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$folder) break;
+
+    array_unshift($trail, $folder);
+    $currentId = $folder['parent_id'];
+  }
+
+  return $trail;
+}
+
+function getTrashedRootFolders(PDO $pdo, int $userId): array {
+  $stmt = $pdo->prepare("
+    SELECT * FROM files
+    WHERE is_deleted = TRUE
+      AND owner_id = ?
+      AND (parent_id IS NULL OR parent_id NOT IN (
+        SELECT id FROM files WHERE is_deleted = TRUE AND owner_id = ?
+      ))
+    ORDER BY updated_at DESC
+  ");
+  $stmt->execute([$userId, $userId]);
+  return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
