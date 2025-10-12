@@ -13,7 +13,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
 // 🖼️ Generate preview HTML based on MIME type
 export function getPreviewHTML(item) {
-  const fileUrl = `preview.php?id=${item.id}`;
+  const currentView = document.body.dataset.view || 'my-files';
+  const currentFolder = document.body.dataset.folderId || '';
+  const fileUrl = `preview.php?id=${item.id}&view=${encodeURIComponent(currentView)}&folder=${encodeURIComponent(currentFolder)}`;
   const mime = item.mime_type || '';
   console.log('MIME Type:', mime);
 
@@ -87,6 +89,7 @@ export function openFilePreview(item, items = []) {
   if (!items || items.length === 0) return;
   setPreviewState(items, item.id);
   renderPreviewOverlay(item);
+  
 }
 
 // 🎬 Render preview overlay
@@ -157,10 +160,11 @@ function renderPreviewOverlay(item) {
   setupPreviewNavigation(renderPreviewOverlay);
 }
 
-
 // 📄 Render multi-page PDF
 function renderPDFPreview(fileId) {
-  const fileUrl = `preview.php?id=${fileId}`;
+  const currentView = document.body.dataset.view || 'my-files';
+  const currentFolder = document.body.dataset.folderId || '';
+  const fileUrl = `preview.php?id=${fileId}&view=${encodeURIComponent(currentView)}&folder=${encodeURIComponent(currentFolder)}`;
   const container = document.querySelector('.pdf-container');
   const scrollContainer = document.querySelector('#preview-overlay .flex-1');
   const navContainer = document.getElementById('pdf-navigation');

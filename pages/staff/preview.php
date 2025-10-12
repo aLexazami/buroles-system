@@ -11,6 +11,11 @@ if (!isset($_GET['id'])) {
 $fileId = $_GET['id'];
 $currentUserId = $_SESSION['user_id'];
 
+// 🧭 Optional context
+$view = $_GET['view'] ?? 'my-files';
+$folderId = $_GET['folder'] ?? null;
+
+// 📄 Fetch file metadata
 $stmt = $pdo->prepare("
   SELECT path, mime_type, is_deleted, owner_id
   FROM files
@@ -25,13 +30,14 @@ if (!$file || $file['is_deleted']) {
   exit;
 }
 
+// 🔐 Basic access control
 if ($file['owner_id'] !== $currentUserId) {
   http_response_code(403);
   echo "Forbidden.";
   exit;
 }
 
-// actual Windows path
+// 🧠 Resolve disk path
 $storedPath = $file['path']; // e.g. /srv/burol-storage/2/filename.jpg
 $relativePath = ltrim(str_replace('/srv/burol-storage/', '', $storedPath), '/');
 $fullPath = __DIR__ . '/../../srv/burol-storage/' . $relativePath;
@@ -44,6 +50,10 @@ if (!file_exists($fullPath)) {
   exit;
 }
 
+// 🧾 Optional: Log access context for audit/debug
+error_log("Preview accessed: file_id=$fileId, user_id=$currentUserId, view=$view, folder=$folderId");
+
+// 📤 Serve file
 header('Content-Type: ' . $mimeType);
 header('Content-Length: ' . filesize($fullPath));
 header('Content-Disposition: inline; filename="' . basename($fullPath) . '"');
