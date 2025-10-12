@@ -55,6 +55,19 @@ if ($view === 'trash') {
   foreach ($standaloneTrash as &$item) {
     $item['restored_to_fallback'] = ($item['original_path'] && strpos($item['path'], $item['id']) !== false);
 
+    // 🏷️ Extract original parent folder name
+    if (!empty($item['original_path'])) {
+      $segments = explode('/', $item['original_path']);
+      $parentId = count($segments) >= 2 ? $segments[count($segments) - 2] : null;
+
+      if ($parentId) {
+        $stmt = $pdo->prepare("SELECT name FROM files WHERE id = ?");
+        $stmt->execute([$parentId]);
+        $parentName = $stmt->fetchColumn();
+        $item['original_parent_name'] = $parentName ?: null;
+      }
+    }
+
     if ($item['type'] === 'folder') {
       $item['depth'] = 0;
       $item['children'] = getTrashedChildren($pdo, $item['id'], $userId, 1);
