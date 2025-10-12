@@ -8,7 +8,7 @@ if (!isset($_GET['id'])) {
   exit;
 }
 
-$fileId = $_GET['id']; // ✅ UUID-safe — no intval()
+$fileId = $_GET['id']; // UUID-safe
 $currentUserId = $_SESSION['user_id'] ?? null;
 
 // 📄 Fetch file metadata
@@ -26,7 +26,7 @@ if (!$file || $file['is_deleted']) {
   exit;
 }
 
-// 🔐 Access control: must be owner or have download rights
+// 🔐 Access control: must be owner
 if ($file['owner_id'] !== $currentUserId) {
   http_response_code(403);
   echo "Forbidden.";
@@ -34,15 +34,13 @@ if ($file['owner_id'] !== $currentUserId) {
 }
 
 // 🧩 Resolve full path
-$storedPath = $file['path']; // e.g. /srv/burol-storage/2/filename.docx
+$storedPath = $file['path'];
 $relativePath = ltrim(str_replace('/srv/burol-storage/', '', $storedPath), '/');
-$fullPath = __DIR__ . '/../../srv/burol-storage/' . $relativePath;
+$fullPath = realpath(__DIR__ . '/../../srv/burol-storage/' . $relativePath);
+$storageRoot = realpath(__DIR__ . '/../../srv/burol-storage');
 
-// 🧾 Log resolved path for debugging
-error_log("Download request: file_id=$fileId, user_id=$currentUserId");
-error_log("Resolved path: $fullPath");
-
-if (!file_exists($fullPath)) {
+// 🔒 Validate path integrity
+if (!$fullPath || strpos($fullPath, $storageRoot) !== 0 || !file_exists($fullPath)) {
   http_response_code(404);
   echo "File not found on disk.";
   exit;
@@ -51,10 +49,28 @@ if (!file_exists($fullPath)) {
 // 🧠 MIME and filename
 $mimeType = $file['mime_type'] ?: mime_content_type($fullPath);
 $originalName = $file['name'] ?? basename($fullPath);
+$safeName = str_replace(["\r", "\n"], '', $originalName);
+
+// 🧾 Log download to database
+$logStmt = $pdo->prepare("
+  INSERT INTO downloads (id, file_id, user_id, view_context, folder_id, ip_address, user_agent)
+  VALUES (UUID(), ?, ?, ?, ?, ?, ?)
+");
+$logStmt->execute([
+  $fileId,
+  $currentUserId,
+  $_GET['view'] ?? null,
+  $_GET['folder'] ?? null,
+  $_SERVER['REMOTE_ADDR'] ?? null,
+  $_SERVER['HTTP_USER_AGENT'] ?? null
+]);
+
+// 🧾 Optional: Log to error_log for debugging
+error_log("Download accessed: file_id=$fileId, user_id=$currentUserId, filename=$safeName");
 
 // 📦 Serve file as download
 header('Content-Type: ' . $mimeType);
 header('Content-Length: ' . filesize($fullPath));
-header('Content-Disposition: attachment; filename="' . $originalName . '"');
+header('Content-Disposition: attachment; filename="' . $safeName . '"');
 readfile($fullPath);
 exit;
