@@ -42,3 +42,18 @@ function ensureVirtualPathExists(string $virtualPath): void {
   ensureDirectoryExists($diskPath);
 }
 
+function deleteDirectory(string $path): void {
+  if (!is_dir($path)) return;
+  $items = scandir($path);
+  foreach ($items as $item) {
+    if ($item === '.' || $item === '..') continue;
+    $itemPath = $path . DIRECTORY_SEPARATOR . $item;
+    if (is_dir($itemPath)) {
+      deleteDirectory($itemPath);
+    } else {
+      @unlink($itemPath);
+    }
+  }
+  @rmdir($path);
+}
+

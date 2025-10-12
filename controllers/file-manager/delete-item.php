@@ -49,19 +49,6 @@ try {
 
     // 🧹 Soft delete folder and contents with trash root
     $success = softDeleteFolderAndContents($pdo, $userId, $fileId, false, $trashRoot);
-
-    if ($success) {
-      $log = $pdo->prepare("
-        INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
-        VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
-      ");
-      $log->execute([
-        $fileId,
-        $name,
-        $userId,
-        "Folder soft-deleted via $source"
-      ]);
-    }
   } elseif ($type === 'file') {
     // 🧹 Move file to trash with hierarchy preservation
     $realPath = resolveDiskPath($path);
