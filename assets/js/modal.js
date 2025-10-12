@@ -477,10 +477,9 @@ function isFolderNameValid(name) {
 export function showDeleteModal(itemId, itemName = '') {
   document.getElementById('delete-item-id').value = itemId;
 
-  // Optional: show item name in modal
   const nameDisplay = document.getElementById('delete-item-name');
   if (nameDisplay) {
-    nameDisplay.textContent = itemName;
+    nameDisplay.textContent = itemName ? `‘${itemName}’` : 'This item';
   }
 
   toggleModal('deleteModal', true);

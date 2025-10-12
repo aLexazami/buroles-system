@@ -304,11 +304,14 @@ renderHead('Staff');
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
       <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Confirm Move to Trash</h2>
-      <p class="text-sm text-gray-700 mb-6">Are you sure you want to move this item on trash? This item will be deleted forever and can't restore after 30 days.</p>
+      <p class="text-sm text-gray-700 mb-6">
+        <span class="font-semibold text-gray-800" id="delete-item-name">This item</span>
+        will be deleted forever and can't be restored after 30 days.
+      </p>
       <input type="hidden" id="delete-item-id">
       <div class="flex justify-end gap-2">
         <button type="button" id="cancelDelete" class="px-3 py-1 text-emerald-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
-        <button type="button" id="confirmDeleteBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Move</button>
+        <button type="button" id="confirmDeleteBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Move to Trash</button>
       </div>
     </div>
   </div>
