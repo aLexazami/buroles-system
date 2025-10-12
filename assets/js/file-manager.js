@@ -180,7 +180,7 @@ export function createFileRow(item, isTrashView = false) {
   label.textContent = item.name;
   label.className = 'text-gray-800 font-medium truncate';
 
-  // 🏷️ Badge (conditionally visible)
+  // 🏷️ Badge
   const badge = document.createElement('span');
   badge.textContent = `Removed From: ${item.original_parent_name}`;
   badge.className = 'hidden min-[650px]:inline-block text-xs text-gray-600 bg-emerald-100 px-2 py-1 rounded-md';
@@ -253,16 +253,21 @@ export function createFileRow(item, isTrashView = false) {
     return wrapper;
   };
 
-  // ℹ️ Info
-  menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
-
-  // ⬇️ Download
-  menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, `/download.php?id=${item.id}`));
-
+  // 🗑️ Trash View
   if (isTrashView) {
-    menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', ' cursor-pointer', () => showRestoreModal(item.id)));
+    menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
+    menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => showRestoreModal(item.id)));
     menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => showPermanentDeleteModal(item.id)));
   } else {
+    // ⬇️ Download
+    menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, `/download.php?id=${item.id}`));
+
+    // ✏️ Rename
+    if (item.permissions?.includes('delete')) {
+      menu.appendChild(createMenuItem('Rename', '/assets/img/rename-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
+    }
+
+    // 💬 Comment
     if (item.permissions?.includes('comment')) {
       const commentBtn = createMenuItem('Comment', '/assets/img/comment.png', 'cursor-pointer', null);
       commentBtn.classList.add('comment-btn');
@@ -270,6 +275,7 @@ export function createFileRow(item, isTrashView = false) {
       menu.appendChild(commentBtn);
     }
 
+    // 🔗 Share
     if (item.permissions?.includes('share')) {
       const shareBtn = createMenuItem('Share', '/assets/img/share-icon.png', 'cursor-pointer', null);
       shareBtn.classList.add('share-btn');
@@ -277,6 +283,10 @@ export function createFileRow(item, isTrashView = false) {
       menu.appendChild(shareBtn);
     }
 
+    // ℹ️ Info
+    menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
+
+    // 🗑️ Move to Trash
     if (item.permissions?.includes('delete')) {
       menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'text-emerald-600 cursor-pointer', () => showDeleteModal(item.id, item.name)));
     }
