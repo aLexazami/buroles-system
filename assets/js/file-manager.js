@@ -22,56 +22,79 @@ export function getCurrentFolderId() {
 
 export async function loadFolder(folderId = null) {
   const currentView = document.body.dataset.view || 'my-files';
-  const normalizedFolderId = folderId && typeof folderId === 'string' ? folderId : '';
+  const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
 
   // 🧠 Sync folder state to <body>
   document.body.dataset.folderId = normalizedFolderId;
 
+  // 🌐 Update browser URL for deep linking
+  const newUrl = `?view=${encodeURIComponent(currentView)}${normalizedFolderId ? `&folder=${encodeURIComponent(normalizedFolderId)}` : ''}`;
+  window.history.pushState({}, '', newUrl);
+
+  await Promise.all([
+    fetchContents(currentView, normalizedFolderId),
+    fetchBreadcrumb(normalizedFolderId)
+  ]);
+}
+
+async function fetchContents(view, folderId) {
   try {
-    // 📁 Fetch folder contents
-    const contentsUrl = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
-    contentsUrl.searchParams.set('view', currentView);
-    contentsUrl.searchParams.set('folder_id', normalizedFolderId);
+    const url = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
+    url.searchParams.set('view', view);
+    url.searchParams.set('folder_id', folderId);
 
-    const contentsRes = await fetch(contentsUrl.toString());
-    const contentsData = await contentsRes.json();
+    const res = await fetch(url.toString());
+    const data = await res.json();
 
-    setItems(contentsData.items);
+    setItems(data.items);
     renderItems(getItems());
     initCommentButtons();
     initShareButtons();
   } catch (err) {
-    console.error('Failed to load folder contents:', err);
+    console.error('📁 Failed to load folder contents:', err);
     const fileList = document.getElementById('file-list');
     if (fileList) {
       fileList.innerHTML = `<div class="text-center text-red-500 py-12">Failed to load folder contents.</div>`;
     }
   }
+}
 
+async function fetchBreadcrumb(folderId) {
   try {
-    // 🧭 Fetch breadcrumb trail
-    const breadcrumbUrl = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
-    breadcrumbUrl.searchParams.set('folder_id', normalizedFolderId);
+    const url = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
+    url.searchParams.set('folder_id', folderId);
 
-    const breadcrumbRes = await fetch(breadcrumbUrl.toString());
-    const breadcrumbTrail = await breadcrumbRes.json();
+    const res = await fetch(url.toString());
+    const trail = await res.json();
 
-    renderBreadcrumb(breadcrumbTrail);
+    renderBreadcrumb(trail);
   } catch (err) {
-    console.error('Failed to load breadcrumb trail:', err);
+    console.error('🧭 Failed to load breadcrumb trail:', err);
   }
 }
 
 export async function loadTrashView(folderId = null) {
   const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
+
+  // 🧠 Sync folder + view state to <body>
   document.body.dataset.folderId = normalizedFolderId;
   document.body.dataset.view = 'trash';
 
+  // 🌐 Update browser URL for deep linking
+  const newUrl = `?view=trash${normalizedFolderId ? `&folder=${encodeURIComponent(normalizedFolderId)}` : ''}`;
+  window.history.pushState({}, '', newUrl);
+
+  await Promise.all([
+    fetchTrashContents(normalizedFolderId),
+    fetchTrashBreadcrumb(normalizedFolderId)
+  ]);
+}
+
+async function fetchTrashContents(folderId) {
   try {
-    // 🔍 Fetch trash contents
     const url = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
     url.searchParams.set('view', 'trash');
-    url.searchParams.set('folder_id', normalizedFolderId);
+    url.searchParams.set('folder_id', folderId);
 
     const res = await fetch(url.toString());
     const data = await res.json();
@@ -82,33 +105,28 @@ export async function loadTrashView(folderId = null) {
     renderItems(getItems());
     initCommentButtons();
     initShareButtons();
-
-    // 🧭 Setup modal logic after rendering
     setupEmptyTrashModal();
   } catch (err) {
-    console.error('Failed to load trash contents:', err);
+    console.error('🗑️ Failed to load trash contents:', err);
     const fileList = document.getElementById('file-list');
     if (fileList) {
-      fileList.innerHTML = `
-        <div class="text-center text-red-500 py-12">
-          Failed to load trash contents.
-        </div>
-      `;
+      fileList.innerHTML = `<div class="text-center text-red-500 py-12">Failed to load trash contents.</div>`;
     }
   }
+}
 
+async function fetchTrashBreadcrumb(folderId) {
   try {
-    // 🧭 Fetch breadcrumb trail with trash context
-    const breadcrumbUrl = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
-    breadcrumbUrl.searchParams.set('folder_id', normalizedFolderId);
-    breadcrumbUrl.searchParams.set('view', 'trash'); // ✅ Ensure trash-aware trail
+    const url = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
+    url.searchParams.set('folder_id', folderId);
+    url.searchParams.set('view', 'trash');
 
-    const breadcrumbRes = await fetch(breadcrumbUrl.toString());
-    const breadcrumbTrail = await breadcrumbRes.json();
+    const res = await fetch(url.toString());
+    const trail = await res.json();
 
-    renderBreadcrumb(breadcrumbTrail);
+    renderBreadcrumb(trail);
   } catch (err) {
-    console.error('Failed to load breadcrumb trail:', err);
+    console.error('🧭 Failed to load trash breadcrumb trail:', err);
   }
 }
 
