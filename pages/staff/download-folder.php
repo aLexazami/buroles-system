@@ -67,6 +67,23 @@ function addFolderToZip($pdo, $zip, $folderId, $relativePath = '') {
 addFolderToZip($pdo, $zip, $folderId, $folder['name']);
 $zip->close();
 
+// 🧾 Log folder download to database
+$logStmt = $pdo->prepare("
+  INSERT INTO downloads (id, file_id, user_id, view_context, folder_id, ip_address, user_agent)
+  VALUES (UUID(), ?, ?, ?, ?, ?, ?)
+");
+$logStmt->execute([
+  $folderId,
+  $currentUserId,
+  $_GET['view'] ?? null,
+  $_GET['folder'] ?? null,
+  $_SERVER['REMOTE_ADDR'] ?? null,
+  $_SERVER['HTTP_USER_AGENT'] ?? null
+]);
+
+// 🧾 Optional: Log to error_log for debugging
+error_log("Folder download: folder_id=$folderId, user_id=$currentUserId, filename={$folder['name']}.zip");
+
 // 📤 Serve ZIP file
 header('Content-Type: application/zip');
 header('Content-Length: ' . filesize($tempZipPath));
