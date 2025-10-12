@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/uuid.php'; // isValidUuid()
 
 $folderId = $_GET['folder_id'] ?? null;
+$view = $_GET['view'] ?? 'default';
 $userId = $_SESSION['user_id'] ?? null;
 
 if (!$userId) {
@@ -14,30 +15,56 @@ if (!$userId) {
 
 $trail = [];
 
-// ✅ Always start with root
-$trail[] = [
-  'id' => null,
-  'name' => 'My Files'
-];
+if ($view === 'trash') {
+  // 🗑️ Trash view starts with "Trash"
+  $trail[] = [
+    'id' => null,
+    'name' => 'Trash'
+  ];
 
-// ✅ If folderId is valid, walk up the tree
-if (isValidUuid($folderId)) {
-  $currentId = $folderId;
+  if (isValidUuid($folderId)) {
+    $currentId = $folderId;
 
-  while ($currentId) {
-    $stmt = $pdo->prepare("SELECT id, name, parent_id FROM files WHERE id = ? AND owner_id = ?");
-    $stmt->execute([$currentId, $userId]);
-    $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+    while ($currentId) {
+      $stmt = $pdo->prepare("SELECT id, name, parent_id, is_deleted FROM files WHERE id = ? AND owner_id = ?");
+      $stmt->execute([$currentId, $userId]);
+      $folder = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$folder) break;
+      if (!$folder || !$folder['is_deleted']) break; // 🚫 Stop if folder is not deleted
 
-    // Prepend to trail
-    array_splice($trail, 1, 0, [[
-      'id' => $folder['id'],
-      'name' => $folder['name']
-    ]]);
+      // Prepend to trail after "Trash"
+      array_splice($trail, 1, 0, [[
+        'id' => $folder['id'],
+        'name' => $folder['name']
+      ]]);
 
-    $currentId = $folder['parent_id'];
+      $currentId = $folder['parent_id'];
+    }
+  }
+} else {
+  // 📁 Default view starts with "My Files"
+  $trail[] = [
+    'id' => null,
+    'name' => 'My Files'
+  ];
+
+  if (isValidUuid($folderId)) {
+    $currentId = $folderId;
+
+    while ($currentId) {
+      $stmt = $pdo->prepare("SELECT id, name, parent_id FROM files WHERE id = ? AND owner_id = ?");
+      $stmt->execute([$currentId, $userId]);
+      $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if (!$folder) break;
+
+      array_splice($trail, 1, 0, [[
+        'id' => $folder['id'],
+        'name' => $folder['name']
+      ]]);
+
+      $currentId = $folder['parent_id'];
+    }
   }
 }
 

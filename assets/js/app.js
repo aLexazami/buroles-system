@@ -28,7 +28,16 @@ import { loadFolder } from './file-manager.js';
 document.addEventListener('DOMContentLoaded', () => {
   // 📁 File Manager Initialization
   const folderId = document.body.dataset.folderId || null;
-  loadFolder(folderId);
+  const view = document.body.dataset.view || 'my-files';
+
+  if (view === 'trash') {
+    import('./file-manager.js').then(({ loadTrashView }) => {
+      loadTrashView(folderId); // ✅ Load trash view correctly
+    });
+  } else {
+    loadFolder(folderId); // ✅ Default to my-files or shared views
+  }
+
 
   // 🧭 UI & Role Toggles
   setupRoleSwitcher();

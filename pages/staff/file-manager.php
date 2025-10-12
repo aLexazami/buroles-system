@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../helpers/head.php'; //renderHead()
 require_once __DIR__ . '/../../helpers/file-utils.php'; //getFilesForView()
 
 $userId = $_SESSION['user_id'];
-$view = $_GET['view'] ?? 'my-files'; // 'shared-with-me', 'shared-by-me', 'my-files'
+$view = $_GET['view'] ?? 'my-files'; // 'shared-with-me', 'shared-by-me', 'my-files', 'trash'
 $folderId = $_GET['folder'] ?? null;
 
 
@@ -40,13 +40,15 @@ renderHead('Staff');
           <a href="?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Trash</a>
         </div>
 
-        <!-- 🗑️ Trash Header -->
-        <div id="trash-header" class="hidden items-center justify-between bg-emerald-50 border border-emerald-200 rounded-md px-4 py-3 text-sm sm:text-md text-gray-700">
-          <span>Items in trash will be deleted forever after 30 days.</span>
-          <button id="empty-trash-btn" class="px-3 py-1 font-semibold text-emerald-600 rounded hover:bg-emerald-100 transition text-sm sm:text-md cursor-pointer">
-            Empty Trash
-          </button>
-        </div>
+        <?php if ($view === 'trash'): ?>
+          <!-- 🗑️ Trash Header -->
+          <div id="trash-header" class="hidden items-center justify-between bg-emerald-50 border border-emerald-200 rounded-md px-4 py-3 text-sm sm:text-md text-gray-700">
+            <span>Items in trash will be deleted forever after 30 days.</span>
+            <button id="empty-trash-btn" class="px-3 py-1 font-semibold text-emerald-600 rounded hover:bg-emerald-100 transition text-sm sm:text-md cursor-pointer">
+              Empty Trash
+            </button>
+          </div>
+        <?php endif; ?>
 
 
         <!-- Toolbar -->

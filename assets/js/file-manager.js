@@ -68,6 +68,7 @@ export async function loadTrashView(folderId = null) {
   document.body.dataset.view = 'trash';
 
   try {
+    // 🔍 Fetch trash contents
     const url = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
     url.searchParams.set('view', 'trash');
     url.searchParams.set('folder_id', normalizedFolderId);
@@ -82,9 +83,8 @@ export async function loadTrashView(folderId = null) {
     initCommentButtons();
     initShareButtons();
 
-    // ✅ Setup modal logic after rendering
+    // 🧭 Setup modal logic after rendering
     setupEmptyTrashModal();
-
   } catch (err) {
     console.error('Failed to load trash contents:', err);
     const fileList = document.getElementById('file-list');
@@ -98,8 +98,10 @@ export async function loadTrashView(folderId = null) {
   }
 
   try {
+    // 🧭 Fetch breadcrumb trail with trash context
     const breadcrumbUrl = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
     breadcrumbUrl.searchParams.set('folder_id', normalizedFolderId);
+    breadcrumbUrl.searchParams.set('view', 'trash'); // ✅ Ensure trash-aware trail
 
     const breadcrumbRes = await fetch(breadcrumbUrl.toString());
     const breadcrumbTrail = await breadcrumbRes.json();
@@ -350,6 +352,8 @@ export function renderBreadcrumb(trail) {
 
   container.innerHTML = ''; // Clear existing
 
+  const isTrashView = document.body.dataset.view === 'trash';
+
   trail.forEach((folder, index) => {
     const link = document.createElement('a');
     link.textContent = folder.name;
@@ -359,7 +363,11 @@ export function renderBreadcrumb(trail) {
 
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      loadFolder(folder.id);
+      if (isTrashView) {
+        loadTrashView(folder.id); // ✅ Stay inside trash view
+      } else {
+        loadFolder(folder.id);
+      }
     });
 
     container.appendChild(link);
