@@ -261,3 +261,9 @@ function getTrashedRootFolders(PDO $pdo, int $userId): array {
   $stmt->execute([$userId, $userId]);
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function getFileById(PDO $pdo, string $id, int $userId): ?array {
+  $stmt = $pdo->prepare("SELECT * FROM files WHERE id = ? AND owner_id = ?");
+  $stmt->execute([$id, $userId]);
+  return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+}

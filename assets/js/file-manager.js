@@ -264,7 +264,7 @@ export function createFileRow(item, isTrashView = false) {
 
     // ✏️ Rename
     if (item.permissions?.includes('delete')) {
-      menu.appendChild(createMenuItem('Rename', '/assets/img/rename-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
+      menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
     }
 
     // 💬 Comment
@@ -399,20 +399,33 @@ export function getExtension(filename) {
   return parts.length > 1 ? parts.pop().toLowerCase() : '';
 }
 
-export function isValidFileName(name, originalExtension) {
-  if (!name || /[\\/:*?"<>|]/.test(name)) return false;
+export function isValidFileName(input, originalExtension) {
+  if (!input || !isFolderNameValid(input)) return false;
 
-  const ext = getExtension(name);
-  if (!ext) return true; // allow extensionless input (we’ll append it)
+  const ext = getExtension(input);
+  const base = input.slice(0, input.length - ext.length - 1);
 
-  // ✅ Must match original extension exactly
-  return ext === originalExtension.toLowerCase();
+  const isExact = input === `${base}.${originalExtension}`;
+  const isMissing = ext === ''; // user forgot extension
+  const isClean = (input.match(/\./g) || []).length <= 1;
+
+  return (isExact || isMissing) && isClean;
+}
+
+export function isFolderNameValid(name) {
+  return !/[\\/:*?"<>|]/.test(name);
 }
 
 export function normalizeFileNameInput(input, originalName) {
   const originalExt = getExtension(originalName);
-  const base = input.replace(/\.[^/.]+$/, ''); // strip any extension
-  return `${base}.${originalExt}`;
+  const ext = getExtension(input);
+
+  if (!ext) {
+    const base = input.replace(/\.[^/.]+$/, '');
+    return `${base}.${originalExt}`;
+  }
+
+  return input;
 }
 
 export function renderBreadcrumb(trail) {

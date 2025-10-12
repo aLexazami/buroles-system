@@ -1,5 +1,5 @@
 
-import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput,isValidFileName,getExtension} from './file-manager.js';
+import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput,isValidFileName,getExtension,isFolderNameValid} from './file-manager.js';
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
 
@@ -106,7 +106,6 @@ function submitSuperAdminPassword() {
       verifyBtn.disabled = false;
     });
 }
-
 
 
 // Unlock Modal Logic
@@ -473,9 +472,6 @@ export function initFolderCreationHandler() {
   });
 }
 
-function isFolderNameValid(name) {
-  return !/[\\/:*?"<>|]/.test(name);
-}
 
 // Delete Confirmation Modal in File Manager
 export function showDeleteModal(itemId, itemName = '') {
@@ -494,32 +490,36 @@ export function setupDeleteModal() {
   const cancelBtn = document.getElementById('cancelDelete');
   const confirmBtn = document.getElementById('confirmDeleteBtn');
 
-  cancelBtn.addEventListener('click', () => {
-    toggleModal('deleteModal', false);
-  });
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('deleteModal', false);
+    });
+  }
 
-  confirmBtn.addEventListener('click', async () => {
-    const itemId = document.getElementById('delete-item-id').value;
-    const currentView = document.body.dataset.view || 'my-files';
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      const itemId = document.getElementById('delete-item-id')?.value;
+      const currentView = document.body.dataset.view || 'my-files';
 
-    toggleModal('deleteModal', false); // ✅ Close immediately
+      toggleModal('deleteModal', false); // ✅ Close immediately
 
-    try {
-      const result = await handleFileAction('delete', {
-        id: itemId,
-        view: currentView // ✅ Pass view context
-      });
+      try {
+        const result = await handleFileAction('delete', {
+          id: itemId,
+          view: currentView
+        });
 
-      renderFlash('success', result.message || 'Item deleted successfully');
+        renderFlash('success', result.message || 'Item deleted successfully');
 
-      setTimeout(() => {
-        refreshCurrentFolder();
-      }, 300);
-    } catch (err) {
-      console.error('Delete failed:', err);
-      renderFlash('error', err.message || 'An error occurred while deleting the item.');
-    }
-  });
+        setTimeout(() => {
+          refreshCurrentFolder();
+        }, 300);
+      } catch (err) {
+        console.error('Delete failed:', err);
+        renderFlash('error', err.message || 'An error occurred while deleting the item.');
+      }
+    });
+  }
 }
 
 // Restore Items in File Manager
@@ -532,39 +532,43 @@ export function setupRestoreModal() {
   const cancelBtn = document.getElementById('cancelRestore');
   const confirmBtn = document.getElementById('confirmRestoreBtn');
 
-  cancelBtn.addEventListener('click', () => {
-    toggleModal('restoreModal', false);
-  });
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('restoreModal', false);
+    });
+  }
 
-  confirmBtn.addEventListener('click', async () => {
-    const itemId = document.getElementById('restore-item-id').value;
-    confirmBtn.disabled = true; // ✅ Prevent double-click
-    toggleModal('restoreModal', false);
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      const itemId = document.getElementById('restore-item-id')?.value;
+      confirmBtn.disabled = true;
+      toggleModal('restoreModal', false);
 
-    try {
-      const result = await handleFileAction('restore', { id: itemId });
+      try {
+        const result = await handleFileAction('restore', { id: itemId });
 
-      if (result.success) {
-        renderFlash('success', 'File restored successfully');
-        removeItemFromUI(itemId);
+        if (result.success) {
+          renderFlash('success', 'File restored successfully');
+          removeItemFromUI(itemId);
+          refreshCurrentFolder();
+        } else {
+          renderFlash('error', 'Restore failed');
+        }
+      } catch (err) {
+        console.error('Restore failed:', err);
+
+        if (err.message?.includes('File missing from trash')) {
+          renderFlash('info', 'Item may have already been restored or removed.');
+        } else {
+          renderFlash('error', err.message || 'Server error during restore');
+        }
+
         refreshCurrentFolder();
-      } else {
-        renderFlash('error', 'Restore failed');
+      } finally {
+        confirmBtn.disabled = false;
       }
-    } catch (err) {
-      console.error('Restore failed:', err);
-
-      if (err.message?.includes('File missing from trash')) {
-        renderFlash('info', 'Item may have already been restored or removed.');
-      } else {
-        renderFlash('error', err.message || 'Server error during restore');
-      }
-
-      refreshCurrentFolder(); // ✅ Ensure UI stays in sync
-    } finally {
-      confirmBtn.disabled = false; // ✅ Re-enable after attempt
-    }
-  });
+    });
+  }
 }
 
 // Permanent Delete in File Manager
@@ -577,23 +581,27 @@ export function setupPermanentDeleteModal() {
   const cancelBtn = document.getElementById('cancelPermanentDelete');
   const confirmBtn = document.getElementById('confirmPermanentDeleteBtn');
 
-  cancelBtn.addEventListener('click', () => {
-    toggleModal('permanentDeleteModal', false);
-  });
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('permanentDeleteModal', false);
+    });
+  }
 
-  confirmBtn.addEventListener('click', async () => {
-    const itemId = document.getElementById('permanent-delete-item-id').value;
-    toggleModal('permanentDeleteModal', false);
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      const itemId = document.getElementById('permanent-delete-item-id')?.value;
+      toggleModal('permanentDeleteModal', false);
 
-    try {
-      const result = await handleFileAction('deletePermanent', { id: itemId });
-      renderFlash('success', result.message || 'Item permanently deleted');
-      refreshCurrentFolder();
-    } catch (err) {
-      console.error('Permanent delete failed:', err);
-      renderFlash('error', err.message || 'Failed to delete item permanently');
-    }
-  });
+      try {
+        const result = await handleFileAction('deletePermanent', { id: itemId });
+        renderFlash('success', result.message || 'Item permanently deleted');
+        refreshCurrentFolder();
+      } catch (err) {
+        console.error('Permanent delete failed:', err);
+        renderFlash('error', err.message || 'Failed to delete item permanently');
+      }
+    });
+  }
 }
 
 // Empty Trash All Items in Filde Manager
@@ -654,48 +662,64 @@ export function showRenameModal(itemId, currentName = '') {
 export function setupRenameModalHandler() {
   const confirmBtn = document.getElementById('confirmRenameBtn');
   const cancelBtn = document.getElementById('cancelRename');
+  const inputEl = document.getElementById('rename-input');
+  const modal = document.getElementById('renameModal');
 
-  if (confirmBtn) {
-    confirmBtn.addEventListener('click', async () => {
-      const itemId = document.getElementById('rename-item-id')?.value;
-      const inputEl = document.getElementById('rename-input');
-      const input = inputEl?.value.trim();
-      const originalName = inputEl?.dataset.originalName;
+  const INVALID_CHARS = '\\ / : * ? " < > |';
 
-      const INVALID_CHARS = '\\ / : * ? " < > |';
+  async function handleRenameSubmit() {
+    const itemId = document.getElementById('rename-item-id')?.value;
+    const input = inputEl?.value.trim();
+    const originalName = inputEl?.dataset.originalName;
 
-      if (!itemId || !input || !originalName) return;
+    if (!itemId || !input || !originalName) return;
 
-      const originalExt = getExtension(originalName);
-      const finalName = normalizeFileNameInput(input, originalName);
+    const originalExt = getExtension(originalName);
 
-      if (!isValidFileName(finalName, originalExt)) {
-        renderFlash('error', `Invalid name. A file name can't contain: ${INVALID_CHARS}, and must end with .${originalExt}`);
-        return;
+    // ✅ Validate raw input before normalization
+    if (!isValidFileName(input, originalExt)) {
+      renderFlash('error', `Invalid name. A file name can't contain: ${INVALID_CHARS}, and must end with .${originalExt}`);
+      return;
+    }
+
+    // ✅ Normalize: auto-append extension if missing
+    const finalName = normalizeFileNameInput(input, originalName);
+
+    try {
+      const result = await handleFileAction('rename', { id: itemId, name: finalName });
+      if (result.success) {
+        toggleModal('renameModal', false);
+        refreshCurrentFolder();
+        renderFlash('success', 'Item renamed successfully.');
       }
-
-      try {
-        const result = await handleFileAction('rename', { id: itemId, name: finalName });
-        if (result.success) {
-          toggleModal('renameModal', false);
-          refreshCurrentFolder();
-          renderFlash('success', 'Item renamed successfully.');
-        }
-      } catch (err) {
-        renderFlash('error', 'Rename failed. Please try again.');
-      }
-    });
+    } catch (err) {
+      renderFlash('error', 'Rename failed. Please try again.');
+    }
   }
 
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', () => {
-      const inputEl = document.getElementById('rename-input');
-      if (inputEl && inputEl.dataset.originalName) {
-        inputEl.value = inputEl.dataset.originalName;
-      }
-
-      toggleModal('renameModal', false);
-    });
+  function handleRenameCancel() {
+    if (inputEl && inputEl.dataset.originalName) {
+      inputEl.value = inputEl.dataset.originalName;
+    }
+    toggleModal('renameModal', false);
   }
+
+  if (confirmBtn) confirmBtn.addEventListener('click', handleRenameSubmit);
+  if (cancelBtn) cancelBtn.addEventListener('click', handleRenameCancel);
+
+  // ⌨️ Keyboard support
+  document.addEventListener('keydown', (e) => {
+    const isOpen = modal?.classList.contains('opacity-100') || !modal?.classList.contains('hidden');
+    if (!isOpen) return;
+
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleRenameSubmit();
+    }
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      handleRenameCancel();
+    }
+  });
 }
-
