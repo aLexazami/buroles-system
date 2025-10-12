@@ -37,7 +37,15 @@ renderHead('Staff');
           <a href="?view=my-files<?= $folderParam ?>" class="<?= $view === 'my-files' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">My Files</a>
           <a href="?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared with Me</a>
           <a href="?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared by Me</a>
-          <a href="?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-red-600 text-red-600 font-medium' : 'text-gray-600 hover:text-red-600' ?>">Trash</a>
+          <a href="?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Trash</a>
+        </div>
+
+        <!-- 🗑️ Trash Header -->
+        <div id="trash-header" class="hidden items-center justify-between bg-emerald-50 border border-emerald-200 rounded-md px-4 py-3 text-sm sm:text-md text-gray-700">
+          <span>Items in trash will be deleted forever after 30 days.</span>
+          <button id="empty-trash-btn" class="px-3 py-1 font-semibold text-emerald-600 rounded hover:bg-emerald-100 transition text-sm sm:text-md cursor-pointer">
+            Empty Trash
+          </button>
         </div>
 
 
@@ -312,6 +320,21 @@ renderHead('Staff');
       <div class="flex justify-end gap-2">
         <button type="button" id="cancelDelete" class="px-3 py-1 text-emerald-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
         <button type="button" id="confirmDeleteBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Move to Trash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🧹 Empty Trash Confirmation Modal -->
+  <div id="emptyTrashModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-red-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-red-700">Confirm Empty Trash</h2>
+      <p class="text-sm text-gray-700 mb-6">
+        All items in trash will be <span class="font-semibold text-gray-800">permanently deleted</span> and cannot be recovered.
+      </p>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelEmptyTrash" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="button" id="confirmEmptyTrashBtn" class="px-3 py-1 text-white bg-red-600 rounded hover:bg-red-700 text-sm cursor-pointer">Empty Trash</button>
       </div>
     </div>
   </div>

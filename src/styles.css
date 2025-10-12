@@ -1157,6 +1157,9 @@
     --tw-border-style: none;
     border-style: none;
   }
+  .border-emerald-200 {
+    border-color: var(--color-emerald-200);
+  }
   .border-emerald-400 {
     border-color: var(--color-emerald-400);
   }

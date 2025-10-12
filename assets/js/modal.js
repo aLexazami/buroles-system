@@ -1,5 +1,5 @@
 
-import { formatSize, formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI , renderItems } from './file-manager.js';
+import { formatSize, formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems } from './file-manager.js';
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
 
@@ -590,4 +590,41 @@ export function setupPermanentDeleteModal() {
       renderFlash('error', err.message || 'Failed to delete item permanently');
     }
   });
+}
+
+// Empty Trash All Items in Filde Manager
+export function setupEmptyTrashModal() {
+  const emptyTrashBtn = document.getElementById('empty-trash-btn');
+  const cancelBtn = document.getElementById('cancelEmptyTrash');
+  const confirmBtn = document.getElementById('confirmEmptyTrashBtn');
+
+  // 🧭 Open modal when button is clicked
+  if (emptyTrashBtn) {
+    emptyTrashBtn.addEventListener('click', () => {
+      toggleModal('emptyTrashModal', true);
+    });
+  }
+
+  // ❌ Cancel button closes modal
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('emptyTrashModal', false);
+    });
+  }
+
+  // ✅ Confirm button triggers permanent deletion
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      toggleModal('emptyTrashModal', false);
+
+      try {
+        const result = await handleFileAction('emptyTrash', { view: 'trash' });
+        renderFlash('success', result.message || 'Trash emptied successfully');
+        refreshCurrentFolder();
+      } catch (err) {
+        console.error('Empty trash failed:', err);
+        renderFlash('error', err.message || 'An error occurred while emptying the trash.');
+      }
+    });
+  }
 }

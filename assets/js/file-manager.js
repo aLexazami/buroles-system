@@ -1,5 +1,5 @@
 // file-manager.js
-import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal } from './modal.js';
+import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal } from './modal.js';
 import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
@@ -68,7 +68,6 @@ export async function loadTrashView(folderId = null) {
   document.body.dataset.view = 'trash';
 
   try {
-    // 📁 Fetch trash contents scoped to folder
     const url = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
     url.searchParams.set('view', 'trash');
     url.searchParams.set('folder_id', normalizedFolderId);
@@ -76,14 +75,16 @@ export async function loadTrashView(folderId = null) {
     const res = await fetch(url.toString());
     const data = await res.json();
 
-    // 🧠 Store deletion status for fallback logic
     document.body.dataset.folderIsDeleted = data.folder_is_deleted ? 'true' : 'false';
 
-    // 🧩 Render items and initialize buttons
     setItems(data.items);
     renderItems(getItems());
     initCommentButtons();
     initShareButtons();
+
+    // ✅ Setup modal logic after rendering
+    setupEmptyTrashModal();
+
   } catch (err) {
     console.error('Failed to load trash contents:', err);
     const fileList = document.getElementById('file-list');
@@ -97,7 +98,6 @@ export async function loadTrashView(folderId = null) {
   }
 
   try {
-    // 🧭 Breadcrumb for trash folders
     const breadcrumbUrl = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
     breadcrumbUrl.searchParams.set('folder_id', normalizedFolderId);
 
@@ -299,14 +299,21 @@ export function renderItems(items) {
   const parentId = document.body.dataset.folderId;
   const allItemsAreDeleted = items.every(item => item.is_deleted === true || item.is_deleted === '1');
 
-  // 🧠 Trash view fallback: folder is deleted and either no items or all children are deleted
+  // 🧭 Trash header logic
+  const trashHeader = document.getElementById('trash-header');
+  if (trashHeader) {
+    const shouldShowHeader = isTrashView && items.length > 0 && !allItemsAreDeleted;
+    trashHeader.style.display = shouldShowHeader ? 'flex' : 'none';
+  }
+
+  // 🧠 Trash view fallback
   if (isTrashView && folderIsDeleted && (items.length === 0 || allItemsAreDeleted)) {
     const folderName = document.querySelector('.breadcrumb-current')?.textContent?.trim() || 'This folder';
     renderTrashFallbackState(container, folderName, parentId);
     return;
   }
 
-  // 🧼 Empty state: customized for trash view
+  // 🧼 Empty state
   if (items.length === 0) {
     renderEmptyState(container, isTrashView ? 'trash' : 'default');
     return;
