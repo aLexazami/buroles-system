@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/path.php'; // ensureVirtualPathExists(), resolveDiskPath()
+require_once __DIR__ . '/path.php'; // ensureVirtualPathExists(), resolveDiskPath(), deleteDirectory()
 /***********************************************************************************************************************/
 function deleteDiskFilesByFolderId(PDO $pdo, int $userId, string $folderId): void {
   $stmt = $pdo->prepare("SELECT path FROM files WHERE parent_id = ? AND owner_id = ? AND type = 'file'");
@@ -118,19 +118,19 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
     if (!$folder) return false;
 
     $originalPath = rtrim($folder['path'], '/');
+    $originalDiskPath = resolveDiskPath($originalPath);
     $deletedByParent = $inherited ? 1 : 0;
 
-    // Determine trash root for this folder
-    $trashRoot = $trashBasePath ?? "/srv/burol-storage/$userId/trash/$folderId";
-    $trashPath = $trashRoot;
+    // ✅ Always compute this folder's trash path
+    $trashPath = $trashBasePath ?? "/srv/burol-storage/$userId/trash/$folderId";
     $trashFullPath = resolveDiskPath($trashPath);
 
-    // ✅ Ensure trash folder exists — even if empty
+    // ✅ Ensure this folder's trash path exists — even if empty
     if (!is_dir($trashFullPath)) {
       mkdir($trashFullPath, 0775, true);
     }
 
-    // ✅ Soft delete this folder in DB
+    // ✅ Update this folder in DB
     $update = $pdo->prepare("
       UPDATE files
       SET is_deleted = 1,
@@ -203,7 +203,7 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
     }
 
     // 🔁 Recursively soft delete subfolders
-    $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE parent_id = ? AND type = 'folder'");
+    $stmt = $pdo->prepare("SELECT id FROM files WHERE parent_id = ? AND type = 'folder'");
     $stmt->execute([$folderId]);
     $subfolders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -216,42 +216,13 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
         continue;
       }
 
-      // ✅ Compute trash path for subfolder
+      // ✅ Compute subfolder's trash path and recurse
       $subfolderTrashPath = rtrim($trashPath, '/') . '/' . $subfolder['id'];
-      $subfolderTrashFullPath = resolveDiskPath($subfolderTrashPath);
-
-      // ✅ Ensure subfolder exists on disk — even if empty
-      if (!is_dir($subfolderTrashFullPath)) {
-        mkdir($subfolderTrashFullPath, 0775, true);
-      }
-
-      // ✅ Update subfolder path in DB
-      $update = $pdo->prepare("
-        UPDATE files
-        SET is_deleted = 1,
-            original_path = path,
-            path = ?,
-            deleted_by_parent = 1,
-            updated_at = NOW()
-        WHERE id = ?
-      ");
-      $update->execute([$subfolderTrashPath, $subfolder['id']]);
-
-      // ✅ Log subfolder deletion
-      $log = $pdo->prepare("
-        INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
-        VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
-      ");
-      $log->execute([
-        $subfolder['id'],
-        $subfolder['name'],
-        $userId,
-        'Subfolder soft-deleted as part of folder deletion'
-      ]);
-
-      // ✅ Recursively delete contents
       softDeleteFolderAndContents($pdo, $userId, $subfolder['id'], true, $subfolderTrashPath);
     }
+
+    // ✅ Remove original folder from disk — even if not empty
+    deleteDirectory($originalDiskPath);
 
     return true;
   } catch (Exception $e) {
