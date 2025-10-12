@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php'; // softDeleteFolderAndContents()
+require_once __DIR__ . '/../../helpers/path.php'; // resolveDiskPath, ensureVirtualPathExists
 
 header('Content-Type: application/json');
 
@@ -17,10 +18,7 @@ if (!$userId || !$fileId) {
 try {
   // 🔐 Check ownership or delegated delete permission
   $check = $pdo->prepare("
-    SELECT
-      f.name,
-      f.type,
-      f.path,
+    SELECT f.name, f.type, f.path,
       CASE
         WHEN f.owner_id = ? THEN 'owner'
         WHEN ac.permission = 'delete' THEN 'delete'
@@ -43,14 +41,15 @@ try {
   $path = $result['path'];
   $name = $result['name'];
   $source = ($result['effective_permission'] === 'owner') ? 'owner-delete' : 'delegated-delete';
-
   $success = false;
 
   if ($type === 'folder') {
-    // 🧹 Soft delete folder and contents (inherited deletion)
-    $success = softDeleteFolderAndContents($pdo, $userId, $fileId);
+    // ✅ Compute trash root for this folder
+    $trashRoot = "/srv/burol-storage/$userId/trash/$fileId";
 
-    // 📝 Log folder soft deletion
+    // 🧹 Soft delete folder and contents with trash root
+    $success = softDeleteFolderAndContents($pdo, $userId, $fileId, false, $trashRoot);
+
     if ($success) {
       $log = $pdo->prepare("
         INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
@@ -64,21 +63,21 @@ try {
       ]);
     }
   } elseif ($type === 'file') {
-    // 🧹 Move file to trash
-    $realPath = __DIR__ . "/../../" . ltrim($path, '/');
-    $trashPath = "/srv/burol-storage/$userId/trash/" . basename($realPath);
-    $trashFullPath = __DIR__ . "/../../" . ltrim($trashPath, '/');
+    // 🧹 Move file to trash with hierarchy preservation
+    $realPath = resolveDiskPath($path);
+    $relativePath = substr($path, strlen("/srv/burol-storage/$userId"));
+    $trashPath = "/srv/burol-storage/$userId/trash" . $relativePath;
+    $trashFullPath = resolveDiskPath($trashPath);
 
-    // Ensure trash folder exists
-    $trashDir = dirname($trashFullPath);
-    if (!is_dir($trashDir)) mkdir($trashDir, 0775, true);
+    // ✅ Ensure trash folder exists
+    ensureVirtualPathExists($trashPath);
 
-    // Move file to trash
+    // ✅ Move file to trash
     if (is_file($realPath)) {
       rename($realPath, $trashFullPath);
     }
 
-    // 🗑️ Soft delete in DB and preserve original path
+    // 🗑️ Soft delete in DB
     $stmt = $pdo->prepare("
       UPDATE files
       SET is_deleted = 1,
@@ -90,7 +89,7 @@ try {
     ");
     $success = $stmt->execute([$trashPath, $fileId]);
 
-    // 📝 Log soft file deletion
+    // 📝 Log file deletion
     $log = $pdo->prepare("
       INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
       VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
