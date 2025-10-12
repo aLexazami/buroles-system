@@ -1,5 +1,5 @@
 
-import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, } from './file-manager.js';
+import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput,isValidFileName,getExtension} from './file-manager.js';
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
 
@@ -632,3 +632,70 @@ export function setupEmptyTrashModal() {
     });
   }
 }
+
+// Rename Modal in File Manager
+export function showRenameModal(itemId, currentName = '') {
+  const input = document.getElementById('rename-input');
+  const nameDisplay = document.getElementById('rename-item-name');
+  const hiddenId = document.getElementById('rename-item-id');
+
+  if (hiddenId) hiddenId.value = itemId;
+  if (nameDisplay) nameDisplay.textContent = currentName ? `‘${currentName}’` : 'this item';
+
+  if (input) {
+    input.value = currentName || '';
+    input.dataset.originalName = currentName || '';
+    input.focus();
+  }
+
+  toggleModal('renameModal', true);
+}
+
+export function setupRenameModalHandler() {
+  const confirmBtn = document.getElementById('confirmRenameBtn');
+  const cancelBtn = document.getElementById('cancelRename');
+
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      const itemId = document.getElementById('rename-item-id')?.value;
+      const inputEl = document.getElementById('rename-input');
+      const input = inputEl?.value.trim();
+      const originalName = inputEl?.dataset.originalName;
+
+      const INVALID_CHARS = '\\ / : * ? " < > |';
+
+      if (!itemId || !input || !originalName) return;
+
+      const originalExt = getExtension(originalName);
+      const finalName = normalizeFileNameInput(input, originalName);
+
+      if (!isValidFileName(finalName, originalExt)) {
+        renderFlash('error', `Invalid name. A file name can't contain: ${INVALID_CHARS}, and must end with .${originalExt}`);
+        return;
+      }
+
+      try {
+        const result = await handleFileAction('rename', { id: itemId, name: finalName });
+        if (result.success) {
+          toggleModal('renameModal', false);
+          refreshCurrentFolder();
+          renderFlash('success', 'Item renamed successfully.');
+        }
+      } catch (err) {
+        renderFlash('error', 'Rename failed. Please try again.');
+      }
+    });
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      const inputEl = document.getElementById('rename-input');
+      if (inputEl && inputEl.dataset.originalName) {
+        inputEl.value = inputEl.dataset.originalName;
+      }
+
+      toggleModal('renameModal', false);
+    });
+  }
+}
+

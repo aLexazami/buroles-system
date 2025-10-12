@@ -1,5 +1,5 @@
 // file-manager.js
-import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal } from './modal.js';
+import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal,showRenameModal } from './modal.js';
 import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
@@ -392,6 +392,27 @@ export async function resolveItemSize(item) {
   }
 
   return formatSize(item.size);
+}
+
+export function getExtension(filename) {
+  const parts = filename.split('.');
+  return parts.length > 1 ? parts.pop().toLowerCase() : '';
+}
+
+export function isValidFileName(name, originalExtension) {
+  if (!name || /[\\/:*?"<>|]/.test(name)) return false;
+
+  const ext = getExtension(name);
+  if (!ext) return true; // allow extensionless input (we’ll append it)
+
+  // ✅ Must match original extension exactly
+  return ext === originalExtension.toLowerCase();
+}
+
+export function normalizeFileNameInput(input, originalName) {
+  const originalExt = getExtension(originalName);
+  const base = input.replace(/\.[^/.]+$/, ''); // strip any extension
+  return `${base}.${originalExt}`;
 }
 
 export function renderBreadcrumb(trail) {

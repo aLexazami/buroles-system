@@ -309,6 +309,23 @@ renderHead('Staff');
     </div>
   </div>
 
+  <!-- ✏️ Rename Modal -->
+<div id="renameModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+    <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Rename Item</h2>
+    <p class="text-sm text-gray-700 mb-4">
+      Renaming <span class="font-semibold text-gray-800" id="rename-item-name">this item</span>.
+    </p>
+    <input type="hidden" id="rename-item-id">
+    <input type="text" id="rename-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-6" placeholder="Enter new name">
+    <div class="flex justify-end gap-2">
+      <button type="button" id="cancelRename" class="px-3 py-1 text-emerald-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+      <button type="button" id="confirmRenameBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Rename</button>
+    </div>
+  </div>
+</div>
+
   <!-- 🗑️ Delete Confirmation Modal -->
   <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
