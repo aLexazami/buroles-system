@@ -1,5 +1,5 @@
 
-import { formatSize, formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems } from './file-manager.js';
+import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, } from './file-manager.js';
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
 
@@ -311,33 +311,37 @@ export function initShareButtons() {
 }
 
 // Info Modal in File Manager
-export function openFileInfoModal(item) {
+export async function openFileInfoModal(item) {
   const modal = document.getElementById('file-info-modal');
-  const title = modal?.querySelector('.info-title');
-  const content = modal?.querySelector('.info-content');
-  const closeBtn = modal?.querySelector('#closeInfo');
+  if (!modal) return;
 
-  if (!modal || !title || !content || !closeBtn) return;
+  const title = modal.querySelector('.info-title');
+  const content = modal.querySelector('.info-content');
+  const closeBtn = modal.querySelector('#closeInfo');
+  if (!title || !content || !closeBtn) return;
 
   title.textContent = item.name || 'File Info';
 
-  content.innerHTML = `
+  const sizeText = await resolveItemSize(item);
+
+  content.innerHTML = renderInfoContent({ ...item, sizeText });
+
+  toggleModal('file-info-modal', true);
+  closeBtn.onclick = () => toggleModal('file-info-modal', false);
+}
+
+function renderInfoContent({ name, type, sizeText, updated_at, owner_first_name, owner_last_name, mime_type, path }) {
+  return `
     <div class="text-sm text-gray-700 space-y-2">
-      <div><strong>Name:</strong> ${item.name}</div>
-      <div><strong>Type:</strong> ${item.type}</div>
-      <div><strong>Size:</strong> ${formatSize(item.size)}</div>
-      <div><strong>Updated:</strong> ${formatDate(item.updated_at)}</div>
-      <div><strong>Owner:</strong> ${item.owner_first_name} ${item.owner_last_name}</div>
-      <div><strong>MIME Type:</strong> ${item.mime_type || '—'}</div>
-      <div><strong>Path:</strong> ${item.path}</div>
+      <div><strong>Name:</strong> ${name}</div>
+      <div><strong>Type:</strong> ${type}</div>
+      <div><strong>Size:</strong> ${sizeText}</div>
+      <div><strong>Updated:</strong> ${formatDate(updated_at)}</div>
+      <div><strong>Owner:</strong> ${owner_first_name} ${owner_last_name}</div>
+      <div><strong>MIME Type:</strong> ${mime_type || '—'}</div>
+      <div><strong>Path:</strong> ${path}</div>
     </div>
   `;
-
-  // ✅ Show modal using helper
-  toggleModal('file-info-modal', true);
-
-  // ✅ Close modal using helper
-  closeBtn.onclick = () => toggleModal('file-info-modal', false);
 }
 
 // Upload Modal in File Manager
