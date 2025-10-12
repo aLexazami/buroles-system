@@ -213,7 +213,7 @@ export function createFileRow(item, isTrashView = false) {
   menuButton.className = 'hover:bg-emerald-100 rounded-full px-2 py-2 cursor-pointer';
 
   const menu = document.createElement('div');
-  menu.className = 'file-list-menu absolute right-8 sm:right-10 top-0 sm:top-1 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-44 transition ease-out duration-150 font-semibold';
+  menu.className = 'file-list-menu absolute right-8 sm:right-10 top-0 sm:top-1 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-48 transition ease-out duration-150 font-semibold';
   menu.setAttribute('role', 'menu');
 
   // 🧠 Menu toggle logic
@@ -258,8 +258,8 @@ export function createFileRow(item, isTrashView = false) {
   menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, `/download.php?id=${item.id}`));
 
   if (isTrashView) {
-    menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'text-emerald-600 cursor-pointer', () => showRestoreModal(item.id)));
-    menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/trash-icon.png', 'text-red-700 cursor-pointer', () => showPermanentDeleteModal(item.id)));
+    menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', ' cursor-pointer', () => showRestoreModal(item.id)));
+    menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => showPermanentDeleteModal(item.id)));
   } else {
     if (item.permissions?.includes('comment')) {
       const commentBtn = createMenuItem('Comment', '/assets/img/comment.png', 'cursor-pointer', null);
@@ -297,37 +297,18 @@ export function renderItems(items) {
   const isTrashView = document.body.dataset.view === 'trash';
   const folderIsDeleted = document.body.dataset.folderIsDeleted === 'true';
   const parentId = document.body.dataset.folderId;
-
   const allItemsAreDeleted = items.every(item => item.is_deleted === true || item.is_deleted === '1');
 
   // 🧠 Trash view fallback: folder is deleted and either no items or all children are deleted
   if (isTrashView && folderIsDeleted && (items.length === 0 || allItemsAreDeleted)) {
-  const folderName = 'This folder'; // Optional: fetch from breadcrumb if available
-
-  container.innerHTML = `
-    <div class="text-center text-gray-500 py-12">
-      ${folderName} is in the trash. Its contents are also deleted.<br>
-      <span class="text-emerald-600 font-medium">Restore the folder first to view its contents.</span><br>
-      <button id="restore-folder-btn" class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition">
-        Restore Folder
-      </button>
-    </div>
-  `;
-
-  // 🧠 Attach restore logic manually
-  const restoreBtn = document.getElementById('restore-folder-btn');
-  if (restoreBtn) {
-    restoreBtn.addEventListener('click', () => {
-      showRestoreModal(document.body.dataset.folderId);
-    });
+    const folderName = document.querySelector('.breadcrumb-current')?.textContent?.trim() || 'This folder';
+    renderTrashFallbackState(container, folderName, parentId);
+    return;
   }
 
-  return;
-}
-
-  // 🧼 Generic empty state
+  // 🧼 Empty state: customized for trash view
   if (items.length === 0) {
-    renderEmptyState(container);
+    renderEmptyState(container, isTrashView ? 'trash' : 'default');
     return;
   }
 
@@ -343,6 +324,7 @@ export function renderItems(items) {
     container.appendChild(row);
   });
 }
+
 
 export function formatSize(bytes) {
   if (bytes === 0) return '—';
@@ -552,12 +534,44 @@ function removeChildrenFromUI(parentId) {
 }
 
 /*Extract fallback into a reusable helper*/
-export function renderEmptyState(container) {
+export function renderEmptyState(container, view = 'default') {
+  let title = 'This folder is empty';
+  let subtitle = 'Upload a file or create a folder to get started.';
+  let iconSrc = '/assets/img/empty-folder.png';
+  let iconAlt = 'Empty folder';
+
+  if (view === 'trash') {
+    title = 'Trash is empty';
+    subtitle = 'Deleted files and folders will appear here.';
+    iconSrc = '/assets/img/empty-trash.png'; // ✅ use your trash icon here
+    iconAlt = 'Empty trash';
+  }
+
   container.innerHTML = `
     <div class="flex flex-col items-center justify-center py-12 text-gray-500">
-      <img src="/assets/img/empty-folder.png" alt="Empty folder" class="w-16 h-16 mb-4 opacity-60" />
-      <p class="text-lg font-medium">This folder is empty</p>
-      <p class="text-sm text-gray-400 mt-1">Upload a file or create a folder to get started.</p>
+      <img src="${iconSrc}" alt="${iconAlt}" class="w-16 h-16 mb-4 opacity-60" />
+      <p class="text-lg font-medium">${title}</p>
+      <p class="text-sm text-gray-400 mt-1">${subtitle}</p>
     </div>
   `;
+}
+
+export function renderTrashFallbackState(container, folderName = 'This folder', folderId) {
+  container.innerHTML = `
+    <div class="text-center text-gray-500 py-12">
+      <p class="text-lg font-medium mb-2">${folderName} is in the trash.</p>
+      <p class="text-sm text-gray-400">Its contents are also deleted.</p>
+      <p class="text-sm text-emerald-600 font-medium mt-2">Restore the folder first to view its contents.</p>
+      <button id="restore-folder-btn" class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition">
+        Restore Folder
+      </button>
+    </div>
+  `;
+
+  const restoreBtn = document.getElementById('restore-folder-btn');
+  if (restoreBtn) {
+    restoreBtn.addEventListener('click', () => {
+      showRestoreModal(folderId);
+    });
+  }
 }
