@@ -487,7 +487,8 @@ export function renderItems(items) {
 
   container.innerHTML = '';
 
-  const isTrashView = document.body.dataset.view === 'trash';
+  const view = document.body.dataset.view || 'default';
+  const isTrashView = view === 'trash';
   const folderIsDeleted = document.body.dataset.folderIsDeleted === 'true';
   const parentId = document.body.dataset.folderId;
   const currentUserId = document.body.dataset.userId || null;
@@ -512,7 +513,7 @@ export function renderItems(items) {
 
   // 🧼 Empty state
   if (items.length === 0) {
-    renderEmptyState(container, isTrashView ? 'trash' : 'default');
+    renderEmptyState(container, view);
     return;
   }
 
@@ -873,17 +874,34 @@ function removeChildrenFromUI(parentId) {
 
 /*Extract fallback into a reusable helper*/
 export function renderEmptyState(container, view = 'default') {
-  let title = 'This folder is empty';
-  let subtitle = 'Upload a file or create a folder to get started.';
-  let iconSrc = '/assets/img/empty-folder.png';
-  let iconAlt = 'Empty folder';
+  const config = {
+    default: {
+      title: 'This folder is empty',
+      subtitle: 'Upload a file or create a folder to get started.',
+      iconSrc: '/assets/img/empty-folder.png',
+      iconAlt: 'Empty folder'
+    },
+    trash: {
+      title: 'Trash is empty',
+      subtitle: 'Deleted files and folders will appear here.',
+      iconSrc: '/assets/img/empty-trash.png',
+      iconAlt: 'Empty trash'
+    },
+    'shared-with-me': {
+      title: 'No shared files yet',
+      subtitle: 'Files shared with you will appear here.',
+      iconSrc: '/assets/img/shared.png',
+      iconAlt: 'Empty shared with me'
+    },
+    'shared-by-me': {
+      title: 'You haven’t shared anything yet',
+      subtitle: 'Files you share with others will appear here.',
+      iconSrc: '/assets/img/shared.png',
+      iconAlt: 'Empty shared by me'
+    }
+  };
 
-  if (view === 'trash') {
-    title = 'Trash is empty';
-    subtitle = 'Deleted files and folders will appear here.';
-    iconSrc = '/assets/img/empty-trash.png'; // ✅ use your trash icon here
-    iconAlt = 'Empty trash';
-  }
+  const { title, subtitle, iconSrc, iconAlt } = config[view] || config.default;
 
   container.innerHTML = `
     <div class="flex flex-col items-center justify-center py-12 text-gray-500">
