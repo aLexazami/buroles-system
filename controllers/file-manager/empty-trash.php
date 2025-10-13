@@ -38,7 +38,7 @@ try {
     $stmtDelete->execute([$itemId, $userId]);
 
     // 🧾 Log deletion
-    logAction($pdo, $userId, $itemId, 'emptyTrash', 'Item permanently deleted via Empty Trash');
+    logAction($pdo, $userId, $itemId, $itemName, 'emptyTrash', 'Item permanently deleted via Empty Trash');
   }
 
   echo json_encode(['success' => true, 'message' => 'Trash emptied successfully']);
