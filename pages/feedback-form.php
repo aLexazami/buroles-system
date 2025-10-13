@@ -39,7 +39,9 @@ renderHead('Feedback Form', true);
       <section class="js-terms-agreement-form space-y-4">
         <h3 class="text-lg font-bold">Terms and Privacy Agreement</h3>
         <p class="text-sm">
-          By continuing, you agree to the collection and processing of your data for client satisfaction measurement...
+          In compliance with <span class="font-semibold">Republic Act No. 10173, the Data Privacy Act of 2012,</span> all information gathered through this
+questionnaire will be used exclusively for academic purposes and treated with the utmost confidentiality. Providing your name is
+optional to ensure the protection of your identity
         </p>
         <label class="flex items-center gap-2 text-sm">
           <input type="checkbox" id="agree-checkbox" class="accent-emerald-600">
