@@ -129,6 +129,26 @@ export async function loadSharedByMe(folderId = null) {
   window.history.pushState({}, '', newUrl);
 }
 
+export function removeItemRow(itemId) {
+  const row = document.querySelector(`[data-item-id="${itemId}"]`);
+  if (!row) return;
+
+  // 🎬 Animate fade-out
+  row.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+
+  // 🧹 Remove after transition
+  row.addEventListener('transitionend', () => {
+    row.remove();
+
+    // 🧼 If no items left, show empty state
+    const container = document.getElementById('file-list');
+    const remaining = container.querySelectorAll('[data-item-id]');
+    if (remaining.length === 0) {
+      container.innerHTML = `<div class="text-center text-gray-500 py-12">You haven’t shared any files yet.</div>`;
+    }
+  });
+}
+
 async function fetchTrashContents(folderId) {
   try {
     const url = new URL('/controllers/file-manager/getFolderContents.php', window.location.origin);
@@ -249,7 +269,7 @@ export function insertItem(newItem, options = {}) {
 
   // 🧠 Update store and sort
   insertItemSorted(newItem);
-  const sortedItems = getItems(); // already sorted by insertItemSorted()
+  const sortedItems = getItems();
 
   // 🧩 Create row
   const newIndex = sortedItems.findIndex(item => item.id === newItem.id);
@@ -263,20 +283,29 @@ export function insertItem(newItem, options = {}) {
   // 📌 Insert at correct position
   const existingRows = container.querySelectorAll('[data-item-id]');
   if (existingRows.length === 0 || newIndex >= existingRows.length) {
-    container.appendChild(row); // fallback for empty list
+    container.appendChild(row);
   } else {
     container.insertBefore(row, existingRows[newIndex]);
   }
 
-  // 🎬 Animate appearance
-  requestAnimationFrame(() => {
-    row.classList.remove('opacity-0');
-  });
+  // 🎬 Animate appearance + highlight
+  animateRowInsertion(row);
 
   // 🎯 Optional scroll
   if (options.scrollIntoView) {
     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+}
+
+function animateRowInsertion(row) {
+  requestAnimationFrame(() => {
+    row.classList.remove('opacity-0');
+    row.classList.add('bg-emerald-50');
+
+    setTimeout(() => {
+      row.classList.remove('bg-emerald-50');
+    }, 1000);
+  });
 }
 
 export function createFileRow(item, isTrashView = false, currentUserId = null) {
@@ -288,6 +317,8 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   row.className = 'flex items-center justify-between p-2 hover:bg-emerald-50 cursor-pointer';
   row.dataset.itemId = item.id;
   row.dataset.parentId = item.parent_id || '';
+  row.dataset.type = item.type;
+  row.dataset.view = currentView;
   row.setAttribute('role', 'listitem');
 
   // 🧭 Click behavior

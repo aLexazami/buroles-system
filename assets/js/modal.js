@@ -1,5 +1,5 @@
 
-import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput, isValidFileName, getExtension, isFolderNameValid, generateUniqueFolderName } from './file-manager.js';
+import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput, isValidFileName, getExtension, isFolderNameValid, removeItemRow } from './file-manager.js';
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
@@ -876,40 +876,56 @@ export function closeManageAccessModal() {
 
 export function initManageAccessButtons() {
   const form = document.getElementById('manageAccessForm');
-  const emailInput = form?.querySelector('#manageRecipientEmail');
-  const permissionSelect = form?.querySelector('#managePermission');
-  const saveBtn = form?.querySelector('button[type="submit"]');
+  if (!form) return;
 
-  if (!form || !emailInput || !permissionSelect || !saveBtn) return;
+  const emailInput = form.querySelector('#manageRecipientEmail');
+  const permissionSelect = form.querySelector('#managePermission');
+  const saveBtn = form.querySelector('button[type="submit"]');
+  const fileIdInput = form.querySelector('#manage-access-file-id');
 
-  // 🔘 Bind all "Manage Access" buttons
+  if (!emailInput || !permissionSelect || !saveBtn || !fileIdInput) return;
+
+  bindManageAccessTriggers();
+  bindModalDismissal();
+  bindInputListeners(emailInput, permissionSelect);
+  bindFormSubmission(form, emailInput, permissionSelect, saveBtn, fileIdInput);
+
+  // 🔽 Global dropdown dismissal
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.permission-dropdown').forEach(d => d.classList.add('hidden'));
+  });
+}
+
+function bindManageAccessTriggers() {
   document.querySelectorAll('.manage-access-btn').forEach(btn => {
     const fileId = btn.dataset.fileId;
     if (fileId) {
       btn.addEventListener('click', () => openManageAccessModal(fileId));
     }
   });
+}
 
-  // ❌ Cancel button
+function bindModalDismissal() {
   document.getElementById('cancelManageAccess')?.addEventListener('click', closeManageAccessModal);
 
-  // ⎋ Escape key closes modal
   document.addEventListener('keydown', e => {
     const modal = document.getElementById('manageAccessModal');
     if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
       closeManageAccessModal();
     }
   });
+}
 
-  // 🔁 Update button label on input changes
+function bindInputListeners(emailInput, permissionSelect) {
   emailInput.addEventListener('input', updateSubmitButtonLabel);
   permissionSelect.addEventListener('change', updateSubmitButtonLabel);
+}
 
-  // 📝 Form submission
+function bindFormSubmission(form, emailInput, permissionSelect, saveBtn, fileIdInput) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const fileId = form.querySelector('#manage-access-file-id')?.value;
+    const fileId = fileIdInput.value;
     if (!fileId) {
       renderFlash('error', 'Missing file ID');
       return;
@@ -927,11 +943,18 @@ export function initManageAccessButtons() {
       return;
     }
 
-    const updates = Object.entries(accessUpdates).map(([user_id, permission]) => ({ user_id, permission }));
-    const newShare = hasNewRecipient ? { email: recipientEmail, permission } : null;
+    const updates = Object.entries(accessUpdates).map(([user_id, permission]) => ({
+      user_id,
+      permission,
+      file_id: fileId
+    }));
 
+    const newShare = hasNewRecipient ? { email: recipientEmail, permission } : null;
     const payload = { file_id: fileId, updates, new_share: newShare };
     const originalText = saveBtn.textContent;
+
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = `<span class="animate-spin mr-2">⏳</span>Saving...`;
 
     try {
       const endpoint = fileRoutes?.manageAccess;
@@ -939,10 +962,6 @@ export function initManageAccessButtons() {
         renderFlash('error', 'Manage Access endpoint not available');
         return;
       }
-
-      // ⏳ UX: disable button + show spinner
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = `<span class="animate-spin mr-2">⏳</span>Saving...`;
 
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -954,7 +973,6 @@ export function initManageAccessButtons() {
       });
 
       const data = await res.json();
-
       if (!data.success) {
         renderFlash('error', data.message || 'Failed to update access');
         return;
@@ -964,7 +982,12 @@ export function initManageAccessButtons() {
       fetchAccessList(fileId);
       document.getElementById('accessList')?.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // ✅ Reset only new recipient fields
+      updates.forEach(update => {
+        if (update.permission === 'revoke') {
+          removeItemRow(update.file_id);
+        }
+      });
+
       emailInput.value = '';
       permissionSelect.selectedIndex = 0;
       accessUpdates = {};
@@ -1005,62 +1028,114 @@ function renderAccessList(users = []) {
   const container = document.getElementById('accessList');
   container.innerHTML = '';
 
+  const transitionDuration = 200;
+  const dropdown = document.getElementById('permissionDropdown');
+
+  // 🧭 Render dropdown options
+  dropdown.innerHTML = ['read', 'write', 'share', 'delete', 'revoke'].map(p => `
+    <button class="block w-full text-left px-10 py-2 hover:bg-emerald-100 ${p === 'revoke' ? 'text-black' : ''}" data-value="${p}">
+      ${p.charAt(0).toUpperCase() + p.slice(1)}
+    </button>
+  `).join('');
+
   if (!users.length) {
     container.innerHTML = `
       <div class="text-sm text-gray-500 italic text-center py-4">
         No one currently has access to this item.
       </div>
     `;
-    updateSubmitButtonLabel(); // Ensure button says "Done"
+    updateSubmitButtonLabel();
     return;
   }
 
   users.forEach(user => {
     const row = document.createElement('div');
-    row.className = 'flex items-center justify-between border rounded px-3 py-2 bg-white';
+    row.className = 'access-row flex items-center justify-between border rounded px-3 py-2 bg-white hover:bg-emerald-50 transition';
+    row.dataset.userId = user.user_id;
 
     const fullName = user.name || 'Unnamed';
     const avatar = user.avatar || '/assets/img/default-avatar.png';
 
     row.innerHTML = `
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
-        <!-- 👤 User Info -->
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-          <img src="${avatar}" class="w-6 h-6 rounded-full object-cover" />
-          <div class="flex-1 min-w-0">
-            <div class="text-sm font-medium truncate">${fullName}</div>
-            <div class="text-xs text-gray-500 truncate">${user.email}</div>
-          </div>
+      <div class="flex items-center gap-3 w-full">
+        <img src="${avatar}" class="w-6 h-6 rounded-full object-cover" />
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium truncate">${fullName}</div>
+          <div class="text-xs text-gray-500 truncate">${user.email}</div>
         </div>
-
-        <!-- 🔐 Permission Selector -->
-        <div class="mt-2 sm:mt-0 w-full sm:w-auto">
-          <select class="access-level-selector text-sm border rounded px-2 py-1 w-full sm:w-auto" data-user-id="${user.user_id}">
-            <option value="read" ${user.permission === 'read' ? 'selected' : ''}>Read</option>
-            <option value="write" ${user.permission === 'write' ? 'selected' : ''}>Write</option>
-            <option value="share" ${user.permission === 'share' ? 'selected' : ''}>Share</option>
-            <option value="delete" ${user.permission === 'delete' ? 'selected' : ''}>Delete</option>
-            <option value="revoke">❌ Revoke Access</option>
-          </select>
-        </div>
+        <button
+          type="button"
+          class="permission-toggle-btn flex items-center justify-between gap-2 font-semibold cursor-pointer hover:bg-emerald-100 px-3 py-1 text-sm"
+          data-user-id="${user.user_id}"
+          data-permission="${user.permission}"
+        >
+          <span class="current-permission">${user.permission}</span>
+          <img src="/assets/img/arrow-down.png" class="w-2 h-2" />
+        </button>
       </div>
     `;
 
-    const selector = row.querySelector('select');
-    selector.addEventListener('change', (e) => {
-      const selected = e.target.value;
-      const userId = e.target.dataset.userId;
+    container.appendChild(row);
 
-      if (userId) {
-        accessUpdates[userId] = selected;
-        updateSubmitButtonLabel(); // 🔁 Update button label
+    const toggleBtn = row.querySelector('.permission-toggle-btn');
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      const isOpen = !dropdown.classList.contains('hidden') &&
+                     dropdown.dataset.userId === toggleBtn.dataset.userId;
+
+      if (isOpen) {
+        dropdown.classList.remove('scale-100', 'opacity-100');
+        dropdown.classList.add('scale-0', 'opacity-0');
+        setTimeout(() => dropdown.classList.add('hidden'), transitionDuration);
+        return;
       }
 
-      row.classList.toggle('opacity-50', selected === 'revoke');
-    });
+      dropdown.dataset.userId = toggleBtn.dataset.userId;
+      dropdown.classList.remove('hidden');
 
-    container.appendChild(row);
+      const rect = toggleBtn.getBoundingClientRect();
+      const dropdownHeight = dropdown.offsetHeight || 160;
+      const top = rect.top + (rect.height / 2) - (dropdownHeight / 2);
+      const left = rect.left - dropdown.offsetWidth - 8;
+
+      dropdown.style.top = `${Math.max(top, 8)}px`;
+      dropdown.style.left = `${Math.max(left, 8)}px`;
+
+      dropdown.classList.remove('scale-0', 'opacity-0');
+      dropdown.classList.add('scale-100', 'opacity-100');
+    });
   });
 
-  updateSubmitButtonLabel(); // Ensure button reflects current state
+  // 📝 Handle permission selection
+  dropdown.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newPermission = btn.dataset.value;
+      const userId = dropdown.dataset.userId;
+      const row = document.querySelector(`.access-row[data-user-id="${userId}"]`);
+      const toggleBtn = row?.querySelector('.permission-toggle-btn');
+
+      if (toggleBtn) {
+        toggleBtn.querySelector('.current-permission').textContent = newPermission;
+        accessUpdates[userId] = newPermission;
+        updateSubmitButtonLabel();
+        row.classList.toggle('opacity-50', newPermission === 'revoke');
+      }
+
+      dropdown.classList.remove('scale-100', 'opacity-100');
+      dropdown.classList.add('scale-0', 'opacity-0');
+      setTimeout(() => dropdown.classList.add('hidden'), transitionDuration);
+    });
+  });
+
+  // ❌ Global click to dismiss
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target)) {
+      dropdown.classList.remove('scale-100', 'opacity-100');
+      dropdown.classList.add('scale-0', 'opacity-0');
+      setTimeout(() => dropdown.classList.add('hidden'), transitionDuration);
+    }
+  });
+
+  updateSubmitButtonLabel();
 }
