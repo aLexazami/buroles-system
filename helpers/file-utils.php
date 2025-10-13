@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/folder-utils.php'; // getRecursiveFolderSize()
+require_once __DIR__ . '/access-utils.php'; //  getEffectivePermissions()
 /* ****************************************************************************************** */
 function getFilesForView(
   PDO $pdo,
@@ -9,6 +10,12 @@ function getFilesForView(
   string $sortBy = 'updated_at',
   string $sortDir = 'DESC'
 ): array {
+  // 🧩 Special case: shared-with-me with folder context
+  if ($view === 'shared-with-me' && $folderId && isValidUuid($folderId)) {
+    require_once __DIR__ . '/../helpers/sharing-utils.php';
+    return getSharedFolderContents($pdo, $folderId, $userId);
+  }
+
   $params = [];
   $where = [];
   $joins = '';
@@ -94,18 +101,29 @@ function getFilesForView(
 
   // 🧩 Enrich results
   foreach ($files as &$file) {
-    $file['permissions'] = getPermissionsForFile($file, $view, $userId, $pdo);
-
-    if ($file['parent_id']) {
-      $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
-      $stmtParent->execute([$file['parent_id']]);
-      $file['parent_name'] = $stmtParent->fetchColumn();
-    }
-
-    if ($file['type'] === 'folder') {
-      $file['size'] = getRecursiveFolderSize($pdo, $file['id'], $userId);
-    }
+  // ✅ Owner always has full access
+  if ($file['owner_id'] === $userId) {
+    $file['permissions'] = ['edit', 'comment', 'share', 'delete'];
+    $file['inherited_from'] = null;
+  } else {
+    // 🔁 Resolve effective permissions for non-owners
+    $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
+    $file['permissions'] = $access['permissions'];
+    $file['inherited_from'] = $access['inheritedFrom'];
   }
+
+  // 📛 Parent name
+  if ($file['parent_id']) {
+    $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
+    $stmtParent->execute([$file['parent_id']]);
+    $file['parent_name'] = $stmtParent->fetchColumn();
+  }
+
+  // 📦 Folder size
+  if ($file['type'] === 'folder') {
+    $file['size'] = getRecursiveFolderSize($pdo, $file['id'], $userId);
+  }
+}
 
   // 🌳 Inject trash hierarchy
   if ($view === 'trash') {
@@ -242,7 +260,8 @@ function getTrashedChildren(
 }
 
 /******* BREADCRUMB TRAIL ******** */
-function getFolderTrail(PDO $pdo, string $folderId, int $userId): array {
+function getFolderTrail(PDO $pdo, string $folderId, int $userId): array
+{
   $trail = [];
   $currentId = $folderId;
 
@@ -259,7 +278,8 @@ function getFolderTrail(PDO $pdo, string $folderId, int $userId): array {
   return $trail;
 }
 
-function getTrashedRootFolders(PDO $pdo, int $userId): array {
+function getTrashedRootFolders(PDO $pdo, int $userId): array
+{
   $stmt = $pdo->prepare("
     SELECT * FROM files
     WHERE is_deleted = TRUE
@@ -273,13 +293,15 @@ function getTrashedRootFolders(PDO $pdo, int $userId): array {
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function getFileById(PDO $pdo, string $id, int $userId): ?array {
+function getFileById(PDO $pdo, string $id, int $userId): ?array
+{
   $stmt = $pdo->prepare("SELECT * FROM files WHERE id = ? AND owner_id = ?");
   $stmt->execute([$id, $userId]);
   return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
 }
 
-function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): string {
+function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): string
+{
   $stmt = $pdo->prepare("
     SELECT name FROM files
     WHERE parent_id " . ($parentId ? "= ?" : "IS NULL") . "

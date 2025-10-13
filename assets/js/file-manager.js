@@ -236,6 +236,7 @@ export function insertItem(newItem, options = {}) {
 export function createFileRow(item, isTrashView = false) {
   const currentView = document.body.dataset.view || 'my-files';
   const currentFolder = document.body.dataset.folderId || '';
+  const permissions = Array.isArray(item.permissions) ? item.permissions : [];
 
   const row = document.createElement('div');
   row.className = 'flex items-center justify-between p-2 hover:bg-emerald-50 cursor-pointer';
@@ -253,23 +254,23 @@ export function createFileRow(item, isTrashView = false) {
     }
   });
 
-  // 📄 Icon
+  // 📄 Icon + Label
   const icon = document.createElement('img');
   icon.src = getItemIcon(item);
   icon.alt = item.type;
   icon.className = 'w-5 h-5';
 
-  // 📄 Label
   const label = document.createElement('span');
   label.textContent = item.name;
   label.className = 'text-gray-800 font-medium truncate';
 
-  // 🏷️ Badge: Shared context or Trash
+  // 🏷️ Badge
   const badge = document.createElement('span');
   badge.className = 'hidden min-[650px]:inline-block text-xs text-gray-600 bg-emerald-100 px-2 py-1 rounded-md';
 
   if (currentView === 'shared-with-me' && item.owner_first_name && item.owner_last_name) {
-    badge.textContent = `Shared by: ${item.owner_first_name} ${item.owner_last_name}`;
+    const permissionLabel = permissions.length > 0 ? ` (${permissions.join(', ')})` : '';
+    badge.textContent = `Shared by: ${item.owner_first_name} ${item.owner_last_name}${permissionLabel}`;
   } else if (currentView === 'shared-by-me') {
     const fullName = item.recipient_first_name && item.recipient_last_name
       ? `${item.recipient_first_name} ${item.recipient_last_name}`
@@ -279,13 +280,11 @@ export function createFileRow(item, isTrashView = false) {
     badge.textContent = `Removed From: ${item.original_parent_name}`;
   }
 
-  // 📦 Label stack
   const labelStack = document.createElement('div');
   labelStack.className = 'flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2';
   labelStack.appendChild(label);
   if (badge.textContent) labelStack.appendChild(badge);
 
-  // 📦 Label wrapper
   const labelWrapper = document.createElement('div');
   labelWrapper.className = 'flex items-center gap-3 min-w-0';
   labelWrapper.appendChild(icon);
@@ -357,21 +356,21 @@ export function createFileRow(item, isTrashView = false) {
 
     menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, downloadUrl));
 
-    const allowDestructive = currentView !== 'shared-with-me';
+    const allowDestructive = permissions.includes('delete');
 
-    if (allowDestructive && item.permissions?.includes('delete')) {
+    if (allowDestructive && permissions.includes('delete')) {
       menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
       menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'text-emerald-600 cursor-pointer', () => showDeleteModal(item.id, item.name)));
     }
 
-    if (item.permissions?.includes('comment')) {
+    if (permissions.includes('comment')) {
       const commentBtn = createMenuItem('Comment', '/assets/img/comment.png', 'cursor-pointer', () => openCommentModal(item.id));
       commentBtn.classList.add('comment-btn');
       commentBtn.dataset.fileId = item.id;
       menu.appendChild(commentBtn);
     }
 
-    if (item.permissions?.includes('share')) {
+    if (permissions.includes('share')) {
       const shareBtn = createMenuItem('Share', '/assets/img/share-icon.png', 'cursor-pointer', () => openShareModal(item.id));
       shareBtn.classList.add('share-btn');
       shareBtn.dataset.fileId = item.id;

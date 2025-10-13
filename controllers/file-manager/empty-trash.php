@@ -14,15 +14,15 @@ if (!$userId) {
 
 try {
   // 🔍 Fetch all deleted items owned by user
-  $stmt = $pdo->prepare("SELECT id, type, path FROM files WHERE owner_id = ? AND is_deleted = 1");
+  $stmt = $pdo->prepare("SELECT id, type, path, name FROM files WHERE owner_id = ? AND is_deleted = 1");
   $stmt->execute([$userId]);
   $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   foreach ($items as $item) {
     $itemId = $item['id'];
-    $itemType = $item['type'];
-    $itemName = $item['name'];
-    $relativePath = ltrim($item['path'], '/');
+    $itemType = $item['type'] ?? 'unknown';
+    $itemName = $item['name'] ?? basename($item['path'] ?? '') ?: '[Unnamed Item]';
+    $relativePath = ltrim($item['path'] ?? '', '/');
     $fullPath = __DIR__ . '/../../' . $relativePath;
 
     // 🧹 Delete from disk
