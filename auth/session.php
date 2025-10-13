@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/bootstrap.php'; // Loads Dotenv and Compose
 require_once __DIR__ . '/../helpers/flash.php';      // Optional: for messaging
 
 if (session_status() === PHP_SESSION_NONE) {
-  session_start();
+    session_start();
 }
 
 // 🔓 Public pages that require no authentication
@@ -26,12 +26,20 @@ if (in_array($currentPage, $publicPages, true)) {
 }
 
 // ✅ Validate session essentials
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
 if (
     empty($_SESSION['user_id']) ||
     empty($_SESSION['username']) ||
     empty($_SESSION['user_token'])
 ) {
-    header('Location: /index.php');
+    if ($isAjax) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    } else {
+        header('Location: /index.php');
+    }
     exit;
 }
 

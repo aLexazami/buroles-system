@@ -747,7 +747,6 @@ function getItemIcon(item) {
   return '/assets/img/file-icons/file-icon.png';
 }
 
-
 /**
  * Handles file-related actions (e.g., delete, rename, move) by dispatching requests
  * to the appropriate backend endpoint and managing UI feedback.
