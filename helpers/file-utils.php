@@ -9,7 +9,7 @@ function getFilesForView(
   string $sortBy = 'updated_at',
   string $sortDir = 'DESC'
 ): array {
-  $params = [':userId' => $userId];
+  $params = [];
   $where = [];
   $joins = '';
   $select = 'f.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name';
@@ -17,7 +17,7 @@ function getFilesForView(
 
   // 📁 Folder filter — only apply for non-trash views
   if ($view !== 'trash') {
-    if ($folderId) {
+    if ($folderId && isValidUuid($folderId)) {
       $where[] = 'f.parent_id = :folderId';
       $params[':folderId'] = $folderId;
     } else {
@@ -32,34 +32,46 @@ function getFilesForView(
         JOIN access_control ac ON ac.file_id = f.id
         JOIN users u ON f.owner_id = u.id
       ';
-      $where[] = 'ac.user_id = :userId';
+      $where[] = 'ac.user_id = :accessUserId';
       $where[] = 'ac.is_revoked = FALSE';
       $where[] = 'f.is_deleted = FALSE';
-      $where[] = 'f.owner_id != :userId';
+      $where[] = 'f.owner_id != :ownerExclusionId';
+      $params[':accessUserId'] = $userId;
+      $params[':ownerExclusionId'] = $userId;
       break;
 
     case 'shared-by-me':
       $joins = '
         JOIN access_control ac ON ac.file_id = f.id
         JOIN users u ON f.owner_id = u.id
+        JOIN users r ON ac.user_id = r.id
       ';
-      $select .= ', ac.user_id AS shared_with, ac.permission';
-      $where[] = 'ac.granted_by = :userId';
+      $select .= ',
+        ac.user_id AS shared_with,
+        ac.permission,
+        r.first_name AS recipient_first_name,
+        r.last_name AS recipient_last_name,
+        r.email AS recipient_email
+      ';
+      $where[] = 'ac.granted_by = :grantedBy';
       $where[] = 'ac.is_revoked = FALSE';
       $where[] = 'f.is_deleted = FALSE';
+      $params[':grantedBy'] = $userId;
       break;
 
     case 'trash':
       $joins = 'JOIN users u ON f.owner_id = u.id';
-      $where[] = 'f.owner_id = :userId';
+      $where[] = 'f.owner_id = :trashOwnerId';
       $where[] = 'f.is_deleted = TRUE';
       $where[] = 'f.deleted_by_parent = 0';
+      $params[':trashOwnerId'] = $userId;
       break;
 
     default: // 'my-files'
       $joins = 'JOIN users u ON f.owner_id = u.id';
-      $where[] = 'f.owner_id = :userId';
+      $where[] = 'f.owner_id = :ownerId';
       $where[] = 'f.is_deleted = FALSE';
+      $params[':ownerId'] = $userId;
       break;
   }
 
@@ -80,17 +92,16 @@ function getFilesForView(
   $stmt->execute();
   $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // ✅ Inject permissions and parent name
+  // 🧩 Enrich results
   foreach ($files as &$file) {
     $file['permissions'] = getPermissionsForFile($file, $view, $userId, $pdo);
 
     if ($file['parent_id']) {
-      $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ? AND owner_id = ?");
-      $stmtParent->execute([$file['parent_id'], $userId]);
+      $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
+      $stmtParent->execute([$file['parent_id']]);
       $file['parent_name'] = $stmtParent->fetchColumn();
     }
 
-    // 📦 Optional: hydrate folder size
     if ($file['type'] === 'folder') {
       $file['size'] = getRecursiveFolderSize($pdo, $file['id'], $userId);
     }

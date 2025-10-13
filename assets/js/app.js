@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal,setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler} from './modal.js';
+import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal, setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler } from './modal.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
@@ -21,22 +21,42 @@ import { setupAnnouncementPagination } from './announcementCarousel.js';
 import { setupRoleCheckboxToggle } from './checkbox.js';
 import { startRedirectCountdown } from './redirect-utils.js';
 import { initEmailAutocomplete } from './search-autocomplete.js';
-import { loadFolder } from './file-manager.js';
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
   // 📁 File Manager Initialization
   const folderId = document.body.dataset.folderId || null;
   const view = document.body.dataset.view || 'my-files';
 
-  if (view === 'trash') {
-    import('./file-manager.js').then(({ loadTrashView }) => {
-      loadTrashView(folderId); // ✅ Load trash view correctly
-    });
-  } else {
-    loadFolder(folderId); // ✅ Default to my-files or shared views
+  switch (view) {
+    case 'trash':
+      import('./file-manager.js').then(({ loadTrashView }) => {
+        document.body.dataset.view = 'trash';
+        loadTrashView(folderId);
+      });
+      break;
+
+    case 'shared-with-me':
+      import('./file-manager.js').then(({ loadSharedWithMe }) => {
+        document.body.dataset.view = 'shared-with-me';
+        loadSharedWithMe(folderId);
+      });
+      break;
+
+    case 'shared-by-me':
+      import('./file-manager.js').then(({ loadSharedByMe }) => {
+        document.body.dataset.view = 'shared-by-me';
+        loadSharedByMe(folderId);
+      });
+      break;
+
+    default:
+      import('./file-manager.js').then(({ loadFolder }) => {
+        document.body.dataset.view = 'my-files';
+        loadFolder(folderId);
+      });
+      break;
   }
+
 
 
   // 🧭 UI & Role Toggles
@@ -106,8 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (document.getElementById('recipientEmailInput')) {
-  initEmailAutocomplete();
-}
+    initEmailAutocomplete();
+  }
 
   if (document.getElementById('feedbackTableContainer')) {
     setupTableSorter({
