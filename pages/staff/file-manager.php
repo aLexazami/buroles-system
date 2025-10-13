@@ -14,7 +14,7 @@ renderHead('Staff');
 ?>
 
 <body data-folder-id="<?= htmlspecialchars($folderId ?? '') ?>" data-view="<?= htmlspecialchars($view) ?>" data-user-id="<?= htmlspecialchars($userId) ?>"
- class="bg-gray-200 min-h-screen flex flex-col">
+  class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
   <!-- Flash Message -->
   <div id="flashContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2 w-full max-w-sm sm:max-w-md"></div>
@@ -248,6 +248,33 @@ renderHead('Staff');
     </div>
   </div>
 
+  <!-- 🔐 Manage Access Modal -->
+  <div id="manageAccessModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Manage Access</h2>
+      <form id="manageAccessForm">
+        <input type="hidden" name="file_id" id="manage-access-file-id">
+        <div class="mb-4">
+          <label for="recipient_email" class="block text-sm font-medium text-gray-700 mb-1">Recipient Email</label>
+          <input type="email" name="recipient_email" required class="w-full border rounded px-3 py-2 text-sm" placeholder="user@example.com">
+        </div>
+        <div class="mb-4">
+          <label for="permission" class="block text-sm font-medium text-gray-700 mb-1">Permission Level</label>
+          <select name="permission" class="w-full border rounded px-3 py-2 text-sm">
+            <option value="read">Read</option>
+            <option value="write">Write</option>
+            <option value="share">Share</option>
+            <option value="delete">Delete</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" id="cancelManageAccess" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- 🔗 Share Modal -->
   <div id="shareModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
