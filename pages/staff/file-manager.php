@@ -249,7 +249,7 @@ renderHead('Staff');
   </div>
 
   <!-- 🔐 Manage Access Modal -->
-  <div id="manageAccessModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 overflow-y-auto opacity-0 transition-opacity duration-200 will-change-opacity">
+  <div id="manageAccessModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200 will-change-opacity">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-2xl z-10 border border-emerald-500 max-h-[90vh] overflow-y-auto">
       <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Manage Access</h2>
@@ -258,7 +258,6 @@ renderHead('Staff');
 
         <!-- 📧 Add New Recipient -->
         <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Add New Recipient</label>
           <div class="flex items-center gap-2 border-2 rounded-lg px-3 py-2 mb-3">
             <img src="/assets/img/add-user.png" alt="User Avatar" class="w-5 h-5 sm:w-8 sm:h-8 rounded-full object-cover" />
             <input type="email" name="recipient_email" id="manageRecipientEmail" class="flex-1 h-10 sm:h-12 p-2 border-l-2 focus:outline-none text-sm sm:text-base" placeholder="Add people">
@@ -273,7 +272,7 @@ renderHead('Staff');
 
         <!-- 👥 Current Access List -->
         <div class="mb-2">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Current Access</label>
+          <label class="block text-sm sm:text-lg font-medium text-gray-700 mb-4">People with access</label>
           <div id="accessList" class="space-y-4 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-3 bg-gray-50">
             <!-- Access rows or fallback will be injected here -->
           </div>
@@ -286,6 +285,10 @@ renderHead('Staff');
         </div>
       </form>
     </div>
+  </div>
+  <!-- ✅ Floating Dropdown (outside all layout containers) -->
+  <div id="permissionDropdown"
+    class="fixed hidden z-[9999] bg-white shadow-2xl rounded-md text-sm w-40 transition font-semibold  transform opacity duration-200 scale-0 opacity-0 origin-center">
   </div>
 
   <!-- 🔗 Share Modal -->
