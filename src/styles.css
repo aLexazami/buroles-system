@@ -737,6 +737,9 @@
   .min-h-\[400px\] {
     min-height: 400px;
   }
+  .min-h-\[450px\] {
+    min-height: 450px;
+  }
   .min-h-\[500px\] {
     min-height: 500px;
   }

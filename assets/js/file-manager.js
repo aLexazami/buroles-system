@@ -74,10 +74,18 @@ export async function loadFolder(folderId = null) {
   // 🧠 Sync folder state to <body>
   document.body.dataset.folderId = normalizedFolderId;
 
-  // 🌐 Update browser URL for deep linking
-  const newUrl = `?view=${encodeURIComponent(currentView)}${normalizedFolderId ? `&folder=${encodeURIComponent(normalizedFolderId)}` : ''}`;
+  // 🌐 Update browser URL for deep linking (preserve current pathname)
+  const basePath = window.location.pathname;
+  const queryParams = new URLSearchParams();
+  queryParams.set('view', currentView);
+  if (normalizedFolderId) {
+    queryParams.set('folder', normalizedFolderId);
+  }
+
+  const newUrl = `${basePath}?${queryParams.toString()}`;
   window.history.pushState({}, '', newUrl);
 
+  // 🧠 Load folder contents and breadcrumb trail
   await Promise.all([
     fetchContents(currentView, normalizedFolderId),
     fetchBreadcrumb(normalizedFolderId)
@@ -86,13 +94,17 @@ export async function loadFolder(folderId = null) {
 
 export async function loadTrashView(folderId = null) {
   const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
-
-  // 🧠 Sync folder + view state to <body>
   document.body.dataset.folderId = normalizedFolderId;
   document.body.dataset.view = 'trash';
 
-  // 🌐 Update browser URL for deep linking
-  const newUrl = `?view=trash${normalizedFolderId ? `&folder=${encodeURIComponent(normalizedFolderId)}` : ''}`;
+  const basePath = window.location.pathname;
+  const queryParams = new URLSearchParams();
+  queryParams.set('view', 'trash');
+  if (normalizedFolderId) {
+    queryParams.set('folder', normalizedFolderId);
+  }
+
+  const newUrl = `${basePath}?${queryParams.toString()}`;
   window.history.pushState({}, '', newUrl);
 
   await Promise.all([
@@ -102,31 +114,45 @@ export async function loadTrashView(folderId = null) {
 }
 
 export async function loadSharedWithMe(folderId = null) {
+  const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
+  document.body.dataset.folderId = normalizedFolderId;
   document.body.dataset.view = 'shared-with-me';
 
-  const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
+  const basePath = window.location.pathname;
+  const queryParams = new URLSearchParams();
+  queryParams.set('view', 'shared-with-me');
+  if (normalizedFolderId) {
+    queryParams.set('folder', normalizedFolderId);
+  }
 
-  document.body.dataset.folderId = normalizedFolderId;
-
-  await fetchSharedWithMeContents(normalizedFolderId);
-  fetchSharedWithMeBreadcrumb(normalizedFolderId);
-
-  // 🌐 Update browser URL for deep linking
-  const newUrl = `?view=shared-with-me${normalizedFolderId ? `&folder=${encodeURIComponent(normalizedFolderId)}` : ''}`;
+  const newUrl = `${basePath}?${queryParams.toString()}`;
   window.history.pushState({}, '', newUrl);
+
+  await Promise.all([
+    fetchSharedWithMeContents(normalizedFolderId),
+    fetchSharedWithMeBreadcrumb(normalizedFolderId)
+  ]);
 }
 
 export async function loadSharedByMe(folderId = null) {
-  document.body.dataset.view = 'shared-by-me';
-
   const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
   document.body.dataset.folderId = normalizedFolderId;
+  document.body.dataset.view = 'shared-by-me';
 
-  await fetchSharedByMeContents(normalizedFolderId);
-  fetchSharedByMeBreadcrumb(normalizedFolderId);
+  const basePath = window.location.pathname;
+  const queryParams = new URLSearchParams();
+  queryParams.set('view', 'shared-by-me');
+  if (normalizedFolderId) {
+    queryParams.set('folder', normalizedFolderId);
+  }
 
-  const newUrl = `?view=shared-by-me${normalizedFolderId ? `&folder=${encodeURIComponent(normalizedFolderId)}` : ''}`;
+  const newUrl = `${basePath}?${queryParams.toString()}`;
   window.history.pushState({}, '', newUrl);
+
+  await Promise.all([
+    fetchSharedByMeContents(normalizedFolderId),
+    fetchSharedByMeBreadcrumb(normalizedFolderId)
+  ]);
 }
 
 export function removeItemRow(itemId) {

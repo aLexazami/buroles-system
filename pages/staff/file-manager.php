@@ -35,10 +35,10 @@ renderHead('Staff');
         $folderParam = $view === 'my-files' && $folderId ? '&folder=' . urlencode($folderId) : '';
         ?>
         <div class="flex space-x-4 border-b pb-2 text-sm sm:text-md">
-          <a href="?view=my-files<?= $folderParam ?>" class="<?= $view === 'my-files' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">My Files</a>
-          <a href="?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared with Me</a>
-          <a href="?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared by Me</a>
-          <a href="?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Trash</a>
+          <a href="/pages/staff/file-manager.php?view=my-files<?= $folderParam ?>" class="<?= $view === 'my-files' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">My Files</a>
+          <a href="/pages/staff/file-manager.php?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared with Me</a>
+          <a href="/pages/staff/file-manager.php?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared by Me</a>
+          <a href="/pages/staff/file-manager.php?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Trash</a>
         </div>
 
         <?php if ($view === 'trash'): ?>

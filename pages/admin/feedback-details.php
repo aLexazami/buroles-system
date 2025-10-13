@@ -4,12 +4,15 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/table-utils.php';
 require_once __DIR__ . '/../../includes/fetch-feedback-data.php';
 require_once __DIR__ . '/../../helpers/head.php';
+require_once __DIR__ . '/../../helpers/flash.php';
 renderHead('Admin');
 ?>
+
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
+  <?php showFlash() ?>
 
-  <main class=" min-h-screen">
+  <main class="min-h-screen">
     <section class="m-4">
       <!-- Page Title -->
       <div class="bg-emerald-300 p-2 flex justify-center items-center gap-2 mb-5">
@@ -19,44 +22,35 @@ renderHead('Admin');
 
       <!-- Table Container -->
       <div class="bg-white rounded-lg shadow-md px-4 py-6 md:px-6 md:py-10">
-        <!-- Export Dropdown -->
-        <div class="relative inline-block text-left mb-4">
-          <button id="exportToggle"
-            class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition cursor-pointer flex items-center gap-2">
-            <img src="/assets/img/export-icon.png" alt="Export" class="w-5 h-5 invert">
-            Export
-          </button>
-          <div id="exportMenu"
-            class="hidden absolute z-10 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg">
-            <form action="/controllers/export-feedback-csv.php" method="POST">
-              <input type="hidden" name="format" value="csv">
-              <button type="submit"
-                class="flex items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 cursor-pointer">
-                <img src="/assets/img/csv-icon.png" alt="CSV" class="w-5 h-5">
-                Export as CSV
-              </button>
-            </form>
+
+        <!-- Controls: Export + Minimize -->
+        <div class="flex flex-wrap items-center gap-4 mb-6">
+          <!-- Export Dropdown -->
+          <div class="relative inline-block text-left">
+            <button id="exportToggle"
+              class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition cursor-pointer flex items-center gap-2">
+              <img src="/assets/img/export-icon.png" alt="Export" class="w-5 h-5 invert">
+              Export
+            </button>
+            <div id="exportMenu"
+              class="hidden absolute z-10 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg">
+              <form action="/controllers/export-feedback-csv.php" method="POST">
+                <input type="hidden" name="format" value="csv">
+                <button type="submit"
+                  class="flex items-center gap-5 w-full text-left px-4 py-2 hover:bg-emerald-100 cursor-pointer">
+                  <img src="/assets/img/csv-icon.png" alt="CSV" class="w-5 h-5">
+                  Export as CSV
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
 
-        <!-- Search and Controls -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-          <input
-            type="text"
-            id="userSearch"
-            placeholder="Search"
-            class="px-4 py-2 border rounded w-full sm:max-w-md" />
-          <button
-            id="clearSearch"
-            class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm">
-            Clear
-          </button>
-
-          <!-- Back Button with Tooltip -->
+          <!-- Minimize Button with Tooltip -->
           <div class="relative group text-left">
             <button onclick="window.location.href='/pages/admin/feedback-respondents.php'"
-              class="cursor-pointer hover:bg-emerald-100 rounded-md p-1 transition-transform duration-200 hover:scale-105">
-              <img src="/assets/img/minimize.png" class="w-6 h-6" alt="Fullscreen icon">
+              class="cursor-pointer hover:bg-emerald-100 rounded-md px-4 py-2 flex items-center gap-2 bg-gray-100 transition-transform duration-200 hover:scale-105">
+              <img src="/assets/img/minimize.png" class="w-5 h-5" alt="Minimize icon">
+              <span class="text-sm font-medium text-gray-700">Back</span>
             </button>
             <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 font-semibold text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-10">
               Return to feedback respondents
@@ -66,7 +60,7 @@ renderHead('Admin');
 
         <!-- Table Output -->
         <div class="overflow-x-auto">
-          <div id="feedbackTableContainer" class="min-w-full text-sm text-left"></div>
+          <div id="feedbackTableContainer" class="min-w-full text-sm text-left min-h-[450px]" ></div>
         </div>
       </div>
     </section>
@@ -75,6 +69,7 @@ renderHead('Admin');
   <?php include('../../includes/footer.php'); ?>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
+  <script src="/assets/js/auto-dismiss-alert.js"></script>
 </body>
 
 </html>
