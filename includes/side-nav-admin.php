@@ -15,7 +15,7 @@ $navItems = [
 <div id="mobile-sidebar" class="fixed inset-0 z-50 bg-gray-300 w-72 max-w-full p-4 space-y-4 transform -translate-x-full transition-transform duration-300 md:hidden">
 
   <!-- Shared Profile Block -->
-  <div class="flex flex-col items-center mt-10 mb-10">
+  <div class="flex flex-col items-center mt-5 mb-5">
     <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>"
       alt="Profile"
       class="h-16 w-16 rounded-full border-2 border-emerald-400">
@@ -27,7 +27,7 @@ $navItems = [
   <h2 class="text-sm font-bold mb-5">Navigation</h2>
 
   <!-- Shared Navigation -->
-  <nav class="space-y-8">
+  <nav class="space-y-2">
     <?php foreach ($navItems as $item): ?>
       <?php $isActive = $currentPage === basename($item['href']); ?>
       <a href="<?= $item['href'] ?>"

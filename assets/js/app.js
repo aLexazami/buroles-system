@@ -23,9 +23,10 @@ import { startRedirectCountdown } from './redirect-utils.js';
 import { initEmailAutocomplete } from './search-autocomplete.js';
 import { initFileSearch } from './file-search.js';
 
-
 document.addEventListener('DOMContentLoaded', () => {
   // 📁 File Manager Initialization
+  // ✅ Only run file manager logic on file-manager.php
+if (window.location.pathname.includes('/file-manager.php')) {
   const folderId = document.body.dataset.folderId || null;
   const view = document.body.dataset.view || 'my-files';
 
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       break;
   }
+}
 
 
 
@@ -113,14 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     selector: '.staff-item',
     scope: 'dataset' // uses data-name attribute
   });
-
-  if (document.getElementById('userSearch') && document.getElementById('clearSearch')) {
-    setupSearchFilter({
-      inputId: 'userSearch',
-      clearId: 'clearSearch',
-      selector: 'table tbody tr'
-    });
-  }
 
   if (document.getElementById('recipientEmailInput')) {
     initEmailAutocomplete();

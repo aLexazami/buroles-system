@@ -1,27 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 
-function getFeedbackData($pdo, $sortKey = 'id', $sortOrder = 'desc') {
-  $allowedColumns = [
-    'id' => 'r.id',
-    'name' => 'r.name',
-    'date' => 'r.date',
-    'age' => 'r.age',
-    'sex' => 'r.sex',
-    'customer_type' => 'r.customer_type',
-    'service_availed' => 's.name',
-    'region' => 'reg.name',
-    'citizen_charter_awareness' => 'a.citizen_charter_awareness',
-    'cc1' => 'a.cc1', 'cc2' => 'a.cc2', 'cc3' => 'a.cc3',
-    'sqd1' => 'a.sqd1', 'sqd2' => 'a.sqd2', 'sqd3' => 'a.sqd3', 'sqd4' => 'a.sqd4',
-    'sqd5' => 'a.sqd5', 'sqd6' => 'a.sqd6', 'sqd7' => 'a.sqd7', 'sqd8' => 'a.sqd8',
-    'remarks' => 'a.remarks',
-    'submitted_at' => 'r.submitted_at'
-  ];
-
-  $sortBy = $allowedColumns[$sortKey] ?? 'r.id';
-  $order = $sortOrder === 'asc' ? 'ASC' : 'DESC';
-
+function getFeedbackData(PDO $pdo): array {
   try {
     $query = "
       SELECT
@@ -39,7 +19,7 @@ function getFeedbackData($pdo, $sortKey = 'id', $sortOrder = 'desc') {
       LEFT JOIN services s ON r.service_availed_id = s.id
       LEFT JOIN feedback_answers a ON r.id = a.respondent_id
       LEFT JOIN regions reg ON r.region_id = reg.id
-      ORDER BY $sortBy $order
+      ORDER BY r.id DESC
     ";
 
     $stmt = $pdo->query($query);

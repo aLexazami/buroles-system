@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../auth/session.php';
 require_once __DIR__ . '/../includes/fetch-feedback-data.php';
 require_once __DIR__ . '/../includes/CSVExporter.php';
+require_once __DIR__ . '/../helpers/flash.php'; // ✅ Include flash helpers
 
 // ✅ Define fields
 $fields = [
@@ -12,7 +13,16 @@ $fields = [
   'remarks'
 ];
 
+// ✅ Fetch data
+$results = getFeedbackData($pdo);
+
+// ✅ Fallback if no data
+if (empty($results)) {
+  setFlash('warning', 'No feedback data available to export.');
+  header('Location: /pages/admin/feedback-respondents.php');
+  exit;
+}
+
 // ✅ Export using the class
 $exporter = new CSVExporter($fields, 'feedback_full_export.csv');
 $exporter->stream($results);
-?>

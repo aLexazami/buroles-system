@@ -5,20 +5,23 @@ require_once __DIR__ . '/../../helpers/uuid.php';  // generateUuid()
 require_once __DIR__ . '/../../helpers/flash.php'; // setFlash()
 
 define('STAFF_ROLE_ID', 1);
-define('REDIRECT_URL', '/pages/staff/file-manager.php');
 
 $isJson = strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false
        || strpos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== false;
 
 $input = $isJson ? json_decode(file_get_contents('php://input'), true) : $_POST;
 
+// 🧭 Preserve view context from query string
+$view = $_GET['view'] ?? 'my-files';
+$redirectBase = "/pages/staff/file-manager.php?view=" . urlencode($view);
+
 function respond($success, $message, $redirectSuffix = '') {
-  global $isJson;
+  global $isJson, $redirectBase;
   if ($isJson) {
     echo json_encode(['success' => $success, 'message' => $message]);
   } else {
     setFlash($success ? 'success' : 'error', $message);
-    header("Location: " . REDIRECT_URL . $redirectSuffix);
+    header("Location: " . $redirectBase . $redirectSuffix);
   }
   exit;
 }
@@ -26,7 +29,7 @@ function respond($success, $message, $redirectSuffix = '') {
 // 🔐 Validate session
 $grantedBy = $_SESSION['user_id'] ?? null;
 if (!is_numeric($grantedBy)) {
-  respond(false, 'Invalid session', '?error=session');
+  respond(false, 'Invalid session', '&error=session');
 }
 
 // 🔐 Validate input
@@ -35,7 +38,7 @@ $email = trim($input['recipient_email'] ?? '');
 $permission = $input['permission'] ?? null;
 
 if (!isValidUuid($fileId) || !$email || !$permission) {
-  respond(false, 'Invalid input', '?error=invalid');
+  respond(false, 'Invalid input', '&error=invalid');
 }
 
 // 🔍 Lookup recipient and enforce staff-only
@@ -48,7 +51,7 @@ $stmt->execute([$email]);
 $recipient = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$recipient || $recipient['role_id'] !== STAFF_ROLE_ID) {
-  respond(false, 'Only staff-to-staff sharing is allowed', '?error=invalid-recipient');
+  respond(false, 'Only staff-to-staff sharing is allowed', '&error=invalid-recipient');
 }
 
 $recipientId = $recipient['id'];
@@ -60,7 +63,7 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$fileId, $recipientId]);
 if ($stmt->fetchColumn() > 0) {
-  respond(false, 'Already shared with this user', '?error=already-shared');
+  respond(false, 'Already shared with this user', '&error=already-shared');
 }
 
 // ✅ Insert access control entry
@@ -70,4 +73,4 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([generateUuid(), $fileId, $recipientId, $permission, $grantedBy]);
 
-respond(true, 'File shared successfully', '?success=shared');
+respond(true, 'File shared successfully', '&success=shared');
