@@ -876,19 +876,20 @@ export function closeManageAccessModal() {
 
 export function initManageAccessButtons() {
   const form = document.getElementById('manageAccessForm');
-  if (!form) return;
+  if (!form || form.dataset.bound === 'true') return;
+  form.dataset.bound = 'true'; // 🛡️ Prevent double-binding
 
-  const emailInput = form.querySelector('#manageRecipientEmail');
-  const permissionSelect = form.querySelector('#managePermission');
   const saveBtn = form.querySelector('button[type="submit"]');
   const fileIdInput = form.querySelector('#manage-access-file-id');
 
-  if (!emailInput || !permissionSelect || !saveBtn || !fileIdInput) return;
+  if (!saveBtn || !fileIdInput) return;
 
+  // 🔗 Modal behavior
   bindManageAccessTriggers();
   bindModalDismissal();
-  bindInputListeners(emailInput, permissionSelect);
-  bindFormSubmission(form, emailInput, permissionSelect, saveBtn, fileIdInput);
+
+  // 📨 Form submission (only for existing access updates)
+  bindFormSubmission(form, saveBtn, fileIdInput);
 
   // 🔽 Global dropdown dismissal
   document.addEventListener('click', () => {
@@ -916,12 +917,7 @@ function bindModalDismissal() {
   });
 }
 
-function bindInputListeners(emailInput, permissionSelect) {
-  emailInput.addEventListener('input', updateSubmitButtonLabel);
-  permissionSelect.addEventListener('change', updateSubmitButtonLabel);
-}
-
-function bindFormSubmission(form, emailInput, permissionSelect, saveBtn, fileIdInput) {
+function bindFormSubmission(form, saveBtn, fileIdInput) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -931,13 +927,9 @@ function bindFormSubmission(form, emailInput, permissionSelect, saveBtn, fileIdI
       return;
     }
 
-    const recipientEmail = emailInput.value.trim();
-    const permission = permissionSelect.value;
-
     const hasUpdates = Object.keys(accessUpdates).length > 0;
-    const hasNewRecipient = recipientEmail !== '';
 
-    if (!hasUpdates && !hasNewRecipient) {
+    if (!hasUpdates) {
       renderFlash('info', 'No changes to save');
       closeManageAccessModal();
       return;
@@ -949,8 +941,7 @@ function bindFormSubmission(form, emailInput, permissionSelect, saveBtn, fileIdI
       file_id: fileId
     }));
 
-    const newShare = hasNewRecipient ? { email: recipientEmail, permission } : null;
-    const payload = { file_id: fileId, updates, new_share: newShare };
+    const payload = { file_id: fileId, updates };
     const originalText = saveBtn.textContent;
 
     saveBtn.disabled = true;
@@ -988,11 +979,8 @@ function bindFormSubmission(form, emailInput, permissionSelect, saveBtn, fileIdI
         }
       });
 
-      emailInput.value = '';
-      permissionSelect.selectedIndex = 0;
       accessUpdates = {};
       updateSubmitButtonLabel();
-
       closeManageAccessModal();
     } catch (err) {
       console.error('❌ Error updating access:', err);
@@ -1019,9 +1007,7 @@ function updateSubmitButtonLabel() {
   if (!saveBtn) return;
 
   const hasUpdates = Object.keys(accessUpdates).length > 0;
-  const hasNewRecipient = document.getElementById('manageRecipientEmail')?.value.trim() !== '';
-
-  saveBtn.textContent = hasUpdates || hasNewRecipient ? 'Save Changes' : 'Done';
+  saveBtn.textContent = hasUpdates ? 'Save Changes' : 'Done';
 }
 
 function renderAccessList(users = []) {
