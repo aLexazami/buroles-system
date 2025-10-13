@@ -3,6 +3,7 @@ export function initEmailAutocomplete() {
   const suggestions = document.getElementById('emailSuggestions');
   const avatar = document.getElementById('selectedAvatar');
   const ownerEmail = document.getElementById('shareOwnerEmail')?.value?.trim().toLowerCase() || '';
+  const DEFAULT_AVATAR = '/assets/img/default-avatar.png';
 
   if (!input || !suggestions || !avatar) return;
 
@@ -35,7 +36,7 @@ export function initEmailAutocomplete() {
       if (index === 0) li.classList.add('highlighted');
 
       li.innerHTML = `
-        <img src="${user.avatar_path || '/assets/img/default-avatar.png'}" class="w-6 h-6 rounded-full" alt="Avatar">
+        <img src="${user.avatar_path || DEFAULT_AVATAR}" class="w-6 h-6 rounded-full" alt="Avatar">
         <div class="flex flex-col">
           <span class="font-medium">${user.full_name || 'Unnamed'}</span>
           <span class="text-sm text-gray-500">${user.email}</span>
@@ -44,7 +45,7 @@ export function initEmailAutocomplete() {
 
       li.addEventListener('click', () => {
         input.value = user.email;
-        avatar.src = user.avatar_path || '/assets/img/add-user.png';
+        avatar.src = user.avatar_path || DEFAULT_AVATAR;
         suggestions.innerHTML = '';
         suggestions.classList.add('hidden');
       });
@@ -65,7 +66,7 @@ export function initEmailAutocomplete() {
       suggestions.innerHTML = '';
 
       if (query.length === 0) {
-        avatar.src = '/assets/img/add-user.png';
+        avatar.src = DEFAULT_AVATAR;
         suggestions.classList.add('hidden');
         return;
       }

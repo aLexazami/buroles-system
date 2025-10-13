@@ -5,5 +5,6 @@ export const fileRoutes = {
   update: '/controllers/file-manager/update-item.php',
   restore: '/controllers/file-manager/restore-item.php',
   move: '/controllers/file-manager/move-item.php',
-  emptyTrash: '/controllers/file-manager/empty-trash.php'
+  emptyTrash: '/controllers/file-manager/empty-trash.php',
+  share: '/controllers/file-manager/share.php'
 };
