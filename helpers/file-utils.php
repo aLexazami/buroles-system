@@ -267,3 +267,26 @@ function getFileById(PDO $pdo, string $id, int $userId): ?array {
   $stmt->execute([$id, $userId]);
   return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
 }
+
+function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): string {
+  $stmt = $pdo->prepare("
+    SELECT name FROM files
+    WHERE parent_id " . ($parentId ? "= ?" : "IS NULL") . "
+    AND type = 'file' AND is_deleted = 0
+  ");
+  $stmt->execute($parentId ? [$parentId] : []);
+  $existingNames = array_map('strtolower', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+  if (!in_array(strtolower($baseName), $existingNames)) return $baseName;
+
+  $ext = pathinfo($baseName, PATHINFO_EXTENSION);
+  $nameOnly = pathinfo($baseName, PATHINFO_FILENAME);
+  $counter = 1;
+
+  do {
+    $candidate = $ext ? "{$nameOnly} ({$counter}).{$ext}" : "{$nameOnly} ({$counter})";
+    $counter++;
+  } while (in_array(strtolower($candidate), $existingNames));
+
+  return $candidate;
+}

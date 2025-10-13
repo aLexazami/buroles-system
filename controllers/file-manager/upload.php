@@ -1,57 +1,55 @@
 <?php
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../helpers/uuid.php';      // generateUuid(), isValidUuid()
-require_once __DIR__ . '/../../helpers/path.php';      // resolveFolderPath(), buildVirtualPath(), resolveDiskPath(), ensureDirectoryExists()
+require_once __DIR__ . '/../../helpers/uuid.php';        // generateUuid(), isValidUuid()
+require_once __DIR__ . '/../../helpers/path.php';        // resolveFolderPath(), buildVirtualPath(), resolveDiskPath(), ensureDirectoryExists()
+require_once __DIR__ . '/../../helpers/file-utils.php';  // getUniqueFileName()
 
 header('Content-Type: application/json');
 
-// ✅ Validate session
+// 🧠 Validate session
 $userId = $_SESSION['user_id'] ?? null;
 if (!is_numeric($userId)) {
-  echo json_encode(['success' => false, 'error' => 'Invalid session']);
-  exit;
+  returnError('Invalid session');
 }
 
-// ✅ Validate folder ID
+// 🧠 Validate folder ID
 $folderId = $_POST['folder_id'] ?? null;
 if (!isValidUuid($folderId)) {
   $folderId = null;
 }
 
-// ✅ Validate file upload
+// 🧠 Validate file upload
 if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
-  echo json_encode(['success' => false, 'error' => 'Upload failed.']);
-  exit;
+  returnError('Upload failed.');
 }
 
 $file = $_FILES['file'];
 $uuid = generateUuid();
-$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-$filename = "$uuid.$ext";
+$originalName = basename($file['name']);
+$finalName = getUniqueFileName($pdo, $folderId, $originalName);
 $mime = mime_content_type($file['tmp_name']);
 $size = filesize($file['tmp_name']);
 
-// ✅ Resolve parent folder path and build full virtual path
+// 🧠 Resolve paths
 $parentPath = resolveFolderPath($pdo, $folderId, $userId);
 $virtualPath = buildVirtualPath($parentPath, $userId, $uuid);
 $diskPath = resolveDiskPath($virtualPath);
 ensureDirectoryExists(dirname($diskPath));
 
-// ✅ Move file to disk
+// 🧠 Move file to disk
 if (!move_uploaded_file($file['tmp_name'], $diskPath)) {
-  echo json_encode(['success' => false, 'error' => 'Failed to save file.']);
-  exit;
+  returnError('Failed to save file.');
 }
 
-// ✅ Insert file record into database
+// ✅ Insert file record
 $stmt = $pdo->prepare("
   INSERT INTO files (id, name, type, path, parent_id, owner_id, size, mime_type)
   VALUES (?, ?, 'file', ?, ?, ?, ?, ?)
 ");
 $stmt->execute([
   $uuid,
-  basename($file['name']),
+  $finalName,
   $virtualPath,
   $folderId,
   $userId,
@@ -64,7 +62,7 @@ echo json_encode([
   'success' => true,
   'item' => [
     'id' => $uuid,
-    'name' => basename($file['name']),
+    'name' => $finalName,
     'type' => 'file',
     'path' => $virtualPath,
     'parent_id' => $folderId,
@@ -75,3 +73,9 @@ echo json_encode([
   ]
 ]);
 exit;
+
+// 🔧 Helper
+function returnError(string $message): void {
+  echo json_encode(['success' => false, 'error' => $message]);
+  exit;
+}
