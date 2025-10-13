@@ -389,15 +389,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
     wrapper.appendChild(label);
     return wrapper;
   };
-  console.log('Manage Access visibility check:', {
-    itemId: item.id,
-    view: currentView,
-    owner_id: item.owner_id,
-    currentUserId,
-    showManageAccess:
-      currentView === 'shared-by-me' &&
-      String(item.owner_id) === String(currentUserId)
-  });
 
   // Manage Access
   if (
@@ -431,7 +422,7 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
 
     if (allowDestructive && permissions.includes('delete')) {
       menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
-      menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'text-emerald-600 cursor-pointer', () => showDeleteModal(item.id, item.name)));
+      menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', ' cursor-pointer', () => showDeleteModal(item.id, item.name)));
     }
 
     if (permissions.includes('comment')) {
