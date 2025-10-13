@@ -308,6 +308,26 @@ function animateRowInsertion(row) {
   });
 }
 
+function positionDropdown(menuButton, menu, containerSelector = '#file-list') {
+  const buttonRect = menuButton.getBoundingClientRect();
+  const menuHeight = menu.offsetHeight || 160;
+  const container = document.querySelector(containerSelector);
+  const containerRect = container?.getBoundingClientRect();
+
+  if (!containerRect) return;
+
+  const spaceBelow = containerRect.bottom - buttonRect.bottom;
+  const spaceAbove = buttonRect.top - containerRect.top;
+
+  menu.classList.remove('top-full', 'mt-2', 'bottom-full', 'mb-2');
+
+  if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+    menu.classList.add('bottom-full', 'mb-2');
+  } else {
+    menu.classList.add('top-full', 'mt-2');
+  }
+}
+
 export function createFileRow(item, isTrashView = false, currentUserId = null) {
   const currentView = document.body.dataset.view || 'my-files';
   const currentFolder = document.body.dataset.folderId || '';
@@ -321,7 +341,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   row.dataset.view = currentView;
   row.setAttribute('role', 'listitem');
 
-  // 🧭 Click behavior
   row.addEventListener('click', () => {
     if (item.type === 'folder') {
       currentView === 'trash' ? loadTrashView(item.id) : loadFolder(item.id);
@@ -331,7 +350,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
     }
   });
 
-  // 📄 Icon + Label
   const icon = document.createElement('img');
   icon.src = getItemIcon(item);
   icon.alt = item.type;
@@ -341,7 +359,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   label.textContent = item.name;
   label.className = 'text-gray-800 font-medium truncate';
 
-  // 🏷️ Badge
   const badge = document.createElement('span');
   badge.className = 'hidden min-[650px]:inline-block text-xs text-gray-600 bg-emerald-100 px-2 py-1 rounded-md';
 
@@ -367,7 +384,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   labelWrapper.appendChild(icon);
   labelWrapper.appendChild(labelStack);
 
-  // ⋯ Menu
   const menuWrapper = document.createElement('div');
   menuWrapper.className = 'relative';
 
@@ -383,15 +399,20 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   menuButton.className = 'hover:bg-emerald-100 rounded-full px-2 py-2 cursor-pointer';
 
   const menu = document.createElement('div');
-  menu.className = 'file-list-menu absolute right-8 sm:right-10 top-0 sm:top-1 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-48 transition ease-out duration-150 font-semibold';
+  menu.className = 'file-list-menu absolute right-8 sm:right-10 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-48 transition ease-out duration-150 font-semibold';
   menu.setAttribute('role', 'menu');
 
-  // 🧠 Menu toggle logic
   menuButton.addEventListener('click', (e) => {
     e.stopPropagation();
     const isHidden = menu.classList.contains('hidden');
     document.querySelectorAll('.file-list-menu').forEach(m => m.classList.add('hidden'));
-    menu.classList.toggle('hidden', !isHidden);
+
+    if (isHidden) {
+      positionDropdown(menuButton, menu);
+      menu.classList.remove('hidden');
+    } else {
+      menu.classList.add('hidden');
+    }
   });
 
   menu.addEventListener('click', (e) => e.stopPropagation());
@@ -401,7 +422,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
     if (!isClickInside) menu.classList.add('hidden');
   });
 
-  // 🔧 Menu Item Helper
   const createMenuItem = (labelText, iconPath, colorClass, onClick, isLink = false, href = '') => {
     const wrapper = isLink ? document.createElement('a') : document.createElement('button');
     wrapper.className = `flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-emerald-100 ${colorClass}`;
@@ -421,11 +441,7 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
     return wrapper;
   };
 
-  // Manage Access
-  if (
-    currentView === 'shared-by-me' &&
-    String(item.owner_id) === String(currentUserId)
-  ) {
+  if (currentView === 'shared-by-me' && String(item.owner_id) === String(currentUserId)) {
     const manageBtn = createMenuItem(
       'Manage Access',
       '/assets/img/lock-icon.png',
@@ -437,7 +453,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
     menu.appendChild(manageBtn);
   }
 
-  // 🗑️ Trash View
   if (isTrashView) {
     menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
     menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => showRestoreModal(item.id)));
@@ -451,9 +466,9 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
 
     const allowDestructive = permissions.includes('delete');
 
-    if (allowDestructive && permissions.includes('delete')) {
+    if (allowDestructive) {
       menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
-      menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', ' cursor-pointer', () => showDeleteModal(item.id, item.name)));
+      menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'cursor-pointer', () => showDeleteModal(item.id, item.name)));
     }
 
     if (permissions.includes('comment')) {

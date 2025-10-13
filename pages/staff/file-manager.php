@@ -20,7 +20,7 @@ renderHead('Staff');
   <div id="flashContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2 w-full max-w-sm sm:max-w-md"></div>
   <?php showFlash(); ?>
 
-  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr] min-h-screen">
+  <main class="grid grid-cols-1 md:grid-cols-[auto_1fr]">
     <?php include('../../includes/side-nav-staff.php'); ?>
 
     <section class="p-4 sm:p-6 md:p-8">
@@ -82,7 +82,7 @@ renderHead('Staff');
         </div>
 
 
-        <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6  w-full min-h-[555px] transition-all duration-300">
+        <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6  w-full transition-all duration-300">
           <!-- Breadcrumb -->
           <div id="breadcrumb" class="flex flex-wrap items-center text-sm text-emerald-600 hover:underline space-x-1 mb-3"></div>
           <!-- Search -->
@@ -95,7 +95,7 @@ renderHead('Staff');
             </button>
           </div>
           <!-- ✅ Dynamic File List Container -->
-          <div id="file-list" class="divide-y divide-gray-400 mt-4 transition-all duration-300"></div>
+          <div id="file-list" class="divide-y divide-gray-400 mt-4 transition-all duration-300  min-h-[300px]"></div>
         </div>
 
 
