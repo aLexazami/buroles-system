@@ -304,19 +304,11 @@ export function initShareHandler() {
   const description = document.getElementById('accessLevelDescription');
   const DEFAULT_AVATAR = '/assets/img/default-avatar.png';
 
-  if (!form || !modal) {
-    console.warn('❌ Share modal or form not found');
-    return;
-  }
+  if (!form || !modal) return;
 
   // 🛡️ Prevent double-binding
-  if (form.dataset.bound === 'true') {
-    console.warn('⚠️ Share handler already bound');
-    return;
-  }
+  if (form.dataset.bound === 'true') return;
   form.dataset.bound = 'true';
-
-  console.log('✅ Share handler initialized');
 
   // 📘 Permission descriptions
   const definitions = {
@@ -329,7 +321,6 @@ export function initShareHandler() {
   const updateDescription = () => {
     const value = permissionSelector?.value;
     description.textContent = definitions[value] || '';
-    console.log(`🔄 Permission changed to: ${value}`);
   };
 
   if (permissionSelector && description) {
@@ -340,7 +331,6 @@ export function initShareHandler() {
   // 📨 Submit handler
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log('📨 Share form submitted');
 
     const payload = {
       file_id: form.querySelector('#share-file-id')?.value,
@@ -348,17 +338,12 @@ export function initShareHandler() {
       permission: permissionSelector?.value
     };
 
-    console.log('📦 Payload:', payload);
-
     try {
       const endpoint = fileRoutes?.share;
       if (!endpoint) {
-        console.error('❌ Share endpoint not defined');
         renderFlash('error', 'Sharing is temporarily unavailable');
         return;
       }
-
-      console.log(`🌐 Sending POST to: ${endpoint}`);
 
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -370,21 +355,17 @@ export function initShareHandler() {
       });
 
       const data = await res.json();
-      console.log('📬 Response:', data);
 
       if (!data.success) {
-        console.warn('⚠️ Share failed:', data.message);
         renderFlash('error', data.message || 'Share failed');
         return;
       }
 
-      console.log('✅ Share succeeded');
       renderFlash('success', data.message || 'File shared successfully');
       form.reset();
       updateDescription(); // ✅ Reset description to default
       toggleModal('shareModal', false);
     } catch (err) {
-      console.error('❌ Error during share:', err);
       renderFlash('error', 'Error sharing file');
     }
   });
@@ -392,7 +373,6 @@ export function initShareHandler() {
   // ❌ Cancel handler
   if (cancelBtn) {
     cancelBtn.addEventListener('click', () => {
-      console.log('❌ Share modal cancelled');
       form.reset();
       updateDescription(); // ✅ Reset description to default
 
