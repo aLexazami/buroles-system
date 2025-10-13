@@ -21,6 +21,8 @@ import { setupAnnouncementPagination } from './announcementCarousel.js';
 import { setupRoleCheckboxToggle } from './checkbox.js';
 import { startRedirectCountdown } from './redirect-utils.js';
 import { initEmailAutocomplete } from './search-autocomplete.js';
+import { initFileSearch } from './file-search.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
   // 📁 File Manager Initialization
@@ -102,14 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Badge Updater
   startBadgePolling();
+  initFileSearch();
 
-  // 🔍 Search Filters
-  setupSearchFilter({
-    inputId: 'unifiedSearch',
-    clearId: 'clearUnifiedSearch',
-    selector: '.folder-item, .file-item',
-    scope: 'dataset'
-  });
 
   setupSearchFilter({
     inputId: 'staffSearch',

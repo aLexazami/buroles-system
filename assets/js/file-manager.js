@@ -339,7 +339,9 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   row.dataset.parentId = item.parent_id || '';
   row.dataset.type = item.type;
   row.dataset.view = currentView;
+  row.dataset.name = item.name.toLowerCase();
   row.setAttribute('role', 'listitem');
+  
 
   row.addEventListener('click', () => {
     if (item.type === 'folder') {
