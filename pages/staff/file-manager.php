@@ -249,28 +249,40 @@ renderHead('Staff');
   </div>
 
   <!-- 🔐 Manage Access Modal -->
-  <div id="manageAccessModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div id="manageAccessModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 overflow-y-auto opacity-0 transition-opacity duration-200 will-change-opacity">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-2xl z-10 border border-emerald-500 max-h-[90vh] overflow-y-auto">
       <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Manage Access</h2>
-      <form id="manageAccessForm">
+      <form id="manageAccessForm" autocomplete="off">
         <input type="hidden" name="file_id" id="manage-access-file-id">
-        <div class="mb-4">
-          <label for="recipient_email" class="block text-sm font-medium text-gray-700 mb-1">Recipient Email</label>
-          <input type="email" name="recipient_email" required class="w-full border rounded px-3 py-2 text-sm" placeholder="user@example.com">
-        </div>
-        <div class="mb-4">
-          <label for="permission" class="block text-sm font-medium text-gray-700 mb-1">Permission Level</label>
-          <select name="permission" class="w-full border rounded px-3 py-2 text-sm">
+
+        <!-- 📧 Add New Recipient -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Add New Recipient</label>
+          <div class="flex items-center gap-2 border-2 rounded-lg px-3 py-2 mb-3">
+            <img src="/assets/img/add-user.png" alt="User Avatar" class="w-5 h-5 sm:w-8 sm:h-8 rounded-full object-cover" />
+            <input type="email" name="recipient_email" id="manageRecipientEmail" class="flex-1 h-10 sm:h-12 p-2 border-l-2 focus:outline-none text-sm sm:text-base" placeholder="Add people">
+          </div>
+          <select name="permission" id="managePermission" class="w-full border rounded px-3 py-2 text-sm">
             <option value="read">Read</option>
             <option value="write">Write</option>
             <option value="share">Share</option>
             <option value="delete">Delete</option>
           </select>
         </div>
-        <div class="flex justify-end gap-2">
-          <button type="button" id="cancelManageAccess" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
-          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Update</button>
+
+        <!-- 👥 Current Access List -->
+        <div class="mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Current Access</label>
+          <div id="accessList" class="space-y-4 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-3 bg-gray-50">
+            <!-- Access rows or fallback will be injected here -->
+          </div>
+        </div>
+
+        <!-- 🧭 Action Buttons -->
+        <div class="flex justify-end gap-2 mt-4">
+          <button type="button" id="cancelManageAccess" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Save Changes</button>
         </div>
       </form>
     </div>

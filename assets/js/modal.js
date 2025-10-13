@@ -1,5 +1,5 @@
 
-import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput,isValidFileName,getExtension,isFolderNameValid, generateUniqueFolderName} from './file-manager.js';
+import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput, isValidFileName, getExtension, isFolderNameValid, generateUniqueFolderName } from './file-manager.js';
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
@@ -12,21 +12,26 @@ export function toggleModal(modalId, show) {
   if (show) {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    void modal.offsetHeight;
-    modal.classList.remove('opacity-0');
-    modal.classList.add('opacity-100');
+    requestAnimationFrame(() => {
+      modal.classList.remove('opacity-0');
+      modal.classList.add('opacity-100');
+    });
     document.body.classList.add('overflow-hidden');
   } else {
     modal.classList.remove('opacity-100');
     modal.classList.add('opacity-0');
-    setTimeout(() => {
+
+    // Wait for transition to finish before hiding
+    const handleTransitionEnd = () => {
       modal.classList.remove('flex');
       modal.classList.add('hidden');
       document.body.classList.remove('overflow-hidden');
-    }, 200);
+      modal.removeEventListener('transitionend', handleTransitionEnd);
+    };
+
+    modal.addEventListener('transitionend', handleTransitionEnd);
   }
 }
-
 //  Password Modal Logic
 let pendingPasswordHref = '';
 
@@ -839,82 +844,7 @@ export function setupRenameModalHandler() {
 }
 
 // Manage Access Modal in File Manager
-export function initManageAccessButtons() {
-  const modal = document.getElementById('manageAccessModal');
-  const cancelBtn = document.getElementById('cancelManageAccess');
-  const form = document.getElementById('manageAccessForm');
-
-  // 🧩 Open modal
-  document.querySelectorAll('.manage-access-btn').forEach(btn => {
-    const fileId = btn.dataset.fileId;
-    if (fileId) {
-      btn.addEventListener('click', () => {
-        const input = document.getElementById('manage-access-file-id');
-        if (input) input.value = fileId;
-        toggleModal('manageAccessModal', true);
-      });
-    }
-  });
-
-  // ❌ Cancel button
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', () => {
-      form?.reset();
-      toggleModal('manageAccessModal', false);
-    });
-  }
-
-  // ⎋ Escape key
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
-      form?.reset();
-      toggleModal('manageAccessModal', false);
-    }
-  });
-
-  // ✅ Submit handler
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const payload = {
-        file_id: form.querySelector('#manage-access-file-id')?.value,
-        recipient_email: form.querySelector('[name="recipient_email"]')?.value,
-        permission: form.querySelector('[name="permission"]')?.value
-      };
-
-      try {
-        const endpoint = fileRoutes?.manageAccess;
-        if (!endpoint) {
-          renderFlash('error', 'Manage Access endpoint not available');
-          return;
-        }
-
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-
-        if (!data.success) {
-          renderFlash('error', data.message || 'Failed to update access');
-          return;
-        }
-
-        renderFlash('success', data.message || 'Access updated successfully');
-        form.reset();
-        toggleModal('manageAccessModal', false);
-      } catch (err) {
-        renderFlash('error', 'Error updating access');
-      }
-    });
-  }
-}
+let accessUpdates = {};
 
 export function openManageAccessModal(fileId) {
   const modal = document.getElementById('manageAccessModal');
@@ -922,6 +852,8 @@ export function openManageAccessModal(fileId) {
   if (!modal || !input) return;
 
   input.value = fileId;
+  accessUpdates = {}; // reset tracked changes
+  fetchAccessList(fileId);
   toggleModal('manageAccessModal', true);
 }
 
@@ -929,8 +861,206 @@ export function closeManageAccessModal() {
   const modal = document.getElementById('manageAccessModal');
   if (!modal) return;
 
-  toggleModal('manageAccessModal', false);
-
   const form = modal.querySelector('form');
   if (form) form.reset();
+
+  document.getElementById('accessList').innerHTML = '';
+  accessUpdates = {};
+
+  // 🧭 Reset button label to "Done"
+  const saveBtn = form?.querySelector('button[type="submit"]');
+  if (saveBtn) saveBtn.textContent = 'Done';
+
+  toggleModal('manageAccessModal', false);
+}
+
+export function initManageAccessButtons() {
+  const form = document.getElementById('manageAccessForm');
+  const emailInput = form?.querySelector('#manageRecipientEmail');
+  const permissionSelect = form?.querySelector('#managePermission');
+  const saveBtn = form?.querySelector('button[type="submit"]');
+
+  if (!form || !emailInput || !permissionSelect || !saveBtn) return;
+
+  // 🔘 Bind all "Manage Access" buttons
+  document.querySelectorAll('.manage-access-btn').forEach(btn => {
+    const fileId = btn.dataset.fileId;
+    if (fileId) {
+      btn.addEventListener('click', () => openManageAccessModal(fileId));
+    }
+  });
+
+  // ❌ Cancel button
+  document.getElementById('cancelManageAccess')?.addEventListener('click', closeManageAccessModal);
+
+  // ⎋ Escape key closes modal
+  document.addEventListener('keydown', e => {
+    const modal = document.getElementById('manageAccessModal');
+    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+      closeManageAccessModal();
+    }
+  });
+
+  // 🔁 Update button label on input changes
+  emailInput.addEventListener('input', updateSubmitButtonLabel);
+  permissionSelect.addEventListener('change', updateSubmitButtonLabel);
+
+  // 📝 Form submission
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fileId = form.querySelector('#manage-access-file-id')?.value;
+    if (!fileId) {
+      renderFlash('error', 'Missing file ID');
+      return;
+    }
+
+    const recipientEmail = emailInput.value.trim();
+    const permission = permissionSelect.value;
+
+    const hasUpdates = Object.keys(accessUpdates).length > 0;
+    const hasNewRecipient = recipientEmail !== '';
+
+    if (!hasUpdates && !hasNewRecipient) {
+      renderFlash('info', 'No changes to save');
+      closeManageAccessModal();
+      return;
+    }
+
+    const updates = Object.entries(accessUpdates).map(([user_id, permission]) => ({ user_id, permission }));
+    const newShare = hasNewRecipient ? { email: recipientEmail, permission } : null;
+
+    const payload = { file_id: fileId, updates, new_share: newShare };
+    const originalText = saveBtn.textContent;
+
+    try {
+      const endpoint = fileRoutes?.manageAccess;
+      if (!endpoint) {
+        renderFlash('error', 'Manage Access endpoint not available');
+        return;
+      }
+
+      // ⏳ UX: disable button + show spinner
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = `<span class="animate-spin mr-2">⏳</span>Saving...`;
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        renderFlash('error', data.message || 'Failed to update access');
+        return;
+      }
+
+      renderFlash('success', data.message || 'Access updated successfully');
+      fetchAccessList(fileId);
+      document.getElementById('accessList')?.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // ✅ Reset only new recipient fields
+      emailInput.value = '';
+      permissionSelect.selectedIndex = 0;
+      accessUpdates = {};
+      updateSubmitButtonLabel();
+
+      closeManageAccessModal();
+    } catch (err) {
+      console.error('❌ Error updating access:', err);
+      renderFlash('error', 'Server error. Please try again.');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = originalText;
+    }
+  });
+}
+
+async function fetchAccessList(fileId) {
+  try {
+    const res = await fetch(`/controllers/file-manager/getAccessList.php?file_id=${encodeURIComponent(fileId)}`);
+    const users = await res.json();
+    renderAccessList(users);
+  } catch (err) {
+    renderFlash('error', 'Failed to load access list');
+  }
+}
+
+function updateSubmitButtonLabel() {
+  const saveBtn = document.querySelector('#manageAccessForm button[type="submit"]');
+  if (!saveBtn) return;
+
+  const hasUpdates = Object.keys(accessUpdates).length > 0;
+  const hasNewRecipient = document.getElementById('manageRecipientEmail')?.value.trim() !== '';
+
+  saveBtn.textContent = hasUpdates || hasNewRecipient ? 'Save Changes' : 'Done';
+}
+
+function renderAccessList(users = []) {
+  const container = document.getElementById('accessList');
+  container.innerHTML = '';
+
+  if (!users.length) {
+    container.innerHTML = `
+      <div class="text-sm text-gray-500 italic text-center py-4">
+        No one currently has access to this item.
+      </div>
+    `;
+    updateSubmitButtonLabel(); // Ensure button says "Done"
+    return;
+  }
+
+  users.forEach(user => {
+    const row = document.createElement('div');
+    row.className = 'flex items-center justify-between border rounded px-3 py-2 bg-white';
+
+    const fullName = user.name || 'Unnamed';
+    const avatar = user.avatar || '/assets/img/default-avatar.png';
+
+    row.innerHTML = `
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+        <!-- 👤 User Info -->
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <img src="${avatar}" class="w-6 h-6 rounded-full object-cover" />
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium truncate">${fullName}</div>
+            <div class="text-xs text-gray-500 truncate">${user.email}</div>
+          </div>
+        </div>
+
+        <!-- 🔐 Permission Selector -->
+        <div class="mt-2 sm:mt-0 w-full sm:w-auto">
+          <select class="access-level-selector text-sm border rounded px-2 py-1 w-full sm:w-auto" data-user-id="${user.user_id}">
+            <option value="read" ${user.permission === 'read' ? 'selected' : ''}>Read</option>
+            <option value="write" ${user.permission === 'write' ? 'selected' : ''}>Write</option>
+            <option value="share" ${user.permission === 'share' ? 'selected' : ''}>Share</option>
+            <option value="delete" ${user.permission === 'delete' ? 'selected' : ''}>Delete</option>
+            <option value="revoke">❌ Revoke Access</option>
+          </select>
+        </div>
+      </div>
+    `;
+
+    const selector = row.querySelector('select');
+    selector.addEventListener('change', (e) => {
+      const selected = e.target.value;
+      const userId = e.target.dataset.userId;
+
+      if (userId) {
+        accessUpdates[userId] = selected;
+        updateSubmitButtonLabel(); // 🔁 Update button label
+      }
+
+      row.classList.toggle('opacity-50', selected === 'revoke');
+    });
+
+    container.appendChild(row);
+  });
+
+  updateSubmitButtonLabel(); // Ensure button reflects current state
 }
