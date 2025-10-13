@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal,setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler} from './modal.js';
+import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal,setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler} from './modal.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
@@ -72,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPermanentDeleteModal();
   setupEmptyTrashModal();
   setupRenameModalHandler();
+  initShareHandler();
+
 
   // Handler
   initFolderCreationHandler();
@@ -102,6 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
       selector: 'table tbody tr'
     });
   }
+
+  if (document.getElementById('recipientEmailInput')) {
+  initEmailAutocomplete();
+}
 
   if (document.getElementById('feedbackTableContainer')) {
     setupTableSorter({

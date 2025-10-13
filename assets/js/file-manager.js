@@ -1,5 +1,5 @@
 // file-manager.js
-import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal,openCommentModal, openShareModal } from './modal.js';
+import { initCommentButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal,openCommentModal, openShareModal,initShareHandler} from './modal.js';
 import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
@@ -49,7 +49,7 @@ async function fetchContents(view, folderId) {
     setItems(data.items);
     renderItems(getItems());
     initCommentButtons();
-    initShareButtons();
+    initShareHandler()
   } catch (err) {
     console.error('📁 Failed to load folder contents:', err);
     const fileList = document.getElementById('file-list');
@@ -104,7 +104,7 @@ async function fetchTrashContents(folderId) {
     setItems(data.items);
     renderItems(getItems());
     initCommentButtons();
-    initShareButtons();
+    initShareHandler()
     setupEmptyTrashModal();
   } catch (err) {
     console.error('🗑️ Failed to load trash contents:', err);
@@ -448,8 +448,6 @@ export function generateUniqueFolderName(baseName = 'New Folder') {
 
   return candidate;
 }
-
-
 
 export function isValidFileName(input, originalExtension) {
   if (!input || !isFolderNameValid(input)) return false;

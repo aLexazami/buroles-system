@@ -2,6 +2,7 @@
 import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput,isValidFileName,getExtension,isFolderNameValid, generateUniqueFolderName} from './file-manager.js';
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
+import { fileRoutes } from './endpoints/fileRoutes.js';
 
 // Modal Helpers
 export function toggleModal(modalId, show) {
@@ -281,32 +282,154 @@ export function initCommentButtons() {
 export function openShareModal(fileId) {
   const modal = document.getElementById('shareModal');
   const input = document.getElementById('share-file-id');
+  const emailInput = document.querySelector('[name="recipient_email"]');
+
   if (!modal || !input) return;
 
   input.value = fileId;
   toggleModal('shareModal', true);
+
+  if (emailInput) emailInput.focus(); // ✅ Auto-focus email field
 }
 
 export function closeShareModal() {
   toggleModal('shareModal', false);
 }
 
-export function initShareButtons() {
-  document.querySelectorAll('.share-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const fileId = btn.dataset.fileId;
-      openShareModal(fileId);
-    });
-  });
+export function initShareHandler() {
+  const form = document.getElementById('shareForm');
+  const modal = document.getElementById('shareModal');
+  const cancelBtn = document.getElementById('cancelShare');
+  const permissionSelector = document.querySelector('[name="permission"]');
+  const description = document.getElementById('accessLevelDescription');
+  const DEFAULT_AVATAR = '/assets/img/default-avatar.png';
 
-  document.getElementById('cancelShare')?.addEventListener('click', closeShareModal);
+  if (!form || !modal) {
+    console.warn('❌ Share modal or form not found');
+    return;
+  }
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      const modal = document.getElementById('shareModal');
-      if (modal?.classList.contains('flex')) closeShareModal();
+  // 🛡️ Prevent double-binding
+  if (form.dataset.bound === 'true') {
+    console.warn('⚠️ Share handler already bound');
+    return;
+  }
+  form.dataset.bound = 'true';
+
+  console.log('✅ Share handler initialized');
+
+  // 📘 Permission descriptions
+  const definitions = {
+    read: 'Can view the file but not modify it.',
+    write: 'Can edit the file content.',
+    share: 'Can re-share the file with others.',
+    delete: 'Can permanently delete the file.'
+  };
+
+  const updateDescription = () => {
+    const value = permissionSelector?.value;
+    description.textContent = definitions[value] || '';
+    console.log(`🔄 Permission changed to: ${value}`);
+  };
+
+  if (permissionSelector && description) {
+    permissionSelector.addEventListener('change', updateDescription);
+    updateDescription(); // ✅ Set default on load
+  }
+
+  // 📨 Submit handler
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log('📨 Share form submitted');
+
+    const payload = {
+      file_id: form.querySelector('#share-file-id')?.value,
+      recipient_email: form.querySelector('[name="recipient_email"]')?.value,
+      permission: permissionSelector?.value
+    };
+
+    console.log('📦 Payload:', payload);
+
+    try {
+      const endpoint = fileRoutes?.share;
+      if (!endpoint) {
+        console.error('❌ Share endpoint not defined');
+        renderFlash('error', 'Sharing is temporarily unavailable');
+        return;
+      }
+
+      console.log(`🌐 Sending POST to: ${endpoint}`);
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      console.log('📬 Response:', data);
+
+      if (!data.success) {
+        console.warn('⚠️ Share failed:', data.message);
+        renderFlash('error', data.message || 'Share failed');
+        return;
+      }
+
+      console.log('✅ Share succeeded');
+      renderFlash('success', data.message || 'File shared successfully');
+      form.reset();
+      updateDescription(); // ✅ Reset description to default
+      toggleModal('shareModal', false);
+    } catch (err) {
+      console.error('❌ Error during share:', err);
+      renderFlash('error', 'Error sharing file');
     }
   });
+
+  // ❌ Cancel handler
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      console.log('❌ Share modal cancelled');
+      form.reset();
+      updateDescription(); // ✅ Reset description to default
+
+      const preview = document.getElementById('recipientPreview');
+      if (preview) preview.innerHTML = '';
+
+      const avatar = document.getElementById('recipientAvatar');
+      if (avatar) avatar.src = DEFAULT_AVATAR;
+
+      const dropdown = document.getElementById('autocompleteDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+
+      toggleModal('shareModal', false);
+    });
+  }
+}
+
+export function initPermissionDescription() {
+  const selector = document.getElementById('permissionSelector');
+  const description = document.getElementById('accessLevelDescription');
+
+  if (!selector || !description) return;
+
+  const definitions = {
+    read: 'Can view the file but not modify it.',
+    write: 'Can edit the file content.',
+    share: 'Can re-share the file with others.',
+    delete: 'Can permanently delete the file.'
+  };
+
+  const updateDescription = () => {
+    const value = selector.value;
+    description.textContent = definitions[value] || '';
+  };
+
+  selector.addEventListener('change', updateDescription);
+  updateDescription(); // initialize on load
 }
 
 // Info Modal in File Manager

@@ -247,23 +247,52 @@ renderHead('Staff');
     </div>
   </div>
 
+
   <!-- 🔗 Share Modal -->
   <div id="shareModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
       <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Share File</h2>
-      <form action="/controllers/file-manager/share.php" method="POST">
+      <form id="shareForm" autocomplete="off">
         <input type="hidden" name="file_id" id="share-file-id">
-        <input type="email" name="recipient_email" required class="w-full border rounded px-3 py-2 mb-4" placeholder="Recipient's email">
+        <input type="hidden" id="shareOwnerEmail" value="<?= htmlspecialchars($_SESSION['user_email'] ?? '') ?>">
+
+        <!-- 📧 Email + Avatar + Dropdown -->
+        <div class="relative mb-5">
+          <div class="flex items-center gap-2 border-2 rounded-lg px-3 py-2" id="recipientInputWrapper">
+            <img id="selectedAvatar" src="/assets/img/add-user.png" alt="User Avatar"
+              class="w-5 h-5 sm:w-8 sm:h-8 rounded-full object-cover" />
+            <input type="email" name="recipient_email" id="shareRecipientEmail"
+              class="flex-1 h-10 sm:h-12 p-2 border-l-2 focus:outline-none text-sm sm:text-base"
+              placeholder="Add people" autocomplete="off" required>
+          </div>
+
+          <!-- Suggestions -->
+          <ul id="emailSuggestions"
+            class="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-md max-h-40 overflow-y-auto z-20 text-sm text-gray-700 hidden"></ul>
+        </div>
+
+        <!-- 🔐 Permission Selector -->
         <select name="permission" required class="w-full border rounded px-3 py-2 mb-4">
           <option value="read">Read</option>
           <option value="write">Write</option>
           <option value="share">Share</option>
           <option value="delete">Delete</option>
         </select>
+
+        <!-- 📘 Permission Description -->
+        <div class="flex items-center gap-2 mb-4">
+          <img src="/assets/img/info-icon.png" alt="Add User Icon" class="w-3 h-3" />
+          <small id="accessLevelDescription" class="text-xs text-gray-500"></small>
+        </div>
+
+
+        <!-- 🧭 Action Buttons -->
         <div class="flex justify-end gap-2">
-          <button type="button" id="cancelShare" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
-          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Share</button>
+          <button type="button" id="cancelShare"
+            class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+          <button type="submit"
+            class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Share</button>
         </div>
       </form>
     </div>
@@ -310,21 +339,21 @@ renderHead('Staff');
   </div>
 
   <!-- ✏️ Rename Modal -->
-<div id="renameModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
-  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
-    <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Rename Item</h2>
-    <p class="text-sm text-gray-700 mb-4">
-      Renaming <span class="font-semibold text-gray-800" id="rename-item-name">this item</span>.
-    </p>
-    <input type="hidden" id="rename-item-id">
-    <input type="text" id="rename-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-6" placeholder="Enter new name">
-    <div class="flex justify-end gap-2">
-      <button type="button" id="cancelRename" class="px-3 py-1 text-emerald-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
-      <button type="button" id="confirmRenameBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Rename</button>
+  <div id="renameModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Rename Item</h2>
+      <p class="text-sm text-gray-700 mb-4">
+        Renaming <span class="font-semibold text-gray-800" id="rename-item-name">this item</span>.
+      </p>
+      <input type="hidden" id="rename-item-id">
+      <input type="text" id="rename-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-6" placeholder="Enter new name">
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelRename" class="px-3 py-1 text-emerald-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="button" id="confirmRenameBtn" class="px-3 py-1 text-white bg-emerald-600 rounded hover:bg-emerald-700 text-sm cursor-pointer">Rename</button>
+      </div>
     </div>
   </div>
-</div>
 
   <!-- 🗑️ Delete Confirmation Modal -->
   <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
