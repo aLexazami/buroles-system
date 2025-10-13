@@ -102,15 +102,31 @@ export async function loadTrashView(folderId = null) {
 }
 
 export async function loadSharedWithMe(folderId = null) {
-  document.body.dataset.view = 'shared-with-me'; // ✅ Set view context
-  await fetchSharedWithMeContents(folderId);
-  fetchBreadcrumb(folderId);
+  document.body.dataset.view = 'shared-with-me';
+
+  const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
+
+  document.body.dataset.folderId = normalizedFolderId;
+
+  await fetchSharedWithMeContents(normalizedFolderId);
+  fetchSharedWithMeBreadcrumb(normalizedFolderId);
+
+  // 🌐 Update browser URL for deep linking
+  const newUrl = `?view=shared-with-me${normalizedFolderId ? `&folder=${encodeURIComponent(normalizedFolderId)}` : ''}`;
+  window.history.pushState({}, '', newUrl);
 }
 
 export async function loadSharedByMe(folderId = null) {
-  document.body.dataset.view = 'shared-by-me'; // ✅ Set view context
-  await fetchSharedByMeContents(folderId);
-  fetchBreadcrumb(folderId);
+  document.body.dataset.view = 'shared-by-me';
+
+  const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
+  document.body.dataset.folderId = normalizedFolderId;
+
+  await fetchSharedByMeContents(normalizedFolderId);
+  fetchSharedByMeBreadcrumb(normalizedFolderId);
+
+  const newUrl = `?view=shared-by-me${normalizedFolderId ? `&folder=${encodeURIComponent(normalizedFolderId)}` : ''}`;
+  window.history.pushState({}, '', newUrl);
 }
 
 async function fetchTrashContents(folderId) {
@@ -182,6 +198,21 @@ async function fetchSharedByMeContents(folderId) {
   }
 }
 
+async function fetchSharedByMeBreadcrumb(folderId) {
+  try {
+    const url = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
+    url.searchParams.set('folder_id', folderId);
+    url.searchParams.set('view', 'shared-by-me');
+
+    const res = await fetch(url.toString());
+    const trail = await res.json();
+
+    renderBreadcrumb(trail);
+  } catch (err) {
+    console.error('🧭 Failed to load shared-by-me breadcrumb trail:', err);
+  }
+}
+
 async function fetchTrashBreadcrumb(folderId) {
   try {
     const url = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
@@ -194,6 +225,21 @@ async function fetchTrashBreadcrumb(folderId) {
     renderBreadcrumb(trail);
   } catch (err) {
     console.error('🧭 Failed to load trash breadcrumb trail:', err);
+  }
+}
+
+async function fetchSharedWithMeBreadcrumb(folderId) {
+  try {
+    const url = new URL('/controllers/file-manager/getBreadcrumbTrail.php', window.location.origin);
+    url.searchParams.set('folder_id', folderId);
+    url.searchParams.set('view', 'shared-with-me');
+
+    const res = await fetch(url.toString());
+    const trail = await res.json();
+
+    renderBreadcrumb(trail);
+  } catch (err) {
+    console.error('🧭 Failed to load shared-with-me breadcrumb trail:', err);
   }
 }
 
@@ -233,7 +279,7 @@ export function insertItem(newItem, options = {}) {
   }
 }
 
-export function createFileRow(item, isTrashView = false) {
+export function createFileRow(item, isTrashView = false, currentUserId = null) {
   const currentView = document.body.dataset.view || 'my-files';
   const currentFolder = document.body.dataset.folderId || '';
   const permissions = Array.isArray(item.permissions) ? item.permissions : [];
@@ -343,6 +389,31 @@ export function createFileRow(item, isTrashView = false) {
     wrapper.appendChild(label);
     return wrapper;
   };
+  console.log('Manage Access visibility check:', {
+    itemId: item.id,
+    view: currentView,
+    owner_id: item.owner_id,
+    currentUserId,
+    showManageAccess:
+      currentView === 'shared-by-me' &&
+      String(item.owner_id) === String(currentUserId)
+  });
+
+  // Manage Access
+  if (
+    currentView === 'shared-by-me' &&
+    String(item.owner_id) === String(currentUserId)
+  ) {
+    const manageBtn = createMenuItem(
+      'Manage Access',
+      '/assets/img/lock-icon.png',
+      'cursor-pointer',
+      () => openManageAccessModal(item.id)
+    );
+    manageBtn.classList.add('manage-access-btn');
+    manageBtn.dataset.fileId = item.id;
+    menu.appendChild(manageBtn);
+  }
 
   // 🗑️ Trash View
   if (isTrashView) {
@@ -397,7 +468,11 @@ export function renderItems(items) {
   const isTrashView = document.body.dataset.view === 'trash';
   const folderIsDeleted = document.body.dataset.folderIsDeleted === 'true';
   const parentId = document.body.dataset.folderId;
-  const allItemsAreDeleted = items.every(item => item.is_deleted === true || item.is_deleted === '1');
+  const currentUserId = document.body.dataset.userId || null;
+
+  const allItemsAreDeleted = items.every(item =>
+    item.is_deleted === true || item.is_deleted === '1'
+  );
 
   // 🧭 Trash header logic
   const trashHeader = document.getElementById('trash-header');
@@ -427,7 +502,7 @@ export function renderItems(items) {
   });
 
   sortedItems.forEach(item => {
-    const row = createFileRow(item, isTrashView);
+    const row = createFileRow(item, isTrashView, currentUserId);
     container.appendChild(row);
   });
 }
@@ -582,14 +657,18 @@ export function renderBreadcrumb(trail) {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const view = document.body.dataset.view;
+      const folderId = link.dataset.folderId;
+
+      const isRoot = index === 0;
+
       if (view === 'trash') {
-        loadTrashView(folder.id);
+        isRoot ? loadTrashView(null) : loadTrashView(folderId);
       } else if (view === 'shared-with-me') {
-        loadSharedWithMe(folder.id);
+        isRoot ? loadSharedWithMe(null) : loadSharedWithMe(folderId);
       } else if (view === 'shared-by-me') {
-        loadSharedByMe(folder.id);
+        isRoot ? loadSharedByMe(null) : loadSharedByMe(folderId);
       } else {
-        loadFolder(folder.id);
+        isRoot ? loadFolder(null) : loadFolder(folderId);
       }
     });
 

@@ -13,7 +13,8 @@ $folderId = $_GET['folder'] ?? null;
 renderHead('Staff');
 ?>
 
-<body data-folder-id="<?= htmlspecialchars($folderId ?? '') ?>" data-view="<?= htmlspecialchars($view) ?>" class="bg-gray-200 min-h-screen flex flex-col">
+<body data-folder-id="<?= htmlspecialchars($folderId ?? '') ?>" data-view="<?= htmlspecialchars($view) ?>" data-user-id="<?= htmlspecialchars($userId) ?>"
+ class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
   <!-- Flash Message -->
   <div id="flashContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2 w-full max-w-sm sm:max-w-md"></div>
