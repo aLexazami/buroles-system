@@ -140,13 +140,13 @@ export function removeItemRow(itemId) {
   row.addEventListener('transitionend', () => {
     row.remove();
 
-    // 🧼 If no items left, show empty state
     const container = document.getElementById('file-list');
     const remaining = container.querySelectorAll('[data-item-id]');
     if (remaining.length === 0) {
-      container.innerHTML = `<div class="text-center text-gray-500 py-12">You haven’t shared any files yet.</div>`;
+      const currentView = document.body.dataset.view || 'default';
+      renderEmptyState(container, currentView);
     }
-  });
+  }, { once: true }); // Ensure it runs only once
 }
 
 async function fetchTrashContents(folderId) {
@@ -565,12 +565,12 @@ export function renderSharedByMe(items) {
   container.innerHTML = '';
 
   if (!items || items.length === 0) {
-    container.innerHTML = `<div class="text-center text-gray-500 py-12">You haven’t shared any files yet.</div>`;
+    renderEmptyState(container, 'shared-by-me');
     return;
   }
 
   items.forEach(item => {
-    const row = createFileRow(item); // reuse your existing renderer
+    const row = createFileRow(item);
     container.appendChild(row);
   });
 }
