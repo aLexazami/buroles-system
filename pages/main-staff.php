@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../helpers/flash.php';
 require_once __DIR__ . '/../helpers/text-format.php';
 require_once __DIR__ . '/../helpers/head.php';
-renderHead('Staff');
+renderHead('Teacher');
 ?>
 <?php //include __DIR__ . '/../includes/debug-panel.php' 
 ?>

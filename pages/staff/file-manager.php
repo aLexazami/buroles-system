@@ -10,7 +10,7 @@ $view = $_GET['view'] ?? 'my-files'; // 'shared-with-me', 'shared-by-me', 'my-fi
 $folderId = $_GET['folder'] ?? null;
 
 
-renderHead('Staff');
+renderHead('Teacher');
 ?>
 
 <body data-folder-id="<?= htmlspecialchars($folderId ?? '') ?>" data-view="<?= htmlspecialchars($view) ?>" data-user-id="<?= htmlspecialchars($userId) ?>"
