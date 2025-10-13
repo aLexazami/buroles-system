@@ -37,8 +37,13 @@ export function openPasswordModal(userId) {
 
 export function closePasswordModal() {
   toggleModal('passwordModal', false);
-  document.getElementById('superAdminPasswordInput').value = '';
-  document.getElementById('targetUserId').value = '';
+
+  const passwordInput = document.getElementById('superAdminPasswordInput');
+  if (passwordInput) passwordInput.value = '';
+
+  const targetInput = document.getElementById('targetUserId');
+  if (targetInput) targetInput.value = '';
+
   pendingPasswordHref = '';
   pendingChainedRedirect = '';
 }
@@ -831,4 +836,101 @@ export function setupRenameModalHandler() {
       handleRenameCancel();
     }
   });
+}
+
+// Manage Access Modal in File Manager
+export function initManageAccessButtons() {
+  const modal = document.getElementById('manageAccessModal');
+  const cancelBtn = document.getElementById('cancelManageAccess');
+  const form = document.getElementById('manageAccessForm');
+
+  // 🧩 Open modal
+  document.querySelectorAll('.manage-access-btn').forEach(btn => {
+    const fileId = btn.dataset.fileId;
+    if (fileId) {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById('manage-access-file-id');
+        if (input) input.value = fileId;
+        toggleModal('manageAccessModal', true);
+      });
+    }
+  });
+
+  // ❌ Cancel button
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      form?.reset();
+      toggleModal('manageAccessModal', false);
+    });
+  }
+
+  // ⎋ Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+      form?.reset();
+      toggleModal('manageAccessModal', false);
+    }
+  });
+
+  // ✅ Submit handler
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        file_id: form.querySelector('#manage-access-file-id')?.value,
+        recipient_email: form.querySelector('[name="recipient_email"]')?.value,
+        permission: form.querySelector('[name="permission"]')?.value
+      };
+
+      try {
+        const endpoint = fileRoutes?.manageAccess;
+        if (!endpoint) {
+          renderFlash('error', 'Manage Access endpoint not available');
+          return;
+        }
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+          renderFlash('error', data.message || 'Failed to update access');
+          return;
+        }
+
+        renderFlash('success', data.message || 'Access updated successfully');
+        form.reset();
+        toggleModal('manageAccessModal', false);
+      } catch (err) {
+        renderFlash('error', 'Error updating access');
+      }
+    });
+  }
+}
+
+export function openManageAccessModal(fileId) {
+  const modal = document.getElementById('manageAccessModal');
+  const input = document.getElementById('manage-access-file-id');
+  if (!modal || !input) return;
+
+  input.value = fileId;
+  toggleModal('manageAccessModal', true);
+}
+
+export function closeManageAccessModal() {
+  const modal = document.getElementById('manageAccessModal');
+  if (!modal) return;
+
+  toggleModal('manageAccessModal', false);
+
+  const form = modal.querySelector('form');
+  if (form) form.reset();
 }
