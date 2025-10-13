@@ -15,56 +15,54 @@ if (!$userId) {
 
 $trail = [];
 
-if ($view === 'trash') {
-  // 🗑️ Trash view starts with "Trash"
-  $trail[] = [
-    'id' => null,
-    'name' => 'Trash'
-  ];
+switch ($view) {
+  case 'trash':
+    $trail[] = ['id' => null, 'name' => 'Trash'];
+    $query = "SELECT id, name, parent_id, is_deleted FROM files WHERE id = ? AND owner_id = ?";
+    $checkDeleted = true;
+    break;
 
-  if (isValidUuid($folderId)) {
-    $currentId = $folderId;
+  case 'shared-with-me':
+    $trail[] = ['id' => null, 'name' => 'Shared with Me'];
+    $query = "SELECT f.id, f.name, f.parent_id
+            FROM files f
+            JOIN access_control ac ON ac.file_id = f.id
+            WHERE f.id = ? AND ac.user_id = ? AND ac.is_revoked = FALSE AND f.is_deleted = FALSE";
+    $checkDeleted = false;
+    break;
 
-    while ($currentId) {
-      $stmt = $pdo->prepare("SELECT id, name, parent_id, is_deleted FROM files WHERE id = ? AND owner_id = ?");
-      $stmt->execute([$currentId, $userId]);
-      $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+  case 'shared-by-me':
+    $trail[] = ['id' => null, 'name' => 'Shared by Me'];
+    $query = "SELECT f.id, f.name, f.parent_id FROM files f
+              JOIN access_control ac ON ac.file_id = f.id
+              WHERE f.id = ? AND ac.granted_by = ?";
+    $checkDeleted = false;
+    break;
 
-      if (!$folder || !$folder['is_deleted']) break; // 🚫 Stop if folder is not deleted
+  default:
+    $trail[] = ['id' => null, 'name' => 'My Files'];
+    $query = "SELECT id, name, parent_id FROM files WHERE id = ? AND owner_id = ?";
+    $checkDeleted = false;
+    break;
+}
 
-      // Prepend to trail after "Trash"
-      array_splice($trail, 1, 0, [[
-        'id' => $folder['id'],
-        'name' => $folder['name']
-      ]]);
+if (isValidUuid($folderId)) {
+  $currentId = $folderId;
 
-      $currentId = $folder['parent_id'];
-    }
-  }
-} else {
-  // 📁 Default view starts with "My Files"
-  $trail[] = [
-    'id' => null,
-    'name' => 'My Files'
-  ];
+  while ($currentId) {
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([$currentId, $userId]);
+    $folder = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  if (isValidUuid($folderId)) {
-    $currentId = $folderId;
+    if (!$folder) break;
+    if ($checkDeleted && !$folder['is_deleted']) break;
 
-    while ($currentId) {
-      $stmt = $pdo->prepare("SELECT id, name, parent_id FROM files WHERE id = ? AND owner_id = ?");
-      $stmt->execute([$currentId, $userId]);
-      $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+    array_splice($trail, 1, 0, [[
+      'id' => $folder['id'],
+      'name' => $folder['name']
+    ]]);
 
-      if (!$folder) break;
-
-      array_splice($trail, 1, 0, [[
-        'id' => $folder['id'],
-        'name' => $folder['name']
-      ]]);
-
-      $currentId = $folder['parent_id'];
-    }
+    $currentId = $folder['parent_id'];
   }
 }
 

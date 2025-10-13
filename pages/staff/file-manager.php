@@ -414,7 +414,6 @@ renderHead('Staff');
       </div>
     </div>
   </div>
-
   <script src="/assets/js/auto-dismiss-alert.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
