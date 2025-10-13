@@ -73,7 +73,10 @@ $hideSidebarButtonPages = ['feedback-details.php'];
             <img src="<?= htmlspecialchars($_SESSION['avatar_path'] ?? '/assets/img/user.png') . '?v=' . time() ?>" alt="Profile" class="h-10 w-10 rounded-full border-2 border-emerald-400">
             <div>
               <p class="font-medium md:text-sm lg:text-base"><?= htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']) ?></p>
-              <p class="uppercase md:text-xs lg:text-sm"><?= htmlspecialchars($_SESSION['role_name']) ?></p>
+              <?php
+              $displayRole = $_SESSION['role_name'] === 'Staff' ? 'Teacher' : $_SESSION['role_name'];
+              ?>
+              <p class="uppercase md:text-xs lg:text-sm"><?= htmlspecialchars($displayRole) ?></p>
             </div>
           </button>
 
@@ -132,7 +135,7 @@ $hideSidebarButtonPages = ['feedback-details.php'];
         </div>
 
         <div id="menu-links"
-  class="hidden absolute top-full right-0 mt-2 w-[50vw] sm:w-[30vw]  bg-white shadow-lg rounded-sm z-50 p-3 space-y-2 overflow-x-auto max-w-[95vw]">
+          class="hidden absolute top-full right-0 mt-2 w-[50vw] sm:w-[30vw]  bg-white shadow-lg rounded-sm z-50 p-3 space-y-2 overflow-x-auto max-w-[95vw]">
           <?php if ($canSwitchRoles && count($availableRoles) > 1): ?>
             <div class="border-b pb-2 mb-2">
               <p class="text-xs sm:text-sm font-semibold text-gray-500 mb-1">Switch Role</p>
@@ -169,9 +172,9 @@ $hideSidebarButtonPages = ['feedback-details.php'];
   </section>
 
   <!-- Date and Time (Mobile Only) -->
- <div class="block md:hidden text-center font-bold bg-emerald-950 text-white py-1 text-xs sm:text-sm truncate">
-  <span id="date-time"></span>
-</div>
+  <div class="block md:hidden text-center font-bold bg-emerald-950 text-white py-1 text-xs sm:text-sm truncate">
+    <span id="date-time"></span>
+  </div>
 </header>
 <!-- Role Welcome -->
 <div>
