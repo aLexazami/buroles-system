@@ -1,5 +1,5 @@
 // file-manager.js
-import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal } from './modal.js';
+import { initCommentButtons, initShareButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal,openCommentModal, openShareModal } from './modal.js';
 import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
@@ -293,19 +293,28 @@ export function createFileRow(item, isTrashView = false) {
     }
 
     if (item.permissions?.includes('comment')) {
-      const commentBtn = createMenuItem('Comment', '/assets/img/comment.png', 'cursor-pointer', null);
+      const commentBtn = createMenuItem(
+        'Comment',
+        '/assets/img/comment.png',
+        'cursor-pointer',
+        () => openCommentModal(item.id) // ✅ Direct trigger
+      );
       commentBtn.classList.add('comment-btn');
       commentBtn.dataset.fileId = item.id;
       menu.appendChild(commentBtn);
     }
 
     if (item.permissions?.includes('share')) {
-      const shareBtn = createMenuItem('Share', '/assets/img/share-icon.png', 'cursor-pointer', null);
+      const shareBtn = createMenuItem(
+        'Share',
+        '/assets/img/share-icon.png',
+        'cursor-pointer',
+        () => openShareModal(item.id) // ✅ Direct trigger
+      );
       shareBtn.classList.add('share-btn');
       shareBtn.dataset.fileId = item.id;
       menu.appendChild(shareBtn);
     }
-
     menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
 
     if (item.permissions?.includes('delete')) {
