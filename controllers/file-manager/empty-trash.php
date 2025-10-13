@@ -21,6 +21,7 @@ try {
   foreach ($items as $item) {
     $itemId = $item['id'];
     $itemType = $item['type'];
+    $itemName = $item['name'];
     $relativePath = ltrim($item['path'], '/');
     $fullPath = __DIR__ . '/../../' . $relativePath;
 

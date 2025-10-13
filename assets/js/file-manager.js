@@ -429,6 +429,28 @@ export function getExtension(filename) {
   return parts.length > 1 ? parts.pop().toLowerCase() : '';
 }
 
+export function generateUniqueFolderName(baseName = 'New Folder') {
+  const existingItems = getItems(); // assumes your store is up to date
+  const existingNames = new Set(
+    existingItems
+      .filter(item => item.type === 'folder' && !item.is_deleted)
+      .map(item => item.name.toLowerCase())
+  );
+
+  if (!existingNames.has(baseName.toLowerCase())) return baseName;
+
+  let counter = 1;
+  let candidate;
+  do {
+    candidate = `${baseName} (${counter})`;
+    counter++;
+  } while (existingNames.has(candidate.toLowerCase()));
+
+  return candidate;
+}
+
+
+
 export function isValidFileName(input, originalExtension) {
   if (!input || !isFolderNameValid(input)) return false;
 

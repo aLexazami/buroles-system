@@ -1,5 +1,5 @@
 
-import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput,isValidFileName,getExtension,isFolderNameValid} from './file-manager.js';
+import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput,isValidFileName,getExtension,isFolderNameValid, generateUniqueFolderName} from './file-manager.js';
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
 
@@ -416,13 +416,19 @@ export function initUploadHandler() {
 // Create Folder Modal in File Manager
 export function initCreateFolderModal() {
   const cancelBtn = document.getElementById('cancelCreateFolderBtn');
+  const openBtn = document.querySelector('[data-action="create-folder"]');
+  const input = document.querySelector('#createFolderModal [name="folder_name"]');
+
   if (cancelBtn) {
     cancelBtn.addEventListener('click', () => toggleModal('createFolderModal', false));
   }
 
-  const openBtn = document.querySelector('[data-action="create-folder"]');
-  if (openBtn) {
-    openBtn.addEventListener('click', () => toggleModal('createFolderModal', true));
+  if (openBtn && input) {
+    openBtn.addEventListener('click', () => {
+      input.value = 'New Folder';
+      input.focus();
+      toggleModal('createFolderModal', true);
+    });
   }
 }
 

@@ -1,5 +1,4 @@
 <?php
-ini_set('display_errors', 0);
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/uuid.php';         // generateUuid(), isValidUuid()
@@ -8,44 +7,41 @@ require_once __DIR__ . '/../../helpers/folder-utils.php'; // isValidFolderName()
 
 header('Content-Type: application/json');
 
-// ✅ Validate session
+// 🧠 Validate session
 $userId = $_SESSION['user_id'] ?? null;
 if (!is_numeric($userId)) {
-  echo json_encode(['success' => false, 'error' => 'Invalid session']);
-  exit;
+  exitWithError('Invalid session');
 }
 
-// ✅ Validate folder name
-$folderName = trim($_POST['folder_name'] ?? '');
-if ($folderName === '') {
-  echo json_encode(['success' => false, 'error' => 'Folder name is required']);
-  exit;
+// 🧠 Validate folder name
+$requestedName = trim($_POST['folder_name'] ?? '');
+if ($requestedName === '') {
+  exitWithError('Folder name is required');
 }
-if (!isValidFolderName($folderName)) {
-  echo json_encode(['success' => false, 'error' => 'Folder name contains invalid characters']);
-  exit;
+if (!isValidFolderName($requestedName)) {
+  exitWithError('Folder name contains invalid characters');
 }
 
-// ✅ Validate parent ID
+// 🧠 Validate parent ID
 $parentId = $_POST['parent_id'] ?? null;
 if (!isValidUuid($parentId)) {
   $parentId = null;
 }
 
-// ✅ Resolve parent path and build full virtual path
+// 🧠 Confirm user exists
+if (!userExists($pdo, $userId)) {
+  exitWithError('User not found');
+}
+
+// 🧠 Resolve parent path and build full virtual path
 $parentPath = resolveFolderPath($pdo, $parentId, $userId);
 $uuid = generateUuid();
 $virtualPath = buildVirtualPath($parentPath, $userId, $uuid);
 $diskPath = resolveDiskPath($virtualPath);
 ensureDirectoryExists($diskPath);
 
-// ✅ Confirm user exists
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE id = ?");
-$stmt->execute([$userId]);
-if ($stmt->fetchColumn() == 0) {
-  echo json_encode(['success' => false, 'error' => 'User not found']);
-  exit;
-}
+// 🧠 Resolve unique folder name
+$folderName = getUniqueFolderName($pdo, $parentId, $requestedName);
 
 // ✅ Insert folder into database
 $stmt = $pdo->prepare("
@@ -68,3 +64,35 @@ echo json_encode([
   ]
 ]);
 exit;
+
+// 🔧 Helpers
+function exitWithError(string $message): void {
+  echo json_encode(['success' => false, 'error' => $message]);
+  exit;
+}
+
+function userExists(PDO $pdo, int $userId): bool {
+  $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE id = ?");
+  $stmt->execute([$userId]);
+  return $stmt->fetchColumn() > 0;
+}
+
+function getUniqueFolderName(PDO $pdo, ?string $parentId, string $baseName): string {
+  $stmt = $pdo->prepare("
+    SELECT name FROM files
+    WHERE parent_id " . ($parentId ? "= ?" : "IS NULL") . "
+    AND type = 'folder' AND is_deleted = 0
+  ");
+  $stmt->execute($parentId ? [$parentId] : []);
+  $existingNames = array_map('strtolower', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+  if (!in_array(strtolower($baseName), $existingNames)) return $baseName;
+
+  $counter = 1;
+  do {
+    $candidate = "{$baseName} ({$counter})";
+    $counter++;
+  } while (in_array(strtolower($candidate), $existingNames));
+
+  return $candidate;
+}
