@@ -1,4 +1,114 @@
 <?php
+// GLOBAL PERFORM ACCESS
+function canPerformAction(PDO $pdo, string $fileId, int $userId, string $action): bool {
+  $permissionMap = [
+    'create' => ['write', 'owner'],
+    'read' => ['read', 'write', 'delete', 'owner'],
+    'update' => ['write', 'owner'],
+    'delete' => ['write', 'delete', 'owner'],
+    'rename' => ['write', 'delete', 'owner'],
+    'move' => ['write', 'owner'],
+    'share' => ['share', 'owner'],
+    'revoke' => ['share', 'owner'],
+    'upload' => ['write', 'owner'],
+    'download' => ['read', 'write', 'delete', 'owner'],
+    'restore' => ['write', 'delete', 'owner'],
+    'delete-permanent' => ['delete', 'owner'],
+    'emptyTrash' => ['delete', 'owner'],
+  ];
+
+  $allowed = $permissionMap[$action] ?? [];
+  $checked = [];
+
+  // ✅ Check ownership first
+  $ownerStmt = $pdo->prepare("SELECT owner_id FROM files WHERE id = ? LIMIT 1");
+  $ownerStmt->execute([$fileId]);
+  $ownerId = $ownerStmt->fetchColumn();
+  if ($ownerId == $userId && in_array('owner', $allowed)) {
+    return true;
+  }
+
+  // 🔁 Check delegated access via access_control
+  while ($fileId && !in_array($fileId, $checked)) {
+    $checked[] = $fileId;
+
+    $stmt = $pdo->prepare("
+      SELECT 1 FROM access_control
+      WHERE file_id = ? AND user_id = ? AND is_revoked = 0 AND permission IN (" . implode(',', array_map(fn($p) => "'$p'", $allowed)) . ")
+      LIMIT 1
+    ");
+    $stmt->execute([$fileId, $userId]);
+    if ($stmt->fetchColumn()) return true;
+
+    $parentStmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ? LIMIT 1");
+    $parentStmt->execute([$fileId]);
+    $fileId = $parentStmt->fetchColumn();
+  }
+
+  return false;
+}
+
+function getEffectivePermissionsWithSource(PDO $pdo, string $fileId, int $userId): array {
+  $visited = [];
+  $currentId = $fileId;
+
+  // ✅ Owner override
+  $ownerStmt = $pdo->prepare("SELECT owner_id FROM files WHERE id = ?");
+  $ownerStmt->execute([$fileId]);
+  $ownerId = $ownerStmt->fetchColumn();
+
+  if ($ownerId == $userId) {
+    return [
+      'permissions'   => ['read', 'write', 'delete', 'share', 'owner'],
+      'inheritedFrom' => null,
+      'sourceType'    => 'owner'
+    ];
+  }
+
+  while ($currentId && !in_array($currentId, $visited)) {
+    $visited[] = $currentId;
+
+    // 🔍 Check access at current level
+    $stmt = $pdo->prepare("
+      SELECT permission
+      FROM access_control
+      WHERE file_id = ? AND user_id = ? AND is_revoked = FALSE
+    ");
+    $stmt->execute([$currentId, $userId]);
+    $rawPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    $valid = ['read', 'write', 'delete', 'share']; // ✅ Match canPerformAction()
+    $granted = [];
+
+    foreach ($rawPermissions as $perm) {
+      $perm = strtolower($perm);
+      if (in_array($perm, $valid) && !in_array($perm, $granted)) {
+        $granted[] = $perm;
+      }
+    }
+
+    if (!empty($granted)) {
+      return [
+        'permissions'   => $granted,
+        'inheritedFrom' => $currentId === $fileId ? null : $currentId,
+        'sourceType'    => $currentId === $fileId ? 'direct' : 'inherited'
+      ];
+    }
+
+    // 🔁 Walk up the tree
+    $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
+    $stmt->execute([$currentId]);
+    $currentId = $stmt->fetchColumn();
+  }
+
+  // 🚫 No access found
+  return [
+    'permissions'   => [],
+    'inheritedFrom' => null,
+    'sourceType'    => 'none'
+  ];
+}
+
 function getEffectivePermissions(PDO $pdo, string $fileId, int $userId): array {
   $permissionMap = [
     'read'    => ['view'],
@@ -32,61 +142,6 @@ function getEffectivePermissions(PDO $pdo, string $fileId, int $userId): array {
   // 🔁 Inherited access
   $parentId = getParentFolderId($pdo, $fileId);
   return $parentId ? getEffectivePermissions($pdo, $parentId, $userId) : [];
-}
-
-function getEffectivePermissionsWithSource(PDO $pdo, string $fileId, int $userId): array {
-  $permissionMap = [
-    'read'    => ['view'],
-    'write'   => ['edit', 'comment', 'share', 'delete'],
-    'comment' => ['comment'],
-    'edit'    => ['edit', 'comment'],
-    'view'    => ['view'], // legacy fallback
-  ];
-
-  // 🧠 Track visited nodes to prevent cycles
-  $visited = [];
-  $currentId = $fileId;
-
-  while ($currentId && !in_array($currentId, $visited)) {
-    $visited[] = $currentId;
-
-    // 🔍 Check access at current level
-    $stmt = $pdo->prepare("
-      SELECT permission
-      FROM access_control
-      WHERE file_id = ? AND user_id = ? AND is_revoked = FALSE
-    ");
-    $stmt->execute([$currentId, $userId]);
-    $rawPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-    $capabilities = [];
-    foreach ($rawPermissions as $perm) {
-      $perm = strtolower($perm);
-      if (isset($permissionMap[$perm])) {
-        $capabilities = array_merge($capabilities, $permissionMap[$perm]);
-      }
-    }
-
-    if (!empty($capabilities)) {
-      return [
-        'permissions'   => array_values(array_unique($capabilities)),
-        'inheritedFrom' => $currentId === $fileId ? null : $currentId,
-        'sourceType'    => $currentId === $fileId ? 'direct' : 'inherited'
-      ];
-    }
-
-    // 🔁 Walk up the tree
-    $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
-    $stmt->execute([$currentId]);
-    $currentId = $stmt->fetchColumn();
-  }
-
-  // 🚫 No access found
-  return [
-    'permissions'   => [],
-    'inheritedFrom' => null,
-    'sourceType'    => 'none'
-  ];
 }
 
 function getAccessListForItem(PDO $pdo, string $fileId): array {
