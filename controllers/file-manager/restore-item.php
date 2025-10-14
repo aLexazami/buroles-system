@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/path.php'; // ensureVirtualPathExists()
+require_once __DIR__ . '/../../helpers/folder-utils.php'; // restoreFolderAndContents(), ensureFolderHierarchyExists()
 
 header('Content-Type: application/json');
 
@@ -94,7 +95,6 @@ function restoreFile(PDO $pdo, int $userId, array $file): void {
     updateRestoreMetadata($pdo, $fileId, $originalPath, $parentId);
     logRestore($pdo, $userId, $fileId, 'Owner restored file from trash');
   } elseif ($isRecipient) {
-    // 🧠 Recipient logic: metadata-only restore
     $stmtCheck = $pdo->prepare("SELECT path FROM files WHERE id = ?");
     $stmtCheck->execute([$fileId]);
     $currentPath = $stmtCheck->fetchColumn();
@@ -105,54 +105,8 @@ function restoreFile(PDO $pdo, int $userId, array $file): void {
       return;
     }
 
-    // Final fallback: metadata-only restore without disk validation
     updateRestoreMetadata($pdo, $fileId, $originalPath, $parentId);
     logRestore($pdo, $userId, $fileId, 'Recipient restored file (metadata only)');
-  }
-}
-
-// 🔧 Restore folder and its contents recursively
-function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void {
-  $stmt = $pdo->prepare("SELECT path, original_path FROM files WHERE id = ?");
-  $stmt->execute([$folderId]);
-  $folder = $stmt->fetch(PDO::FETCH_ASSOC);
-
-  $restorePath = $folder['original_path'] ?? $folder['path'];
-  ensureVirtualPathExists($restorePath);
-
-  updateRestoreMetadata($pdo, $folderId, $restorePath, null);
-  logRestore($pdo, $userId, $folderId, 'Folder restored from trash');
-
-  // 🔁 Restore children with deleted_by_parent = 1
-  $stmt = $pdo->prepare("
-    SELECT * FROM files
-    WHERE parent_id = ? AND is_deleted = 1 AND deleted_by_parent = 1
-  ");
-  $stmt->execute([$folderId]);
-  $children = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-  foreach ($children as $child) {
-    if ($child['type'] === 'folder') {
-      restoreFolderAndContents($pdo, $userId, $child['id']);
-    } else {
-      restoreFile($pdo, $userId, $child);
-    }
-  }
-
-  // 🧠 Scan for orphaned standalone items that belong under this folder
-  $stmt = $pdo->prepare("
-    SELECT * FROM files
-    WHERE is_deleted = 1 AND deleted_by_parent = 0 AND original_path LIKE CONCAT(?, '/%')
-  ");
-  $stmt->execute([$restorePath]);
-  $orphans = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-  foreach ($orphans as $orphan) {
-    if ($orphan['type'] === 'folder') {
-      restoreFolderAndContents($pdo, $userId, $orphan['id']);
-    } else {
-      restoreFile($pdo, $userId, $orphan);
-    }
   }
 }
 

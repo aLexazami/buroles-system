@@ -10,7 +10,7 @@ $isSuperAdmin = $user && (int)$user['role_id'] === 2 && (int)$activeRoleId === 2
     Announcements
   </h2>
 
-  <!-- 🟢 Create Announcement Button (Super Admin only) -->
+  <!-- 🟢 Create Announcement Button (Admin only) -->
   <?php if ($isSuperAdmin): ?>
     <div class="absolute top-0 left-0 flex justify-end items-center gap-x-2 ">
       <button id="openAnnouncementModal"
@@ -25,9 +25,14 @@ $isSuperAdmin = $user && (int)$user['role_id'] === 2 && (int)$activeRoleId === 2
   <?php endif; ?>
 
   <!-- 📦 Announcement Container -->
-  <div id="announcement-container" class="p-4 space-y-4">
-    <!-- Cards will be injected via JS -->
+<div id="announcement-container" class="p-4 space-y-4">
+  <div id="announcement-list"></div> <!-- JS injects cards here -->
+  <div id="announcement-fallback" class="flex flex-col items-center justify-center text-center text-gray-600 py-12 hidden">
+    <img src="/assets/img/announcement-empty.png" alt="No announcements" class="w-24 h-24 mb-4 opacity-80" />
+    <p class="text-lg font-semibold">No announcements yet</p>
+    <p class="text-sm text-gray-500">Stay tuned! New updates will appear here.</p>
   </div>
+</div>
 
   <!-- 🔁 Pagination Controls -->
   <div id="pagination-container" class="mt-6 flex justify-center items-center gap-2 px-4">
@@ -119,7 +124,7 @@ $isSuperAdmin = $user && (int)$user['role_id'] === 2 && (int)$activeRoleId === 2
   </div>
 </div>
 
-<!-- 🔐 JS Access to Super Admin Flag -->
+<!-- 🔐 JS Access to Admin Flag -->
 <script>
   window.isSuperAdmin = <?= json_encode($isSuperAdmin) ?>;
 </script>

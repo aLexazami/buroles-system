@@ -64,8 +64,9 @@ renderHead('Admin');
             </div>
           </div>
         </div>
-        <!-- Daily Feedback Container -->
+        <!-- 🗂️ Daily Feedback Container -->
         <div class="space-y-4 mt-6">
+          <!-- 🔖 Header -->
           <div class="bg-gray-300 flex justify-between items-center py-2 px-4 rounded">
             <h2 class="font-bold text-lg">Today's Feedback</h2>
             <div class="flex items-center gap-3">
@@ -82,29 +83,31 @@ renderHead('Admin');
             </div>
           </div>
 
-          <div class="bg-white rounded-lg shadow-md p-4 space-y-3 max-h-[400px] overflow-y-auto">
-            <?php
-            if (empty($todayFeedback)) {
-              echo "<p class='text-center text-gray-500 italic'>No feedback submitted yet today.</p>";
-            } else {
-              foreach ($todayFeedback as $entry) {
+          <!-- 📋 Feedback List -->
+          <div class="bg-white rounded-lg min-h-[350px] shadow-md p-4 space-y-3 max-h-[400px] overflow-y-auto">
+            <?php if (empty($todayFeedback)): ?>
+              <!-- 🧩 Fallback Message -->
+              <div class="flex flex-col items-center justify-center text-center text-gray-500 py-12">
+                <img src="/assets/img/feedback-empty.png" alt="No feedback" class="w-24 h-24 mb-4 opacity-80" />
+                <p class="text-lg font-semibold">No feedback submitted yet today</p>
+                <p class="text-sm text-gray-400">Once responses come in, they’ll appear here automatically.</p>
+              </div>
+            <?php else: ?>
+              <?php foreach ($todayFeedback as $entry):
                 $name = htmlspecialchars($entry['name'] ?? 'Anonymous');
                 $type = htmlspecialchars($entry['customer_type'] ?? 'Unknown');
                 $service = htmlspecialchars($entry['service'] ?? 'Not Specified');
                 $region = htmlspecialchars($entry['region'] ?? 'Unknown');
                 $time = date('h:i A', strtotime($entry['submitted_at']));
                 $isUnread = !($entry['is_read'] ?? true); // highlight if unread
-
-                echo "
-          <div class='border-b pb-2 " . ($isUnread ? "bg-emerald-50" : "") . "'>
-            <p class='font-semibold text-gray-700'>{$name}</p>
-            <p class='text-sm text-gray-500'>Type: {$type} | Service: {$service} | Region: {$region}</p>
-            <p class='text-xs text-gray-400'>Submitted at {$time}</p>
-          </div>
-        ";
-              }
-            }
-            ?>
+              ?>
+                <div class="border-b p-2 <?= $isUnread ? 'bg-emerald-50' : '' ?>">
+                  <p class="font-semibold text-gray-700"><?= $name ?></p>
+                  <p class="text-sm text-gray-500">Type: <?= $type ?> | Service: <?= $service ?> | Region: <?= $region ?></p>
+                  <p class="text-xs text-gray-400">Submitted at <?= $time ?></p>
+                </div>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </div>
         </div>
       </div>

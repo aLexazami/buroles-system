@@ -34,7 +34,7 @@ renderHead('FAQs', true);
   </header>
 
   <!-- Main Content Section -->
-  <main class="flex-grow w-full px-4 pt-10">
+  <main class="flex-grow w-full px-4 pt-10 pb-20">
     <section class="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6 border-2 border-emerald-800 opacity-90">
       <h1 class="text-emerald-800 text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h1>
 
@@ -58,6 +58,11 @@ renderHead('FAQs', true);
           <h2 class="font-semibold text-emerald-700">4. What should I do if I encounter a technical issue?</h2>
           <p>Please report any issues to the school’s ICT coordinator or email the Burol Dev Team at <a href="mailto:support@burol.edu.ph" class="text-emerald-600 underline">support@burol.edu.ph</a>.</p>
         </div>
+        <div>
+          <h2 class="font-semibold text-emerald-700">5. What should I do if I forgot my password?</h2>
+          <p>If you’ve forgotten your password, visit the <a href="/pages/reset-password.php" class="text-emerald-600 underline">Reset Password</a> page. Enter your username and follow the instructions to verify your identity and create a new password. If you need help, contact the Burol Dev Team at <a href="mailto:support@burol.edu.ph" class="text-emerald-600 underline">support@burol.edu.ph</a>.</p>
+        </div>
+
       </div>
     </section>
   </main>
@@ -73,4 +78,5 @@ renderHead('FAQs', true);
 
   <script type="module" src="/assets/js/app.js"></script>
 </body>
+
 </html>

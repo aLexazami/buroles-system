@@ -15,10 +15,10 @@ renderHead('Admin');
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
- <main class="flex w-full overflow-x-auto min-h-screen">
+ <main class="flex flex-wrap md:flex-nowrap min-h-screen">
     <?php include('../../includes/side-nav-admin.php'); ?>
 
-    <section class="w-full m-4">
+    <section class="w-full px-4 py-2 sm:px-6 sm:py-4">
       <!-- Page Header -->
       <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
         <img src="/assets/img/archive-user.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Archive icon">
@@ -29,7 +29,7 @@ renderHead('Admin');
       <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
         <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
          <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
-          <p id="confirm-modal-message" class="text-lg sm:text-2xl mb-10 mt-5 font-semibold text-center">
+          <p id="confirm-modal-message" class="text-lg sm:text-xl mb-10 mt-5 font-semibold text-center">
             Are you sure you want to proceed?
           </p>
           <div class="flex justify-between gap-4 px-8 mb-5">
@@ -49,7 +49,7 @@ renderHead('Admin');
       <?php showFlash(); ?>
 
       <!-- User Table -->
-      <div class="p-6 bg-white rounded-lg shadow-md ">
+      <div class="p-6 bg-white rounded-lg shadow-md px-2 py-2 md:px-2 md:py-10 min-h-[500px]">
         <?php include(__DIR__ . '/../../components/user-table.php'); ?>
       </div>
     </section>
