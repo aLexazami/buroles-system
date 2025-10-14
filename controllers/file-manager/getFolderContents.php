@@ -91,8 +91,18 @@ if ($view === 'trash') {
   exit;
 }
 
-// 📁 Shared-with-me folder context — ✅ FIXED: prevent root folder from appearing inside itself
+// 📁 Shared-with-me folder context — ✅ prevent root folder from appearing inside itself
 if ($view === 'shared-with-me' && $folderId && isValidUuid($folderId)) {
+  $files = getSharedFolderContents($pdo, $folderId, $userId, false); // ⛔ exclude root
+  echo json_encode([
+    'items' => $files,
+    'folder_is_deleted' => false
+  ]);
+  exit;
+}
+
+// 📁 Shared-by-me folder context — ✅ FIXED: show recursive contents of shared folder
+if ($view === 'shared-by-me' && $folderId && isValidUuid($folderId)) {
   $files = getSharedFolderContents($pdo, $folderId, $userId, false); // ⛔ exclude root
   echo json_encode([
     'items' => $files,

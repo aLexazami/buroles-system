@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/access-utils.php'; // getEffectivePermissionsWithSource()
 
-function getSharedFolderContents(PDO $pdo, string $folderId, int $userId, bool $includeRoot = true): array {
+function getSharedFolderContents(PDO $pdo, string $folderId, int $userId, bool $includeRoot = true, bool $asOwner = false): array {
   $visible = [];
 
   // 🧩 Include root folder if requested
@@ -16,12 +16,31 @@ function getSharedFolderContents(PDO $pdo, string $folderId, int $userId, bool $
     $root = $stmtRoot->fetch(PDO::FETCH_ASSOC);
 
     if ($root) {
-      $access = getEffectivePermissionsWithSource($pdo, $folderId, $userId);
+      $access = [];
+
+      if ($asOwner || $root['owner_id'] === $userId) {
+        $access = [
+          'permissions' => ['edit', 'comment', 'share', 'delete'],
+          'inheritedFrom' => null,
+          'sourceType' => 'owner'
+        ];
+      } else {
+        $access = getEffectivePermissionsWithSource($pdo, $folderId, $userId);
+      }
+
       if (!empty($access['permissions'])) {
         $root['permissions'] = $access['permissions'];
-        $root['inherited_from'] = $access['inheritedFrom'];
-        $root['source_type'] = $access['sourceType'];
-        $root['size'] = getRecursiveFolderSize($pdo, $folderId, $userId);
+        $root['inherited_from'] = $access['inheritedFrom'] ?? null;
+        $root['source_type'] = $access['sourceType'] ?? null;
+        $root['size'] = getRecursiveFolderSize($pdo, $folderId);
+
+        if ($root['type'] === 'folder') {
+          $nested = getSharedFolderContents($pdo, $folderId, $userId, false, $asOwner);
+          $root['children'] = array_filter($nested, function ($child) use ($folderId) {
+            return $child['id'] !== $folderId;
+          });
+        }
+
         $visible[] = $root;
       }
     }
@@ -38,11 +57,22 @@ function getSharedFolderContents(PDO $pdo, string $folderId, int $userId, bool $
   $children = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   foreach ($children as &$file) {
-    $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
+    $access = [];
+
+    if ($asOwner || $file['owner_id'] === $userId) {
+      $access = [
+        'permissions' => ['edit', 'comment', 'share', 'delete'],
+        'inheritedFrom' => null,
+        'sourceType' => 'owner'
+      ];
+    } else {
+      $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
+    }
+
     if (!empty($access['permissions'])) {
       $file['permissions'] = $access['permissions'];
-      $file['inherited_from'] = $access['inheritedFrom'];
-      $file['source_type'] = $access['sourceType'];
+      $file['inherited_from'] = $access['inheritedFrom'] ?? null;
+      $file['source_type'] = $access['sourceType'] ?? null;
 
       if (!empty($file['parent_id'])) {
         $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
@@ -51,10 +81,9 @@ function getSharedFolderContents(PDO $pdo, string $folderId, int $userId, bool $
       }
 
       if ($file['type'] === 'folder') {
-        $file['size'] = getRecursiveFolderSize($pdo, $file['id'], $userId);
+        $file['size'] = getRecursiveFolderSize($pdo, $file['id']);
 
-        // 🧠 Prevent self-insertion in children
-        $nested = getSharedFolderContents($pdo, $file['id'], $userId, false);
+        $nested = getSharedFolderContents($pdo, $file['id'], $userId, false, $asOwner);
         $file['children'] = array_filter($nested, function ($child) use ($file) {
           return $child['id'] !== $file['id'];
         });

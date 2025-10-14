@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/folder-utils.php'; // getRecursiveFolderSize()
-require_once __DIR__ . '/access-utils.php'; //  getEffectivePermissions()
+require_once __DIR__ . '/access-utils.php'; //  getEffectivePermissionsWithSource()
 /* ****************************************************************************************** */
 function getFilesForView(
   PDO $pdo,
@@ -12,13 +12,11 @@ function getFilesForView(
 ): array {
   require_once __DIR__ . '/sharing-utils.php';
 
-  // 🧩 Special case: shared-with-me with folder context
   if ($view === 'shared-with-me') {
     if ($folderId && isValidUuid($folderId)) {
       return getSharedFolderContents($pdo, $folderId, $userId);
     }
 
-    // 🧠 Root view: list all directly shared files and folders (even if nested)
     $stmt = $pdo->prepare("
       SELECT f.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name
       FROM files f
@@ -34,8 +32,6 @@ function getFilesForView(
     $visible = [];
     foreach ($sharedItems as &$item) {
       $access = getEffectivePermissionsWithSource($pdo, $item['id'], $userId);
-      error_log("Shared item visible: {$item['id']} → Permissions: " . implode(',', $access['permissions']));
-
       if (!empty($access['permissions'])) {
         $item['permissions'] = $access['permissions'];
         $item['inherited_from'] = $access['inheritedFrom'];
@@ -48,7 +44,7 @@ function getFilesForView(
         }
 
         if ($item['type'] === 'folder') {
-          $item['size'] = getRecursiveFolderSize($pdo, $item['id'], $userId);
+          $item['size'] = getRecursiveFolderSize($pdo, $item['id']);
         }
 
         $visible[] = $item;
@@ -58,14 +54,28 @@ function getFilesForView(
     return $visible;
   }
 
-  // 🧭 Default logic for other views
   $params = [];
   $where = [];
   $joins = '';
   $select = 'f.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name';
   $order = "ORDER BY f.$sortBy $sortDir";
 
-  if ($view !== 'trash') {
+  // ✅ Refactored parent filtering logic
+  if ($view === 'trash') {
+    if ($folderId && isValidUuid($folderId)) {
+      $where[] = 'f.parent_id = :folderId';
+      $params[':folderId'] = $folderId;
+    } else {
+      $where[] = 'f.parent_id IS NULL';
+    }
+  } elseif ($view === 'shared-by-me') {
+    if ($folderId && isValidUuid($folderId)) {
+      $where[] = 'f.parent_id = :folderId';
+      $params[':folderId'] = $folderId;
+    } else {
+      // Top-level shared-by-me: skip parent filtering
+    }
+  } else {
     if ($folderId && isValidUuid($folderId)) {
       $where[] = 'f.parent_id = :folderId';
       $params[':folderId'] = $folderId;
@@ -102,7 +112,7 @@ function getFilesForView(
       $params[':trashOwnerId'] = $userId;
       break;
 
-    default: // 'my-files'
+    default:
       $joins = 'JOIN users u ON f.owner_id = u.id';
       $where[] = 'f.owner_id = :ownerId';
       $where[] = 'f.is_deleted = FALSE';
@@ -128,7 +138,12 @@ function getFilesForView(
 
   $enriched = [];
   foreach ($files as &$file) {
-    if ($file['owner_id'] === $userId) {
+    if ($view === 'shared-by-me') {
+      $file['permissions'] = ['edit', 'comment', 'share', 'delete'];
+      $file['inherited_from'] = null;
+      $file['source_type'] = 'owner';
+      $enriched[] = $file;
+    } elseif ($file['owner_id'] === $userId) {
       $file['permissions'] = ['edit', 'comment', 'share', 'delete'];
       $file['inherited_from'] = null;
       $file['source_type'] = 'owner';
@@ -150,8 +165,12 @@ function getFilesForView(
     }
 
     if ($file['type'] === 'folder') {
-  $file['size'] = getRecursiveFolderSize($pdo, $file['id']);
-}
+      $file['size'] = getRecursiveFolderSize($pdo, $file['id']);
+
+      if ($view === 'shared-by-me') {
+        $file['children'] = getSharedFolderContents($pdo, $file['id'], $userId, false);
+      }
+    }
   }
 
   if ($view === 'trash') {

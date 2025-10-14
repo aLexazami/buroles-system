@@ -26,24 +26,66 @@ switch ($view) {
   case 'shared-with-me':
     $trail[] = ['id' => null, 'name' => 'Shared with Me'];
 
-    // 🧠 Direct access query
     $queryDirect = "SELECT f.id, f.name, f.parent_id
                     FROM files f
                     JOIN access_control ac ON ac.file_id = f.id
                     WHERE f.id = ? AND ac.user_id = ? AND ac.is_revoked = FALSE AND f.is_deleted = FALSE";
 
-    // 🧠 Fallback query for inherited access
     $queryFallback = "SELECT id, name, parent_id FROM files WHERE id = ? AND is_deleted = FALSE";
-
     $checkDeleted = false;
     break;
 
   case 'shared-by-me':
     $trail[] = ['id' => null, 'name' => 'Shared by Me'];
-    $query = "SELECT f.id, f.name, f.parent_id
-              FROM files f
-              JOIN access_control ac ON ac.file_id = f.id
-              WHERE f.id = ? AND ac.granted_by = ?";
+
+    // 🧩 Find the nearest shared ancestor
+    $sharedRoot = null;
+    $currentId = $folderId;
+
+    while ($currentId) {
+      $stmt = $pdo->prepare("
+        SELECT f.id, f.name, f.parent_id
+        FROM files f
+        JOIN access_control ac ON ac.file_id = f.id
+        WHERE f.id = ? AND ac.granted_by = ? AND ac.is_revoked = FALSE
+      ");
+      $stmt->execute([$currentId, $userId]);
+      $shared = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if ($shared) {
+        $sharedRoot = $shared;
+        break;
+      }
+
+      $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
+      $stmt->execute([$currentId]);
+      $currentId = $stmt->fetchColumn();
+    }
+
+    $startId = $sharedRoot['id'] ?? $folderId;
+
+    // 🧵 Trace downward from shared root to current folder
+    $breadcrumb = [];
+    $currentId = $folderId;
+
+    while ($currentId) {
+      $stmt = $pdo->prepare("SELECT id, name, parent_id FROM files WHERE id = ?");
+      $stmt->execute([$currentId]);
+      $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+      if (!$folder) break;
+
+      $breadcrumb[] = [
+        'id' => $folder['id'],
+        'name' => $folder['name'],
+        'inherited' => false
+      ];
+
+      if ($folder['id'] === $startId) break;
+      $currentId = $folder['parent_id'];
+    }
+
+    $breadcrumb = array_reverse($breadcrumb);
+    $trail = array_merge($trail, $breadcrumb);
     $checkDeleted = false;
     break;
 
@@ -54,24 +96,22 @@ switch ($view) {
     break;
 }
 
-if (isValidUuid($folderId)) {
+if (isValidUuid($folderId) && $view !== 'shared-by-me') {
   $currentId = $folderId;
 
   while ($currentId) {
     if ($view === 'shared-with-me') {
-      // 🔍 Try direct access first
       $stmt = $pdo->prepare($queryDirect);
       $stmt->execute([$currentId, $userId]);
       $folder = $stmt->fetch(PDO::FETCH_ASSOC);
       $inherited = false;
 
-      // 🔁 Fallback to general lookup if not directly shared
       if (!$folder) {
         $stmt = $pdo->prepare($queryFallback);
         $stmt->execute([$currentId]);
         $folder = $stmt->fetch(PDO::FETCH_ASSOC);
         $access = getEffectivePermissionsWithSource($pdo, $currentId, $userId);
-        $inherited = !empty($access['permissions']) && $access['sourceType'] === 'inherited';
+        $inherited = !empty($access['permissions']) && ($access['sourceType'] ?? '') === 'inherited';
         if (!$folder || empty($access['permissions'])) break;
       }
 
