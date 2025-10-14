@@ -370,3 +370,39 @@ function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): strin
 
   return $candidate;
 }
+
+// For download.php
+function resolveStoragePath($storedPath) {
+  $relativePath = ltrim(str_replace('/srv/burol-storage/', '', $storedPath), '/');
+  $fullPath = realpath(__DIR__ . '/../srv/burol-storage/' . $relativePath);
+  $storageRoot = realpath(__DIR__ . '/../srv/burol-storage');
+
+  if (!$fullPath || strpos($fullPath, $storageRoot) !== 0 || !file_exists($fullPath)) {
+    return null;
+  }
+
+  return $fullPath;
+}
+
+function hasAccessToFile(PDO $pdo, string $fileId, int $userId): bool {
+  // Direct or inherited access to the file or its parents
+  $checked = [];
+
+  while ($fileId && !in_array($fileId, $checked)) {
+    $checked[] = $fileId;
+
+    $stmt = $pdo->prepare("
+      SELECT 1 FROM access_control
+      WHERE file_id = ? AND user_id = ? AND is_revoked = 0
+      LIMIT 1
+    ");
+    $stmt->execute([$fileId, $userId]);
+    if ($stmt->fetchColumn()) return true;
+
+    $parentStmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ? LIMIT 1");
+    $parentStmt->execute([$fileId]);
+    $fileId = $parentStmt->fetchColumn();
+  }
+
+  return false;
+}

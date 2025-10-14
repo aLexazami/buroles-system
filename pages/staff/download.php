@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/file-utils.php'; // resolveStoragePath(), hasAccessToFile()
 
 if (!isset($_GET['id'])) {
   http_response_code(400);
@@ -19,7 +20,7 @@ if (!$currentUserId) {
 
 // 📄 Fetch file metadata
 $stmt = $pdo->prepare("
-  SELECT name, path, mime_type, is_deleted, owner_id
+  SELECT id, name, path, mime_type, is_deleted, owner_id, type
   FROM files
   WHERE id = ? LIMIT 1
 ");
@@ -32,41 +33,27 @@ if (!$file || $file['is_deleted']) {
   exit;
 }
 
-// 🔐 Access control: owner or granted 'read' or 'download' permission
-$hasAccess = $file['owner_id'] == $currentUserId;
-
-if (!$hasAccess) {
-  $accessStmt = $pdo->prepare("
-    SELECT 1 FROM access_control
-    WHERE file_id = ? AND user_id = ? AND is_revoked = 0
-      AND permission IN ('read', 'download')
-    LIMIT 1
-  ");
-  $accessStmt->execute([$fileId, $currentUserId]);
-  $hasAccess = $accessStmt->fetchColumn();
+// 🚫 Reject folders
+if ($file['type'] !== 'file') {
+  http_response_code(400);
+  echo "This endpoint only supports file downloads.";
+  exit;
 }
 
+// 🔐 Access control
+$hasAccess = $file['owner_id'] == $currentUserId || hasAccessToFile($pdo, $fileId, $currentUserId);
+
 if (!$hasAccess) {
+  error_log("Access denied: file_id=$fileId, user_id=$currentUserId");
   http_response_code(403);
   echo "Forbidden.";
   exit;
 }
 
-// 🧩 Resolve full path
-$storedPath = $file['path'];
-$relativePath = ltrim(str_replace('/srv/burol-storage/', '', $storedPath), '/');
-$fullPath = realpath(__DIR__ . '/../../srv/burol-storage/' . $relativePath);
-$storageRoot = realpath(__DIR__ . '/../../srv/burol-storage');
+error_log("Access granted: file_id=$fileId, user_id=$currentUserId");
 
-if (!$fullPath || strpos($fullPath, $storageRoot) !== 0 || !file_exists($fullPath)) {
-  http_response_code(404);
-  echo "File not found on disk.";
-  exit;
-}
-
-// 🧠 MIME and filename
-$mimeType = $file['mime_type'] ?: mime_content_type($fullPath);
-$originalName = $file['name'] ?? basename($fullPath);
+// 🧠 Safe filename
+$originalName = $file['name'] ?? 'download';
 $safeName = str_replace(["\r", "\n"], '', $originalName);
 
 // 🧾 Log download
@@ -83,9 +70,16 @@ $logStmt->execute([
   $_SERVER['HTTP_USER_AGENT'] ?? null
 ]);
 
-error_log("Download accessed: file_id=$fileId, user_id=$currentUserId, filename=$safeName");
+// 📤 Serve file
+$fullPath = resolveStoragePath($file['path']);
+if (!$fullPath) {
+  http_response_code(404);
+  echo "File not found on disk.";
+  exit;
+}
 
-// 📦 Serve file
+$mimeType = $file['mime_type'] ?: mime_content_type($fullPath);
+
 header('Content-Type: ' . $mimeType);
 header('Content-Length: ' . filesize($fullPath));
 header('Content-Disposition: attachment; filename="' . $safeName . '"');
