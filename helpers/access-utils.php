@@ -40,45 +40,48 @@ function getEffectivePermissionsWithSource(PDO $pdo, string $fileId, int $userId
     'write'   => ['edit', 'comment', 'share', 'delete'],
     'comment' => ['comment'],
     'edit'    => ['edit', 'comment'],
-    'view'    => ['view'],
+    'view'    => ['view'], // legacy fallback
   ];
 
-  // 🔍 Direct access
-  $stmt = $pdo->prepare("
-    SELECT permission
-    FROM access_control
-    WHERE file_id = ? AND user_id = ? AND is_revoked = FALSE
-  ");
-  $stmt->execute([$fileId, $userId]);
-  $rawPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
+  // 🧠 Track visited nodes to prevent cycles
+  $visited = [];
+  $currentId = $fileId;
 
-  $capabilities = [];
-  foreach ($rawPermissions as $perm) {
-    $perm = strtolower($perm); // ✅ Normalize casing
-    if (isset($permissionMap[$perm])) {
-      $capabilities = array_merge($capabilities, $permissionMap[$perm]);
+  while ($currentId && !in_array($currentId, $visited)) {
+    $visited[] = $currentId;
+
+    // 🔍 Check access at current level
+    $stmt = $pdo->prepare("
+      SELECT permission
+      FROM access_control
+      WHERE file_id = ? AND user_id = ? AND is_revoked = FALSE
+    ");
+    $stmt->execute([$currentId, $userId]);
+    $rawPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    $capabilities = [];
+    foreach ($rawPermissions as $perm) {
+      $perm = strtolower($perm);
+      if (isset($permissionMap[$perm])) {
+        $capabilities = array_merge($capabilities, $permissionMap[$perm]);
+      }
     }
-  }
 
-  if (!empty($capabilities)) {
-    return [
-      'permissions'   => array_values(array_unique($capabilities)),
-      'inheritedFrom' => null,
-      'sourceType'    => 'direct' // ✅ UI clarity
-    ];
-  }
-
-  // 🔁 Inherited access
-  $parentId = getParentFolderId($pdo, $fileId);
-  if ($parentId) {
-    $inherited = getEffectivePermissionsWithSource($pdo, $parentId, $userId);
-    if (!empty($inherited['permissions'])) {
-      $inherited['inheritedFrom'] = $parentId;
-      $inherited['sourceType'] = 'inherited'; // ✅ UI clarity
+    if (!empty($capabilities)) {
+      return [
+        'permissions'   => array_values(array_unique($capabilities)),
+        'inheritedFrom' => $currentId === $fileId ? null : $currentId,
+        'sourceType'    => $currentId === $fileId ? 'direct' : 'inherited'
+      ];
     }
-    return $inherited;
+
+    // 🔁 Walk up the tree
+    $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
+    $stmt->execute([$currentId]);
+    $currentId = $stmt->fetchColumn();
   }
 
+  // 🚫 No access found
   return [
     'permissions'   => [],
     'inheritedFrom' => null,
@@ -155,4 +158,38 @@ function isOwner(PDO $pdo, string $fileId, int $userId): bool {
   $stmt = $pdo->prepare("SELECT COUNT(*) FROM files WHERE id = ? AND owner_id = ?");
   $stmt->execute([$fileId, $userId]);
   return $stmt->fetchColumn() > 0;
+}
+
+// Dynamic REsolver Access in sharing to grant access also the  recursively nested folder and files
+function hasAccess($pdo, $fileId, $userId) {
+  // Step 1: Check direct access
+  $stmt = $pdo->prepare("
+    SELECT permission FROM access_control
+    WHERE file_id = ? AND user_id = ? AND is_revoked = 0
+    LIMIT 1
+  ");
+  $stmt->execute([$fileId, $userId]);
+  if ($stmt->fetchColumn()) return true;
+
+  // Step 2: Walk up the parent chain
+  $currentId = $fileId;
+  while ($currentId) {
+    $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
+    $stmt->execute([$currentId]);
+    $parentId = $stmt->fetchColumn();
+
+    if (!$parentId) break;
+
+    $stmt = $pdo->prepare("
+      SELECT permission FROM access_control
+      WHERE file_id = ? AND user_id = ? AND is_revoked = 0
+      LIMIT 1
+    ");
+    $stmt->execute([$parentId, $userId]);
+    if ($stmt->fetchColumn()) return true;
+
+    $currentId = $parentId;
+  }
+
+  return false;
 }

@@ -10,19 +10,52 @@ function getFilesForView(
   string $sortBy = 'updated_at',
   string $sortDir = 'DESC'
 ): array {
+  require_once __DIR__ . '/sharing-utils.php';
+
   // 🧩 Special case: shared-with-me with folder context
-  if ($view === 'shared-with-me' && $folderId && isValidUuid($folderId)) {
-    require_once __DIR__ . '/../helpers/sharing-utils.php';
-    return getSharedFolderContents($pdo, $folderId, $userId);
+  if ($view === 'shared-with-me') {
+    if ($folderId && isValidUuid($folderId)) {
+      return getSharedFolderContents($pdo, $folderId, $userId);
+    }
+
+    // 🧠 Root view: list all directly shared folders (even nested)
+    $stmt = $pdo->prepare("
+      SELECT f.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name
+      FROM files f
+      JOIN access_control ac ON ac.file_id = f.id
+      JOIN users u ON f.owner_id = u.id
+      WHERE ac.user_id = :userId
+        AND ac.is_revoked = FALSE
+        AND f.is_deleted = FALSE
+        AND f.type = 'folder'
+    ");
+    $stmt->execute([':userId' => $userId]);
+    $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $visible = [];
+    foreach ($folders as &$folder) {
+      $access = getEffectivePermissionsWithSource($pdo, $folder['id'], $userId);
+      error_log("Shared folder visible: {$folder['id']} → Permissions: " . implode(',', $access['permissions']));
+
+      if (!empty($access['permissions'])) {
+        $folder['permissions'] = $access['permissions'];
+        $folder['inherited_from'] = $access['inheritedFrom'];
+        $folder['source_type'] = $access['sourceType'];
+        $folder['size'] = getRecursiveFolderSize($pdo, $folder['id'], $userId);
+        $visible[] = $folder;
+      }
+    }
+
+    return $visible;
   }
 
+  // 🧭 Default logic for other views
   $params = [];
   $where = [];
   $joins = '';
   $select = 'f.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name';
   $order = "ORDER BY f.$sortBy $sortDir";
 
-  // 📁 Folder filter — only apply for non-trash views
   if ($view !== 'trash') {
     if ($folderId && isValidUuid($folderId)) {
       $where[] = 'f.parent_id = :folderId';
@@ -32,21 +65,7 @@ function getFilesForView(
     }
   }
 
-  // 🔍 View-specific filters
   switch ($view) {
-    case 'shared-with-me':
-      $joins = '
-        JOIN access_control ac ON ac.file_id = f.id
-        JOIN users u ON f.owner_id = u.id
-      ';
-      $where[] = 'ac.user_id = :accessUserId';
-      $where[] = 'ac.is_revoked = FALSE';
-      $where[] = 'f.is_deleted = FALSE';
-      $where[] = 'f.owner_id != :ownerExclusionId';
-      $params[':accessUserId'] = $userId;
-      $params[':ownerExclusionId'] = $userId;
-      break;
-
     case 'shared-by-me':
       $joins = '
         JOIN access_control ac ON ac.file_id = f.id
@@ -82,7 +101,6 @@ function getFilesForView(
       break;
   }
 
-  // 🧠 Final SQL assembly
   $sql = "
     SELECT $select
     FROM files f
@@ -99,42 +117,43 @@ function getFilesForView(
   $stmt->execute();
   $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // 🧩 Enrich results
+  $enriched = [];
   foreach ($files as &$file) {
-  // ✅ Owner always has full access
-  if ($file['owner_id'] === $userId) {
-    $file['permissions'] = ['edit', 'comment', 'share', 'delete'];
-    $file['inherited_from'] = null;
-  } else {
-    // 🔁 Resolve effective permissions for non-owners
-    $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
-    $file['permissions'] = $access['permissions'];
-    $file['inherited_from'] = $access['inheritedFrom'];
+    if ($file['owner_id'] === $userId) {
+      $file['permissions'] = ['edit', 'comment', 'share', 'delete'];
+      $file['inherited_from'] = null;
+      $file['source_type'] = 'owner';
+      $enriched[] = $file;
+    } else {
+      $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
+      if (!empty($access['permissions'])) {
+        $file['permissions'] = $access['permissions'];
+        $file['inherited_from'] = $access['inheritedFrom'];
+        $file['source_type'] = $access['sourceType'];
+        $enriched[] = $file;
+      }
+    }
+
+    if (!empty($file['parent_id'])) {
+      $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
+      $stmtParent->execute([$file['parent_id']]);
+      $file['parent_name'] = $stmtParent->fetchColumn();
+    }
+
+    if ($file['type'] === 'folder') {
+      $file['size'] = getRecursiveFolderSize($pdo, $file['id'], $userId);
+    }
   }
 
-  // 📛 Parent name
-  if ($file['parent_id']) {
-    $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
-    $stmtParent->execute([$file['parent_id']]);
-    $file['parent_name'] = $stmtParent->fetchColumn();
-  }
-
-  // 📦 Folder size
-  if ($file['type'] === 'folder') {
-    $file['size'] = getRecursiveFolderSize($pdo, $file['id'], $userId);
-  }
-}
-
-  // 🌳 Inject trash hierarchy
   if ($view === 'trash') {
-    foreach ($files as &$file) {
+    foreach ($enriched as &$file) {
       if ($file['type'] === 'folder') {
         $file['children'] = getTrashedChildren($pdo, $file['id'], $userId);
       }
     }
   }
 
-  return $files;
+  return $enriched;
 }
 
 function getPermissionsForFile(array $file, string $view, int $userId, PDO $pdo): array
