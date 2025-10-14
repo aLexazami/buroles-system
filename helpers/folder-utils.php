@@ -11,29 +11,29 @@ function deleteFolderOnDisk(string $virtualPath): void {
   deleteDirectory($diskPath);
 }
 
-function getRecursiveFolderSize(PDO $pdo, string $folderId, int $userId): int {
+function getRecursiveFolderSize(PDO $pdo, string $folderId): int {
   $totalSize = 0;
 
-  // Get all direct files
+  // Count all direct files (regardless of owner)
   $stmt = $pdo->prepare("
     SELECT size FROM files
-    WHERE parent_id = ? AND owner_id = ? AND type = 'file' AND is_deleted = 0
+    WHERE parent_id = ? AND type = 'file' AND is_deleted = 0
   ");
-  $stmt->execute([$folderId, $userId]);
+  $stmt->execute([$folderId]);
   $sizes = $stmt->fetchAll(PDO::FETCH_COLUMN);
   foreach ($sizes as $size) {
     $totalSize += (int) $size;
   }
 
-  // Recurse into subfolders
+  // Recurse into subfolders (regardless of owner)
   $stmt = $pdo->prepare("
     SELECT id FROM files
-    WHERE parent_id = ? AND owner_id = ? AND type = 'folder' AND is_deleted = 0
+    WHERE parent_id = ? AND type = 'folder' AND is_deleted = 0
   ");
-  $stmt->execute([$folderId, $userId]);
+  $stmt->execute([$folderId]);
   $subfolders = $stmt->fetchAll(PDO::FETCH_COLUMN);
   foreach ($subfolders as $subId) {
-    $totalSize += getRecursiveFolderSize($pdo, $subId, $userId);
+    $totalSize += getRecursiveFolderSize($pdo, $subId);
   }
 
   return $totalSize;

@@ -392,7 +392,7 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
 
   if (currentView === 'shared-with-me' && item.owner_first_name && item.owner_last_name) {
     const permissionLabel = permissions.length > 0 ? ` (${permissions.join(', ')})` : '';
-    badge.textContent = `Shared by: ${item.owner_first_name} ${item.owner_last_name}${permissionLabel}`;
+    badge.textContent = `Owner: ${item.owner_first_name} ${item.owner_last_name}`;
   } else if (currentView === 'shared-by-me') {
     const fullName = item.recipient_first_name && item.recipient_last_name
       ? `${item.recipient_first_name} ${item.recipient_last_name}`
@@ -631,11 +631,6 @@ export function formatSize(bytes) {
 
 export async function resolveItemSize(item) {
   if (item.type === 'folder') {
-    if (typeof item.size === 'number' && !isNaN(item.size)) {
-      return formatSize(item.size); // ✅ Use prehydrated size
-    }
-
-    // 🧠 Fallback to API if size is missing
     try {
       const res = await fetch('/api/get-folder-size.php', {
         method: 'POST',

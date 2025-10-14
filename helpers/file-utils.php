@@ -18,7 +18,7 @@ function getFilesForView(
       return getSharedFolderContents($pdo, $folderId, $userId);
     }
 
-    // 🧠 Root view: list all directly shared folders (even nested)
+    // 🧠 Root view: list all directly shared files and folders (even if nested)
     $stmt = $pdo->prepare("
       SELECT f.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name
       FROM files f
@@ -27,22 +27,31 @@ function getFilesForView(
       WHERE ac.user_id = :userId
         AND ac.is_revoked = FALSE
         AND f.is_deleted = FALSE
-        AND f.type = 'folder'
     ");
     $stmt->execute([':userId' => $userId]);
-    $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $sharedItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $visible = [];
-    foreach ($folders as &$folder) {
-      $access = getEffectivePermissionsWithSource($pdo, $folder['id'], $userId);
-      error_log("Shared folder visible: {$folder['id']} → Permissions: " . implode(',', $access['permissions']));
+    foreach ($sharedItems as &$item) {
+      $access = getEffectivePermissionsWithSource($pdo, $item['id'], $userId);
+      error_log("Shared item visible: {$item['id']} → Permissions: " . implode(',', $access['permissions']));
 
       if (!empty($access['permissions'])) {
-        $folder['permissions'] = $access['permissions'];
-        $folder['inherited_from'] = $access['inheritedFrom'];
-        $folder['source_type'] = $access['sourceType'];
-        $folder['size'] = getRecursiveFolderSize($pdo, $folder['id'], $userId);
-        $visible[] = $folder;
+        $item['permissions'] = $access['permissions'];
+        $item['inherited_from'] = $access['inheritedFrom'];
+        $item['source_type'] = $access['sourceType'];
+
+        if (!empty($item['parent_id'])) {
+          $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
+          $stmtParent->execute([$item['parent_id']]);
+          $item['parent_name'] = $stmtParent->fetchColumn();
+        }
+
+        if ($item['type'] === 'folder') {
+          $item['size'] = getRecursiveFolderSize($pdo, $item['id'], $userId);
+        }
+
+        $visible[] = $item;
       }
     }
 
@@ -141,8 +150,8 @@ function getFilesForView(
     }
 
     if ($file['type'] === 'folder') {
-      $file['size'] = getRecursiveFolderSize($pdo, $file['id'], $userId);
-    }
+  $file['size'] = getRecursiveFolderSize($pdo, $file['id']);
+}
   }
 
   if ($view === 'trash') {
