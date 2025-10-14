@@ -212,7 +212,11 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
         : 'Unknown';
       const avatar = comment.avatar_path || '/assets/img/default-avatar.png';
       const iconPath = getItemIcon(comment);
-const icon = `<img src="${iconPath}" class="w-4 h-4 mr-1" />`;
+      const icon = `<img src="${iconPath}" class="w-4 h-4 mr-1" />`;
+
+      const deleteBtn = isOwned
+        ? `<button data-id="${comment.file_id}" data-name="${fileName}" class="delete-comment-btn text-red-500 text-xs ml-2 hover:underline">Delete</button>`
+        : '';
 
       entry.innerHTML = `
         <div class="flex items-start gap-3">
@@ -225,19 +229,32 @@ const icon = `<img src="${iconPath}" class="w-4 h-4 mr-1" />`;
             </div>
             <div class="text-xs text-gray-500 mb-1">${timestamp}</div>
             <div>${content}</div>
-            <div class="text-xs text-gray-400 mt-1 italic">Comment by ${author}</div>
+            <div class="text-xs text-gray-400 mt-1 italic">
+              Comment by ${author}
+              ${deleteBtn}
+            </div>
           </div>
         </div>
       `;
 
       container.appendChild(entry);
     });
+
+    // Attach modal trigger to delete buttons
+    container.querySelectorAll('.delete-comment-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const fileId = btn.getAttribute('data-id');
+        const fileName = btn.getAttribute('data-name');
+        showDeleteModal(fileId, fileName);
+      });
+    });
+
   } catch (err) {
     container.innerHTML = '<p class="text-red-600">Failed to load comments.</p>';
     console.error(err);
   }
 }
-
 
 export function removeItemRow(itemId) {
   const row = document.querySelector(`[data-item-id="${itemId}"]`);
