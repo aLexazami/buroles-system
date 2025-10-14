@@ -340,13 +340,6 @@ function getTrashedRootFolders(PDO $pdo, int $userId): array
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function getFileById(PDO $pdo, string $id, int $userId): ?array
-{
-  $stmt = $pdo->prepare("SELECT * FROM files WHERE id = ? AND owner_id = ?");
-  $stmt->execute([$id, $userId]);
-  return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-}
-
 function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): string
 {
   $stmt = $pdo->prepare("
@@ -371,7 +364,7 @@ function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): strin
   return $candidate;
 }
 
-// For download.php
+// For download.php and download-folder.php
 function resolveStoragePath($storedPath) {
   $relativePath = ltrim(str_replace('/srv/burol-storage/', '', $storedPath), '/');
   $fullPath = realpath(__DIR__ . '/../srv/burol-storage/' . $relativePath);
@@ -405,4 +398,34 @@ function hasAccessToFile(PDO $pdo, string $fileId, int $userId): bool {
   }
 
   return false;
+}
+
+// for rename-item.php
+function hasEditPermission(PDO $pdo, string $fileId, int $userId): bool {
+  $checked = [];
+
+  while ($fileId && !in_array($fileId, $checked)) {
+    $checked[] = $fileId;
+
+    $stmt = $pdo->prepare("
+      SELECT 1 FROM access_control
+      WHERE file_id = ? AND user_id = ? AND is_revoked = 0 AND permission IN ('edit', 'write', 'owner')
+      LIMIT 1
+    ");
+    $stmt->execute([$fileId, $userId]);
+    if ($stmt->fetchColumn()) return true;
+
+    $parentStmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ? LIMIT 1");
+    $parentStmt->execute([$fileId]);
+    $fileId = $parentStmt->fetchColumn();
+  }
+
+  return false;
+}
+
+function getFileById(PDO $pdo, string $id): ?array
+{
+  $stmt = $pdo->prepare("SELECT * FROM files WHERE id = ? LIMIT 1");
+  $stmt->execute([$id]);
+  return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
 }

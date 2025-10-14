@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/uuid.php';         // isValidUuid()
-require_once __DIR__ . '/../../helpers/file-utils.php';   // getFileById()
+require_once __DIR__ . '/../../helpers/file-utils.php';   // getFileById(), hasEditPermission()
 require_once __DIR__ . '/../../helpers/log.php';          // logAction()
 
 header('Content-Type: application/json');
@@ -26,9 +26,16 @@ if (!isValidUuid($fileId) || !$newName) {
 }
 
 // 📄 Fetch file
-$file = getFileById($pdo, $fileId, $userId);
+$file = getFileById($pdo, $fileId);
 if (!$file) {
   echo json_encode(['success' => false, 'error' => 'File not found']);
+  exit;
+}
+
+// 🔐 Permission check
+$canRename = $file['owner_id'] == $userId || hasEditPermission($pdo, $fileId, $userId);
+if (!$canRename) {
+  echo json_encode(['success' => false, 'error' => 'Permission denied']);
   exit;
 }
 
@@ -50,8 +57,8 @@ if ($file['type'] === 'file') {
 }
 
 // 📝 Update name
-$stmt = $pdo->prepare("UPDATE files SET name = ?, updated_at = NOW() WHERE id = ? AND owner_id = ?");
-$success = $stmt->execute([$newName, $fileId, $userId]);
+$stmt = $pdo->prepare("UPDATE files SET name = ?, updated_at = NOW() WHERE id = ?");
+$success = $stmt->execute([$newName, $fileId]);
 
 if ($success) {
   logAction($pdo, $userId, $fileId, $file['name'], 'rename', json_encode([
