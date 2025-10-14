@@ -162,8 +162,8 @@ renderHead('Teacher');
       </div>
 
       <!-- 💻 Desktop Actions with Icons -->
-      <div class="hidden sm:flex space-x-2">
-        <!-- 💬 Comment Icon -->
+       <div class="hidden sm:flex space-x-2">
+         <!--💬 Comment Icon 
         <div class="relative group">
           <button id="commentPreview" class="rounded-full p-2 hover:bg-[rgba(255,250,250,0.2)] duration-200 cursor-pointer hover:scale-110 transition-transform">
             <img src="/assets/img/comment-white.png" alt="Comment" class="w-7 h-7" />
@@ -173,7 +173,7 @@ renderHead('Teacher');
           </div>
         </div>
 
-        <!-- 🔗 Share Icon -->
+       🔗 Share Icon 
         <div class="relative group">
           <button id="sharePreview" class="rounded-full p-2 hover:bg-[rgba(255,250,250,0.2)] duration-200 cursor-pointer hover:scale-110 transition-transform">
             <img src="/assets/img/share-white.png" alt="Share" class="w-5 h-5" />
@@ -182,14 +182,15 @@ renderHead('Teacher');
             Share
           </div>
         </div>
+        -->
 
         <!-- ⬇ Download Icon -->
         <div class="relative group">
           <button id="downloadPreview" class="rounded-full p-2 hover:bg-[rgba(255,250,250,0.2)] text-white duration-200 cursor-pointer hover:scale-110 transition-transform">
-            <img src="/assets/img/downloads-white.png" alt="Download" class="w-5 h-5" />
+            <img src="/assets/img/preview-white.png" alt="Download" class="w-5 h-5" />
           </button>
           <div class="absolute top-12 mb-1 left-5 -translate-x-1/2 px-3 py-1 bg-gray-100 text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-10">
-            Download
+            Preview
           </div>
         </div>
       </div>
