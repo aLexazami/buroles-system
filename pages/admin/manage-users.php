@@ -14,20 +14,20 @@ renderHead('Admin');
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
 
-  <main class="flex w-full overflow-x-auto min-h-screen">
+  <main class="flex flex-wrap md:flex-nowrap min-h-screen">
     <?php include('../../includes/side-nav-admin.php'); ?>
 
-    <section class="w-full m-4">
+    <section class="w-full px-4 py-2 sm:px-6 sm:py-4">
       <div class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
         <img src="/assets/img/manage-user.png " class="w-5 h-5 sm:w-6 sm:h-6">
         <h1 class="font-bold text-lg ">User Management</h1>
       </div>
 
       <!-- Confirmation Modal -->
-      <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+      <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 transition-opacity duration-200">
         <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
          <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
-          <p id="confirm-modal-message" class="text-lg sm:text-2xl mb-10 mt-5 font-semibold text-center">
+          <p id="confirm-modal-message" class="text-lg sm:text-xl mb-10 mt-5 font-semibold text-center">
             Are you sure you want to proceed?
           </p>
           <div class="flex justify-between gap-4 px-8 mb-5">
@@ -46,12 +46,12 @@ renderHead('Admin');
       <!-- Flash Messages -->
       <?php showFlash(); ?>
 
-      <div class="px-6 py-10  bg-white rounded-lg shadow-md">
+      <div class="bg-white rounded-lg shadow-md px-2 py-2 md:px-2 md:py-10">
         <?php include(__DIR__ . '/../../components/user-table.php'); ?>
       </div>
 
       <!-- Super Admin Password Modal -->
-      <div id="passwordModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0">
+      <div id="passwordModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 transition-opacity duration-200">
         <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
         <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
           <h2 class="text-xl sm:text-2xl font-semibold mb-8">Admin Verification</h2>
@@ -72,7 +72,7 @@ renderHead('Admin');
       </div>
 
       <!-- Unlock User Modal -->
-      <div id="unlockModal" class="hidden fixed inset-0 z-50  items-center justify-center">
+      <div id="unlockModal" class="hidden fixed inset-0 z-50  items-center justify-center transition-opacity duration-200">
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <div class="bg-white p-6 rounded-4xl shadow-md w-full max-w-md z-10 relative border border-emerald-500 transition-opacity duration-200">
           <h2 class="text-2xl font-semibold mb-8">Unlock User Account</h2>

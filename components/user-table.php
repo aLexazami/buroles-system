@@ -2,7 +2,11 @@
 require_once __DIR__ . '/../helpers/table-utils.php';
 ?>
 <?php if (!isset($users) || !is_array($users) || empty($users)): ?>
-  <p class="text-red-600 min-h-screen">No user data available.</p>
+  <div class="flex flex-col items-center justify-center text-center text-gray-600 py-12">
+    <img src="/assets/img/no-user.png" alt="No user data" class="w-24 h-24 mb-4 opacity-50" />
+    <p class="text-md sm:text-lg font-semibold">No user data available</p>
+    <p class="text-sm sm:text-md text-gray-400">Once users are added, they’ll appear here automatically.</p>
+  </div>
 <?php else: ?>
   <!-- Search Bar -->
   <?php include('../../components/search-bar.php'); ?>
@@ -10,7 +14,7 @@ require_once __DIR__ . '/../helpers/table-utils.php';
   <?php $isSuperAdmin = ($_SESSION['role_id'] ?? 0) === 2; ?> 
 
   <!-- User Table -->
-  <div class="overflow-x-auto rounded-lg shadow-sm  min-h-screen">
+  <div class="overflow-auto rounded-lg shadow-sm min-h-[500px]">
     <table class="min-w-full table-auto border-transparent">
       <thead class="bg-emerald-600 text-white">
         <tr>

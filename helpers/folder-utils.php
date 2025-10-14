@@ -263,13 +263,43 @@ function isValidFolderName(string $name): bool {
 }
 
 function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void {
-  $stmt = $pdo->prepare("SELECT path, original_path FROM files WHERE id = ?");
+  // 🧠 Fetch folder metadata
+  $stmt = $pdo->prepare("SELECT id, path, original_path, owner_id FROM files WHERE id = ?");
   $stmt->execute([$folderId]);
   $folder = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  $restorePath = $folder['original_path'] ?? $folder['path'];
-  ensureVirtualPathExists($restorePath);
+  if (!$folder) {
+    throw new Exception("Restore failed: folder not found.");
+  }
 
+  $restorePath = $folder['original_path'] ?? $folder['path'];
+  $restoreFullPath = __DIR__ . "/../../" . ltrim($restorePath, '/');
+  $trashPath = __DIR__ . "/../../" . ltrim($folder['path'], '/');
+
+  // 🧠 Ensure parent hierarchy exists
+  ensureFolderHierarchyExists($pdo, $folderId);
+
+  // ✅ Move folder from trash if needed
+  if (is_dir($trashPath)) {
+    $restoreExists = is_dir($restoreFullPath);
+    $restoreEmpty = $restoreExists && count(scandir($restoreFullPath)) <= 2;
+
+    if (!$restoreExists || $restoreEmpty) {
+      if (!is_writable(dirname($restoreFullPath))) {
+        throw new Exception("Restore failed: destination folder is not writable.");
+      }
+
+      if ($restoreExists && !$restoreEmpty) {
+        throw new Exception("Restore failed: destination folder already exists and is not empty.");
+      }
+
+      if (!rename($trashPath, $restoreFullPath)) {
+        throw new Exception("Restore failed: unable to move folder from trash.");
+      }
+    }
+  }
+
+  // ✅ Update metadata
   $stmt = $pdo->prepare("
     UPDATE files
     SET is_deleted = 0,
@@ -295,7 +325,10 @@ function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void
     if ($child['type'] === 'folder') {
       restoreFolderAndContents($pdo, $userId, $child['id']);
     } else {
-      restoreFile($pdo, $userId, $child['id']);
+      $stmt = $pdo->prepare("SELECT * FROM files WHERE id = ?");
+      $stmt->execute([$child['id']]);
+      $childFile = $stmt->fetch(PDO::FETCH_ASSOC);
+      restoreFile($pdo, $userId, $childFile);
     }
   }
 
@@ -319,16 +352,33 @@ function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void
     if ($orphan['type'] === 'folder') {
       restoreFolderAndContents($pdo, $userId, $orphan['id']);
     } else {
-      restoreFile($pdo, $userId, $orphan['id']);
+      $stmt = $pdo->prepare("SELECT * FROM files WHERE id = ?");
+      $stmt->execute([$orphan['id']]);
+      $orphanFile = $stmt->fetch(PDO::FETCH_ASSOC);
+      restoreFile($pdo, $userId, $orphanFile);
     }
   }
 }
 
-function logRestore(PDO $pdo, int $userId, string $fileId, string $details): void {
-  $stmt = $pdo->prepare("
-    INSERT INTO logs (id, file_id, user_id, action, details, source)
-    VALUES (UUID(), ?, ?, 'restore', ?, 'dashboard')
-  ");
-  $stmt->execute([$fileId, $userId, $details]);
+function ensureFolderHierarchyExists(PDO $pdo, string $folderId): void {
+  $currentId = $folderId;
+  $paths = [];
+
+  while ($currentId) {
+    $stmt = $pdo->prepare("SELECT id, parent_id, original_path, path FROM files WHERE id = ?");
+    $stmt->execute([$currentId]);
+    $folder = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$folder) break;
+
+    $paths[] = $folder['original_path'] ?? $folder['path'];
+    $currentId = $folder['parent_id'];
+  }
+
+  // Create from top to bottom
+  foreach (array_reverse($paths) as $path) {
+    ensureVirtualPathExists($path);
+  }
 }
+
 ?>

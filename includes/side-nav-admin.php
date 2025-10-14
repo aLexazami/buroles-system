@@ -40,7 +40,7 @@ $navItems = [
 </div>
 
 <!-- Desktop Sidebar -->
-<aside class="hidden md:flex flex-col bg-gray-300 min-h-screen w-[64px] lg:w-[248px] shrink-0">
+<aside class="hidden md:flex flex-col bg-gray-300  h-full min-h-screen w-[64px] lg:w-[248px] shrink-0">
 
   <!-- Profile Block (visible only on lg and up) -->
   <div class="hidden lg:flex flex-col items-center py-6">
@@ -53,7 +53,7 @@ $navItems = [
   </div>
 
   <!-- Navigation -->
-  <nav class="space-y-4 pl-1 lg:pl-8 mt-1 md:mt-8 py-4">
+  <nav class="space-y-2 pl-1 lg:pl-8 mt-1 md:mt-5 py-4">
     <?php foreach ($navItems as $item): ?>
       <?php $isActive = $currentPage === basename($item['href']); ?>
       <a href="<?= $item['href'] ?>"
