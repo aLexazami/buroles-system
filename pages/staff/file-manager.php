@@ -41,10 +41,11 @@ renderHead('Teacher');
           <a href="/pages/staff/file-manager.php?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared with Me</a>
           <a href="/pages/staff/file-manager.php?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared by Me</a>
           <a href="/pages/staff/file-manager.php?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Trash</a>
-          <a href="/pages/staff/file-manager.php?view=comments"
+          <!-- <a href="/pages/staff/file-manager.php?view=comments"
             class="<?= $view === 'comments' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">
             Comments
           </a>
+          -->
         </div>
 
         <?php if ($view === 'trash'): ?>
@@ -86,11 +87,13 @@ renderHead('Teacher');
             </div>
           <?php endif; ?>
         </div>
+        <!--
         <?php if ($view === 'comments'): ?>
           <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6 w-full transition-all duration-300">
             <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Comments</h2>
+            -->
 
-            <!-- 🔀 Toggle Buttons -->
+            <!-- 🔀 Toggle Buttons
             <div class="flex gap-4 mb-6 text-sm sm:text-md">
               <button id="toggleMyComments" class="font-semibold text-emerald-700 hover:underline">
                 My Comments
@@ -99,13 +102,14 @@ renderHead('Teacher');
                 Received Comments
               </button>
             </div>
+            -->
 
-            <!-- 🗂️ Dynamic Comment List -->
+            <!-- 🗂️ Dynamic Comment List 
             <div id="comment-list" class="space-y-4 text-sm text-gray-800 min-h-[350px]">
-              <!-- JS will populate this -->
+               JS will populate this 
             </div>
           </div>
-        <?php endif; ?>
+        <?php endif; ?>-->
 
         <?php if ($view !== 'comments'): ?>
           <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6  w-full transition-all duration-300">
