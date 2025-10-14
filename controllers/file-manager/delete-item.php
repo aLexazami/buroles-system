@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php'; // softDeleteFolderAndContents()
 require_once __DIR__ . '/../../helpers/path.php'; // resolveDiskPath, ensureVirtualPathExists
+require_once __DIR__ . '/../../helpers/access-utils.php'; // canPerformAction(), getEffectivePermissionsWithSource()
 
 header('Content-Type: application/json');
 
@@ -16,55 +17,46 @@ if (!$userId || !$fileId) {
 }
 
 try {
-  // 🔐 Check ownership or delegated delete permission
-  $check = $pdo->prepare("
-    SELECT f.name, f.type, f.path,
-      CASE
-        WHEN f.owner_id = ? THEN 'owner'
-        WHEN ac.permission = 'delete' THEN 'delete'
-        ELSE NULL
-      END AS effective_permission
-    FROM files f
-    LEFT JOIN access_control ac
-      ON ac.file_id = f.id AND ac.user_id = ? AND ac.is_revoked = 0
-    WHERE f.id = ?
-  ");
-  $check->execute([$userId, $userId, $fileId]);
-  $result = $check->fetch(PDO::FETCH_ASSOC);
-
-  if (!$result || !$result['effective_permission']) {
+  // 🔐 Check permission using modular logic
+  if (!canPerformAction($pdo, $fileId, $userId, 'delete')) {
     echo json_encode(['success' => false, 'message' => 'Permission denied']);
     exit;
   }
 
-  $type = $result['type'];
-  $path = $result['path'];
-  $name = $result['name'];
-  $source = ($result['effective_permission'] === 'owner') ? 'owner-delete' : 'delegated-delete';
+  // 📦 Fetch file metadata
+  $stmt = $pdo->prepare("SELECT name, type, path FROM files WHERE id = ?");
+  $stmt->execute([$fileId]);
+  $file = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  if (!$file) {
+    echo json_encode(['success' => false, 'message' => 'File not found']);
+    exit;
+  }
+
+  $type = $file['type'];
+  $path = $file['path'];
+  $name = $file['name'];
   $success = false;
 
-  if ($type === 'folder') {
-    // ✅ Compute trash root for this folder
-    $trashRoot = "/srv/burol-storage/$userId/trash/$fileId";
+  // 🧠 Determine permission source
+  $access = getEffectivePermissionsWithSource($pdo, $fileId, $userId);
+  $source = $access['sourceType'] === 'owner' ? 'owner-delete' : ($access['sourceType'] === 'direct' ? 'direct-delete' : 'inherited-delete');
 
-    // 🧹 Soft delete folder and contents with trash root
+  if ($type === 'folder') {
+    $trashRoot = "/srv/burol-storage/$userId/trash/$fileId";
     $success = softDeleteFolderAndContents($pdo, $userId, $fileId, false, $trashRoot);
   } elseif ($type === 'file') {
-    // 🧹 Move file to trash with hierarchy preservation
     $realPath = resolveDiskPath($path);
     $relativePath = substr($path, strlen("/srv/burol-storage/$userId"));
     $trashPath = "/srv/burol-storage/$userId/trash" . $relativePath;
     $trashFullPath = resolveDiskPath($trashPath);
 
-    // ✅ Ensure trash folder exists
     ensureVirtualPathExists($trashPath);
 
-    // ✅ Move file to trash
     if (is_file($realPath)) {
       rename($realPath, $trashFullPath);
     }
 
-    // 🗑️ Soft delete in DB
     $stmt = $pdo->prepare("
       UPDATE files
       SET is_deleted = 1,
@@ -75,19 +67,19 @@ try {
       WHERE id = ?
     ");
     $success = $stmt->execute([$trashPath, $fileId]);
-
-    // 📝 Log file deletion
-    $log = $pdo->prepare("
-      INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
-      VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
-    ");
-    $log->execute([
-      $fileId,
-      $name,
-      $userId,
-      "Soft delete triggered via $source"
-    ]);
   }
+
+  // 📝 Log deletion
+  $log = $pdo->prepare("
+    INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+    VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
+  ");
+  $log->execute([
+    $fileId,
+    $name,
+    $userId,
+    "Soft delete triggered via $source"
+  ]);
 
   echo json_encode([
     'success' => $success,

@@ -459,10 +459,38 @@ function positionDropdown(menuButton, menu, containerSelector = '#file-list') {
   }
 }
 
+const permissionMap = {
+  create: ['write', 'owner'],
+  read: ['read', 'write', 'delete', 'owner'],
+  update: ['write', 'owner'],
+  delete: ['write', 'delete', 'owner'],
+  rename: ['write', 'delete', 'owner'],
+  move: ['write', 'owner'],
+  share: ['share', 'owner'],
+  revoke: ['share', 'owner'],
+  upload: ['write', 'owner'],
+  download: ['read', 'write', 'delete', 'owner'],
+  restore: ['write', 'delete', 'owner'],
+  'delete-permanent': ['delete', 'owner'],
+  emptyTrash: ['delete', 'owner'],
+};
+
+
 export function createFileRow(item, isTrashView = false, currentUserId = null) {
   const currentView = document.body.dataset.view || 'my-files';
   const currentFolder = document.body.dataset.folderId || '';
   const permissions = Array.isArray(item.permissions) ? item.permissions : [];
+
+  if (String(item.owner_id) === String(currentUserId) && !permissions.includes('owner')) {
+    permissions.push('owner');
+  }
+
+  const normalizedPermissions = permissions.map(p => p === 'view' ? 'read' : p);
+
+  function canPerform(action) {
+    const allowed = permissionMap[action] || [];
+    return allowed.some(p => normalizedPermissions.includes(p));
+  }
 
   const row = document.createElement('div');
   row.className = 'flex items-center justify-between p-2 hover:bg-emerald-50 cursor-pointer';
@@ -472,7 +500,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   row.dataset.view = currentView;
   row.dataset.name = item.name.toLowerCase();
   row.setAttribute('role', 'listitem');
-
 
   row.addEventListener('click', () => {
     if (item.type === 'folder') {
@@ -496,7 +523,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   badge.className = 'hidden min-[650px]:inline-block text-xs text-gray-600 bg-emerald-100 px-2 py-1 rounded-md';
 
   if (currentView === 'shared-with-me' && item.owner_first_name && item.owner_last_name) {
-    const permissionLabel = permissions.length > 0 ? ` (${permissions.join(', ')})` : '';
     badge.textContent = `Owner: ${item.owner_first_name} ${item.owner_last_name}`;
   } else if (currentView === 'shared-by-me') {
     const fullName = item.recipient_first_name && item.recipient_last_name
@@ -539,7 +565,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
     e.stopPropagation();
     const isHidden = menu.classList.contains('hidden');
     document.querySelectorAll('.file-list-menu').forEach(m => m.classList.add('hidden'));
-
     if (isHidden) {
       positionDropdown(menuButton, menu);
       menu.classList.remove('hidden');
@@ -549,7 +574,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   });
 
   menu.addEventListener('click', (e) => e.stopPropagation());
-
   document.addEventListener('click', (e) => {
     const isClickInside = menu.contains(e.target) || menuButton.contains(e.target);
     if (!isClickInside) menu.classList.add('hidden');
@@ -575,12 +599,7 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   };
 
   if (currentView === 'shared-by-me' && String(item.owner_id) === String(currentUserId)) {
-    const manageBtn = createMenuItem(
-      'Manage Access',
-      '/assets/img/lock-icon.png',
-      'cursor-pointer',
-      () => openManageAccessModal(item.id)
-    );
+    const manageBtn = createMenuItem('Manage Access', '/assets/img/lock-icon.png', 'cursor-pointer', () => openManageAccessModal(item.id));
     manageBtn.classList.add('manage-access-btn');
     manageBtn.dataset.fileId = item.id;
     menu.appendChild(manageBtn);
@@ -588,34 +607,29 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
 
   if (isTrashView) {
     menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
-    menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => showRestoreModal(item.id)));
-    menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => showPermanentDeleteModal(item.id)));
+    if (canPerform('restore')) {
+      menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => showRestoreModal(item.id)));
+    }
+    if (canPerform('delete-permanent')) {
+      menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => showPermanentDeleteModal(item.id)));
+    }
   } else {
-    const allowDownload = permissions.length === 1 && permissions.includes('read');
-
-    if (allowDownload) {
+    if (canPerform('download')) {
       const downloadUrl = item.type === 'folder'
         ? `/pages/staff/download-folder.php?id=${item.id}&view=${currentView}&folder=${currentFolder}`
         : `/pages/staff/download.php?id=${item.id}&view=${currentView}&folder=${currentFolder}`;
-
       menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, downloadUrl));
     }
 
-    const allowDestructive = permissions.includes('delete');
-
-    if (allowDestructive) {
+    if (canPerform('rename')) {
       menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
+    }
+
+    if (canPerform('delete')) {
       menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'cursor-pointer', () => showDeleteModal(item.id, item.name)));
     }
-    /*
-    if (permissions.includes('comment')) {
-      const commentBtn = createMenuItem('Comment', '/assets/img/comment.png', 'cursor-pointer', () => openCommentModal(item.id));
-      commentBtn.classList.add('comment-btn');
-      commentBtn.dataset.fileId = item.id;
-      menu.appendChild(commentBtn);
-    }*/
 
-    if (permissions.includes('share')) {
+    if (canPerform('share')) {
       const shareBtn = createMenuItem('Share', '/assets/img/share-icon.png', 'cursor-pointer', () => openShareModal(item.id));
       shareBtn.classList.add('share-btn');
       shareBtn.dataset.fileId = item.id;
@@ -632,6 +646,7 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
 
   return row;
 }
+
 
 export function renderItems(items) {
   const container = document.getElementById('file-list');

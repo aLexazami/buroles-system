@@ -144,7 +144,7 @@ function getFilesForView(
       $file['source_type'] = 'owner';
       $enriched[] = $file;
     } elseif ($file['owner_id'] === $userId) {
-      $file['permissions'] = ['edit', 'comment', 'share', 'delete'];
+      $file['permissions'] = ['edit', 'comment', 'share', 'delete', 'owner'];
       $file['inherited_from'] = null;
       $file['source_type'] = 'owner';
       $enriched[] = $file;
@@ -230,22 +230,6 @@ function getPermissionsForFile(array $file, string $view, int $userId, PDO $pdo)
   return array_unique($permissions);
 }
 
-function canPerformAction($userId, $fileId, $action)
-{
-  global $pdo;
-
-  // Check ownership
-  $stmt = $pdo->prepare("SELECT owner_id FROM files WHERE id = ?");
-  $stmt->execute([$fileId]);
-  $ownerId = $stmt->fetchColumn();
-  if ($ownerId == $userId) return true;
-
-  // Check direct access
-  $stmt = $pdo->prepare("SELECT COUNT(*) FROM access_control
-                         WHERE user_id = ? AND file_id = ? AND permission = ? AND is_revoked = FALSE");
-  $stmt->execute([$userId, $fileId, $action]);
-  return $stmt->fetchColumn() > 0;
-}
 
 function formatSize($bytes)
 {
@@ -365,7 +349,8 @@ function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): strin
 }
 
 // For download.php and download-folder.php
-function resolveStoragePath($storedPath) {
+function resolveStoragePath($storedPath)
+{
   $relativePath = ltrim(str_replace('/srv/burol-storage/', '', $storedPath), '/');
   $fullPath = realpath(__DIR__ . '/../srv/burol-storage/' . $relativePath);
   $storageRoot = realpath(__DIR__ . '/../srv/burol-storage');
@@ -377,7 +362,8 @@ function resolveStoragePath($storedPath) {
   return $fullPath;
 }
 
-function hasAccessToFile(PDO $pdo, string $fileId, int $userId): bool {
+function hasAccessToFile(PDO $pdo, string $fileId, int $userId): bool
+{
   // Direct or inherited access to the file or its parents
   $checked = [];
 
@@ -401,7 +387,8 @@ function hasAccessToFile(PDO $pdo, string $fileId, int $userId): bool {
 }
 
 // for rename-item.php
-function hasEditPermission(PDO $pdo, string $fileId, int $userId): bool {
+function hasEditPermission(PDO $pdo, string $fileId, int $userId): bool
+{
   $checked = [];
 
   while ($fileId && !in_array($fileId, $checked)) {
