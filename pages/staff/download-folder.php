@@ -11,8 +11,14 @@ if (!isset($_GET['id'])) {
 $folderId = $_GET['id'];
 $currentUserId = $_SESSION['user_id'] ?? null;
 
-// 📁 Fetch root folder
-$stmt = $pdo->prepare("SELECT name, owner_id, is_deleted FROM files WHERE id = ? AND type = 'folder' LIMIT 1");
+if (!$currentUserId) {
+  http_response_code(401);
+  echo "Unauthorized.";
+  exit;
+}
+
+// 📁 Fetch folder metadata
+$stmt = $pdo->prepare("SELECT name, is_deleted FROM files WHERE id = ? AND type = 'folder' LIMIT 1");
 $stmt->execute([$folderId]);
 $folder = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -22,29 +28,26 @@ if (!$folder || $folder['is_deleted']) {
   exit;
 }
 
-if ($folder['owner_id'] !== $currentUserId) {
-  http_response_code(403);
-  echo "Forbidden.";
-  exit;
-}
-
-$zip = new ZipArchive();
+// 🧠 Safe filename
+$safeName = str_replace(["\r", "\n"], '', $folder['name'] ?? 'download');
+$zipName = $safeName . '.zip';
 $tempZipPath = tempnam(sys_get_temp_dir(), 'folder_') . '.zip';
 
+$zip = new ZipArchive();
 if ($zip->open($tempZipPath, ZipArchive::CREATE) !== true) {
   http_response_code(500);
   echo "Failed to create ZIP archive.";
   exit;
 }
 
-// 🧠 Recursive fetch function
+// 🧠 Recursive bundling
 function addFolderToZip($pdo, $zip, $folderId, $relativePath = '') {
   $stmt = $pdo->prepare("SELECT id, name, path, type FROM files WHERE parent_id = ? AND is_deleted = 0");
   $stmt->execute([$folderId]);
   $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   if (empty($items)) {
-    $zip->addEmptyDir($relativePath); // preserve empty folder
+    $zip->addEmptyDir($relativePath);
     return;
   }
 
@@ -63,33 +66,16 @@ function addFolderToZip($pdo, $zip, $folderId, $relativePath = '') {
   }
 }
 
-// 🧩 Start recursive bundling
 addFolderToZip($pdo, $zip, $folderId, $folder['name']);
 $zip->close();
 
-// 🧾 Log folder download to database
-$logStmt = $pdo->prepare("
-  INSERT INTO downloads (id, file_id, user_id, view_context, folder_id, ip_address, user_agent)
-  VALUES (UUID(), ?, ?, ?, ?, ?, ?)
-");
-$logStmt->execute([
-  $folderId,
-  $currentUserId,
-  $_GET['view'] ?? null,
-  $_GET['folder'] ?? null,
-  $_SERVER['REMOTE_ADDR'] ?? null,
-  $_SERVER['HTTP_USER_AGENT'] ?? null
-]);
-
-// 🧾 Optional: Log to error_log for debugging
+// 🧾 Optional debug log
 error_log("Folder download: folder_id=$folderId, user_id=$currentUserId, filename={$folder['name']}.zip");
 
 // 📤 Serve ZIP file
 header('Content-Type: application/zip');
 header('Content-Length: ' . filesize($tempZipPath));
-header('Content-Disposition: attachment; filename="' . $folder['name'] . '.zip"');
+header('Content-Disposition: attachment; filename="' . $zipName . '"');
 readfile($tempZipPath);
-
-// 🧹 Cleanup
 unlink($tempZipPath);
 exit;
