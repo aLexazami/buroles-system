@@ -7,5 +7,6 @@ export const fileRoutes = {
   move: '/controllers/file-manager/move-item.php',
   emptyTrash: '/controllers/file-manager/empty-trash.php',
   share: '/controllers/file-manager/share.php',
-  manageAccess: '/controllers/file-manager/manage-access.php'
+  manageAccess: '/controllers/file-manager/manage-access.php',
+  comment: '/controllers/file-manager/comment.php'
 };

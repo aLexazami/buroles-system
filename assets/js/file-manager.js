@@ -155,6 +155,63 @@ export async function loadSharedByMe(folderId = null) {
   ]);
 }
 
+export async function loadUserComments() {
+  await loadComments('/controllers/file-manager/get-user-comments.php', 'comments');
+}
+
+export async function loadReceivedComments() {
+  await loadComments('/controllers/file-manager/get-received-comments.php', 'comments');
+}
+
+export function toggleActive(activeBtn, inactiveBtn) {
+  activeBtn.classList.add('font-semibold', 'text-emerald-700');
+  activeBtn.classList.remove('text-gray-600');
+  inactiveBtn.classList.remove('font-semibold', 'text-emerald-700');
+  inactiveBtn.classList.add('text-gray-600');
+}
+
+async function loadComments(endpoint, viewKey, mode = 'user') {
+  const container = document.getElementById('comment-list');
+  if (!container) return;
+
+  container.innerHTML = '<p class="text-gray-500">Loading comments...</p>';
+
+  try {
+    const res = await fetch(endpoint);
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      renderEmptyState(container, viewKey);
+      return;
+    }
+
+    container.innerHTML = '';
+    data.forEach(comment => {
+      const entry = document.createElement('div');
+      entry.className = 'border border-gray-200 rounded p-3 bg-gray-50';
+
+      const timestamp = new Date(comment.created_at).toLocaleString();
+      const fileName = comment.file_name;
+      const content = comment.content;
+      const author = comment.first_name && comment.last_name
+        ? `${comment.first_name} ${comment.last_name}`
+        : 'Unknown';
+
+      entry.innerHTML = `
+        <div class="text-emerald-700 font-semibold mb-1">${fileName}</div>
+        <div class="text-xs text-gray-500 mb-1">${timestamp}</div>
+        <div>${content}</div>
+        <div class="text-xs text-gray-400 mt-1 italic">Comment by ${author}</div>
+      `;
+
+      container.appendChild(entry);
+    });
+  } catch (err) {
+    container.innerHTML = '<p class="text-red-600">Failed to load comments.</p>';
+    console.error(err);
+  }
+}
+
 export function removeItemRow(itemId) {
   const row = document.querySelector(`[data-item-id="${itemId}"]`);
   if (!row) return;
@@ -913,31 +970,37 @@ function removeChildrenFromUI(parentId) {
 /*Extract fallback into a reusable helper*/
 export function renderEmptyState(container, view = 'default') {
   const config = {
-    default: {
-      title: 'This folder is empty',
-      subtitle: 'Upload a file or create a folder to get started.',
-      iconSrc: '/assets/img/empty-folder.png',
-      iconAlt: 'Empty folder'
-    },
-    trash: {
-      title: 'Trash is empty',
-      subtitle: 'Deleted files and folders will appear here.',
-      iconSrc: '/assets/img/empty-trash.png',
-      iconAlt: 'Empty trash'
-    },
-    'shared-with-me': {
-      title: 'No shared files yet',
-      subtitle: 'Files shared with you will appear here.',
-      iconSrc: '/assets/img/shared.png',
-      iconAlt: 'Empty shared with me'
-    },
-    'shared-by-me': {
-      title: 'You haven’t shared anything yet',
-      subtitle: 'Files you share with others will appear here.',
-      iconSrc: '/assets/img/shared.png',
-      iconAlt: 'Empty shared by me'
-    }
-  };
+  default: {
+    title: 'This folder is empty',
+    subtitle: 'Upload a file or create a folder to get started.',
+    iconSrc: '/assets/img/empty-folder.png',
+    iconAlt: 'Empty folder'
+  },
+  trash: {
+    title: 'Trash is empty',
+    subtitle: 'Deleted files and folders will appear here.',
+    iconSrc: '/assets/img/empty-trash.png',
+    iconAlt: 'Empty trash'
+  },
+  'shared-with-me': {
+    title: 'No shared files yet',
+    subtitle: 'Files shared with you will appear here.',
+    iconSrc: '/assets/img/shared.png',
+    iconAlt: 'Empty shared with me'
+  },
+  'shared-by-me': {
+    title: 'You haven’t shared anything yet',
+    subtitle: 'Files you share with others will appear here.',
+    iconSrc: '/assets/img/shared.png',
+    iconAlt: 'Empty shared by me'
+  },
+  comments: {
+    title: 'No comments yet',
+    subtitle: 'Comments you make will appear here.',
+    iconSrc: '/assets/img/no-comment.png',
+    iconAlt: 'Empty comments'
+  }
+};
 
   const { title, subtitle, iconSrc, iconAlt } = config[view] || config.default;
 
