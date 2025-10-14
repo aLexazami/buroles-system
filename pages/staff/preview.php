@@ -17,17 +17,27 @@ $folderId = $_GET['folder'] ?? null;
 
 // 📄 Fetch file metadata
 $stmt = $pdo->prepare("
-  SELECT path, mime_type, is_deleted
+  SELECT path, mime_type, is_deleted, owner_id, deleted_by_user_id
   FROM files
   WHERE id = ? LIMIT 1
 ");
 $stmt->execute([$fileId]);
 $file = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$file || $file['is_deleted']) {
+// ❌ Block access if file is deleted and view is not 'trash'
+if (!$file || ($file['is_deleted'] && $view !== 'trash')) {
   http_response_code(404);
   echo "File not found.";
   exit;
+}
+
+// ✅ In trash view, allow access only if user is owner or deleter
+if ($file['is_deleted'] && $view === 'trash') {
+  if ($file['owner_id'] !== $currentUserId && $file['deleted_by_user_id'] !== $currentUserId) {
+    http_response_code(403);
+    echo "You don't have permission to preview this trashed file.";
+    exit;
+  }
 }
 
 // 🧠 Resolve disk path
