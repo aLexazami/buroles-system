@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php'; // softDeleteFolderAndContents()
-require_once __DIR__ . '/../../helpers/path.php'; // resolveDiskPath, ensureVirtualPathExists
+require_once __DIR__ . '/../../helpers/path.php'; // resolveDiskPath, ensureVirtualPathExists, shouldFlattenTrashPath()
 require_once __DIR__ . '/../../helpers/access-utils.php'; // canPerformAction(), getEffectivePermissionsWithSource()
 
 header('Content-Type: application/json');
@@ -48,28 +48,44 @@ try {
     $success = softDeleteFolderAndContents($pdo, $userId, $fileId, false, $trashRoot, $userId);
   } elseif ($type === 'file') {
     $realPath = resolveDiskPath($path);
-    $relativePath = substr($path, strlen("/srv/burol-storage/$userId"));
-    $trashPath = "/srv/burol-storage/$userId/trash" . $relativePath;
-    $trashFullPath = resolveDiskPath($trashPath);
 
+    // 🧠 Use helper to decide if we flatten
+    $flatten = shouldFlattenTrashPath($pdo, $fileId);
+
+    $trashPath = $flatten
+      ? "/srv/burol-storage/$userId/trash/$fileId"
+      : "/srv/burol-storage/$userId/trash" . substr($path, strlen("/srv/burol-storage/$userId"));
+
+    $trashFullPath = resolveDiskPath($trashPath);
     ensureVirtualPathExists($trashPath);
 
     if (is_file($realPath)) {
       rename($realPath, $trashFullPath);
     }
 
-    // ✅ Soft-delete file and track deletion actor
     $stmt = $pdo->prepare("
-      UPDATE files
-      SET is_deleted = 1,
-          original_path = path,
-          path = ?,
-          deleted_by_parent = 0,
-          deleted_by_user_id = ?,
-          updated_at = NOW()
-      WHERE id = ?
-    ");
+    UPDATE files
+    SET is_deleted = 1,
+        original_path = path,
+        path = ?,
+        deleted_by_parent = 0,
+        deleted_by_user_id = ?,
+        updated_at = NOW()
+    WHERE id = ?
+  ");
     $success = $stmt->execute([$trashPath, $userId, $fileId]);
+
+    // 📝 Log deletion
+    $log = $pdo->prepare("
+    INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
+    VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
+  ");
+    $log->execute([
+      $fileId,
+      $name,
+      $userId,
+      "Soft delete triggered via $source"
+    ]);
   }
 
   // 📝 Log deletion

@@ -57,3 +57,25 @@ function deleteDirectory(string $path): void {
   @rmdir($path);
 }
 
+function shouldFlattenTrashPath(PDO $pdo, string $fileId): bool {
+  // Check if file has a parent
+  $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
+  $stmt->execute([$fileId]);
+  $parentId = $stmt->fetchColumn();
+
+  if (!$parentId) return true; // No parent = root-level file
+
+  // Check if parent is being deleted
+  $stmt = $pdo->prepare("SELECT is_deleted FROM files WHERE id = ?");
+  $stmt->execute([$parentId]);
+  $parentIsDeleted = (int) $stmt->fetchColumn() === 1;
+
+  if ($parentIsDeleted) return false; // Nested deletion = preserve hierarchy
+
+  // Check if file has children (shouldn’t happen for files, but safe to check)
+  $stmt = $pdo->prepare("SELECT COUNT(*) FROM files WHERE parent_id = ?");
+  $stmt->execute([$fileId]);
+  $hasChildren = (int) $stmt->fetchColumn() > 0;
+
+  return !$hasChildren;
+}
