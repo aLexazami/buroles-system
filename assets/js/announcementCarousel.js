@@ -38,6 +38,7 @@ export function setupAnnouncementPagination() {
   const list = document.querySelector('#announcement-list'); // where cards are injected
   const pagination = document.querySelector('#pagination-container');
   const fallback = document.getElementById('announcement-fallback');
+  fallback.classList.remove('hidden');
 
   if (!container || !list || !pagination || !fallback) return;
 
