@@ -1,5 +1,5 @@
 // file-manager.js
-import { initCommentButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal, openCommentModal, openShareModal, initShareHandler, openManageAccessModal } from './modal.js';
+import { initCommentButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal, openCommentModal, openShareModal, initShareHandler, openManageAccessModal, showDeleteCommentModal } from './modal.js';
 import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
@@ -170,6 +170,8 @@ export function toggleActive(activeBtn, inactiveBtn) {
   inactiveBtn.classList.add('text-gray-600');
 }
 
+let commentToDeleteElement = null;
+
 async function loadComments(endpoint, viewKey, mode = 'user') {
   const container = document.getElementById('comment-list');
   if (!container) return;
@@ -199,6 +201,7 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
 
       const entry = document.createElement('a');
       entry.href = link;
+      entry.dataset.commentId = comment.comment_id; // 🆕 for DOM tracking
       entry.className = `
         block border border-gray-200 rounded p-3 bg-gray-50 hover:bg-emerald-50
         transition-all duration-200 cursor-pointer
@@ -215,7 +218,7 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
       const icon = `<img src="${iconPath}" class="w-4 h-4 mr-1" />`;
 
       const deleteBtn = isOwned
-        ? `<button data-id="${comment.file_id}" data-name="${fileName}" class="delete-comment-btn text-red-500 text-xs ml-2 hover:underline">Delete</button>`
+        ? `<button data-id="${comment.comment_id}" class="delete-comment-btn text-red-500 text-xs ml-2 hover:underline">Delete</button>`
         : '';
 
       entry.innerHTML = `
@@ -240,13 +243,13 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
       container.appendChild(entry);
     });
 
-    // Attach modal trigger to delete buttons
+    // 🗑️ Attach comment delete modal trigger
     container.querySelectorAll('.delete-comment-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const fileId = btn.getAttribute('data-id');
-        const fileName = btn.getAttribute('data-name');
-        showDeleteModal(fileId, fileName);
+        const commentId = btn.getAttribute('data-id');
+        const entry = btn.closest('a');
+        showDeleteCommentModal(commentId, entry);
       });
     });
 
@@ -255,6 +258,7 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
     console.error(err);
   }
 }
+
 
 export function removeItemRow(itemId) {
   const row = document.querySelector(`[data-item-id="${itemId}"]`);

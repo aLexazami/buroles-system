@@ -8,5 +8,6 @@ export const fileRoutes = {
   emptyTrash: '/controllers/file-manager/empty-trash.php',
   share: '/controllers/file-manager/share.php',
   manageAccess: '/controllers/file-manager/manage-access.php',
-  comment: '/controllers/file-manager/comment.php'
+  comment: '/controllers/file-manager/comment.php',
+  deleteComment: '/controllers/file-manager/delete-comment.php'
 };
