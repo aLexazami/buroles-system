@@ -160,36 +160,3 @@ function isOwner(PDO $pdo, string $fileId, int $userId): bool {
   return $stmt->fetchColumn() > 0;
 }
 
-// Dynamic REsolver Access in sharing to grant access also the  recursively nested folder and files
-function hasAccess($pdo, $fileId, $userId) {
-  // Step 1: Check direct access
-  $stmt = $pdo->prepare("
-    SELECT permission FROM access_control
-    WHERE file_id = ? AND user_id = ? AND is_revoked = 0
-    LIMIT 1
-  ");
-  $stmt->execute([$fileId, $userId]);
-  if ($stmt->fetchColumn()) return true;
-
-  // Step 2: Walk up the parent chain
-  $currentId = $fileId;
-  while ($currentId) {
-    $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
-    $stmt->execute([$currentId]);
-    $parentId = $stmt->fetchColumn();
-
-    if (!$parentId) break;
-
-    $stmt = $pdo->prepare("
-      SELECT permission FROM access_control
-      WHERE file_id = ? AND user_id = ? AND is_revoked = 0
-      LIMIT 1
-    ");
-    $stmt->execute([$parentId, $userId]);
-    if ($stmt->fetchColumn()) return true;
-
-    $currentId = $parentId;
-  }
-
-  return false;
-}
