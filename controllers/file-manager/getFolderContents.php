@@ -24,10 +24,13 @@ $sortBy   = $_GET['sort_by']  ?? 'updated_at';
 $sortDir  = $_GET['sort_dir'] ?? 'DESC';
 
 // 🧼 Trash view logic
+// 🧼 Trash view logic
 if ($view === 'trash') {
+  $viewerId = $userId; // may be owner or deleter
+
   if ($folderId) {
-    $check = $pdo->prepare("SELECT is_deleted FROM files WHERE id = ? AND owner_id = ?");
-    $check->execute([$folderId, $userId]);
+    $check = $pdo->prepare("SELECT is_deleted FROM files WHERE id = ? AND (owner_id = ? OR deleted_by_user_id = ?)");
+    $check->execute([$folderId, $viewerId, $viewerId]);
     $folderIsDeleted = (int) $check->fetchColumn() === 1;
 
     if ($folderIsDeleted) {
@@ -38,7 +41,7 @@ if ($view === 'trash') {
       exit;
     }
 
-    $files = getFilesForView($pdo, $userId, $view, $folderId, $sortBy, $sortDir);
+    $files = getFilesForView($pdo, $viewerId, $view, $folderId, $sortBy, $sortDir);
     echo json_encode([
       'items' => $files,
       'folder_is_deleted' => false
@@ -46,7 +49,7 @@ if ($view === 'trash') {
     exit;
   }
 
-  $standaloneTrash = getFilesForView($pdo, $userId, 'trash', null, $sortBy, $sortDir);
+  $standaloneTrash = getFilesForView($pdo, $viewerId, 'trash', null, $sortBy, $sortDir);
   foreach ($standaloneTrash as &$item) {
     $item['restored_to_fallback'] = ($item['original_path'] && strpos($item['path'], $item['id']) !== false);
 
@@ -64,15 +67,15 @@ if ($view === 'trash') {
 
     if ($item['type'] === 'folder') {
       $item['depth'] = 0;
-      $item['children'] = getTrashedChildren($pdo, $item['id'], $userId, 1);
+      $item['children'] = getTrashedChildren($pdo, $item['id'], $viewerId, 1);
     }
   }
 
-  $trashedRoots = getTrashedRootFolders($pdo, $userId);
+  $trashedRoots = getTrashedRootFolders($pdo, $viewerId);
   foreach ($trashedRoots as &$folder) {
     $folder['depth'] = 0;
     if ($folder['type'] === 'folder') {
-      $folder['children'] = getTrashedChildren($pdo, $folder['id'], $userId, 1);
+      $folder['children'] = getTrashedChildren($pdo, $folder['id'], $viewerId, 1);
     }
   }
 

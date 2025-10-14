@@ -51,7 +51,6 @@ function getFilesForView(
       }
     }
 
-    // ✅ Deduplicate by file ID
     $seen = [];
     $deduped = array_filter($visible, function ($item) use (&$seen) {
       if (in_array($item['id'], $seen)) return false;
@@ -69,11 +68,16 @@ function getFilesForView(
   $order = "ORDER BY f.$sortBy $sortDir";
 
   if ($view === 'trash') {
-    $joins = 'JOIN users u ON f.owner_id = u.id';
-    $where[] = 'f.owner_id = :trashOwnerId';
+    $joins = '
+      JOIN users u ON f.owner_id = u.id
+      LEFT JOIN users du ON f.deleted_by_user_id = du.id
+    ';
+    $select .= ', du.first_name AS deleted_by_first_name, du.last_name AS deleted_by_last_name';
+    $where[] = '(f.owner_id = :trashOwnerId OR f.deleted_by_user_id = :trashActorId)';
     $where[] = 'f.is_deleted = TRUE';
     $where[] = 'f.deleted_by_parent = 0';
     $params[':trashOwnerId'] = $userId;
+    $params[':trashActorId'] = $userId;
 
     if ($folderId && isValidUuid($folderId)) {
       $where[] = 'f.parent_id = :folderId';
@@ -136,16 +140,28 @@ function getFilesForView(
   $enriched = [];
   foreach ($files as &$file) {
     if ($view === 'shared-by-me') {
+      $file['deleted_by_first_name'] = $file['deleted_by_first_name'] ?? null;
+      $file['deleted_by_last_name'] = $file['deleted_by_last_name'] ?? null;
       $file['permissions'] = ['edit', 'comment', 'share', 'delete'];
       $file['inherited_from'] = null;
       $file['source_type'] = 'owner';
     } elseif ($file['owner_id'] === $userId) {
+      $file['deleted_by_first_name'] = $file['deleted_by_first_name'] ?? null;
+      $file['deleted_by_last_name'] = $file['deleted_by_last_name'] ?? null;
       $file['permissions'] = ['edit', 'comment', 'share', 'delete', 'owner'];
       $file['inherited_from'] = null;
       $file['source_type'] = 'owner';
+    } elseif ($view === 'trash' && $file['deleted_by_user_id'] === $userId) {
+      $file['deleted_by_first_name'] = $file['deleted_by_first_name'] ?? null;
+       $file['deleted_by_last_name'] = $file['deleted_by_last_name'] ?? null;
+      $file['permissions'] = ['restore', 'delete-permanent'];
+      $file['inherited_from'] = null;
+      $file['source_type'] = 'recipient';
     } else {
       $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
       if (!empty($access['permissions'])) {
+        $file['deleted_by_first_name'] = $file['deleted_by_first_name'] ?? null;
+        $file['deleted_by_last_name'] = $file['deleted_by_last_name'] ?? null;
         $file['permissions'] = $access['permissions'];
         $file['inherited_from'] = $access['inheritedFrom'];
         $file['source_type'] = $access['sourceType'];
@@ -178,7 +194,6 @@ function getFilesForView(
     }
   }
 
-  // ✅ Final deduplication
   $seen = [];
   $deduped = array_filter($enriched, function ($file) use (&$seen) {
     if (in_array($file['id'], $seen)) return false;
@@ -259,34 +274,42 @@ function getTrashedChildren(
 ): array {
   if ($depth > $maxDepth) return [];
 
-  // 🧠 Build dynamic query for root or nested folders
   $query = "
-    SELECT id, name, type, path, size, mime_type, updated_at, parent_id
-    FROM files
-    WHERE " . ($folderId ? "parent_id = ?" : "parent_id IS NULL") . "
-      AND is_deleted = TRUE
-      AND deleted_by_parent = TRUE
-      AND owner_id = ?
-    ORDER BY $sortBy $sortDir
+    SELECT f.*, 
+           u.first_name AS owner_first_name, u.last_name AS owner_last_name,
+           du.first_name AS deleted_by_first_name, du.last_name AS deleted_by_last_name,
+           r.first_name AS recipient_first_name, r.last_name AS recipient_last_name, r.email AS recipient_email
+    FROM files f
+    LEFT JOIN users u ON f.owner_id = u.id
+    LEFT JOIN users du ON f.deleted_by_user_id = du.id
+    LEFT JOIN users r ON f.deleted_by_user_id = r.id
+    WHERE " . ($folderId ? "f.parent_id = ?" : "f.parent_id IS NULL") . "
+      AND f.is_deleted = TRUE
+      AND f.deleted_by_parent = TRUE
+      AND (f.owner_id = ? OR f.deleted_by_user_id = ?)
+    ORDER BY f.$sortBy $sortDir
   ";
 
   $stmt = $pdo->prepare($query);
-  $folderId ? $stmt->execute([$folderId, $userId]) : $stmt->execute([$userId]);
+  $folderId
+    ? $stmt->execute([$folderId, $userId, $userId])
+    : $stmt->execute([$userId, $userId]);
+
   $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   foreach ($items as &$item) {
-    // 🧩 Inject restore preview info
-    $item['restore_preview'] = [
-      'path' => $item['path'],
-      'size' => $item['size'],
-      'mime_type' => $item['mime_type'],
-      'updated_at' => $item['updated_at']
-    ];
-
-    // 🧩 Inject depth for UI rendering (optional)
     $item['depth'] = $depth;
 
-    // 🌳 Recursively fetch children if folder
+    $item['permissions'] = ['restore', 'delete-permanent'];
+    $item['source_type'] = ($item['deleted_by_user_id'] === $userId) ? 'recipient' : 'owner';
+    $item['inherited_from'] = null;
+
+    if (!empty($item['parent_id'])) {
+      $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
+      $stmtParent->execute([$item['parent_id']]);
+      $item['parent_name'] = $stmtParent->fetchColumn();
+    }
+
     if ($item['type'] === 'folder') {
       $item['children'] = getTrashedChildren($pdo, $item['id'], $userId, $depth + 1, $maxDepth, $sortBy, $sortDir);
     }
@@ -294,7 +317,6 @@ function getTrashedChildren(
 
   return $items;
 }
-
 /******* BREADCRUMB TRAIL ******** */
 function getFolderTrail(PDO $pdo, string $folderId, int $userId): array
 {
@@ -314,19 +336,46 @@ function getFolderTrail(PDO $pdo, string $folderId, int $userId): array
   return $trail;
 }
 
-function getTrashedRootFolders(PDO $pdo, int $userId): array
-{
+function getTrashedRootFolders(PDO $pdo, int $userId): array {
   $stmt = $pdo->prepare("
-    SELECT * FROM files
-    WHERE is_deleted = TRUE
-      AND owner_id = ?
-      AND (parent_id IS NULL OR parent_id NOT IN (
-        SELECT id FROM files WHERE is_deleted = TRUE AND owner_id = ?
+    SELECT f.*, 
+           u.first_name AS owner_first_name, u.last_name AS owner_last_name,
+           du.first_name AS deleted_by_first_name, du.last_name AS deleted_by_last_name,
+           r.first_name AS recipient_first_name, r.last_name AS recipient_last_name, r.email AS recipient_email
+    FROM files f
+    LEFT JOIN users u ON f.owner_id = u.id
+    LEFT JOIN users du ON f.deleted_by_user_id = du.id
+    LEFT JOIN users r ON f.deleted_by_user_id = r.id
+    WHERE f.is_deleted = TRUE
+      AND (f.owner_id = ? OR f.deleted_by_user_id = ?)
+      AND (f.parent_id IS NULL OR f.parent_id NOT IN (
+        SELECT id FROM files WHERE is_deleted = TRUE AND (owner_id = ? OR deleted_by_user_id = ?)
       ))
-    ORDER BY updated_at DESC
+    ORDER BY f.updated_at DESC
   ");
-  $stmt->execute([$userId, $userId]);
-  return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt->execute([$userId, $userId, $userId, $userId]);
+
+  $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  foreach ($items as &$item) {
+    $item['depth'] = 0;
+
+    $item['permissions'] = ['restore', 'delete-permanent'];
+    $item['source_type'] = ($item['deleted_by_user_id'] === $userId) ? 'recipient' : 'owner';
+    $item['inherited_from'] = null;
+
+    if (!empty($item['parent_id'])) {
+      $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
+      $stmtParent->execute([$item['parent_id']]);
+      $item['parent_name'] = $stmtParent->fetchColumn();
+    }
+
+    if ($item['type'] === 'folder') {
+      $item['children'] = getTrashedChildren($pdo, $item['id'], $userId, 1);
+    }
+  }
+
+  return $items;
 }
 
 function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): string

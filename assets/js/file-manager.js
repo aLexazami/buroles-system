@@ -477,7 +477,7 @@ const permissionMap = {
 };
 
 
-export function createFileRow(item, isTrashView = false, currentUserId = null) {
+export function createFileRow(item, isTrashView = false, currentUserId = null, deletionBadge = '') {
   const currentView = document.body.dataset.view || 'my-files';
   const currentFolder = document.body.dataset.folderId || '';
   const permissions = Array.isArray(item.permissions) ? item.permissions : [];
@@ -520,30 +520,10 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   label.textContent = item.name;
   label.className = 'text-gray-800 font-medium truncate';
 
-  const badge = document.createElement('span');
-  badge.className = 'hidden min-[650px]:inline-block text-xs text-gray-600 bg-emerald-100 px-2 py-1 rounded-md';
-
-  if (currentView === 'shared-with-me' && item.owner_first_name && item.owner_last_name) {
-    badge.textContent = `Owner: ${item.owner_first_name} ${item.owner_last_name}`;
-  } else if (currentView === 'shared-by-me') {
-  if (item.source_type === 'inherited' && item.inherited_from) {
-    badge.textContent = `Access inherited from parent folder`;
-  } else if (item.recipient_first_name || item.recipient_email || item.shared_with) {
-    const fullName = item.recipient_first_name && item.recipient_last_name
-      ? `${item.recipient_first_name} ${item.recipient_last_name}`
-      : item.recipient_email || `User ID ${item.shared_with}`;
-    badge.textContent = `Shared with: ${fullName}${item.permission ? ` (${item.permission})` : ''}`;
-  } else {
-    badge.textContent = 'Shared item';
-  }
-} else if (isTrashView && item.original_parent_name) {
-    badge.textContent = `Removed From: ${item.original_parent_name}`;
-  }
-
   const labelStack = document.createElement('div');
   labelStack.className = 'flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2';
   labelStack.appendChild(label);
-  if (badge.textContent) labelStack.appendChild(badge);
+  // 🚫 Badge intentionally omitted
 
   const labelWrapper = document.createElement('div');
   labelWrapper.className = 'flex items-center gap-3 min-w-0';
@@ -606,11 +586,11 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   };
 
   if (canPerform('manageAccess')) {
-  const manageBtn = createMenuItem('Manage Access', '/assets/img/lock-icon.png', 'cursor-pointer', () => openManageAccessModal(item.id));
-  manageBtn.classList.add('manage-access-btn');
-  manageBtn.dataset.fileId = item.id;
-  menu.appendChild(manageBtn);
-}
+    const manageBtn = createMenuItem('Manage Access', '/assets/img/lock-icon.png', 'cursor-pointer', () => openManageAccessModal(item.id));
+    manageBtn.classList.add('manage-access-btn');
+    manageBtn.dataset.fileId = item.id;
+    menu.appendChild(manageBtn);
+  }
 
   if (isTrashView) {
     menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
@@ -699,7 +679,19 @@ export function renderItems(items) {
   });
 
   sortedItems.forEach(item => {
-    const row = createFileRow(item, isTrashView, currentUserId);
+    let badge = '';
+
+if (isTrashView && item.is_deleted) {
+  if (item.deleted_by_user_id === currentUserId) {
+    badge = 'Deleted by you';
+  } else if (item.deleted_by_user_id && item.deleted_by_user_id !== item.owner_id) {
+    badge = 'Deleted by recipient';
+  } else {
+    badge = 'Deleted by owner';
+  }
+}
+
+    const row = createFileRow(item, isTrashView, currentUserId, badge);
     container.appendChild(row);
   });
 }
