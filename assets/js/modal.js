@@ -777,6 +777,59 @@ export function setupPermanentDeleteModal() {
   }
 }
 
+// Delete Comment in File Manager
+let commentToDeleteElement = null; // 🧠 Track the DOM element to remove
+
+export function showDeleteCommentModal(commentId, domElement = null) {
+  const input = document.getElementById('delete-comment-id');
+  input.value = commentId;
+  commentToDeleteElement = domElement; // ✅ Store reference
+  toggleModal('deleteCommentModal', true);
+}
+
+export function setupDeleteCommentModal() {
+  const cancelBtn = document.getElementById('cancelCommentDelete');
+  const confirmBtn = document.getElementById('confirmCommentDeleteBtn');
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('deleteCommentModal', false);
+    });
+  }
+
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      const commentId = document.getElementById('delete-comment-id')?.value;
+      toggleModal('deleteCommentModal', false);
+
+      try {
+        const res = await fetch(fileRoutes.deleteComment, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ comment_id: commentId })
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          renderFlash('success', result.message || 'Comment deleted successfully');
+
+          if (commentToDeleteElement) {
+            commentToDeleteElement.remove(); // ✅ Remove from UI
+            commentToDeleteElement = null;
+          }
+        } else {
+          renderFlash('error', result.message || 'Failed to delete comment');
+        }
+      } catch (err) {
+        console.error('Comment delete failed:', err);
+        renderFlash('error', err.message || 'An error occurred while deleting the comment.');
+      }
+    });
+  }
+}
+
+
+
 // Empty Trash All Items in Filde Manager
 export function setupEmptyTrashModal() {
   const emptyTrashBtn = document.getElementById('empty-trash-btn');
@@ -1122,7 +1175,7 @@ function renderAccessList(users = []) {
       e.stopPropagation();
 
       const isOpen = !dropdown.classList.contains('hidden') &&
-                     dropdown.dataset.userId === toggleBtn.dataset.userId;
+        dropdown.dataset.userId === toggleBtn.dataset.userId;
 
       if (isOpen) {
         dropdown.classList.remove('scale-100', 'opacity-100');

@@ -10,14 +10,13 @@ if (!$userId) {
 }
 
 $stmt = $pdo->prepare("
-  SELECT c.content, c.created_at,
-         f.name AS file_name, f.id AS file_id, f.type,  f.mime_type, f.parent_id, f.owner_id,
-         u.first_name, u.last_name, u.avatar_path
-  FROM comments c
-  JOIN files f ON c.file_id = f.id
-  JOIN users u ON c.user_id = u.id
-  WHERE f.owner_id = ?
-  ORDER BY c.created_at DESC
+  SELECT c.id AS comment_id, c.file_id, c.content, c.created_at, u.first_name, u.last_name, u.avatar_path, f.name AS file_name, f.type, f.owner_id
+FROM comments c
+JOIN users u ON c.user_id = u.id
+JOIN files f ON c.file_id = f.id
+WHERE c.user_id = :userId
+ORDER BY c.created_at DESC
+
 ");
 $stmt->execute([$userId]);
 $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
