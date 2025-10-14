@@ -473,6 +473,7 @@ const permissionMap = {
   restore: ['write', 'delete', 'owner'],
   'delete-permanent': ['delete', 'owner'],
   emptyTrash: ['delete', 'owner'],
+  manageAccess: ['share', 'owner'],
 };
 
 
@@ -525,11 +526,17 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   if (currentView === 'shared-with-me' && item.owner_first_name && item.owner_last_name) {
     badge.textContent = `Owner: ${item.owner_first_name} ${item.owner_last_name}`;
   } else if (currentView === 'shared-by-me') {
+  if (item.source_type === 'inherited' && item.inherited_from) {
+    badge.textContent = `Access inherited from parent folder`;
+  } else if (item.recipient_first_name || item.recipient_email || item.shared_with) {
     const fullName = item.recipient_first_name && item.recipient_last_name
       ? `${item.recipient_first_name} ${item.recipient_last_name}`
       : item.recipient_email || `User ID ${item.shared_with}`;
-    badge.textContent = `Shared with: ${fullName} (${item.permission})`;
-  } else if (isTrashView && item.original_parent_name) {
+    badge.textContent = `Shared with: ${fullName}${item.permission ? ` (${item.permission})` : ''}`;
+  } else {
+    badge.textContent = 'Shared item';
+  }
+} else if (isTrashView && item.original_parent_name) {
     badge.textContent = `Removed From: ${item.original_parent_name}`;
   }
 
@@ -598,12 +605,12 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
     return wrapper;
   };
 
-  if (currentView === 'shared-by-me' && String(item.owner_id) === String(currentUserId)) {
-    const manageBtn = createMenuItem('Manage Access', '/assets/img/lock-icon.png', 'cursor-pointer', () => openManageAccessModal(item.id));
-    manageBtn.classList.add('manage-access-btn');
-    manageBtn.dataset.fileId = item.id;
-    menu.appendChild(manageBtn);
-  }
+  if (canPerform('manageAccess')) {
+  const manageBtn = createMenuItem('Manage Access', '/assets/img/lock-icon.png', 'cursor-pointer', () => openManageAccessModal(item.id));
+  manageBtn.classList.add('manage-access-btn');
+  manageBtn.dataset.fileId = item.id;
+  menu.appendChild(manageBtn);
+}
 
   if (isTrashView) {
     menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));

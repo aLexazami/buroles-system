@@ -36,10 +36,24 @@ if (!$fileId) {
     exit;
 }
 
-// ✅ Log intent
-error_log("🔧 Access update requested by user_id: $userId for file_id: $fileId");
-error_log("🔄 Updates: " . json_encode($updates));
-error_log("➕ New share: " . json_encode($newShare));
+// 🔍 Check if file has direct access
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM access_control WHERE file_id = ? AND is_revoked = FALSE");
+$stmt->execute([$fileId]);
+$hasDirectAccess = $stmt->fetchColumn() > 0;
+
+// 🔁 If no direct access, check for parent
+if (!$hasDirectAccess) {
+    $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
+    $stmt->execute([$fileId]);
+    $parentId = $stmt->fetchColumn();
+
+    if ($parentId) {
+        error_log("⚠️ Attempted access update on inherited file_id: $fileId (parent: $parentId)");
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Access is inherited from parent folder and cannot be modified here.']);
+        exit;
+    }
+}
 
 // ✅ Perform update
 updateAccess($pdo, $fileId, $updates, $newShare);

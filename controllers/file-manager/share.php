@@ -56,6 +56,15 @@ if (!$recipient || $recipient['role_id'] !== STAFF_ROLE_ID) {
 
 $recipientId = $recipient['id'];
 
+// 🔒 Prevent resharing to the owner
+$stmt = $pdo->prepare("SELECT owner_id FROM files WHERE id = ?");
+$stmt->execute([$fileId]);
+$ownerId = $stmt->fetchColumn();
+
+if ($recipientId == $ownerId) {
+  respond(false, 'You cannot reshare this file to its original owner', '&error=owner-reshare');
+}
+
 // 🧠 Prevent duplicate share
 $stmt = $pdo->prepare("
   SELECT COUNT(*) FROM access_control

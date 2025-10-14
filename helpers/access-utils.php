@@ -145,23 +145,45 @@ function getEffectivePermissions(PDO $pdo, string $fileId, int $userId): array {
 }
 
 function getAccessListForItem(PDO $pdo, string $fileId): array {
+  // 🔁 Check if access is inherited
+  $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
+  $stmt->execute([$fileId]);
+  $parentId = $stmt->fetchColumn();
+
+  // 🔍 Check if parent has access rows
+  $accessStmt = $pdo->prepare("SELECT COUNT(*) FROM access_control WHERE file_id = ? AND is_revoked = FALSE");
+  $accessStmt->execute([$fileId]);
+  $hasDirectAccess = $accessStmt->fetchColumn() > 0;
+
+  // 🔁 If no direct access, walk up to inherited parent
+  $targetId = $hasDirectAccess ? $fileId : $parentId;
+
+  if (!$targetId) return [];
+
   $stmt = $pdo->prepare("
     SELECT a.user_id, u.first_name, u.middle_name, u.last_name, u.email, u.avatar_path, a.permission
     FROM access_control a
     JOIN users u ON u.id = a.user_id
     WHERE a.file_id = ? AND a.is_revoked = FALSE
   ");
-  $stmt->execute([$fileId]);
+  $stmt->execute([$targetId]);
 
   $results = [];
+  $seen = [];
+
   while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $key = $row['user_id'] . '-' . strtolower($row['permission']);
+    if (in_array($key, $seen)) continue;
+    $seen[] = $key;
+
     $fullName = trim("{$row['first_name']} {$row['middle_name']} {$row['last_name']}");
     $results[] = [
       'user_id'    => $row['user_id'],
       'name'       => $fullName,
       'email'      => $row['email'],
       'avatar'     => $row['avatar_path'] ?: '/assets/img/default-avatar.png',
-      'permission' => strtolower($row['permission'])
+      'permission' => strtolower($row['permission']),
+      'inherited'  => $targetId !== $fileId
     ];
   }
 
