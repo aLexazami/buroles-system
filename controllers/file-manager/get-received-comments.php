@@ -10,7 +10,9 @@ if (!$userId) {
 }
 
 $stmt = $pdo->prepare("
-  SELECT c.content, c.created_at, f.name AS file_name, f.id AS file_id, u.first_name, u.last_name
+  SELECT c.content, c.created_at,
+         f.name AS file_name, f.id AS file_id, f.type,  f.mime_type, f.parent_id, f.owner_id,
+         u.first_name, u.last_name, u.avatar_path
   FROM comments c
   JOIN files f ON c.file_id = f.id
   JOIN users u ON c.user_id = u.id

@@ -187,8 +187,22 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
 
     container.innerHTML = '';
     data.forEach(comment => {
-      const entry = document.createElement('div');
-      entry.className = 'border border-gray-200 rounded p-3 bg-gray-50';
+      const isFolder = comment.type === 'folder';
+      const isOwned = comment.owner_id == CURRENT_USER_ID;
+
+      const folderId = isFolder ? comment.file_id : comment.parent_id;
+      const highlightId = isFolder ? null : comment.file_id;
+
+      const view = isOwned ? 'my-files' : 'shared-with-me';
+      const link = `/pages/staff/file-manager.php?view=${view}&folder=${folderId}` +
+                   (highlightId ? `&highlight=${highlightId}` : '');
+
+      const entry = document.createElement('a');
+      entry.href = link;
+      entry.className = `
+        block border border-gray-200 rounded p-3 bg-gray-50 hover:bg-emerald-50
+        transition-all duration-200 cursor-pointer
+      `;
 
       const timestamp = new Date(comment.created_at).toLocaleString();
       const fileName = comment.file_name;
@@ -196,12 +210,24 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
       const author = comment.first_name && comment.last_name
         ? `${comment.first_name} ${comment.last_name}`
         : 'Unknown';
+      const avatar = comment.avatar_path || '/assets/img/default-avatar.png';
+      const iconPath = getItemIcon(comment);
+const icon = `<img src="${iconPath}" class="w-4 h-4 mr-1" />`;
 
       entry.innerHTML = `
-        <div class="text-emerald-700 font-semibold mb-1">${fileName}</div>
-        <div class="text-xs text-gray-500 mb-1">${timestamp}</div>
-        <div>${content}</div>
-        <div class="text-xs text-gray-400 mt-1 italic">Comment by ${author}</div>
+        <div class="flex items-start gap-3">
+          <img src="${avatar}" alt="Avatar of ${author}"
+               class="w-8 h-8 rounded-full object-cover mt-1" />
+
+          <div class="flex-1">
+            <div class="text-emerald-700 font-semibold mb-1 flex items-center">
+              ${icon}${fileName}
+            </div>
+            <div class="text-xs text-gray-500 mb-1">${timestamp}</div>
+            <div>${content}</div>
+            <div class="text-xs text-gray-400 mt-1 italic">Comment by ${author}</div>
+          </div>
+        </div>
       `;
 
       container.appendChild(entry);
@@ -211,6 +237,7 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
     console.error(err);
   }
 }
+
 
 export function removeItemRow(itemId) {
   const row = document.querySelector(`[data-item-id="${itemId}"]`);

@@ -12,7 +12,9 @@ $folderId = $_GET['folder'] ?? null;
 
 renderHead('Teacher');
 ?>
-
+<script>
+  const CURRENT_USER_ID = <?= json_encode($userId) ?>;
+</script>
 <body data-folder-id="<?= htmlspecialchars($folderId ?? '') ?>" data-view="<?= htmlspecialchars($view) ?>" data-user-id="<?= htmlspecialchars($userId) ?>"
   class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
