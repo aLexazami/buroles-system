@@ -39,6 +39,10 @@ renderHead('Teacher');
           <a href="/pages/staff/file-manager.php?view=shared-with-me" class="<?= $view === 'shared-with-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared with Me</a>
           <a href="/pages/staff/file-manager.php?view=shared-by-me" class="<?= $view === 'shared-by-me' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Shared by Me</a>
           <a href="/pages/staff/file-manager.php?view=trash" class="<?= $view === 'trash' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">Trash</a>
+          <a href="/pages/staff/file-manager.php?view=comments"
+            class="<?= $view === 'comments' ? 'border-b-2 border-emerald-600 text-emerald-600 font-medium' : 'text-gray-600 hover:text-emerald-600' ?>">
+            Comments
+          </a>
         </div>
 
         <?php if ($view === 'trash'): ?>
@@ -80,23 +84,45 @@ renderHead('Teacher');
             </div>
           <?php endif; ?>
         </div>
+        <?php if ($view === 'comments'): ?>
+          <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6 w-full transition-all duration-300">
+            <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Comments</h2>
 
+            <!-- 🔀 Toggle Buttons -->
+            <div class="flex gap-4 mb-6 text-sm sm:text-md">
+              <button id="toggleMyComments" class="font-semibold text-emerald-700 hover:underline">
+                My Comments
+              </button>
+              <button id="toggleReceivedComments" class="text-gray-600 hover:text-emerald-700 hover:underline">
+                Received Comments
+              </button>
+            </div>
 
-        <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6  w-full transition-all duration-300">
-          <!-- Breadcrumb -->
-          <div id="breadcrumb" class="flex flex-wrap items-center text-sm text-emerald-600 hover:underline space-x-1 mb-3"></div>
-          <!-- Search -->
-          <div class="flex flex-wrap items-center gap-2 mb-4">
-            <input type="text" id="folderSearch" placeholder="Search"
-              class="border px-3 py-2 rounded w-full max-w-md text-sm" />
-            <button id="clearFolderSearch"
-              class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer">
-              Clear
-            </button>
+            <!-- 🗂️ Dynamic Comment List -->
+            <div id="comment-list" class="space-y-4 text-sm text-gray-800 min-h-[350px]">
+              <!-- JS will populate this -->
+            </div>
           </div>
-          <!-- ✅ Dynamic File List Container -->
-          <div id="file-list" class="divide-y divide-gray-400 mt-4 transition-all duration-300  min-h-[300px]"></div>
-        </div>
+        <?php endif; ?>
+
+        <?php if ($view !== 'comments'): ?>
+          <div class="bg-white shadow-2xl rounded-md p-4 sm:p-6  w-full transition-all duration-300">
+            <!-- Breadcrumb -->
+            <div id="breadcrumb" class="flex flex-wrap items-center text-sm text-emerald-600 hover:underline space-x-1 mb-3"></div>
+            <!-- Search -->
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+              <input type="text" id="folderSearch" placeholder="Search"
+                class="border px-3 py-2 rounded w-full max-w-md text-sm" />
+              <button id="clearFolderSearch"
+                class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer">
+                Clear
+              </button>
+            </div>
+            <!-- ✅ Dynamic File List Container -->
+            <div id="file-list" class="divide-y divide-gray-400 mt-4 transition-all duration-300  min-h-[300px]"></div>
+          </div>
+        <?php endif; ?>
+
 
 
       </div>
@@ -237,41 +263,44 @@ renderHead('Teacher');
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
       <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Add Comment</h2>
-      <form action="/controllers/file-manager/comment.php" method="POST">
-        <input type="hidden" name="file_id" id="comment-file-id">
-        <textarea name="comment" rows="8" required class="w-full border rounded px-3 py-2 mb-4 resize-none" placeholder="Write your comment..."></textarea>
-        <div class="flex justify-end gap-2">
-          <button type="button" id="cancelComment" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
-          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Post</button>
+
+      <input type="hidden" id="comment-file-id">
+      <textarea id="comment-text" rows="8" required class="w-full border rounded px-3 py-2 mb-4 resize-none" placeholder="Write your comment..."></textarea>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelComment" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="button" id="submitComment" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Post</button>
+      </div>
+    </div>
+    <div id="commentViewer" class="mt-4 space-y-3 text-sm text-gray-700">
+      <!-- Comments will be injected here -->
+    </div>
+  </div>
+
+  <!-- 🔐 Manage Access Modal -->
+  <div id="manageAccessModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200 will-change-opacity">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-2xl z-10 border border-emerald-500 max-h-[90vh] overflow-y-auto">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Manage Access</h2>
+      <form id="manageAccessForm" autocomplete="off">
+        <input type="hidden" name="file_id" id="manage-access-file-id">
+
+        <!-- 👥 Current Access List -->
+        <div class="mb-2">
+          <label class="block text-sm sm:text-lg font-medium text-gray-700 mb-4">People with access</label>
+          <div id="accessList" class="space-y-4 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-3 bg-gray-50">
+            <!-- Access rows or fallback will be injected here -->
+          </div>
+        </div>
+
+        <!-- 🧭 Action Buttons -->
+        <div class="flex justify-end gap-2 mt-4">
+          <button type="button" id="cancelManageAccess" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Cancel</button>
+          <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Save Changes</button>
         </div>
       </form>
     </div>
   </div>
-
-<!-- 🔐 Manage Access Modal -->
-<div id="manageAccessModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200 will-change-opacity">
-  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-2xl z-10 border border-emerald-500 max-h-[90vh] overflow-y-auto">
-    <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Manage Access</h2>
-    <form id="manageAccessForm" autocomplete="off">
-      <input type="hidden" name="file_id" id="manage-access-file-id">
-
-      <!-- 👥 Current Access List -->
-      <div class="mb-2">
-        <label class="block text-sm sm:text-lg font-medium text-gray-700 mb-4">People with access</label>
-        <div id="accessList" class="space-y-4 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-3 bg-gray-50">
-          <!-- Access rows or fallback will be injected here -->
-        </div>
-      </div>
-
-      <!-- 🧭 Action Buttons -->
-      <div class="flex justify-end gap-2 mt-4">
-        <button type="button" id="cancelManageAccess" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Cancel</button>
-        <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm">Save Changes</button>
-      </div>
-    </form>
-  </div>
-</div>
   <!-- ✅ Floating Dropdown (outside all layout containers) -->
   <div id="permissionDropdown"
     class="fixed hidden z-[9999] bg-white shadow-2xl rounded-md text-sm w-40 transition font-semibold  transform opacity duration-200 scale-0 opacity-0 origin-center">

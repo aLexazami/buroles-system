@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal, setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler, initManageAccessButtons} from './modal.js';
+import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal, setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler, initManageAccessButtons } from './modal.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
@@ -26,40 +26,64 @@ import { initFileSearch } from './file-search.js';
 document.addEventListener('DOMContentLoaded', () => {
   // 📁 File Manager Initialization
   // ✅ Only run file manager logic on file-manager.php
-if (window.location.pathname.includes('/file-manager.php')) {
-  const folderId = document.body.dataset.folderId || null;
-  const view = document.body.dataset.view || 'my-files';
+  if (window.location.pathname.includes('/file-manager.php')) {
+    const folderId = document.body.dataset.folderId || null;
+    const view = document.body.dataset.view || 'my-files';
 
-  switch (view) {
-    case 'trash':
-      import('./file-manager.js').then(({ loadTrashView }) => {
-        document.body.dataset.view = 'trash';
-        loadTrashView(folderId);
-      });
-      break;
+    switch (view) {
+      case 'trash':
+        import('./file-manager.js').then(({ loadTrashView }) => {
+          document.body.dataset.view = 'trash';
+          loadTrashView(folderId);
+        });
+        break;
 
-    case 'shared-with-me':
-      import('./file-manager.js').then(({ loadSharedWithMe }) => {
-        document.body.dataset.view = 'shared-with-me';
-        loadSharedWithMe(folderId);
-      });
-      break;
+      case 'shared-with-me':
+        import('./file-manager.js').then(({ loadSharedWithMe }) => {
+          document.body.dataset.view = 'shared-with-me';
+          loadSharedWithMe(folderId);
+        });
+        break;
 
-    case 'shared-by-me':
-      import('./file-manager.js').then(({ loadSharedByMe }) => {
-        document.body.dataset.view = 'shared-by-me';
-        loadSharedByMe(folderId);
-      });
-      break;
+      case 'shared-by-me':
+        import('./file-manager.js').then(({ loadSharedByMe }) => {
+          document.body.dataset.view = 'shared-by-me';
+          loadSharedByMe(folderId);
+        });
+        break;
 
-    default:
-      import('./file-manager.js').then(({ loadFolder }) => {
-        document.body.dataset.view = 'my-files';
-        loadFolder(folderId);
-      });
-      break;
+      case 'comments':
+        import('./file-manager.js').then(({ loadUserComments, loadReceivedComments,toggleActive }) => {
+          // Load default view
+          loadUserComments();
+
+          // Wire up toggle buttons
+          const myBtn = document.getElementById('toggleMyComments');
+          const receivedBtn = document.getElementById('toggleReceivedComments');
+
+          if (myBtn && receivedBtn) {
+            myBtn.addEventListener('click', () => {
+              toggleActive(myBtn, receivedBtn);
+              loadUserComments();
+            });
+
+            receivedBtn.addEventListener('click', () => {
+              toggleActive(receivedBtn, myBtn);
+              loadReceivedComments();
+            });
+          }
+        });
+        break;
+
+
+      default:
+        import('./file-manager.js').then(({ loadFolder }) => {
+          document.body.dataset.view = 'my-files';
+          loadFolder(folderId);
+        });
+        break;
+    }
   }
-}
 
 
 

@@ -263,14 +263,14 @@ export function openCommentModal(fileId) {
 export function closeCommentModal() {
   toggleModal('commentModal', false);
 
-  const modal = document.getElementById('commentModal');
-  if (!modal) return;
-
-  const form = modal.querySelector('form');
-  if (form) form.reset(); // ✅ Clears textarea and hidden input
+  const input = document.getElementById('comment-file-id');
+  const textarea = document.getElementById('comment-text');
+  if (input) input.value = '';
+  if (textarea) textarea.value = '';
 }
 
 export function initCommentButtons() {
+  // 🧩 Open modal when comment button is clicked
   document.querySelectorAll('.comment-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const fileId = btn.dataset.fileId;
@@ -278,8 +278,39 @@ export function initCommentButtons() {
     });
   });
 
+  // 🧹 Cancel button closes and resets modal
   document.getElementById('cancelComment')?.addEventListener('click', closeCommentModal);
 
+  // 🚀 Submit comment via JS
+  document.getElementById('submitComment')?.addEventListener('click', async () => {
+    const fileId = document.getElementById('comment-file-id')?.value;
+    const comment = document.getElementById('comment-text')?.value.trim();
+
+    if (!fileId || !comment) {
+      renderFlash('warning', 'Please enter a comment before posting.');
+      return;
+    }
+
+    try {
+      const res = await fetch(fileRoutes.comment, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ file_id: fileId, comment })
+      });
+
+      if (res.ok) {
+        closeCommentModal();
+        renderFlash('success', 'Comment posted successfully.');
+      } else {
+        renderFlash('error', 'Failed to post comment. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error posting comment:', err);
+      renderFlash('error', 'Something went wrong. Please try again.');
+    }
+  });
+
+  // ⎋ Escape key closes and resets modal
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       const modal = document.getElementById('commentModal');
