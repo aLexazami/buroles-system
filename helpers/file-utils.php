@@ -152,12 +152,16 @@ function getFilesForView(
       $file['inherited_from'] = null;
       $file['source_type'] = 'owner';
     } elseif ($view === 'trash' && $file['deleted_by_user_id'] === $userId) {
-      $file['deleted_by_first_name'] = $file['deleted_by_first_name'] ?? null;
-       $file['deleted_by_last_name'] = $file['deleted_by_last_name'] ?? null;
-      $file['permissions'] = ['restore', 'delete-permanent'];
-      $file['inherited_from'] = null;
-      $file['source_type'] = 'recipient';
-    } else {
+  $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
+
+  if (!empty($access['permissions'])) {
+    $file['permissions'] = $access['permissions'];
+    $file['inherited_from'] = $access['inheritedFrom'];
+    $file['source_type'] = $access['sourceType'];
+  } else {
+    continue; // skip item if recipient lacks access
+  }
+}else {
       $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
       if (!empty($access['permissions'])) {
         $file['deleted_by_first_name'] = $file['deleted_by_first_name'] ?? null;
@@ -272,6 +276,8 @@ function getTrashedChildren(
   string $sortBy = 'updated_at',
   string $sortDir = 'DESC'
 ): array {
+  require_once __DIR__ . '/access-utils.php'; // for getEffectivePermissionsWithSource()
+
   if ($depth > $maxDepth) return [];
 
   $query = "
@@ -296,13 +302,18 @@ function getTrashedChildren(
     : $stmt->execute([$userId, $userId]);
 
   $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $visible = [];
 
   foreach ($items as &$item) {
     $item['depth'] = $depth;
 
-    $item['permissions'] = ['restore', 'delete-permanent'];
-    $item['source_type'] = ($item['deleted_by_user_id'] === $userId) ? 'recipient' : 'owner';
-    $item['inherited_from'] = null;
+    // 🔐 Resolve actual permissions
+    $access = getEffectivePermissionsWithSource($pdo, $item['id'], $userId);
+    if (empty($access['permissions'])) continue;
+
+    $item['permissions'] = $access['permissions'];
+    $item['inherited_from'] = $access['inheritedFrom'];
+    $item['source_type'] = $access['sourceType'];
 
     if (!empty($item['parent_id'])) {
       $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
@@ -313,9 +324,11 @@ function getTrashedChildren(
     if ($item['type'] === 'folder') {
       $item['children'] = getTrashedChildren($pdo, $item['id'], $userId, $depth + 1, $maxDepth, $sortBy, $sortDir);
     }
+
+    $visible[] = $item;
   }
 
-  return $items;
+  return $visible;
 }
 /******* BREADCRUMB TRAIL ******** */
 function getFolderTrail(PDO $pdo, string $folderId, int $userId): array
@@ -337,6 +350,8 @@ function getFolderTrail(PDO $pdo, string $folderId, int $userId): array
 }
 
 function getTrashedRootFolders(PDO $pdo, int $userId): array {
+  require_once __DIR__ . '/access-utils.php'; // for getEffectivePermissionsWithSource()
+
   $stmt = $pdo->prepare("
     SELECT f.*, 
            u.first_name AS owner_first_name, u.last_name AS owner_last_name,
@@ -356,13 +371,18 @@ function getTrashedRootFolders(PDO $pdo, int $userId): array {
   $stmt->execute([$userId, $userId, $userId, $userId]);
 
   $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $visible = [];
 
   foreach ($items as &$item) {
     $item['depth'] = 0;
 
-    $item['permissions'] = ['restore', 'delete-permanent'];
-    $item['source_type'] = ($item['deleted_by_user_id'] === $userId) ? 'recipient' : 'owner';
-    $item['inherited_from'] = null;
+    // 🔐 Resolve actual permissions
+    $access = getEffectivePermissionsWithSource($pdo, $item['id'], $userId);
+    if (empty($access['permissions'])) continue;
+
+    $item['permissions'] = $access['permissions'];
+    $item['inherited_from'] = $access['inheritedFrom'];
+    $item['source_type'] = $access['sourceType'];
 
     if (!empty($item['parent_id'])) {
       $stmtParent = $pdo->prepare("SELECT name FROM files WHERE id = ?");
@@ -373,9 +393,11 @@ function getTrashedRootFolders(PDO $pdo, int $userId): array {
     if ($item['type'] === 'folder') {
       $item['children'] = getTrashedChildren($pdo, $item['id'], $userId, 1);
     }
+
+    $visible[] = $item;
   }
 
-  return $items;
+  return $visible;
 }
 
 function getUniqueFileName(PDO $pdo, ?string $parentId, string $baseName): string
