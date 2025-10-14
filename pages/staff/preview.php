@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 }
 
 $fileId = $_GET['id'];
-$currentUserId = $_SESSION['user_id'];
+$currentUserId = $_SESSION['user_id'] ?? null;
 
 // 🧭 Optional context
 $view = $_GET['view'] ?? 'my-files';
@@ -17,7 +17,7 @@ $folderId = $_GET['folder'] ?? null;
 
 // 📄 Fetch file metadata
 $stmt = $pdo->prepare("
-  SELECT path, mime_type, is_deleted, owner_id
+  SELECT path, mime_type, is_deleted
   FROM files
   WHERE id = ? LIMIT 1
 ");
@@ -27,13 +27,6 @@ $file = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$file || $file['is_deleted']) {
   http_response_code(404);
   echo "File not found.";
-  exit;
-}
-
-// 🔐 Basic access control
-if ($file['owner_id'] !== $currentUserId) {
-  http_response_code(403);
-  echo "Forbidden.";
   exit;
 }
 
