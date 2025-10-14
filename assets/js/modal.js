@@ -442,7 +442,28 @@ export async function openFileInfoModal(item) {
   closeBtn.onclick = () => toggleModal('file-info-modal', false);
 }
 
-function renderInfoContent({ name, type, sizeText, updated_at, owner_first_name, owner_last_name, mime_type, path }) {
+function renderInfoContent({
+  name,
+  type,
+  sizeText,
+  updated_at,
+  owner_first_name,
+  owner_last_name,
+  mime_type,
+  path,
+  parent_name,
+  permissions,
+  source_type,
+  inherited_from
+}) {
+  const accessText = permissions?.length
+    ? `${permissions.join(', ')} (${source_type === 'inherited' ? 'Inherited' : 'Direct'})`
+    : '—';
+
+  const originText = parent_name
+    ? `${parent_name}${inherited_from ? ` (via ${inherited_from})` : ''}`
+    : '—';
+
   return `
     <div class="text-sm text-gray-700 space-y-2">
       <div><strong>Name:</strong> ${name}</div>
@@ -452,6 +473,8 @@ function renderInfoContent({ name, type, sizeText, updated_at, owner_first_name,
       <div><strong>Owner:</strong> ${owner_first_name} ${owner_last_name}</div>
       <div><strong>MIME Type:</strong> ${mime_type || '—'}</div>
       <div><strong>Path:</strong> ${path}</div>
+      <div><strong>Origin Location:</strong> ${originText}</div>
+      <div><strong>Access:</strong> ${accessText}</div>
     </div>
   `;
 }
