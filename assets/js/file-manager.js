@@ -197,7 +197,7 @@ async function loadComments(endpoint, viewKey, mode = 'user') {
 
       const view = isOwned ? 'my-files' : 'shared-with-me';
       const link = `/pages/staff/file-manager.php?view=${view}&folder=${folderId}` +
-                   (highlightId ? `&highlight=${highlightId}` : '');
+        (highlightId ? `&highlight=${highlightId}` : '');
 
       const entry = document.createElement('a');
       entry.href = link;
@@ -472,7 +472,7 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
   row.dataset.view = currentView;
   row.dataset.name = item.name.toLowerCase();
   row.setAttribute('role', 'listitem');
-  
+
 
   row.addEventListener('click', () => {
     if (item.type === 'folder') {
@@ -591,11 +591,15 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
     menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => showRestoreModal(item.id)));
     menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => showPermanentDeleteModal(item.id)));
   } else {
-    const downloadUrl = item.type === 'folder'
-      ? `/pages/staff/download-folder.php?id=${item.id}&view=${currentView}&folder=${currentFolder}`
-      : `/pages/staff/download.php?id=${item.id}&view=${currentView}&folder=${currentFolder}`;
+    const allowDownload = permissions.length === 1 && permissions.includes('read');
 
-    menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, downloadUrl));
+    if (allowDownload) {
+      const downloadUrl = item.type === 'folder'
+        ? `/pages/staff/download-folder.php?id=${item.id}&view=${currentView}&folder=${currentFolder}`
+        : `/pages/staff/download.php?id=${item.id}&view=${currentView}&folder=${currentFolder}`;
+
+      menu.appendChild(createMenuItem('Download', '/assets/img/download-icon.png', 'cursor-pointer', null, true, downloadUrl));
+    }
 
     const allowDestructive = permissions.includes('delete');
 
@@ -1018,37 +1022,37 @@ function removeChildrenFromUI(parentId) {
 /*Extract fallback into a reusable helper*/
 export function renderEmptyState(container, view = 'default') {
   const config = {
-  default: {
-    title: 'This folder is empty',
-    subtitle: 'Upload a file or create a folder to get started.',
-    iconSrc: '/assets/img/empty-folder.png',
-    iconAlt: 'Empty folder'
-  },
-  trash: {
-    title: 'Trash is empty',
-    subtitle: 'Deleted files and folders will appear here.',
-    iconSrc: '/assets/img/empty-trash.png',
-    iconAlt: 'Empty trash'
-  },
-  'shared-with-me': {
-    title: 'No shared files yet',
-    subtitle: 'Files shared with you will appear here.',
-    iconSrc: '/assets/img/shared.png',
-    iconAlt: 'Empty shared with me'
-  },
-  'shared-by-me': {
-    title: 'You haven’t shared anything yet',
-    subtitle: 'Files you share with others will appear here.',
-    iconSrc: '/assets/img/shared.png',
-    iconAlt: 'Empty shared by me'
-  },
-  comments: {
-    title: 'No comments yet',
-    subtitle: 'Comments you make will appear here.',
-    iconSrc: '/assets/img/no-comment.png',
-    iconAlt: 'Empty comments'
-  }
-};
+    default: {
+      title: 'This folder is empty',
+      subtitle: 'Upload a file or create a folder to get started.',
+      iconSrc: '/assets/img/empty-folder.png',
+      iconAlt: 'Empty folder'
+    },
+    trash: {
+      title: 'Trash is empty',
+      subtitle: 'Deleted files and folders will appear here.',
+      iconSrc: '/assets/img/empty-trash.png',
+      iconAlt: 'Empty trash'
+    },
+    'shared-with-me': {
+      title: 'No shared files yet',
+      subtitle: 'Files shared with you will appear here.',
+      iconSrc: '/assets/img/shared.png',
+      iconAlt: 'Empty shared with me'
+    },
+    'shared-by-me': {
+      title: 'You haven’t shared anything yet',
+      subtitle: 'Files you share with others will appear here.',
+      iconSrc: '/assets/img/shared.png',
+      iconAlt: 'Empty shared by me'
+    },
+    comments: {
+      title: 'No comments yet',
+      subtitle: 'Comments you make will appear here.',
+      iconSrc: '/assets/img/no-comment.png',
+      iconAlt: 'Empty comments'
+    }
+  };
 
   const { title, subtitle, iconSrc, iconAlt } = config[view] || config.default;
 
