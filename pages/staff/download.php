@@ -8,8 +8,14 @@ if (!isset($_GET['id'])) {
   exit;
 }
 
-$fileId = $_GET['id']; // UUID-safe
+$fileId = $_GET['id'];
 $currentUserId = $_SESSION['user_id'] ?? null;
+
+if (!$currentUserId) {
+  http_response_code(401);
+  echo "Unauthorized.";
+  exit;
+}
 
 // 📄 Fetch file metadata
 $stmt = $pdo->prepare("
@@ -26,8 +32,21 @@ if (!$file || $file['is_deleted']) {
   exit;
 }
 
-// 🔐 Access control: must be owner
-if ($file['owner_id'] !== $currentUserId) {
+// 🔐 Access control: owner or granted 'read' or 'download' permission
+$hasAccess = $file['owner_id'] == $currentUserId;
+
+if (!$hasAccess) {
+  $accessStmt = $pdo->prepare("
+    SELECT 1 FROM access_control
+    WHERE file_id = ? AND user_id = ? AND is_revoked = 0
+      AND permission IN ('read', 'download')
+    LIMIT 1
+  ");
+  $accessStmt->execute([$fileId, $currentUserId]);
+  $hasAccess = $accessStmt->fetchColumn();
+}
+
+if (!$hasAccess) {
   http_response_code(403);
   echo "Forbidden.";
   exit;
@@ -39,7 +58,6 @@ $relativePath = ltrim(str_replace('/srv/burol-storage/', '', $storedPath), '/');
 $fullPath = realpath(__DIR__ . '/../../srv/burol-storage/' . $relativePath);
 $storageRoot = realpath(__DIR__ . '/../../srv/burol-storage');
 
-// 🔒 Validate path integrity
 if (!$fullPath || strpos($fullPath, $storageRoot) !== 0 || !file_exists($fullPath)) {
   http_response_code(404);
   echo "File not found on disk.";
@@ -51,7 +69,7 @@ $mimeType = $file['mime_type'] ?: mime_content_type($fullPath);
 $originalName = $file['name'] ?? basename($fullPath);
 $safeName = str_replace(["\r", "\n"], '', $originalName);
 
-// 🧾 Log download to database
+// 🧾 Log download
 $logStmt = $pdo->prepare("
   INSERT INTO downloads (id, file_id, user_id, view_context, folder_id, ip_address, user_agent)
   VALUES (UUID(), ?, ?, ?, ?, ?, ?)
@@ -65,10 +83,9 @@ $logStmt->execute([
   $_SERVER['HTTP_USER_AGENT'] ?? null
 ]);
 
-// 🧾 Optional: Log to error_log for debugging
 error_log("Download accessed: file_id=$fileId, user_id=$currentUserId, filename=$safeName");
 
-// 📦 Serve file as download
+// 📦 Serve file
 header('Content-Type: ' . $mimeType);
 header('Content-Length: ' . filesize($fullPath));
 header('Content-Disposition: attachment; filename="' . $safeName . '"');
