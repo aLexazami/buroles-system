@@ -1,11 +1,9 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/uuid.php';         // isValidUuid()
 require_once __DIR__ . '/../../helpers/file-utils.php';   // getFilesForView(), getTrashedRootFolders(), getTrashedChildren()
+require_once __DIR__ . '/../../helpers/sharing-utils.php'; // getSharedFolderContents()
 
 header('Content-Type: application/json');
 
@@ -28,7 +26,6 @@ $sortDir  = $_GET['sort_dir'] ?? 'DESC';
 // 🧼 Trash view logic
 if ($view === 'trash') {
   if ($folderId) {
-    // 🔒 Check if folder is deleted
     $check = $pdo->prepare("SELECT is_deleted FROM files WHERE id = ? AND owner_id = ?");
     $check->execute([$folderId, $userId]);
     $folderIsDeleted = (int) $check->fetchColumn() === 1;
@@ -41,7 +38,6 @@ if ($view === 'trash') {
       exit;
     }
 
-    // ✅ Folder is not deleted — fetch its trashed children
     $files = getFilesForView($pdo, $userId, $view, $folderId, $sortBy, $sortDir);
     echo json_encode([
       'items' => $files,
@@ -50,15 +46,10 @@ if ($view === 'trash') {
     exit;
   }
 
-  // 🧩 Trash root view — show both standalone and nested deletions
-
-  // ✅ Standalone deleted items (deleted_by_parent = 0)
   $standaloneTrash = getFilesForView($pdo, $userId, 'trash', null, $sortBy, $sortDir);
-
   foreach ($standaloneTrash as &$item) {
     $item['restored_to_fallback'] = ($item['original_path'] && strpos($item['path'], $item['id']) !== false);
 
-    // 🏷️ Extract original parent folder name
     if (!empty($item['original_path'])) {
       $segments = explode('/', $item['original_path']);
       $parentId = count($segments) >= 2 ? $segments[count($segments) - 2] : null;
@@ -77,9 +68,7 @@ if ($view === 'trash') {
     }
   }
 
-  // ✅ Root-level folders with nested deletions (deleted_by_parent = 1)
   $trashedRoots = getTrashedRootFolders($pdo, $userId);
-
   foreach ($trashedRoots as &$folder) {
     $folder['depth'] = 0;
     if ($folder['type'] === 'folder') {
@@ -87,10 +76,8 @@ if ($view === 'trash') {
     }
   }
 
-  // 🧠 Merge both views without duplication
   $merged = array_merge($standaloneTrash, $trashedRoots);
   $seen = [];
-
   $items = array_filter($merged, function ($item) use (&$seen) {
     if (in_array($item['id'], $seen)) return false;
     $seen[] = $item['id'];
@@ -99,6 +86,16 @@ if ($view === 'trash') {
 
   echo json_encode([
     'items' => array_values($items),
+    'folder_is_deleted' => false
+  ]);
+  exit;
+}
+
+// 📁 Shared-with-me folder context — ✅ FIXED: prevent root folder from appearing inside itself
+if ($view === 'shared-with-me' && $folderId && isValidUuid($folderId)) {
+  $files = getSharedFolderContents($pdo, $folderId, $userId, false); // ⛔ exclude root
+  echo json_encode([
+    'items' => $files,
     'folder_is_deleted' => false
   ]);
   exit;
