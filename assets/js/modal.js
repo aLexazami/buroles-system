@@ -454,6 +454,7 @@ export function initPermissionDescription() {
 }
 
 // Info Modal in File Manager
+// Info Modal in File Manager
 export async function openFileInfoModal(item) {
   const modal = document.getElementById('file-info-modal');
   if (!modal) return;
@@ -467,26 +468,39 @@ export async function openFileInfoModal(item) {
 
   const sizeText = await resolveItemSize(item);
 
-  content.innerHTML = renderInfoContent({ ...item, sizeText });
+  // ✅ Get current view from body dataset
+  const view = document.body.dataset.view || 'my-files';
+
+  // ✅ Pass view into renderInfoContent
+  content.innerHTML = renderInfoContent({ ...item, sizeText }, view);
 
   toggleModal('file-info-modal', true);
   closeBtn.onclick = () => toggleModal('file-info-modal', false);
 }
 
-function renderInfoContent({
-  name,
-  type,
-  sizeText,
-  updated_at,
-  owner_first_name,
-  owner_last_name,
-  mime_type,
-  path,
-  parent_name,
-  permissions,
-  source_type,
-  inherited_from
-}) {
+function renderInfoContent(item, view = 'my-files') {
+  const {
+    name,
+    type,
+    sizeText,
+    updated_at,
+    owner_first_name,
+    owner_last_name,
+    recipient_first_name,
+    recipient_last_name,
+    recipient_email,
+    shared_with,
+    deleted_by_first_name,
+    deleted_by_last_name,
+    deleted_by_user_id,
+    mime_type,
+    path,
+    parent_name,
+    permissions,
+    source_type,
+    inherited_from
+  } = item;
+
   const accessText = permissions?.length
     ? `${permissions.join(', ')} (${source_type === 'inherited' ? 'Inherited' : 'Direct'})`
     : '—';
@@ -495,13 +509,32 @@ function renderInfoContent({
     ? `${parent_name}${inherited_from ? ` (via ${inherited_from})` : ''}`
     : '—';
 
+  const sharedByText = owner_first_name && owner_last_name
+    ? `${owner_first_name} ${owner_last_name}`
+    : '—';
+
+  const sharedToText = recipient_first_name && recipient_last_name
+    ? `${recipient_first_name} ${recipient_last_name}`
+    : recipient_email || (shared_with ? `User ID ${shared_with}` : '—');
+
+  const deletedByText = deleted_by_first_name && deleted_by_last_name
+    ? `${deleted_by_first_name} ${deleted_by_last_name}`
+    : deleted_by_user_id
+      ? `User ID ${deleted_by_user_id}`
+      : '—';
+
+  const showSharedTo = view === 'shared-by-me' || view === 'trash';
+  const showDeletedBy = view === 'trash';
+
   return `
     <div class="text-sm text-gray-700 space-y-2">
       <div><strong>Name:</strong> ${name}</div>
       <div><strong>Type:</strong> ${type}</div>
       <div><strong>Size:</strong> ${sizeText}</div>
       <div><strong>Updated:</strong> ${formatDate(updated_at)}</div>
-      <div><strong>Owner:</strong> ${owner_first_name} ${owner_last_name}</div>
+      <div><strong>Owner:</strong> ${sharedByText}</div>
+      ${showSharedTo && sharedToText !== '—' ? `<div><strong>Shared To:</strong> ${sharedToText}</div>` : ''}
+      ${showDeletedBy && deletedByText !== '—' ? `<div><strong>Deleted By:</strong> ${deletedByText}</div>` : ''}
       <div><strong>MIME Type:</strong> ${mime_type || '—'}</div>
       <div><strong>Path:</strong> ${path}</div>
       <div><strong>Origin Location:</strong> ${originText}</div>

@@ -75,15 +75,17 @@ function restoreFile(PDO $pdo, int $userId, string $fileId): void {
   if (!is_file($trashPath)) {
     if (file_exists($originalFullPath)) {
       $stmt = $pdo->prepare("
-        UPDATE files
-        SET is_deleted = 0,
-            path = ?,
-            original_path = NULL,
-            deleted_by_parent = 0,
-            updated_at = NOW()
-        WHERE id = ?
-      ");
-      $stmt->execute([$originalPath, $file['id']]);
+  UPDATE files
+  SET is_deleted = 0,
+      path = ?,
+      original_path = NULL,
+      parent_id = ?,
+      deleted_by_parent = 0,
+      deleted_by_user_id = NULL,
+      updated_at = NOW()
+  WHERE id = ?
+");
+      $stmt->execute([$originalPath, $parentId, $file['id']]);
       logRestore($pdo, $userId, $file['id'], 'File already present, DB state updated');
       return;
     }
@@ -100,16 +102,18 @@ function restoreFile(PDO $pdo, int $userId, string $fileId): void {
 
   rename($trashPath, $originalFullPath);
 
-  $stmt = $pdo->prepare("
-    UPDATE files
-    SET is_deleted = 0,
-        path = ?,
-        original_path = NULL,
-        parent_id = ?,
-        deleted_by_parent = 0,
-        updated_at = NOW()
-    WHERE id = ?
-  ");
+ $stmt = $pdo->prepare("
+  UPDATE files
+  SET is_deleted = 0,
+      path = ?,
+      original_path = NULL,
+      parent_id = ?,
+      deleted_by_parent = 0,
+      deleted_by_user_id = NULL,
+      updated_at = NOW()
+  WHERE id = ?
+");
+
   $stmt->execute([$originalPath, $parentId, $file['id']]);
 
   logRestore($pdo, $userId, $file['id'], 'File restored from trash');
@@ -125,14 +129,15 @@ function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void
   ensureVirtualPathExists($restorePath);
 
   $stmt = $pdo->prepare("
-    UPDATE files
-    SET is_deleted = 0,
-        path = original_path,
-        original_path = NULL,
-        deleted_by_parent = 0,
-        updated_at = NOW()
-    WHERE id = ?
-  ");
+  UPDATE files
+  SET is_deleted = 0,
+      path = original_path,
+      original_path = NULL,
+      deleted_by_parent = 0,
+      deleted_by_user_id = NULL,
+      updated_at = NOW()
+  WHERE id = ?
+");
   $stmt->execute([$folderId]);
 
   logRestore($pdo, $userId, $folderId, 'Folder restored from trash');

@@ -139,7 +139,13 @@ function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bool $
   }
 }
 
-function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bool $inherited = false, ?string $trashBasePath = null): bool {
+function softDeleteFolderAndContents(
+  PDO $pdo,
+  int $actorId,              // 👤 Who performed the deletion
+  string $folderId,
+  bool $inherited = false,
+  ?string $trashBasePath = null
+): bool {
   try {
     $stmt = $pdo->prepare("SELECT path, name FROM files WHERE id = ?");
     $stmt->execute([$folderId]);
@@ -150,28 +156,26 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
     $originalDiskPath = resolveDiskPath($originalPath);
     $deletedByParent = $inherited ? 1 : 0;
 
-    // ✅ Always compute this folder's trash path
-    $trashPath = $trashBasePath ?? "/srv/burol-storage/$userId/trash/$folderId";
+    $trashPath = $trashBasePath ?? "/srv/burol-storage/$actorId/trash/$folderId";
     $trashFullPath = resolveDiskPath($trashPath);
 
-    // ✅ Ensure this folder's trash path exists — even if empty
     if (!is_dir($trashFullPath)) {
       mkdir($trashFullPath, 0775, true);
     }
 
-    // ✅ Update this folder in DB
+    // ✅ Soft-delete folder itself
     $update = $pdo->prepare("
       UPDATE files
       SET is_deleted = 1,
           original_path = path,
           path = ?,
           deleted_by_parent = ?,
+          deleted_by_user_id = ?,
           updated_at = NOW()
       WHERE id = ?
     ");
-    $update->execute([$trashPath, $deletedByParent, $folderId]);
+    $update->execute([$trashPath, $deletedByParent, $actorId, $folderId]);
 
-    // 📝 Log folder deletion
     $log = $pdo->prepare("
       INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
       VALUES (UUID(), ?, ?, ?, 'delete', ?, 'dashboard')
@@ -179,11 +183,11 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
     $log->execute([
       $folderId,
       $folder['name'],
-      $userId,
+      $actorId,
       $inherited ? 'Folder soft-deleted as inherited deletion' : 'Folder soft-deleted recursively'
     ]);
 
-    // 📦 Soft delete all files directly inside this folder
+    // 📦 Soft-delete files inside folder
     $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE parent_id = ? AND type = 'file'");
     $stmt->execute([$folderId]);
     $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -193,9 +197,7 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
       $stmtCheck->execute([$file['id']]);
       $meta = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
-      if ($meta && $meta['is_deleted'] && $meta['deleted_by_parent'] == 0) {
-        continue;
-      }
+      if ($meta && $meta['is_deleted'] && $meta['deleted_by_parent'] == 0) continue;
 
       $realPath = resolveDiskPath($file['path']);
       $relativePath = substr($file['path'], strlen($originalPath));
@@ -214,10 +216,11 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
             original_path = path,
             path = ?,
             deleted_by_parent = 1,
+            deleted_by_user_id = ?,
             updated_at = NOW()
         WHERE id = ?
       ");
-      $update->execute([$trashFilePath, $file['id']]);
+      $update->execute([$trashFilePath, $actorId, $file['id']]);
 
       $log = $pdo->prepare("
         INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
@@ -226,12 +229,12 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
       $log->execute([
         $file['id'],
         $file['name'],
-        $userId,
+        $actorId,
         'File soft-deleted as part of folder deletion'
       ]);
     }
 
-    // 🔁 Recursively soft delete subfolders
+    // 🔁 Recursively soft-delete subfolders
     $stmt = $pdo->prepare("SELECT id FROM files WHERE parent_id = ? AND type = 'folder'");
     $stmt->execute([$folderId]);
     $subfolders = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -241,18 +244,13 @@ function softDeleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bo
       $stmtCheck->execute([$subfolder['id']]);
       $meta = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
-      if ($meta && $meta['is_deleted'] && $meta['deleted_by_parent'] == 0) {
-        continue;
-      }
+      if ($meta && $meta['is_deleted'] && $meta['deleted_by_parent'] == 0) continue;
 
-      // ✅ Compute subfolder's trash path and recurse
       $subfolderTrashPath = rtrim($trashPath, '/') . '/' . $subfolder['id'];
-      softDeleteFolderAndContents($pdo, $userId, $subfolder['id'], true, $subfolderTrashPath);
+      softDeleteFolderAndContents($pdo, $actorId, $subfolder['id'], true, $subfolderTrashPath);
     }
 
-    // ✅ Remove original folder from disk — even if not empty
     deleteDirectory($originalDiskPath);
-
     return true;
   } catch (Exception $e) {
     error_log("Soft folder deletion failed: " . $e->getMessage());

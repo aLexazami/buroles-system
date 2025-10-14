@@ -44,7 +44,8 @@ try {
 
   if ($type === 'folder') {
     $trashRoot = "/srv/burol-storage/$userId/trash/$fileId";
-    $success = softDeleteFolderAndContents($pdo, $userId, $fileId, false, $trashRoot);
+    // ✅ Pass actor ID to folder deletion helper
+    $success = softDeleteFolderAndContents($pdo, $userId, $fileId, false, $trashRoot, $userId);
   } elseif ($type === 'file') {
     $realPath = resolveDiskPath($path);
     $relativePath = substr($path, strlen("/srv/burol-storage/$userId"));
@@ -57,16 +58,18 @@ try {
       rename($realPath, $trashFullPath);
     }
 
+    // ✅ Soft-delete file and track deletion actor
     $stmt = $pdo->prepare("
       UPDATE files
       SET is_deleted = 1,
           original_path = path,
           path = ?,
           deleted_by_parent = 0,
+          deleted_by_user_id = ?,
           updated_at = NOW()
       WHERE id = ?
     ");
-    $success = $stmt->execute([$trashPath, $fileId]);
+    $success = $stmt->execute([$trashPath, $userId, $fileId]);
   }
 
   // 📝 Log deletion
