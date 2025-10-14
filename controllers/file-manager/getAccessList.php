@@ -20,6 +20,22 @@ $userId = $_SESSION['user_id'] ?? null;
 error_log("👤 Access list requested by user_id: " . ($userId ?? 'guest') . " for file_id: $fileId");
 
 try {
+  // 🔁 Check if file has direct access
+  $stmt = $pdo->prepare("SELECT COUNT(*) FROM access_control WHERE file_id = ? AND is_revoked = FALSE");
+  $stmt->execute([$fileId]);
+  $hasDirectAccess = $stmt->fetchColumn() > 0;
+
+  // 🔁 If no direct access, fallback to parent
+  if (!$hasDirectAccess) {
+    $stmt = $pdo->prepare("SELECT parent_id FROM files WHERE id = ?");
+    $stmt->execute([$fileId]);
+    $parentId = $stmt->fetchColumn();
+    if ($parentId) {
+      $fileId = $parentId;
+      error_log("🔁 Access inherited from parent_id: $fileId");
+    }
+  }
+
   // ✅ Fetch and return access list
   $accessList = getAccessListForItem($pdo, $fileId);
   http_response_code(200);

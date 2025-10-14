@@ -51,7 +51,15 @@ function getFilesForView(
       }
     }
 
-    return $visible;
+    // ✅ Deduplicate by file ID
+    $seen = [];
+    $deduped = array_filter($visible, function ($item) use (&$seen) {
+      if (in_array($item['id'], $seen)) return false;
+      $seen[] = $item['id'];
+      return true;
+    });
+
+    return array_values($deduped);
   }
 
   $params = [];
@@ -60,8 +68,13 @@ function getFilesForView(
   $select = 'f.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name';
   $order = "ORDER BY f.$sortBy $sortDir";
 
-  // ✅ Refactored parent filtering logic
   if ($view === 'trash') {
+    $joins = 'JOIN users u ON f.owner_id = u.id';
+    $where[] = 'f.owner_id = :trashOwnerId';
+    $where[] = 'f.is_deleted = TRUE';
+    $where[] = 'f.deleted_by_parent = 0';
+    $params[':trashOwnerId'] = $userId;
+
     if ($folderId && isValidUuid($folderId)) {
       $where[] = 'f.parent_id = :folderId';
       $params[':folderId'] = $folderId;
@@ -69,55 +82,39 @@ function getFilesForView(
       $where[] = 'f.parent_id IS NULL';
     }
   } elseif ($view === 'shared-by-me') {
+    $joins = '
+      JOIN access_control ac ON ac.file_id = f.id
+      JOIN users u ON f.owner_id = u.id
+      JOIN users r ON ac.user_id = r.id
+    ';
+    $select .= ',
+      ac.user_id AS shared_with,
+      ac.permission,
+      r.first_name AS recipient_first_name,
+      r.last_name AS recipient_last_name,
+      r.email AS recipient_email
+    ';
+    $where[] = 'ac.granted_by = :grantedBy';
+    $where[] = 'ac.is_revoked = FALSE';
+    $where[] = 'f.is_deleted = FALSE';
+    $params[':grantedBy'] = $userId;
+
     if ($folderId && isValidUuid($folderId)) {
       $where[] = 'f.parent_id = :folderId';
       $params[':folderId'] = $folderId;
-    } else {
-      // Top-level shared-by-me: skip parent filtering
     }
   } else {
+    $joins = 'JOIN users u ON f.owner_id = u.id';
+    $where[] = 'f.owner_id = :ownerId';
+    $where[] = 'f.is_deleted = FALSE';
+    $params[':ownerId'] = $userId;
+
     if ($folderId && isValidUuid($folderId)) {
       $where[] = 'f.parent_id = :folderId';
       $params[':folderId'] = $folderId;
     } else {
       $where[] = 'f.parent_id IS NULL';
     }
-  }
-
-  switch ($view) {
-    case 'shared-by-me':
-      $joins = '
-        JOIN access_control ac ON ac.file_id = f.id
-        JOIN users u ON f.owner_id = u.id
-        JOIN users r ON ac.user_id = r.id
-      ';
-      $select .= ',
-        ac.user_id AS shared_with,
-        ac.permission,
-        r.first_name AS recipient_first_name,
-        r.last_name AS recipient_last_name,
-        r.email AS recipient_email
-      ';
-      $where[] = 'ac.granted_by = :grantedBy';
-      $where[] = 'ac.is_revoked = FALSE';
-      $where[] = 'f.is_deleted = FALSE';
-      $params[':grantedBy'] = $userId;
-      break;
-
-    case 'trash':
-      $joins = 'JOIN users u ON f.owner_id = u.id';
-      $where[] = 'f.owner_id = :trashOwnerId';
-      $where[] = 'f.is_deleted = TRUE';
-      $where[] = 'f.deleted_by_parent = 0';
-      $params[':trashOwnerId'] = $userId;
-      break;
-
-    default:
-      $joins = 'JOIN users u ON f.owner_id = u.id';
-      $where[] = 'f.owner_id = :ownerId';
-      $where[] = 'f.is_deleted = FALSE';
-      $params[':ownerId'] = $userId;
-      break;
   }
 
   $sql = "
@@ -142,19 +139,18 @@ function getFilesForView(
       $file['permissions'] = ['edit', 'comment', 'share', 'delete'];
       $file['inherited_from'] = null;
       $file['source_type'] = 'owner';
-      $enriched[] = $file;
     } elseif ($file['owner_id'] === $userId) {
       $file['permissions'] = ['edit', 'comment', 'share', 'delete', 'owner'];
       $file['inherited_from'] = null;
       $file['source_type'] = 'owner';
-      $enriched[] = $file;
     } else {
       $access = getEffectivePermissionsWithSource($pdo, $file['id'], $userId);
       if (!empty($access['permissions'])) {
         $file['permissions'] = $access['permissions'];
         $file['inherited_from'] = $access['inheritedFrom'];
         $file['source_type'] = $access['sourceType'];
-        $enriched[] = $file;
+      } else {
+        continue;
       }
     }
 
@@ -166,11 +162,12 @@ function getFilesForView(
 
     if ($file['type'] === 'folder') {
       $file['size'] = getRecursiveFolderSize($pdo, $file['id']);
-
       if ($view === 'shared-by-me') {
         $file['children'] = getSharedFolderContents($pdo, $file['id'], $userId, false);
       }
     }
+
+    $enriched[] = $file;
   }
 
   if ($view === 'trash') {
@@ -181,7 +178,15 @@ function getFilesForView(
     }
   }
 
-  return $enriched;
+  // ✅ Final deduplication
+  $seen = [];
+  $deduped = array_filter($enriched, function ($file) use (&$seen) {
+    if (in_array($file['id'], $seen)) return false;
+    $seen[] = $file['id'];
+    return true;
+  });
+
+  return array_values($deduped);
 }
 
 function getPermissionsForFile(array $file, string $view, int $userId, PDO $pdo): array

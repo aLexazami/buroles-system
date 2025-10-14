@@ -1,8 +1,8 @@
 
-import { fileRoutes } from './endpoints/fileRoutes.js';
-import { formatDate, getExtension, handleFileAction, isFolderNameValid, isValidFileName, normalizeFileNameInput, refreshCurrentFolder, removeItemFromUI, removeItemRow, renderItems, resolveItemSize } from './file-manager.js';
+import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput, isValidFileName, getExtension, isFolderNameValid, removeItemRow } from './file-manager.js';
+import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
-import { getItems, insertItemSorted } from './stores/fileStore.js';
+import { fileRoutes } from './endpoints/fileRoutes.js';
 
 // Modal Helpers
 export function toggleModal(modalId, show) {
@@ -1035,18 +1035,29 @@ function bindFormSubmission(form, saveBtn, fileIdInput) {
     }
 
     const hasUpdates = Object.keys(accessUpdates).length > 0;
-
     if (!hasUpdates) {
       renderFlash('info', 'No changes to save');
       closeManageAccessModal();
       return;
     }
 
-    const updates = Object.entries(accessUpdates).map(([user_id, permission]) => ({
-      user_id,
-      permission,
-      file_id: fileId
-    }));
+    // 🔍 Filter out inherited updates
+    const updates = Object.entries(accessUpdates)
+      .filter(([user_id]) => {
+        const row = document.querySelector(`.access-row[data-user-id="${user_id}"]`);
+        return row?.dataset.inherited !== 'true';
+      })
+      .map(([user_id, permission]) => ({
+        user_id,
+        permission,
+        file_id: fileId
+      }));
+
+    // ❌ If all updates were inherited, show warning
+    if (updates.length === 0) {
+      renderFlash('info', 'Inherited access cannot be changed here. Manage access at the parent folder.');
+      return;
+    }
 
     const payload = { file_id: fileId, updates };
     const originalText = saveBtn.textContent;
@@ -1077,6 +1088,7 @@ function bindFormSubmission(form, saveBtn, fileIdInput) {
       }
 
       renderFlash('success', data.message || 'Access updated successfully');
+      refreshCurrentFolder();
       fetchAccessList(fileId);
       document.getElementById('accessList')?.scrollTo({ top: 0, behavior: 'smooth' });
 
