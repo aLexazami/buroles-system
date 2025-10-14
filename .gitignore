@@ -1,2 +1,4 @@
 node_modules/
 .env
+srv/
+php_errors.log
