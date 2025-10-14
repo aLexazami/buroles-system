@@ -603,13 +603,13 @@ export function createFileRow(item, isTrashView = false, currentUserId = null) {
       menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
       menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'cursor-pointer', () => showDeleteModal(item.id, item.name)));
     }
-
+    /*
     if (permissions.includes('comment')) {
       const commentBtn = createMenuItem('Comment', '/assets/img/comment.png', 'cursor-pointer', () => openCommentModal(item.id));
       commentBtn.classList.add('comment-btn');
       commentBtn.dataset.fileId = item.id;
       menu.appendChild(commentBtn);
-    }
+    }*/
 
     if (permissions.includes('share')) {
       const shareBtn = createMenuItem('Share', '/assets/img/share-icon.png', 'cursor-pointer', () => openShareModal(item.id));
