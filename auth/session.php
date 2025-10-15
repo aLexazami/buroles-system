@@ -16,6 +16,8 @@ $publicPages = [
     'faqs.php',
     '404.php',
     '500.php',
+    'client-error.php',        // ✅ Add this
+  'feature-usage.php',
 ];
 
 $currentPage = basename($_SERVER['PHP_SELF']);

@@ -1,0 +1,2 @@
+{"timestamp":"2025-10-15T07:22:41+00:00","user_id":1,"message":"Manual test from Alex","error":"Testing folder creation","userAgent":"Mozilla\/5.0 (Linux; Android 6.0; Nexus 5 Build\/MRA58N) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/141.0.0.0 Mobile Safari\/537.36"}
+{"timestamp":"2025-10-15T07:25:52+00:00","user_id":1,"message":"Uncaught ReferenceError: nonexistentFunction is not defined","error":null,"userAgent":"Mozilla\/5.0 (Linux; Android 6.0; Nexus 5 Build\/MRA58N) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/141.0.0.0 Mobile Safari\/537.36"}

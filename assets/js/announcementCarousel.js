@@ -3,29 +3,35 @@
 export function bindAnnouncementTriggers() {
   document.querySelectorAll('[data-viewer-trigger]').forEach(el => {
     el.addEventListener('click', () => {
-      const { id, title = '', body = '', roleName = '', date = '' } = el.dataset;
+      try {
+        const { id, title = '', body = '', roleName = '', date = '' } = el.dataset;
 
-      fetch('/api/announcement-read.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ announcement_id: id })
-      });
+        fetch('/api/announcement-read.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ announcement_id: id })
+        });
 
-      el.classList.remove('bg-emerald-50', 'hover:bg-emerald-100');
-      el.classList.add('bg-white', 'hover:bg-gray-100');
-      el.querySelector('.new-badge')?.remove();
+        el.classList.remove('bg-emerald-50', 'hover:bg-emerald-100');
+        el.classList.add('bg-white', 'hover:bg-gray-100');
+        el.querySelector('.new-badge')?.remove();
 
-      const viewerTitle = document.querySelector('#viewerTitle');
-      if (viewerTitle) viewerTitle.textContent = title;
+        const viewerTitle = document.querySelector('#viewerTitle');
+        if (viewerTitle) viewerTitle.textContent = title;
 
-      const viewerBody = document.querySelector('#viewerBody');
-      if (viewerBody) viewerBody.textContent = body;
+        const viewerBody = document.querySelector('#viewerBody');
+        if (viewerBody) viewerBody.textContent = body;
 
-      const viewerMeta = document.querySelector('#viewerMeta');
-      if (viewerMeta) viewerMeta.textContent = `Posted for ${roleName} on ${date}`;
+        const viewerMeta = document.querySelector('#viewerMeta');
+        if (viewerMeta) viewerMeta.textContent = `Posted for ${roleName} on ${date}`;
 
-      document.querySelector('#announcement-viewer')?.classList.remove('hidden');
+        document.querySelector('#announcement-viewer')?.classList.remove('hidden');
+      } catch (err) {
+        console.error('Error binding announcement trigger:', err);
+        logClientError('bindAnnouncementTriggers failed', { error: err.message, id: el?.dataset?.id });
+      }
     });
+
   });
 
   document.querySelector('#closeAnnouncementViewer')?.addEventListener('click', () => {
@@ -35,13 +41,13 @@ export function bindAnnouncementTriggers() {
 
 export function setupAnnouncementPagination() {
   const container = document.querySelector('#announcement-container');
-const list = document.querySelector('#announcement-list');
-const pagination = document.querySelector('#pagination-container');
-const fallback = document.getElementById('announcement-fallback');
+  const list = document.querySelector('#announcement-list');
+  const pagination = document.querySelector('#pagination-container');
+  const fallback = document.getElementById('announcement-fallback');
 
-if (!container || !list || !pagination || !fallback) return;
+  if (!container || !list || !pagination || !fallback) return;
 
-fallback.classList.remove('hidden');
+  fallback.classList.remove('hidden');
 
   function loadPage(page = 1) {
     list.innerHTML = '<p>Loading...</p>';
@@ -76,6 +82,7 @@ fallback.classList.remove('hidden');
       .catch(err => {
         list.innerHTML = '<p class="text-red-600">Failed to load announcements.</p>';
         console.error('Error loading announcements:', err);
+        logClientError('setupAnnouncementPagination failed', { error: err.message });
       });
   }
 

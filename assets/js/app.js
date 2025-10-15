@@ -24,6 +24,31 @@ import { initEmailAutocomplete } from './search-autocomplete.js';
 import { initFileSearch } from './file-search.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 🧪 Global Error Logger
+window.addEventListener('error', (event) => {
+  fetch('/log/client-error.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: event.message,
+      source: event.filename,
+      line: event.lineno,
+      column: event.colno,
+      error: event.error?.stack || null, // ✅ capture stack trace if available
+      userAgent: navigator.userAgent,
+      timestamp: new Date().toISOString()
+    })
+  });
+});
+
+// 🧪 Feature Usage Logger
+window.logFeature = function (action, details = {}) {
+  fetch('/log/feature-usage.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, details })
+  });
+};
   // 📁 File Manager Initialization
   // ✅ Only run file manager logic on file-manager.php
   if (window.location.pathname.includes('/file-manager.php')) {
