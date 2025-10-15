@@ -1,5 +1,5 @@
 
   # burol-elementary-school-system
 
- **THIS IS OUR SYSYTEM
+ **THIS IS OUR SYSTEM**
 
