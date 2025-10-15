@@ -35,12 +35,13 @@ export function bindAnnouncementTriggers() {
 
 export function setupAnnouncementPagination() {
   const container = document.querySelector('#announcement-container');
-  const list = document.querySelector('#announcement-list'); // where cards are injected
-  const pagination = document.querySelector('#pagination-container');
-  const fallback = document.getElementById('announcement-fallback');
-  fallback.classList.remove('hidden');
+const list = document.querySelector('#announcement-list');
+const pagination = document.querySelector('#pagination-container');
+const fallback = document.getElementById('announcement-fallback');
 
-  if (!container || !list || !pagination || !fallback) return;
+if (!container || !list || !pagination || !fallback) return;
+
+fallback.classList.remove('hidden');
 
   function loadPage(page = 1) {
     list.innerHTML = '<p>Loading...</p>';
