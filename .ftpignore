@@ -1,0 +1,15 @@
+# Ignore local dev and system files
+node_modules/
+.vscode/
+.git/
+.gitignore
+.DS_Store
+Thumbs.db
+*.log
+
+# Ignore environment and build artifacts
+.env.local
+.env.*.local
+dist/
+build/
+coverage/
