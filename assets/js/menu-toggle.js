@@ -81,7 +81,7 @@ export function setupSidebarToggle() {
   });
 }
 
-// menu-toggle.js in shared-file.js
+// menu-toggle.js
 export function initMenuToggle() {
   const toggles = document.querySelectorAll('.menu-toggle');
   const dropdowns = document.querySelectorAll('.menu-dropdown');
@@ -126,7 +126,7 @@ export function initMenuToggle() {
 
 
 
-// Action Menu in file-manager.php
+// Action Menu
 export function initActionMenu() {
   const trigger = document.getElementById('action-trigger');
   const menu = document.getElementById('action-menu');

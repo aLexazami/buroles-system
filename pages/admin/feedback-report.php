@@ -45,8 +45,5 @@ renderHead('Admin');
   <script type="module" src="/assets/js/service-report.js"></script>
   <script src="/assets/js/date-time.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-  <script>
-
-  </script>
 </body>
 </html>
