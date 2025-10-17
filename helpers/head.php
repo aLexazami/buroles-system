@@ -1,5 +1,5 @@
 <?php
-function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false, $metaRefresh = null) {
+function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false, $metaRefresh = null, $nonce = '') {
   echo "<!DOCTYPE html>
   <html lang='en'>
   <head>
@@ -7,12 +7,12 @@ function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false, $m
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>BESIMS [$pageTitle]</title>
     <link rel='icon' href='/assets/img/buroles-colored.png' type='image/png'>
-    <link rel='stylesheet' href='/src/styles.css'>
+    <link rel='stylesheet' href='/dist/styles.20251017.css'>
     <link href='https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css' rel='stylesheet'>
     <meta name='description' content='Burol Elementary School Dashboard'>
     <meta name='author' content='Burol Dev Team'>
     <meta name='theme-color' content='#2c3e50'>";
-
+  
   if ($noIndex) {
     echo "<meta name='robots' content='noindex, nofollow'>";
   }
@@ -21,13 +21,8 @@ function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false, $m
     echo "<meta http-equiv='refresh' content='" . htmlspecialchars($metaRefresh, ENT_QUOTES, 'UTF-8') . "'>";
   }
 
-  // ✅ Load PDF.js library
-  echo "<script src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js'></script>";
+  // ✅ Load PDF.js with nonce
+  echo "<script src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js' nonce='$nonce'></script>";
 
   echo "</head>";
 }
-?>
-<!--
-renderHead('Login', true); // blocks indexing
-renderHead('FAQs');        // allows indexing
--->

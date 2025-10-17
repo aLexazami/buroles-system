@@ -339,10 +339,14 @@ function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void
     LEFT JOIN files p ON f.parent_id = p.id
     WHERE f.is_deleted = 1
       AND f.deleted_by_parent = 0
-      AND f.original_path LIKE CONCAT(?, '/%')
+      AND f.original_path COLLATE utf8mb4_general_ci LIKE CONCAT(?, '/%')
       AND (
         f.parent_id IS NULL
-        OR (p.is_deleted = 0 AND p.original_path IS NOT NULL AND f.original_path LIKE CONCAT(p.original_path, '/%'))
+        OR (
+          p.is_deleted = 0
+          AND p.original_path IS NOT NULL
+          AND f.original_path COLLATE utf8mb4_general_ci LIKE CONCAT(p.original_path, '/%')
+        )
       )
   ");
   $stmt->execute([$restorePath]);

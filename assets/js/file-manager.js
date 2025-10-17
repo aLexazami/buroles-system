@@ -494,7 +494,7 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
   }
 
   const row = document.createElement('div');
-  row.className = 'flex items-center justify-between p-2 hover:bg-emerald-50 cursor-pointer';
+  row.className = 'flex justify-between items-center p-2 w-full hover:bg-emerald-50 cursor-pointer';
   row.dataset.itemId = item.id;
   row.dataset.parentId = item.parent_id || '';
   row.dataset.type = item.type;
@@ -502,7 +502,9 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
   row.dataset.name = item.name.toLowerCase();
   row.setAttribute('role', 'listitem');
 
-  row.addEventListener('click', () => {
+  row.addEventListener('click', (e) => {
+    if (e.target.closest('[data-stop-click="true"]')) return;
+
     if (item.type === 'folder') {
       currentView === 'trash' ? loadTrashView(item.id) : loadFolder(item.id);
     } else {
@@ -514,38 +516,39 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
   const icon = document.createElement('img');
   icon.src = getItemIcon(item);
   icon.alt = item.type;
-  icon.className = 'w-5 h-5';
+  icon.className = 'w-5 h-5 flex-shrink-0';
 
   const label = document.createElement('span');
   label.textContent = item.name;
-  label.className = 'text-gray-800 font-medium truncate';
+  label.title = item.name;
+  label.className = 'text-gray-800 font-medium truncate block w-full';
 
   const labelStack = document.createElement('div');
-  labelStack.className = 'flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2';
+  labelStack.className = 'flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0';
   labelStack.appendChild(label);
-  // 🚫 Badge intentionally omitted
 
   const labelWrapper = document.createElement('div');
-  labelWrapper.className = 'flex items-center gap-3 min-w-0';
+  labelWrapper.className = 'flex items-center gap-3 min-w-0 flex-grow';
   labelWrapper.appendChild(icon);
   labelWrapper.appendChild(labelStack);
 
   const menuWrapper = document.createElement('div');
-  menuWrapper.className = 'relative';
+  menuWrapper.className = 'relative flex-shrink-0 ml-2 z-10';
 
   const menuButton = document.createElement('button');
   const menuIcon = document.createElement('img');
   menuIcon.src = '/assets/img/dots-icon.png';
   menuIcon.alt = 'Menu';
-  menuIcon.className = 'w-5 h-5 pointer-events-none';
+  menuIcon.className = 'w-5 h-5';
   menuButton.appendChild(menuIcon);
   menuButton.setAttribute('aria-label', 'Open menu');
   menuButton.setAttribute('aria-haspopup', 'true');
   menuButton.setAttribute('type', 'button');
+  menuButton.setAttribute('data-stop-click', 'true');
   menuButton.className = 'hover:bg-emerald-100 rounded-full px-2 py-2 cursor-pointer';
 
   const menu = document.createElement('div');
-  menu.className = 'file-list-menu absolute right-8 sm:right-10 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-48 transition ease-out duration-150 font-semibold';
+  menu.className = 'file-list-menu absolute right-0  mt-1 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-48 transition ease-out duration-150 font-semibold z-50';
   menu.setAttribute('role', 'menu');
 
   menuButton.addEventListener('click', (e) => {

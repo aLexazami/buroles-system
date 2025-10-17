@@ -349,9 +349,6 @@
   .right-5 {
     right: calc(var(--spacing) * 5);
   }
-  .right-8 {
-    right: calc(var(--spacing) * 8);
-  }
   .right-12 {
     right: calc(var(--spacing) * 12);
   }
@@ -2054,11 +2051,6 @@
   .sm\:top-15 {
     @media (width >= 40rem) {
       top: calc(var(--spacing) * 15);
-    }
-  }
-  .sm\:right-10 {
-    @media (width >= 40rem) {
-      right: calc(var(--spacing) * 10);
     }
   }
   .sm\:my-12 {

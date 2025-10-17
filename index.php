@@ -110,7 +110,7 @@ renderHead('Login', true);
       </p>
     </section>
   </footer>
-  <script type="module" src="/assets/js/app.js"></script>
+  <script type="module" src="/assets/js/app.js?v=<?= time() ?>"></script>
 </body>
 
 </html>
