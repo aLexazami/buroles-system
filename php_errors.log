@@ -169,3 +169,477 @@
 [17-Oct-2025 13:43:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
 [17-Oct-2025 13:43:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
 [17-Oct-2025 13:43:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 15:59:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 15:59:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 15:59:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 15:59:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 15:59:34 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 15:59:34 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:25:05 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:25:05 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:26:20 Asia/Manila] PHP Warning:  include(../../components/side-nav-staff.php): Failed to open stream: No such file or directory in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 16
+[17-Oct-2025 16:26:20 Asia/Manila] PHP Warning:  include(): Failed opening '../../components/side-nav-staff.php' for inclusion (include_path='.;C:\php\pear') in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 16
+[17-Oct-2025 16:26:20 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 41
+[17-Oct-2025 16:26:20 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:41
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 41
+[17-Oct-2025 16:28:44 Asia/Manila] PHP Warning:  include(../../components/side-nav-staff.php): Failed to open stream: No such file or directory in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 10
+[17-Oct-2025 16:28:44 Asia/Manila] PHP Warning:  include(): Failed opening '../../components/side-nav-staff.php' for inclusion (include_path='.;C:\php\pear') in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 10
+[17-Oct-2025 16:28:44 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 36
+[17-Oct-2025 16:28:44 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:36
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 36
+[17-Oct-2025 16:29:58 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 38
+[17-Oct-2025 16:29:58 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:38
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 38
+[17-Oct-2025 16:30:15 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 38
+[17-Oct-2025 16:30:15 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:38
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 38
+[17-Oct-2025 16:30:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:30:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:30:21 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 38
+[17-Oct-2025 16:30:21 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:38
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 38
+[17-Oct-2025 16:31:24 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:24 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:31:40 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:31:41 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:41 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:57 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:57 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:58 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:58 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:58 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:58 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:59 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:31:59 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:16 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:32:16 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:32:16 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:16 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:17 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:32:17 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:32:18 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:18 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:18 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:32:18 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:32:19 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:19 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:19 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:32:19 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:32:19 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:19 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:32:20 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:32:20 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:20 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:32:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:32:21 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:21 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:32:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:32:22 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:22 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:24 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:24 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[17-Oct-2025 16:32:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[17-Oct-2025 16:32:29 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[17-Oct-2025 16:32:29 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 11:54:02 Asia/Manila] PHP Warning:  Undefined array key "SESSION_SECRET" in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[18-Oct-2025 11:54:02 Asia/Manila] PHP Deprecated:  hash(): Passing null to parameter #2 ($data) of type string is deprecated in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[18-Oct-2025 11:54:18 Asia/Manila] PHP Warning:  Undefined array key "SESSION_SECRET" in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[18-Oct-2025 11:54:18 Asia/Manila] PHP Deprecated:  hash(): Passing null to parameter #2 ($data) of type string is deprecated in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[18-Oct-2025 11:54:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 11:54:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 11:54:27 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 11:54:27 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 11:54:30 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 11:54:30 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 11:54:31 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 11:54:31 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:18:52 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:18:52 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:18:53 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:18:53 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:18:55 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:18:55 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:18:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:18:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:18:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:18:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:18:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:18:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:23:39 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:23:39 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:23:41 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:23:41 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:23:44 Asia/Manila] 📁 Deleting contents of folder: New Folder (186425e8-9cf6-4ffc-9a4f-62063a04bc47)
+[18-Oct-2025 12:23:44 Asia/Manila] ⏭️ Skipping standalone-deleted file: 12 (1).png (96055b2a-43be-4b50-8d8f-f4d86edf8d87)
+[18-Oct-2025 12:23:44 Asia/Manila] 🔁 Recursing into subfolder: c2eefb84-5ac1-4a0a-81f0-60b49dae0279
+[18-Oct-2025 12:23:44 Asia/Manila] 📁 Deleting contents of folder: New Folder (c2eefb84-5ac1-4a0a-81f0-60b49dae0279)
+[18-Oct-2025 12:23:44 Asia/Manila] ⏭️ Skipping standalone-deleted file: Folder A_adada.pdf (fd345b40-dc89-4f97-a5e1-2a20573a617f)
+[18-Oct-2025 12:23:44 Asia/Manila] 🔁 Recursing into subfolder: 01e1ea71-6497-40b1-af8f-e1e8d404ee35
+[18-Oct-2025 12:23:44 Asia/Manila] 📁 Deleting contents of folder: New Folder (01e1ea71-6497-40b1-af8f-e1e8d404ee35)
+[18-Oct-2025 12:23:45 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:23:45 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:23:49 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:23:49 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:23:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:23:50 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:23:51 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:23:51 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:23:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:23:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:23:59 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:23:59 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:23:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:23:59 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:24:00 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:00 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:00 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:24:00 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:24:00 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:00 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:01 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:01 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:01 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:24:01 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:24:01 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:01 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:02 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:02 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:02 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:24:02 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:24:02 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:02 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:03 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:24:03 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:24:03 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:03 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:03 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:24:03 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:24:04 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:04 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:04 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:24:04 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:25:13 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:25:13 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:25:14 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:25:14 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:25:15 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:25:15 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:42
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 42
+[18-Oct-2025 12:25:22 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 41
+[18-Oct-2025 12:25:22 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:41
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 41
+[18-Oct-2025 12:25:23 Asia/Manila] PHP Warning:  Undefined variable $conn in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 40
+[18-Oct-2025 12:25:23 Asia/Manila] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\buroles\workspace\buroles_system\pages\staff\students.php:40
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\students.php on line 40
+[18-Oct-2025 12:56:19 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:56:19 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:56:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:56:21 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 12:56:23 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:23 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:23 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:24 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:24 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:24 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:25 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:25 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:25 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:26 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:26 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:26 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:27 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:27 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:27 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:28 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:28 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:28 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:29 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:29 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:30 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:56:30 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.students' doesn't exist in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php:11
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php(11): PDO->prepare('SELECT s.id, s....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\controllers\teacher\get-students.php on line 11
+[18-Oct-2025 12:57:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 12:57:57 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:02:48 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:02:48 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:31:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:31:54 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:31:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:31:56 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:49:10 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:49:10 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:49:12 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:49:12 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:49:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:49:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:51:41 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:51:41 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:53:08 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:53:08 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:53:10 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:53:10 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:53:12 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:53:12 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:53:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:53:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 13:58:03 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 381
+[18-Oct-2025 13:58:03 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 397
+[18-Oct-2025 07:05:54 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in C:\buroles\workspace\buroles_system\pages\staff\class-advisory.php on line 64
+[18-Oct-2025 07:05:55 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in C:\buroles\workspace\buroles_system\pages\staff\class-advisory.php on line 63
+[18-Oct-2025 07:06:17 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in C:\buroles\workspace\buroles_system\pages\staff\class-advisory.php on line 65
+[18-Oct-2025 15:14:10 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'u.full_name' in 'field list' in C:\buroles\workspace\buroles_system\pages\staff\advisory-list.php:30
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\pages\staff\advisory-list.php(30): PDO->query('SELECT c.id, c....')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\advisory-list.php on line 30
+[18-Oct-2025 16:20:27 Asia/Manila] PHP Warning:  Undefined array key "SESSION_SECRET" in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[18-Oct-2025 16:20:27 Asia/Manila] PHP Deprecated:  hash(): Passing null to parameter #2 ($data) of type string is deprecated in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:11 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:30 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:37 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
+[18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42

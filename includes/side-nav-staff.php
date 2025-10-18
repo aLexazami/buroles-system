@@ -3,6 +3,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 $navItems = [
   ['label' => 'Dashboard', 'href' => '/pages/main-staff.php', 'icon' => 'home.png'],
   ['label' => 'Manage File', 'href' => '/pages/staff/file-manager.php', 'icon' => 'manage-file.png'],
+  ['label' => 'Class Advisory', 'href' => '/pages/staff/class-advisory.php', 'icon' => 'class-advisory.png'],
 ];
 ?>
 
