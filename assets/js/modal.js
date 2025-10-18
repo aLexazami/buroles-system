@@ -3,6 +3,8 @@ import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, r
 import { insertItemSorted, getItems } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
+import { refreshGradeSections } from './grade-level-and-section.js';
+
 
 // Modal Helpers
 export function toggleModal(modalId, show) {
@@ -1631,4 +1633,191 @@ export function initGradeLevelDeleteModal() {
   // Prevent double submission
   form.removeEventListener('submit', handleDeleteSubmit);
   form.addEventListener('submit', handleDeleteSubmit);
+}
+
+// Edit Sections Modal in grade-level-and-section.php
+// ✅ Named click handler
+function handleEditSectionClick(e) {
+  const button = e.currentTarget;
+  document.getElementById('editGradeSectionId').value = button.dataset.id;
+  document.getElementById('editGradeSectionLevel').value = button.dataset.gradeLevelId;
+  document.getElementById('editGradeSectionLabel').value = button.dataset.label;
+  toggleModal('editGradeSectionModal', true);
+}
+
+// ✅ Named submit handler
+function handleEditSectionSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('editGradeSectionForm');
+  const formData = new FormData(form);
+
+  fetch('/controllers/admin/update-grade-section.php', {
+    method: 'POST',
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        renderFlash('success', 'Section updated.');
+        toggleModal('editGradeSectionModal', false);
+        form.reset();
+        refreshGradeSections();
+      } else {
+        renderFlash('error', data.error || 'Failed to update section.');
+      }
+    })
+    .catch(() => {
+      renderFlash('error', 'Error updating section.');
+    });
+}
+
+export function initGradeSectionEditHandler() {
+  const form = document.getElementById('editGradeSectionForm');
+  const cancelBtn = document.getElementById('cancelEditGradeSectionBtn');
+
+  // ✅ Bind edit buttons once
+  document.querySelectorAll('.edit-grade-section').forEach(button => {
+    if (!button.dataset.bound) {
+      button.addEventListener('click', handleEditSectionClick);
+      button.dataset.bound = 'true';
+    }
+  });
+
+  // ✅ Bind cancel button once
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('editGradeSectionModal', false);
+      form.reset();
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  // ✅ Bind form submit once
+  if (form && !form.dataset.bound) {
+    form.addEventListener('submit', handleEditSectionSubmit);
+    form.dataset.bound = 'true';
+  }
+}
+
+// Delete Sections Modals in grade-level-and-section.php
+function handleDeleteSectionSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('deleteGradeSectionForm');
+  if (!form) return;
+
+  const formData = new FormData(form);
+
+  fetch('/controllers/admin/delete-grade-section.php', {
+    method: 'POST',
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        renderFlash('success', 'Section deleted.');
+        toggleModal('confirmDeleteGradeSectionModal', false);
+        form.reset();
+        refreshGradeSections();
+      } else {
+        renderFlash('error', data.error || 'Failed to delete section.');
+      }
+    })
+    .catch(() => {
+      renderFlash('error', 'Error deleting section.');
+    });
+}
+
+function handleDeleteSectionClick(e) {
+  const button = e.currentTarget;
+  const hiddenId = document.getElementById('deleteGradeSectionId');
+  const labelSpan = document.getElementById('deleteGradeSectionLabel');
+
+  if (!hiddenId || !labelSpan) return;
+
+  hiddenId.value = button.dataset.id;
+  labelSpan.textContent = button.dataset.label;
+  toggleModal('confirmDeleteGradeSectionModal', true);
+}
+
+export function initGradeSectionDeleteModal() {
+  const form = document.getElementById('deleteGradeSectionForm');
+  if (!form) return;
+
+  const cancelBtn = document.getElementById('cancelDeleteGradeSectionBtn');
+
+  // ✅ Bind delete buttons once using dataset flag
+  document.querySelectorAll('.delete-grade-section').forEach(button => {
+    if (!button.dataset.bound) {
+      button.addEventListener('click', handleDeleteSectionClick);
+      button.dataset.bound = 'true';
+    }
+  });
+
+  // ✅ Bind cancel button once
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('confirmDeleteGradeSectionModal', false);
+      form.reset();
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  // ✅ Bind form submit once
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', handleDeleteSectionSubmit);
+    form.dataset.bound = 'true';
+  }
+}
+
+// Add Grade Section Modal
+export function initGradeSectionModal() {
+  const form = document.getElementById('addGradeSectionForm');
+  const cancelBtn = document.getElementById('cancelAddGradeSectionBtn');
+  const triggerBtn = document.querySelector('[data-action="add-grade-section"]');
+
+  // ✅ Named submit handler to prevent stacking
+  function handleAddSectionSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    fetch('/controllers/admin/submit-grade-section.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Section added.');
+          toggleModal('addGradeSectionModal', false);
+          form.reset();
+          refreshGradeSections(); // ✅ Only one call per success
+        } else {
+          renderFlash('error', data.error || 'Failed to add section.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error adding section.');
+      });
+  }
+
+  // ✅ Bind once only
+  if (triggerBtn && !triggerBtn.dataset.bound) {
+    triggerBtn.addEventListener('click', () => {
+      toggleModal('addGradeSectionModal', true);
+    });
+    triggerBtn.dataset.bound = 'true';
+  }
+
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('addGradeSectionModal', false);
+      form.reset();
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', handleAddSectionSubmit);
+    form.dataset.bound = 'true';
+  }
 }

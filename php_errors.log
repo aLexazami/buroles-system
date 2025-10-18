@@ -678,3 +678,37 @@ Stack trace:
 [18-Oct-2025 17:04:08 UTC] PHP Fatal error:  Failed opening required 'router.php' (include_path='.;C:\php\pear') in Unknown on line 0
 [18-Oct-2025 17:04:08 UTC] PHP Warning:  Unknown: Failed to open stream: No such file or directory in Unknown on line 0
 [18-Oct-2025 17:04:08 UTC] PHP Fatal error:  Failed opening required 'router.php' (include_path='.;C:\php\pear') in Unknown on line 0
+[19-Oct-2025 01:44:36 Asia/Manila] PHP Warning:  Undefined array key "SESSION_SECRET" in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[19-Oct-2025 01:44:36 Asia/Manila] PHP Deprecated:  hash(): Passing null to parameter #2 ($data) of type string is deprecated in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[19-Oct-2025 01:52:13 Asia/Manila] PHP Warning:  Undefined variable $sectionsByGrade in C:\buroles\workspace\buroles_system\pages\admin\grade-level-and-section.php on line 65
+[19-Oct-2025 01:52:13 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\grade-level-and-section.php on line 65
+[19-Oct-2025 02:08:23 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.grade_sections' doesn't exist in C:\buroles\workspace\buroles_system\api\get-grade-sections.php:7
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\api\get-grade-sections.php(7): PDO->query('\n  SELECT gs.id...')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-sections.php on line 7
+[19-Oct-2025 02:08:28 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.grade_sections' doesn't exist in C:\buroles\workspace\buroles_system\api\get-grade-sections.php:7
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\api\get-grade-sections.php(7): PDO->query('\n  SELECT gs.id...')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-sections.php on line 7
+[19-Oct-2025 02:08:29 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.grade_sections' doesn't exist in C:\buroles\workspace\buroles_system\api\get-grade-sections.php:7
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\api\get-grade-sections.php(7): PDO->query('\n  SELECT gs.id...')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-sections.php on line 7
+[19-Oct-2025 02:08:29 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.grade_sections' doesn't exist in C:\buroles\workspace\buroles_system\api\get-grade-sections.php:7
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\api\get-grade-sections.php(7): PDO->query('\n  SELECT gs.id...')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-sections.php on line 7
+[19-Oct-2025 02:08:42 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.grade_sections' doesn't exist in C:\buroles\workspace\buroles_system\api\get-grade-sections.php:7
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\api\get-grade-sections.php(7): PDO->query('\n  SELECT gs.id...')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-sections.php on line 7
+[19-Oct-2025 02:10:22 Asia/Manila] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'buroles_database.grade_sections' doesn't exist in C:\buroles\workspace\buroles_system\api\get-grade-sections.php:7
+Stack trace:
+#0 C:\buroles\workspace\buroles_system\api\get-grade-sections.php(7): PDO->query('\n  SELECT gs.id...')
+#1 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-sections.php on line 7

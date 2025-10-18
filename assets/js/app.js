@@ -4,11 +4,11 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal, setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler, initManageAccessButtons, setupDeleteCommentModal, initAttendanceModal, initAttendanceHandler, initAddStudentModal, initAddStudentHandler, initCreateAdvisoryModal, initCreateAdvisoryHandler,initGradeLevelModal, initGradeLevelHandler, initGradeLevelEditHandler,initGradeLevelDeleteModal } from './modal.js';
+import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal, setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler, initManageAccessButtons, setupDeleteCommentModal, initAttendanceModal, initAttendanceHandler, initAddStudentModal, initAddStudentHandler, initCreateAdvisoryModal, initCreateAdvisoryHandler, initGradeLevelModal, initGradeLevelHandler, initGradeLevelEditHandler, initGradeLevelDeleteModal, initGradeSectionEditHandler,initGradeSectionDeleteModal,initGradeSectionModal } from './modal.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
-import { refreshGradeLevels } from './grade-level-and-section.js';
+import { refreshGradeLevels,refreshGradeSections } from './grade-level-and-section.js';
 
 // Search Filters (Unified)
 import { setupSearchFilter } from './search-filter.js';
@@ -173,6 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDeleteCommentModal();
   initGradeLevelModal();
   initGradeLevelDeleteModal();
+  initGradeSectionDeleteModal();
+  initGradeSectionModal();
 
 
 
@@ -183,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initShareHandler();
   initGradeLevelHandler();
   initGradeLevelEditHandler();
+  initGradeSectionEditHandler();
 
   // Badge Updater
   startBadgePolling();
@@ -205,7 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshGradeLevels();
   }
 
-
+  if (document.getElementById('gradeSectionTableBody')) {
+    refreshGradeSections();
+  }
 
   if (document.getElementById('feedbackTableContainer')) {
     setupTableSorter({

@@ -22,8 +22,6 @@ renderHead('Admin');
 
       <!-- Grade Level Table + Add/Edit Modal -->
       <div class="mb-8">
-        <h2 class="text-lg font-semibold mb-2">Grade Levels</h2>
-
         <div class="flex justify-start mb-4">
           <button data-action="add-grade-level" class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 cursor-pointer text-sm sm:text-base">
             <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4 mr-2">
@@ -32,14 +30,14 @@ renderHead('Admin');
         </div>
 
         <table class="min-w-full table-auto bg-white rounded shadow overflow-hidden">
-          <thead class="bg-emerald-600 text-white text-center text-xs sm:text-sm">
+          <thead class="bg-emerald-600 text-white text-left text-xs sm:text-sm">
             <tr>
-              <th class="p-2">Level</th>
-              <th class="p-2">Label</th>
-              <th class="p-2">Actions</th>
+              <th class="py-2 px-4">Level</th>
+              <th class="py-2 px-4">Label</th>
+              <th class="py-2 px-4">Actions</th>
             </tr>
           </thead>
-          <tbody id="gradeLevelTableBody" class="text-sm text-gray-800 text-center">
+          <tbody id="gradeLevelTableBody" class="text-sm text-gray-800 text-left">
             <!-- Rows will be injected by JS -->
           </tbody>
         </table>
@@ -47,9 +45,34 @@ renderHead('Admin');
       </div>
 
       <!-- Section Table + Add/Edit Modal -->
-      <div>
-        <h2 class="text-lg font-semibold mb-2">Grade Sections</h2>
-        <!-- Table and modal logic here -->
+      <div class="mb-8">
+        <!-- Add Section Button -->
+        <div class="flex justify-start mb-4">
+          <button data-action="add-grade-section" class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 cursor-pointer text-sm sm:text-base">
+            <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4 mr-2">
+            <span>Add Section</span>
+          </button>
+        </div>
+
+        <!-- Section Table -->
+        <table class="min-w-full table-auto bg-white rounded shadow overflow-hidden">
+          <thead class="bg-emerald-600 text-white text-left text-xs sm:text-sm">
+            <tr>
+              <th class="py-2 px-4">Grade Level</th>
+              <th class="py-2 px-4">Section Label</th>
+              <th class="py-2 px-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="gradeSectionTableBody" class="text-sm text-gray-800 text-left">
+            <!-- Rows will be injected by JS -->
+          </tbody>
+        </table>
+
+        <!-- Fallback for Empty Section List -->
+        <div id="sectionFallback" class="bg-white  rounded-b flex shadow flex-col items-center justify-center py-10 text-gray-500 text-xs sm:text-sm hidden">
+          <img src="/assets/img/empty-section.png" alt="No sections" class="w-16 h-16 mb-4 opacity-50">
+          <p>No sections found. Click “Add Section” to create one.</p>
+        </div>
       </div>
     </section>
   </main>
