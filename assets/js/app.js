@@ -4,7 +4,7 @@ import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal, setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler, initManageAccessButtons, setupDeleteCommentModal} from './modal.js';
+import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal, setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler, initManageAccessButtons, setupDeleteCommentModal, initAttendanceModal, initAttendanceHandler, initAddStudentModal, initAddStudentHandler, initCreateAdvisoryModal, initCreateAdvisoryHandler,initGradeLevelModal, initGradeLevelHandler, initGradeLevelEditHandler,initGradeLevelDeleteModal } from './modal.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
@@ -22,33 +22,34 @@ import { setupRoleCheckboxToggle } from './checkbox.js';
 import { startRedirectCountdown } from './redirect-utils.js';
 import { initEmailAutocomplete } from './search-autocomplete.js';
 import { initFileSearch } from './file-search.js';
+import { initClassAdvisory } from './teacher/class-advisory.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 🧪 Global Error Logger
-window.addEventListener('error', (event) => {
-  fetch('/log/client-error.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: event.message,
-      source: event.filename,
-      line: event.lineno,
-      column: event.colno,
-      error: event.error?.stack || null, // ✅ capture stack trace if available
-      userAgent: navigator.userAgent,
-      timestamp: new Date().toISOString()
-    })
+  window.addEventListener('error', (event) => {
+    fetch('/log/client-error.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: event.message,
+        source: event.filename,
+        line: event.lineno,
+        column: event.colno,
+        error: event.error?.stack || null, // ✅ capture stack trace if available
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+      })
+    });
   });
-});
 
-// 🧪 Feature Usage Logger
-window.logFeature = function (action, details = {}) {
-  fetch('/log/feature-usage.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action, details })
-  });
-};
+  // 🧪 Feature Usage Logger
+  window.logFeature = function (action, details = {}) {
+    fetch('/log/feature-usage.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, details })
+    });
+  };
   // 📁 File Manager Initialization
   // ✅ Only run file manager logic on file-manager.php
   if (window.location.pathname.includes('/file-manager.php')) {
@@ -78,7 +79,7 @@ window.logFeature = function (action, details = {}) {
         break;
 
       case 'comments':
-        import('./file-manager.js').then(({ loadUserComments, loadReceivedComments,toggleActive }) => {
+        import('./file-manager.js').then(({ loadUserComments, loadReceivedComments, toggleActive }) => {
           // Load default view
           loadUserComments();
 
@@ -109,6 +110,29 @@ window.logFeature = function (action, details = {}) {
         break;
     }
   }
+
+  if (window.location.pathname.includes('/class-advisory.php')) {
+    initClassAdvisory();
+    initAttendanceModal();
+    initAddStudentModal();
+    initAddStudentHandler();
+    initAttendanceHandler();
+    initCreateAdvisoryModal();
+    initCreateAdvisoryHandler();
+    const viewClassBtn = document.getElementById('viewClassBtn');
+    const advisoryContainer = document.getElementById('advisoryContainer');
+
+    if (viewClassBtn && advisoryContainer) {
+      viewClassBtn.addEventListener('click', () => {
+        advisoryContainer.classList.remove('hidden');
+        import('./teacher/class-advisory.js').then(({ initClassAdvisory }) => {
+          initClassAdvisory();
+        });
+      });
+    }
+
+  }
+
 
 
 
@@ -144,15 +168,20 @@ window.logFeature = function (action, details = {}) {
   setupRestoreModal();
   setupPermanentDeleteModal();
   setupEmptyTrashModal();
-  setupRenameModalHandler();
-  initShareHandler();
   initManageAccessButtons();
   setupDeleteCommentModal();
+  initGradeLevelModal();
+  initGradeLevelDeleteModal();
+
 
 
   // Handler
   initFolderCreationHandler();
   initUploadHandler();
+  setupRenameModalHandler();
+  initShareHandler();
+  initGradeLevelHandler();
+  initGradeLevelEditHandler();
 
   // Badge Updater
   startBadgePolling();

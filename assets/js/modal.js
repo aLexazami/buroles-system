@@ -32,6 +32,7 @@ export function toggleModal(modalId, show) {
     modal.addEventListener('transitionend', handleTransitionEnd);
   }
 }
+
 //  Password Modal Logic
 let pendingPasswordHref = '';
 
@@ -861,8 +862,6 @@ export function setupDeleteCommentModal() {
   }
 }
 
-
-
 // Empty Trash All Items in Filde Manager
 export function setupEmptyTrashModal() {
   const emptyTrashBtn = document.getElementById('empty-trash-btn');
@@ -1276,4 +1275,349 @@ function renderAccessList(users = []) {
   });
 
   updateSubmitButtonLabel();
+}
+
+// Attendance Modals in class-advisory.php
+export function initAttendanceModal() {
+  const cancelBtn = document.getElementById('cancelAttendanceBtn');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => toggleModal('attendanceModal', false));
+  }
+
+  window.openAttendanceModal = function(studentId) {
+    const input = document.getElementById('attendanceStudentId');
+    if (input) {
+      input.value = studentId;
+      toggleModal('attendanceModal', true);
+    }
+  };
+}
+
+export function initAttendanceHandler() {
+  const form = document.getElementById('attendanceForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const studentId = form.querySelector('[name="student_id"]')?.value;
+    const status = form.querySelector('[name="status"]')?.value;
+
+    if (!studentId || !status) {
+      renderFlash('error', 'Please select a valid attendance status.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('student_id', studentId);
+    formData.append('status', status);
+
+    fetch('/controllers/teacher/submit-attendance.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Attendance marked successfully.');
+          toggleModal('attendanceModal', false);
+          form.reset();
+        } else {
+          renderFlash('error', data.error || 'Failed to mark attendance.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error submitting attendance.');
+      });
+  });
+}
+
+// Add Student Modal in class-advisory.php
+export function initAddStudentModal() {
+  const cancelBtn = document.getElementById('cancelAddStudentBtn');
+  const openBtn = document.querySelector('[data-action="add-student"]');
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => toggleModal('addStudentModal', false));
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener('click', () => {
+      toggleModal('addStudentModal', true);
+    });
+  }
+}
+
+export function initAddStudentHandler() {
+  const form = document.getElementById('addStudentForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    fetch('/controllers/teacher/submit-student.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Student added successfully.');
+          toggleModal('addStudentModal', false);
+          form.reset();
+          // Optionally reload advisory list
+          import('./teacher/class-advisory.js').then(({ initClassAdvisory }) => {
+            initClassAdvisory();
+          });
+        } else {
+          renderFlash('error', data.error || 'Failed to add student.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error adding student.');
+      });
+  });
+}
+
+// Class Advisory Modal in class-advisory.php
+export function initCreateAdvisoryModal() {
+  const cancelBtn = document.getElementById('cancelCreateAdvisoryBtn');
+  const openBtn = document.querySelector('[data-action="create-advisory"]');
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => toggleModal('createAdvisoryModal', false));
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener('click', () => {
+      toggleModal('createAdvisoryModal', true);
+    });
+  }
+}
+
+export function initCreateAdvisoryHandler() {
+  const form = document.getElementById('createAdvisoryForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    fetch('/controllers/teacher/submit-advisory.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Advisory class created.');
+          toggleModal('createAdvisoryModal', false);
+          form.reset();
+          import('./teacher/class-advisory.js').then(({ initClassAdvisory }) => {
+            initClassAdvisory();
+          });
+        } else {
+          renderFlash('error', data.error || 'Failed to create advisory class.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error creating advisory class.');
+      });
+  });
+}
+
+// Grade Level Modal
+export function initGradeLevelModal() {
+  const modalId = 'addGradeLevelModal';
+  const form = document.getElementById('addGradeLevelForm');
+  const openBtn = document.querySelector('[data-action="add-grade-level"]');
+  const cancelBtn = document.getElementById('cancelAddGradeLevelBtn');
+  const backdrop = document.querySelector(`#${modalId} > .absolute.inset-0`);
+
+  // Open modal
+  if (openBtn) {
+    openBtn.addEventListener('click', () => {
+      toggleModal(modalId, true);
+    });
+  }
+
+  // Cancel button closes and resets
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal(modalId, false);
+      if (form) form.reset();
+    });
+  }
+
+  // Backdrop click closes and resets
+  if (backdrop) {
+    backdrop.addEventListener('click', () => {
+      toggleModal(modalId, false);
+      if (form) form.reset();
+    });
+  }
+}
+
+export function initGradeLevelHandler() {
+  const form = document.getElementById('addGradeLevelForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const levelInput = form.querySelector('[name="level"]');
+    const labelInput = form.querySelector('[name="label"]');
+
+    const levelRaw = levelInput.value.trim();
+    const label = labelInput.value.trim();
+
+    // Validate level is a positive integer
+    if (!/^\d+$/.test(levelRaw)) {
+      renderFlash('error', 'Grade level must be a valid number.');
+      levelInput.focus();
+      return;
+    }
+
+    // Validate label is not empty
+    if (label === '') {
+      renderFlash('error', 'Label is required.');
+      labelInput.focus();
+      return;
+    }
+
+    const formData = new FormData();
+    formData.set('level', parseInt(levelRaw, 10)); // convert to int
+    formData.set('label', label);
+
+    fetch('/controllers/admin/submit-grade-level.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Grade level added.');
+          toggleModal('addGradeLevelModal', false);
+          form.reset();
+          import('./admin/grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+            refreshGradeLevels(); // Optional: reload table
+          });
+        } else {
+          renderFlash('error', data.error || 'Failed to add grade level.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error adding grade level.');
+      });
+  });
+}
+
+//Edit Grades Modal in grade-level-and-section.php
+export function initGradeLevelEditHandler() {
+  const form = document.getElementById('editGradeLevelForm');
+  const cancelBtn = document.getElementById('cancelEditGradeLevelBtn');
+
+  document.querySelectorAll('.edit-grade-level').forEach(button => {
+    button.addEventListener('click', () => {
+      document.getElementById('editGradeLevelId').value = button.dataset.id;
+      document.getElementById('editLevel').value = button.dataset.level;
+      document.getElementById('editLabel').value = button.dataset.label;
+      toggleModal('editGradeLevelModal', true);
+    });
+  });
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('editGradeLevelModal', false);
+      form.reset();
+    });
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    fetch('/controllers/admin/update-grade-level.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Grade level updated.');
+          toggleModal('editGradeLevelModal', false);
+          form.reset();
+          import('./admin/grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+            refreshGradeLevels();
+          });
+        } else {
+          renderFlash('error', data.error || 'Failed to update grade level.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error updating grade level.');
+      });
+  });
+}
+
+// Delete Grades Modal in grade-level-and-section.php
+export function initGradeLevelDeleteModal() {
+  const modalId = 'confirmDeleteGradeLevelModal';
+  const form = document.getElementById('deleteGradeLevelForm');
+  const cancelBtn = document.getElementById('cancelDeleteGradeLevelBtn');
+  const labelSpan = document.getElementById('deleteGradeLevelLabel');
+  const hiddenId = document.getElementById('deleteGradeLevelId');
+
+  // Bind delete buttons
+  document.querySelectorAll('.delete-grade-level').forEach(button => {
+    button.addEventListener('click', () => {
+      const id = button.dataset.id;
+      const label = button.dataset.label;
+
+      hiddenId.value = id;
+      labelSpan.textContent = label;
+
+      toggleModal(modalId, true);
+    });
+  });
+
+  // Cancel button
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal(modalId, false);
+      form.reset();
+    });
+  }
+
+  // Submit deletion
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    fetch('/controllers/admin/delete-grade-level.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Grade level deleted.');
+          toggleModal(modalId, false);
+          form.reset();
+          import('./admin/grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+            refreshGradeLevels();
+          });
+        } else {
+          renderFlash('error', data.error || 'Failed to delete grade level.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error deleting grade level.');
+      });
+  });
 }
