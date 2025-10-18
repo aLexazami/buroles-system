@@ -16,7 +16,7 @@ $publicPages = [
     'faqs.php',
     '404.php',
     '500.php',
-    'client-error.php',        // ✅ Add this
+    'client-error.php',
   'feature-usage.php',
 ];
 
