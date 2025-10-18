@@ -1502,7 +1502,7 @@ export function initGradeLevelHandler() {
           renderFlash('success', 'Grade level added.');
           toggleModal('addGradeLevelModal', false);
           form.reset();
-          import('./admin/grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+          import('./grade-level-and-section.js').then(({ refreshGradeLevels }) => {
             refreshGradeLevels(); // Optional: reload table
           });
         } else {
@@ -1551,7 +1551,7 @@ export function initGradeLevelEditHandler() {
           renderFlash('success', 'Grade level updated.');
           toggleModal('editGradeLevelModal', false);
           form.reset();
-          import('./admin/grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+          import('./grade-level-and-section.js').then(({ refreshGradeLevels }) => {
             refreshGradeLevels();
           });
         } else {
@@ -1565,59 +1565,70 @@ export function initGradeLevelEditHandler() {
 }
 
 // Delete Grades Modal in grade-level-and-section.php
-export function initGradeLevelDeleteModal() {
-  const modalId = 'confirmDeleteGradeLevelModal';
+// 🧼 Hoisted submit handler — stable reference
+function handleDeleteSubmit(e) {
+  e.preventDefault();
   const form = document.getElementById('deleteGradeLevelForm');
-  const cancelBtn = document.getElementById('cancelDeleteGradeLevelBtn');
-  const labelSpan = document.getElementById('deleteGradeLevelLabel');
-  const hiddenId = document.getElementById('deleteGradeLevelId');
+  if (!form) return;
 
-  // Bind delete buttons
-  document.querySelectorAll('.delete-grade-level').forEach(button => {
-    button.addEventListener('click', () => {
-      const id = button.dataset.id;
-      const label = button.dataset.label;
+  const formData = new FormData(form);
 
-      hiddenId.value = id;
-      labelSpan.textContent = label;
-
-      toggleModal(modalId, true);
+  fetch('/controllers/admin/delete-grade-level.php', {
+    method: 'POST',
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        renderFlash('success', 'Grade level deleted.');
+        toggleModal('confirmDeleteGradeLevelModal', false);
+        form.reset();
+        import('./grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+          refreshGradeLevels();
+        });
+      } else {
+        renderFlash('error', data.error || 'Failed to delete grade level.');
+      }
+    })
+    .catch(() => {
+      renderFlash('error', 'Error deleting grade level.');
     });
+}
+
+// 🧼 Hoisted click handler — stable reference
+function handleDeleteClick(e) {
+  const button = e.currentTarget;
+  const hiddenId = document.getElementById('deleteGradeLevelId');
+  const labelSpan = document.getElementById('deleteGradeLevelLabel');
+
+  if (!hiddenId || !labelSpan) return;
+
+  hiddenId.value = button.dataset.id;
+  labelSpan.textContent = button.dataset.label;
+  toggleModal('confirmDeleteGradeLevelModal', true);
+}
+
+export function initGradeLevelDeleteModal() {
+  const form = document.getElementById('deleteGradeLevelForm');
+  if (!form) return;
+
+  const cancelBtn = document.getElementById('cancelDeleteGradeLevelBtn');
+
+  // Bind delete buttons safely
+  document.querySelectorAll('.delete-grade-level').forEach(button => {
+    button.removeEventListener('click', handleDeleteClick);
+    button.addEventListener('click', handleDeleteClick);
   });
 
   // Cancel button
   if (cancelBtn) {
     cancelBtn.addEventListener('click', () => {
-      toggleModal(modalId, false);
+      toggleModal('confirmDeleteGradeLevelModal', false);
       form.reset();
     });
   }
 
-  // Submit deletion
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(form);
-
-    fetch('/controllers/admin/delete-grade-level.php', {
-      method: 'POST',
-      body: formData
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          renderFlash('success', 'Grade level deleted.');
-          toggleModal(modalId, false);
-          form.reset();
-          import('./admin/grade-level-and-section.js').then(({ refreshGradeLevels }) => {
-            refreshGradeLevels();
-          });
-        } else {
-          renderFlash('error', data.error || 'Failed to delete grade level.');
-        }
-      })
-      .catch(() => {
-        renderFlash('error', 'Error deleting grade level.');
-      });
-  });
+  // Prevent double submission
+  form.removeEventListener('submit', handleDeleteSubmit);
+  form.addEventListener('submit', handleDeleteSubmit);
 }

@@ -39,28 +39,8 @@ renderHead('Admin');
               <th class="p-2">Actions</th>
             </tr>
           </thead>
-          <tbody class="text-sm text-gray-800 text-center">
-            <?php foreach ($gradeLevels as $g): ?>
-              <tr class="border-t hover:bg-gray-50">
-                <td class="px-4 py-2"><?= $g['level'] ?></td>
-                <td class="px-4 py-2"><?= htmlspecialchars($g['label']) ?></td>
-                <td class="px-4 py-2 space-x-2">
-                  <button
-                    class="edit-grade-level text-blue-600 hover:underline text-xs"
-                    data-id="<?= $g['id'] ?>"
-                    data-level="<?= $g['level'] ?>"
-                    data-label="<?= htmlspecialchars($g['label']) ?>">
-                    Edit
-                  </button>
-                  <button
-                    class="delete-grade-level text-red-600 hover:underline text-xs"
-                    data-id="<?= $g['id'] ?>"
-                    data-label="<?= htmlspecialchars($g['label']) ?>">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            <?php endforeach; ?>
+          <tbody id="gradeLevelTableBody" class="text-sm text-gray-800 text-center">
+            <!-- Rows will be injected by JS -->
           </tbody>
         </table>
 

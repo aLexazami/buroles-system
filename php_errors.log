@@ -643,3 +643,38 @@ Stack trace:
 [18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
 [18-Oct-2025 16:28:48 Asia/Manila] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 41
 [18-Oct-2025 16:28:48 Asia/Manila] PHP Warning:  Undefined array key "href" in C:\buroles\workspace\buroles_system\includes\side-nav-admin.php on line 42
+[18-Oct-2025 15:38:20 UTC] PHP Warning:  require_once(C:\buroles\workspace\buroles_system\api/../../auth/session.php): Failed to open stream: No such file or directory in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:38:20 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\buroles\workspace\buroles_system\api/../../auth/session.php' (include_path='.;C:\php\pear') in C:\buroles\workspace\buroles_system\api\get-grade-levels.php:2
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:38:41 UTC] PHP Warning:  require_once(C:\buroles\workspace\buroles_system\api/../../auth/session.php): Failed to open stream: No such file or directory in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:38:41 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\buroles\workspace\buroles_system\api/../../auth/session.php' (include_path='.;C:\php\pear') in C:\buroles\workspace\buroles_system\api\get-grade-levels.php:2
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:38:54 UTC] PHP Warning:  require_once(C:\buroles\workspace\buroles_system\api/../../auth/session.php): Failed to open stream: No such file or directory in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:38:54 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\buroles\workspace\buroles_system\api/../../auth/session.php' (include_path='.;C:\php\pear') in C:\buroles\workspace\buroles_system\api\get-grade-levels.php:2
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:41:44 UTC] PHP Warning:  require_once(C:\buroles\workspace\buroles_system\api/../../auth/session.php): Failed to open stream: No such file or directory in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:41:44 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\buroles\workspace\buroles_system\api/../../auth/session.php' (include_path='.;C:\php\pear') in C:\buroles\workspace\buroles_system\api\get-grade-levels.php:2
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:41:50 UTC] PHP Warning:  require_once(C:\buroles\workspace\buroles_system\api/../../auth/session.php): Failed to open stream: No such file or directory in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 15:41:50 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\buroles\workspace\buroles_system\api/../../auth/session.php' (include_path='.;C:\php\pear') in C:\buroles\workspace\buroles_system\api\get-grade-levels.php:2
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\api\get-grade-levels.php on line 2
+[18-Oct-2025 17:04:02 UTC] PHP Warning:  Unknown: Failed to open stream: No such file or directory in Unknown on line 0
+[18-Oct-2025 17:04:02 UTC] PHP Fatal error:  Failed opening required 'router.php' (include_path='.;C:\php\pear') in Unknown on line 0
+[18-Oct-2025 17:04:02 UTC] PHP Warning:  Unknown: Failed to open stream: No such file or directory in Unknown on line 0
+[18-Oct-2025 17:04:02 UTC] PHP Fatal error:  Failed opening required 'router.php' (include_path='.;C:\php\pear') in Unknown on line 0
+[18-Oct-2025 17:04:07 UTC] PHP Warning:  Unknown: Failed to open stream: No such file or directory in Unknown on line 0
+[18-Oct-2025 17:04:07 UTC] PHP Fatal error:  Failed opening required 'router.php' (include_path='.;C:\php\pear') in Unknown on line 0
+[18-Oct-2025 17:04:08 UTC] PHP Warning:  Unknown: Failed to open stream: No such file or directory in Unknown on line 0
+[18-Oct-2025 17:04:08 UTC] PHP Fatal error:  Failed opening required 'router.php' (include_path='.;C:\php\pear') in Unknown on line 0
+[18-Oct-2025 17:04:08 UTC] PHP Warning:  Unknown: Failed to open stream: No such file or directory in Unknown on line 0
+[18-Oct-2025 17:04:08 UTC] PHP Fatal error:  Failed opening required 'router.php' (include_path='.;C:\php\pear') in Unknown on line 0

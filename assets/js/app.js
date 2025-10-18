@@ -8,6 +8,7 @@ import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnno
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
+import { refreshGradeLevels } from './grade-level-and-section.js';
 
 // Search Filters (Unified)
 import { setupSearchFilter } from './search-filter.js';
@@ -198,6 +199,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('recipientEmailInput')) {
     initEmailAutocomplete();
   }
+
+  if (document.getElementById('gradeLevelTableBody')) {
+    console.log('Calling refreshGradeLevels()'); // 🔍 Add this
+    refreshGradeLevels();
+  }
+
+
 
   if (document.getElementById('feedbackTableContainer')) {
     setupTableSorter({
