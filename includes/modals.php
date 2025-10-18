@@ -163,3 +163,83 @@
     </form>
   </div>
 </div>
+
+<!-- 📝 Edit Grade Section Modal -->
+<div id="editGradeSectionModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4">Edit Grade Section</h2>
+    <form id="editGradeSectionForm">
+      <input type="hidden" name="id" id="editGradeSectionId">
+
+      <!-- Grade Level Selector -->
+      <div class="mb-4">
+        <label for="editGradeSectionLevel" class="block text-sm text-gray-600 mb-1">Grade Level</label>
+        <select name="grade_level_id" id="editGradeSectionLevel" required class="w-full border rounded px-3 py-2">
+          <?php foreach ($gradeLevels as $g): ?>
+            <option value="<?= $g['id'] ?>"><?= htmlspecialchars($g['label']) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+
+      <!-- Section Label -->
+      <div class="mb-6">
+        <label for="editGradeSectionLabel" class="block text-sm text-gray-600 mb-1">Section Label</label>
+        <input type="text" name="section_label" id="editGradeSectionLabel" required class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelEditGradeSectionBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-emerald-600 hover:bg-emerald-700 rounded text-sm cursor-pointer">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 🗑️ Confirm Delete Grade Section Modal -->
+<div id="confirmDeleteGradeSectionModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-red-500">
+    <h2 class="text-xl sm:text-2xl mb-4 text-red-700">Delete Section</h2>
+    <p class="mb-4 text-sm text-gray-700">
+      Are you sure you want to delete <span id="deleteGradeSectionLabel" class="font-semibold text-red-600"></span>?
+    </p>
+    <form id="deleteGradeSectionForm">
+      <input type="hidden" name="id" id="deleteGradeSectionId">
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelDeleteGradeSectionBtn" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm cursor-pointer">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ➕ Add Grade Section Modal -->
+<div id="addGradeSectionModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4">Add Grade Section</h2>
+    <form id="addGradeSectionForm">
+      <!-- Grade Level Selector -->
+      <div class="mb-4">
+        <label for="addGradeSectionLevel" class="block text-sm text-gray-600 mb-1">Grade Level</label>
+        <select name="grade_level_id" id="addGradeSectionLevel" required class="w-full border rounded px-3 py-2">
+          <?php foreach ($gradeLevels as $g): ?>
+            <option value="<?= $g['id'] ?>"><?= htmlspecialchars($g['label']) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+
+      <!-- Section Label -->
+      <div class="mb-6">
+        <label for="addGradeSectionLabel" class="block text-sm text-gray-600 mb-1">Section Label</label>
+        <input type="text" name="section_label" id="addGradeSectionLabel" required class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelAddGradeSectionBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-emerald-600 hover:bg-emerald-700 rounded text-sm cursor-pointer">Add Section</button>
+      </div>
+    </form>
+  </div>
+</div>
