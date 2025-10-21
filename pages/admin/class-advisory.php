@@ -35,13 +35,13 @@ renderHead('Admin');
       </div>
 
       <!-- Staff Adviser Table -->
-      <div class="overflow-auto">
-        <table class="min-w-full table-auto bg-white rounded shadow overflow-hidden">
+      <div class="w-full overflow-x-auto">
+          <table class="min-w-[640px] w-full table-auto bg-white rounded shadow overflow-hidden">
           <thead class="bg-emerald-600 text-white text-left text-xs sm:text-sm">
             <tr>
               <th class="py-2 px-4">Name</th>
               <th class="py-2 px-4">Email</th>
-              <th class="py-2 px-4">Actions</th>
+              <th class="py-2 px-4 flex flex-wrap justify-start sm:justify-center">Actions</th>
             </tr>
           </thead>
           <tbody class="text-sm text-gray-800 text-left">
@@ -57,7 +57,7 @@ renderHead('Admin');
                     </div>
                   </td>
                   <td class="py-2 px-4"><?= htmlspecialchars($staff['email']) ?></td>
-                  <td class="py-2 px-4">
+                  <td class="px-4 py-2 flex flex-wrap gap-2 justify-start sm:justify-center">
                     <div class="relative">
                       <a href="/pages/admin/manage-advisory.php?user_id=<?= $staff['id'] ?>" class="peer rounded-full p-2 hover:bg-blue-100 hover:scale-110 transition-transform duration-200 cursor-pointer inline-block">
                         <img src="/assets/img/manage-advisory-icon.png" alt="Manage Advisory" class="w-8 h-8" />
