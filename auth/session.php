@@ -18,6 +18,7 @@ $publicPages = [
     '500.php',
     'client-error.php',
   'feature-usage.php',
+  'submit-school-year.php',
 ];
 
 $currentPage = basename($_SERVER['PHP_SELF']);

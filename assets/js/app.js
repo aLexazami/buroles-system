@@ -1,29 +1,30 @@
 // UI & Role Toggles
-import { setupMenuToggle, setupSidebarToggle, initMenuToggle, initActionMenu } from './menu-toggle.js';
+import { initActionMenu, initMenuToggle, setupMenuToggle, setupSidebarToggle } from './menu-toggle.js';
 import { setupRoleSwitcher } from './role-switcher.js';
 import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
-import { initPasswordButtons, initUnlockButtons, initAnnouncementModal, initAnnouncementTriggers, initUploadModal, initCreateFolderModal, setupDeleteModal, initFolderCreationHandler, initUploadHandler, setupRestoreModal, setupPermanentDeleteModal, setupEmptyTrashModal, setupRenameModalHandler, initShareHandler, initManageAccessButtons, setupDeleteCommentModal, initAttendanceModal, initAttendanceHandler, initAddStudentModal, initAddStudentHandler, initCreateAdvisoryModal, initCreateAdvisoryHandler, initGradeLevelModal, initGradeLevelHandler, initGradeLevelEditHandler, initGradeLevelDeleteModal, initGradeSectionEditHandler,initGradeSectionDeleteModal,initGradeSectionModal } from './modal.js';
+import { initDropdownMenus, initNotificationActions, setupRecipientDropdown } from './dropdown.js';
+import { initAddStudentHandler, initAddStudentModal, initAnnouncementModal, initAnnouncementTriggers, initAttendanceHandler, initAttendanceModal, initCreateAdvisoryHandler, initCreateAdvisoryModal, initCreateFolderModal, initFolderCreationHandler, initGradeLevelHandler, initGradeLevelModal, initGradeLevelSectionSync, initGradeSectionModal, initManageAccessButtons, initPasswordButtons, initShareHandler, initUnlockButtons, initUploadHandler, initUploadModal, setupDeleteCommentModal, setupDeleteModal, setupEmptyTrashModal, setupPermanentDeleteModal, setupRenameModalHandler, setupRestoreModal,initSchoolYearModal } from './modal.js';
+import { refreshGradeLevels, refreshGradeSections,refreshSchoolYears } from './school-management/school-tools.js';
+import { initAdvisoryGrid } from '/assets/js/school-management/create-advisory.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
-import { initDropdownMenus, setupRecipientDropdown, initNotificationActions } from './dropdown.js';
-import { refreshGradeLevels,refreshGradeSections } from './grade-level-and-section.js';
 
 // Search Filters (Unified)
 import { setupSearchFilter } from './search-filter.js';
 
 // Preview
-import { setupAvatarPreview } from './avatar-preview.js';
-import { initPasswordStrength, toggleVisibility } from './password-utils.js';
-import { startBadgePolling } from './badge-updater.js';
-import { setupTableSorter } from '/assets/js/table-sorter.js';
 import { setupAnnouncementPagination } from './announcementCarousel.js';
+import { setupAvatarPreview } from './avatar-preview.js';
+import { startBadgePolling } from './badge-updater.js';
 import { setupRoleCheckboxToggle } from './checkbox.js';
+import { initFileSearch } from './file-search.js';
+import { initPasswordStrength, toggleVisibility } from './password-utils.js';
 import { startRedirectCountdown } from './redirect-utils.js';
 import { initEmailAutocomplete } from './search-autocomplete.js';
-import { initFileSearch } from './file-search.js';
-import { initClassAdvisory } from './teacher/class-advisory.js';
+import { setupTableSorter } from '/assets/js/table-sorter.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
   // 🧪 Global Error Logger
@@ -113,25 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (window.location.pathname.includes('/class-advisory.php')) {
-    initClassAdvisory();
     initAttendanceModal();
     initAddStudentModal();
     initAddStudentHandler();
     initAttendanceHandler();
-    initCreateAdvisoryModal();
-    initCreateAdvisoryHandler();
-    const viewClassBtn = document.getElementById('viewClassBtn');
-    const advisoryContainer = document.getElementById('advisoryContainer');
-
-    if (viewClassBtn && advisoryContainer) {
-      viewClassBtn.addEventListener('click', () => {
-        advisoryContainer.classList.remove('hidden');
-        import('./teacher/class-advisory.js').then(({ initClassAdvisory }) => {
-          initClassAdvisory();
-        });
-      });
-    }
-
   }
 
 
@@ -172,11 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initManageAccessButtons();
   setupDeleteCommentModal();
   initGradeLevelModal();
-  initGradeLevelDeleteModal();
-  initGradeSectionDeleteModal();
   initGradeSectionModal();
-
-
+  initCreateAdvisoryModal();
+  initGradeLevelSectionSync();
+  initSchoolYearModal();
+  initAdvisoryGrid();
 
   // Handler
   initFolderCreationHandler();
@@ -184,8 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupRenameModalHandler();
   initShareHandler();
   initGradeLevelHandler();
-  initGradeLevelEditHandler();
-  initGradeSectionEditHandler();
+  initCreateAdvisoryHandler();
 
   // Badge Updater
   startBadgePolling();
@@ -204,12 +189,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (document.getElementById('gradeLevelTableBody')) {
-    console.log('Calling refreshGradeLevels()'); // 🔍 Add this
     refreshGradeLevels();
   }
 
   if (document.getElementById('gradeSectionTableBody')) {
     refreshGradeSections();
+  }
+
+   if (document.getElementById('schoolYearTableBody')) {
+    refreshSchoolYears();
   }
 
   if (document.getElementById('feedbackTableContainer')) {

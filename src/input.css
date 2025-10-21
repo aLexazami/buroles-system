@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
-/* Custom styles */
+/* Theme variables for formal and sans-serif fonts */
+:root {
+  --font-formal: Merriweather, Georgia, Cambria, "Times New Roman", serif;
+  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
+}
 
+/* Force Tailwind to include these font classes */
 .menu-link.show {
   opacity: 1;
   transform: translateY(0);

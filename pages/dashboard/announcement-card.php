@@ -4,7 +4,7 @@ $activeRoleId = $_SESSION['active_role_id'] ?? null;
 $isSuperAdmin = $user && (int)$user['role_id'] === 2 && (int)$activeRoleId === 2;
 ?>
 
-<div class="bg-gray-300 h-full relative">
+<div class="bg-white h-full relative">
   <!-- 🟩 Header -->
   <h2 class="bg-emerald-600 py-3 text-white text-center font-bold text-lg tracking-wide">
     Announcements

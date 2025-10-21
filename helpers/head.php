@@ -7,8 +7,10 @@ function renderHead($pageTitle = 'Burol Elementary School', $noIndex = false, $m
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>BESIMS [$pageTitle]</title>
     <link rel='icon' href='/assets/img/buroles-colored.png' type='image/png'>
-    <link rel='stylesheet' href='/dist/styles.20251017.css'>
+    <link rel='stylesheet' href='/src/styles.css'>
     <link href='https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css2?family=Merriweather&display=swap' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css2?family=Inter&display=swap' rel='stylesheet'>
     <meta name='description' content='Burol Elementary School Dashboard'>
     <meta name='author' content='Burol Dev Team'>
     <meta name='theme-color' content='#2c3e50'>";

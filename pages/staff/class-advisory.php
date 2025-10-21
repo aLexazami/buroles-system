@@ -21,33 +21,13 @@ renderHead('Teacher');
     <?php showFlash(); ?>
 
     <section class="p-4 sm:p-6 md:p-8">
-      <div class="bg-emerald-300 flex justify-between items-center gap-2 p-2 mb-5">
-        <div class="flex items-center gap-2">
+      <div  class="bg-emerald-300 flex justify-center items-center gap-2 p-2 mb-5">
+        <div class="flex justify-center items-center gap-2">
           <img src="/assets/img/class-advisory.png" class="w-5 h-5" alt="Class Advisory icon">
           <h1 class="font-bold text-md sm:text-lg">My Advisory Classes</h1>
         </div>
       </div>
 
-      <div class="flex justify-start mb-4">
-        <button data-action="create-advisory" class="flex items-center justify-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 cursor-pointer text-sm sm:text-base">
-          <img src="/assets/img/plus.png" alt="Plus" class="w-4 h-4 mr-2">
-          <span>Create Advisory Class</span>
-        </button>
-      </div>
-
-      <?php if ($advisoryClasses): ?>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          <?php foreach ($advisoryClasses as $class): ?>
-            <a href="/pages/staff/student-list.php?class_id=<?= $class['id'] ?>"
-               class="block bg-white border border-emerald-400 px-4 py-3 rounded shadow hover:bg-emerald-50 text-left text-sm sm:text-base">
-              <div class="font-semibold"><?= htmlspecialchars($class['name']) ?></div>
-              <div class="text-xs text-gray-600">Grade <?= $class['grade_level'] ?> - Section <?= htmlspecialchars($class['section']) ?></div>
-            </a>
-          <?php endforeach; ?>
-        </div>
-      <?php else: ?>
-        <p class="text-sm text-gray-500 mb-6">You have no advisory classes yet.</p>
-      <?php endif; ?>
     </section>
   </main>
 

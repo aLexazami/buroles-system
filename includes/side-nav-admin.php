@@ -16,14 +16,17 @@ $navSections = [
     ['label' => 'Feedback Report', 'href' => '/pages/admin/feedback-report.php', 'icon' => 'feedback-report.png']
   ],
   'School Management' => [
-    ['label' => 'Grade Levels and Sections', 'href' => '/pages/admin/grade-level-and-section.php', 'icon' => 'grade-level-and-section.png']
+    ['label' => 'Grade Levels', 'href' => '/pages/admin/grade-level.php', 'icon' => 'grade-level.png'],
+    ['label' => 'Grade Sections', 'href' => '/pages/admin/grade-section.php', 'icon' => 'grade-section.png'],
+    ['label' => 'School Years', 'href' => '/pages/admin/school-year.php', 'icon' => 'school-year.png'],
+    ['label' => 'Class Advisory', 'href' => '/pages/admin/class-advisory.php', 'icon' => 'class-advisory.png'],
 
   ]
 ];
 ?>
 
 <!-- Mobile Sidebar -->
-<div id="mobile-sidebar" class="fixed inset-0 z-50 bg-gray-300 w-72 max-w-full p-4 space-y-4 transform -translate-x-full transition-transform duration-300 md:hidden overflow-y-auto max-h-screen">
+<div id="mobile-sidebar" class="fixed inset-0 z-50 bg-white w-72 max-w-full p-4 space-y-4 transform -translate-x-full transition-transform duration-300 md:hidden overflow-y-auto max-h-screen">
 
   <!-- Profile Block -->
   <div class="flex flex-col items-center mt-5 mb-5">
@@ -52,7 +55,7 @@ $navSections = [
 </div>
 
 <!-- Desktop Sidebar -->
-<aside class="hidden md:flex flex-col bg-gray-300 h-full min-h-screen w-[64px] lg:w-[248px] shrink-0">
+<aside class="hidden md:flex flex-col bg-white shadow h-full min-h-screen w-[64px] lg:w-[248px] shrink-0">
 
   <!-- Profile Block (visible only on lg and up) -->
   <div class="hidden lg:flex flex-col items-center py-6">

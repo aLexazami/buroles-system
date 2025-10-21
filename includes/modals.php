@@ -43,9 +43,44 @@
   <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
     <h2 class="text-xl sm:text-2xl mb-4">Create Advisory Class</h2>
     <form id="createAdvisoryForm">
-      <input type="text" name="name" placeholder="Class name (e.g. Grade 4 - Section A)" required class="block w-full mb-3 border rounded px-3 py-2">
-      <input type="number" name="grade_level" placeholder="Grade level (e.g. 4)" required class="block w-full mb-3 border rounded px-3 py-2">
-      <input type="text" name="section" placeholder="Section (e.g. A)" required class="block w-full mb-4 border rounded px-3 py-2">
+      <input type="hidden" name="adviser_id" value="<?= $adviser['id'] ?>">
+
+      <!-- 📅 School Year (Fixed to Active) -->
+      <?php
+        $activeSchoolYear = null;
+        foreach ($schoolYears as $sy) {
+          if ($sy['is_active']) {
+            $activeSchoolYear = $sy;
+            break;
+          }
+        }
+      ?>
+      <?php if ($activeSchoolYear): ?>
+        <label class="block mb-2 text-sm font-medium">School Year</label>
+        <div class="mb-3 px-3 py-2 border rounded bg-gray-100 text-gray-700">
+          <?= htmlspecialchars($activeSchoolYear['label']) ?>
+        </div>
+        <input type="hidden" name="school_year_id" value="<?= $activeSchoolYear['id'] ?>">
+      <?php else: ?>
+        <div class="mb-3 text-red-600 text-sm">No active school year found. Please activate one first.</div>
+      <?php endif; ?>
+
+      <!-- 🏫 Grade Level -->
+      <label class="block mb-2 text-sm font-medium">Grade Level</label>
+      <select name="grade_level" id="gradeLevelSelect" required class="block w-full mb-3 border rounded px-3 py-2">
+        <option value="">Select grade level</option>
+        <?php foreach ($gradeLevels as $level): ?>
+          <option value="<?= $level['id'] ?>"><?= htmlspecialchars($level['label']) ?></option>
+        <?php endforeach; ?>
+      </select>
+
+      <!-- 🧩 Section -->
+      <label class="block mb-2 text-sm font-medium">Section</label>
+      <select name="section_id" id="sectionSelect" required class="block w-full mb-4 border rounded px-3 py-2" disabled>
+        <option value="">Select section</option>
+      </select>
+
+      <!-- 🎯 Actions -->
       <div class="flex justify-end gap-2">
         <button type="button" id="cancelCreateAdvisoryBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
         <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Create</button>
@@ -239,6 +274,156 @@
       <div class="flex justify-end gap-2">
         <button type="button" id="cancelAddGradeSectionBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
         <button type="submit" class="px-3 py-1 text-white bg-emerald-600 hover:bg-emerald-700 rounded text-sm cursor-pointer">Add Section</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ➕ Add School Year Modal -->
+<div id="addSchoolYearModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4">Add School Year</h2>
+    <form id="addSchoolYearForm">
+      <!-- Start Date -->
+      <div class="mb-4">
+        <label for="addSchoolYearStart" class="block text-sm text-gray-600 mb-1">Start Date</label>
+        <input type="date" name="start_date" id="addSchoolYearStart" required class="w-full border rounded px-3 py-2">
+      </div>
+
+      <!-- End Date -->
+      <div class="mb-4">
+        <label for="addSchoolYearEnd" class="block text-sm text-gray-600 mb-1">End Date</label>
+        <input type="date" name="end_date" id="addSchoolYearEnd" required class="w-full border rounded px-3 py-2">
+      </div>
+
+      <!-- Auto-generated Label -->
+      <div class="mb-6">
+        <label for="addSchoolYearLabel" class="block text-sm text-gray-600 mb-1">Label</label>
+        <input type="text" name="label" id="addSchoolYearLabel" readonly class="w-full border rounded px-3 py-2 bg-gray-100 text-gray-500">
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelAddSchoolYearBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-emerald-600 hover:bg-emerald-700 rounded text-sm cursor-pointer">Add School Year</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ✏️ Edit School Year Modal -->
+<div id="editSchoolYearModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4">Edit School Year</h2>
+    <form id="editSchoolYearForm">
+      <!-- Hidden ID -->
+      <input type="hidden" name="id" id="editSchoolYearId">
+
+      <!-- Start Date -->
+      <div class="mb-4">
+        <label for="editSchoolYearStart" class="block text-sm text-gray-600 mb-1">Start Date</label>
+        <input type="date" name="start_date" id="editSchoolYearStart" required class="w-full border rounded px-3 py-2">
+      </div>
+
+      <!-- End Date -->
+      <div class="mb-4">
+        <label for="editSchoolYearEnd" class="block text-sm text-gray-600 mb-1">End Date</label>
+        <input type="date" name="end_date" id="editSchoolYearEnd" required class="w-full border rounded px-3 py-2">
+      </div>
+
+      <!-- Auto-generated Label -->
+      <div class="mb-4">
+        <label for="editSchoolYearLabel" class="block text-sm text-gray-600 mb-1">Label</label>
+        <input type="text" name="label" id="editSchoolYearLabel" readonly class="w-full border rounded px-3 py-2 bg-gray-100 text-gray-500">
+      </div>
+
+      <!-- Status Toggle -->
+      <div class="mb-6 flex items-center gap-2">
+        <input type="checkbox" name="is_active" id="editSchoolYearStatus" class="h-4 w-4">
+        <label for="editSchoolYearStatus" class="text-sm text-gray-600">Mark as Active</label>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelEditSchoolYearBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-emerald-600 hover:bg-emerald-700 rounded text-sm cursor-pointer">Update School Year</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 🗑️ Delete School Year Modal -->
+<div id="deleteSchoolYearModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-red-500">
+    <h2 class="text-xl sm:text-2xl mb-4 text-red-600">Delete School Year</h2>
+    <form id="deleteSchoolYearForm">
+      <input type="hidden" name="id" id="deleteSchoolYearId">
+      <p class="text-sm text-gray-700 mb-6">
+        Are you sure you want to delete <strong id="deleteSchoolYearLabel" class="text-red-600"></strong>?
+        This action cannot be undone.
+      </p>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelDeleteSchoolYearBtn" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm cursor-pointer">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 🗑️ Delete Class Advisory Modal -->
+<div id="deleteClassModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-red-500">
+    <h2 class="text-xl sm:text-2xl mb-4 text-red-600">Delete Advisory Class</h2>
+    <form id="deleteClassForm">
+      <input type="hidden" name="id" id="deleteClassId">
+      <p class="text-sm text-gray-700 mb-6">
+        Are you sure you want to delete <strong id="deleteClassLabel" class="text-red-600"></strong>?
+        This action cannot be undone.
+      </p>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelDeleteClassBtn" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm cursor-pointer">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ✏️ Edit Advisory Class Modal -->
+<div id="editClassModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-blue-500">
+    <h2 class="text-xl sm:text-2xl mb-4 text-blue-600">Edit Advisory Class</h2>
+    <form id="editClassForm">
+      <!-- 🔒 Hidden Inputs -->
+      <input type="hidden" name="id" id="editClassId">
+      <input type="hidden" name="school_year_id" id="editClassSchoolYearId">
+
+      <!-- 📅 School Year (Fixed Display) -->
+      <label class="block mb-2 text-sm font-medium">School Year</label>
+      <div id="editClassSchoolYearLabel" class="mb-3 px-3 py-2 border rounded bg-gray-100 text-gray-700">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- 🏫 Grade Level -->
+      <label class="block mb-2 text-sm font-medium">Grade Level</label>
+      <select name="grade_level" id="editGradeLevelSelect" required class="block w-full mb-3 border rounded px-3 py-2">
+        <option value="">Select grade level</option>
+        <!-- Options injected via JS -->
+      </select>
+
+      <!-- 🧩 Section -->
+      <label class="block mb-2 text-sm font-medium">Section</label>
+      <select name="section_id" id="editSectionSelect" required class="block w-full mb-4 border rounded px-3 py-2" disabled>
+        <option value="">Select section</option>
+        <!-- Options injected via JS -->
+      </select>
+
+      <!-- 🎯 Actions -->
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelEditClassBtn" class="px-3 py-1 text-blue-700 rounded hover:bg-blue-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded text-sm cursor-pointer">Save</button>
       </div>
     </form>
   </div>

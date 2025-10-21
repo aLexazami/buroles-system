@@ -1,9 +1,10 @@
 
-import { formatDate, refreshCurrentFolder, handleFileAction, removeItemFromUI, renderItems, resolveItemSize, normalizeFileNameInput, isValidFileName, getExtension, isFolderNameValid, removeItemRow } from './file-manager.js';
-import { insertItemSorted, getItems } from './stores/fileStore.js';
-import { renderFlash } from './flash.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
-import { refreshGradeSections } from './grade-level-and-section.js';
+import { formatDate, getExtension, handleFileAction, isFolderNameValid, isValidFileName, normalizeFileNameInput, refreshCurrentFolder, removeItemFromUI, removeItemRow, renderItems, resolveItemSize } from './file-manager.js';
+import { renderFlash } from './flash.js';
+import { refreshAdvisoryGrid } from './school-management/create-advisory.js';
+import { refreshGradeSections,refreshSchoolYears } from './school-management/school-tools.js';
+import { getItems, insertItemSorted } from './stores/fileStore.js';
 
 
 // Modal Helpers
@@ -1383,7 +1384,7 @@ export function initAddStudentHandler() {
   });
 }
 
-// Class Advisory Modal in class-advisory.php
+// Add Class Advisory Modal in class-advisory.php
 export function initCreateAdvisoryModal() {
   const cancelBtn = document.getElementById('cancelCreateAdvisoryBtn');
   const openBtn = document.querySelector('[data-action="create-advisory"]');
@@ -1407,8 +1408,9 @@ export function initCreateAdvisoryHandler() {
     e.preventDefault();
 
     const formData = new FormData(form);
+    const adviserId = formData.get('adviser_id');
 
-    fetch('/controllers/teacher/submit-advisory.php', {
+    fetch('/controllers/admin/submit-advisory.php', {
       method: 'POST',
       body: formData
     })
@@ -1418,9 +1420,10 @@ export function initCreateAdvisoryHandler() {
           renderFlash('success', 'Advisory class created.');
           toggleModal('createAdvisoryModal', false);
           form.reset();
-          import('./teacher/class-advisory.js').then(({ initClassAdvisory }) => {
-            initClassAdvisory();
-          });
+
+          // Refresh the advisory class grid
+          refreshAdvisoryGrid(adviserId);
+
         } else {
           renderFlash('error', data.error || 'Failed to create advisory class.');
         }
@@ -1429,6 +1432,260 @@ export function initCreateAdvisoryHandler() {
         renderFlash('error', 'Error creating advisory class.');
       });
   });
+}
+
+export function initGradeLevelSectionSync() {
+  const gradeSelect = document.getElementById('gradeLevelSelect');
+  const sectionSelect = document.getElementById('sectionSelect');
+
+  if (!gradeSelect || !sectionSelect) return;
+
+  gradeSelect.addEventListener('change', () => {
+    const gradeLevelId = gradeSelect.value;
+    sectionSelect.innerHTML = '<option value="">Loading...</option>';
+    sectionSelect.disabled = true;
+
+    if (!gradeLevelId) return;
+
+    fetch(`/api/get-sections-dropdown.php?grade_level_id=${gradeLevelId}`)
+      .then(res => res.json())
+      .then(data => {
+        sectionSelect.innerHTML = '';
+        if (data.sections?.length) {
+          sectionSelect.disabled = false;
+          sectionSelect.innerHTML = '<option value="">Select section</option>';
+          data.sections.forEach(section => {
+            const opt = document.createElement('option');
+            opt.value = section.id;
+            opt.textContent = section.section_label;
+            sectionSelect.appendChild(opt);
+          });
+        } else {
+          sectionSelect.innerHTML = '<option value="">No sections available</option>';
+        }
+      })
+      .catch(() => {
+        sectionSelect.innerHTML = '<option value="">Error loading sections</option>';
+      });
+  });
+}
+
+//Delete Class Advisory Modal
+export function initClassDeleteModal() {
+  const deleteButtons = document.querySelectorAll('.delete-class');
+  const modal = document.getElementById('deleteClassModal');
+  const form = document.getElementById('deleteClassForm');
+  const idInput = document.getElementById('deleteClassId');
+  const labelSpan = document.getElementById('deleteClassLabel');
+  const cancelBtn = document.getElementById('cancelDeleteClassBtn');
+
+  if (!modal || !form) return;
+
+  // ✅ Bind delete buttons to open modal
+  deleteButtons.forEach(btn => {
+    if (btn.dataset.bound) return;
+
+    btn.addEventListener('click', () => {
+      const { id, label } = btn.dataset;
+      idInput.value = id;
+      labelSpan.textContent = label;
+      toggleModal('deleteClassModal', true);
+    });
+
+    btn.dataset.bound = 'true';
+  });
+
+  // ✅ Cancel button closes modal
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('deleteClassModal', false);
+      form.reset();
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  // ✅ Submit deletion and refresh grid
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      fetch('/controllers/admin/delete-class.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            renderFlash('success', 'Advisory class deleted.');
+            toggleModal('deleteClassModal', false);
+            form.reset();
+
+            // ✅ Refresh advisory grid with adviserId from DOM
+            const adviserId = document.querySelector('input[name="user_id"]')?.value;
+            if (adviserId) refreshAdvisoryGrid(adviserId);
+          } else {
+            renderFlash('error', data.error || 'Failed to delete advisory class.');
+          }
+        })
+        .catch(() => {
+          renderFlash('error', 'Error deleting advisory class.');
+        });
+    });
+
+    form.dataset.bound = 'true';
+  }
+}
+
+// Edit Class Advisory Modal
+export function initClassEditModal() {
+  const editButtons = document.querySelectorAll('[data-action="edit-class"]');
+  const modal = document.getElementById('editClassModal');
+  const form = document.getElementById('editClassForm');
+  const idInput = document.getElementById('editClassId');
+  const schoolYearInput = document.getElementById('editClassSchoolYearId');
+  const schoolYearLabelDiv = document.getElementById('editClassSchoolYearLabel');
+  const gradeLevelSelect = document.getElementById('editGradeLevelSelect');
+  const sectionSelect = document.getElementById('editSectionSelect');
+  const cancelBtn = document.getElementById('cancelEditClassBtn');
+
+  if (!modal || !form) return;
+
+  // 🧩 Bind edit buttons
+  editButtons.forEach(btn => {
+    if (btn.dataset.bound) return;
+
+    btn.addEventListener('click', () => {
+      const { id } = btn.dataset;
+
+      fetch(`/ajax/get-classes-edit.php?id=${id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.class) {
+            const cls = data.class;
+
+            idInput.value = cls.id;
+            schoolYearInput.value = cls.school_year_id;
+            schoolYearLabelDiv.textContent = cls.school_year_label || '—';
+
+            // ✅ Populate grade levels
+            fetch('/api/get-grade-levels.php')
+              .then(res => res.json())
+              .then(data => {
+                gradeLevelSelect.innerHTML = '<option value="">Select grade level</option>';
+                if (Array.isArray(data.gradeLevels)) {
+                  data.gradeLevels.forEach(level => {
+                    const option = document.createElement('option');
+                    option.value = level.id;
+                    option.textContent = level.label;
+                    if (level.id == cls.grade_level_id) option.selected = true;
+                    gradeLevelSelect.appendChild(option);
+                  });
+                  gradeLevelSelect.disabled = false;
+
+                  // ✅ Populate sections for selected grade level
+                  fetch(`/api/get-sections-dropdown.php?grade_level_id=${cls.grade_level_id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                      sectionSelect.innerHTML = '<option value="">Select section</option>';
+                      if (Array.isArray(data.sections)) {
+                        data.sections.forEach(section => {
+                          const option = document.createElement('option');
+                          option.value = section.id;
+                          option.textContent = section.section_label;
+                          if (section.id == cls.section_id) option.selected = true;
+                          sectionSelect.appendChild(option);
+                        });
+                        sectionSelect.disabled = false;
+                        toggleModal('editClassModal', true);
+                      } else {
+                        renderFlash('error', 'No sections found for this grade level.');
+                      }
+                    });
+                } else {
+                  renderFlash('error', 'No grade levels found.');
+                }
+              });
+          } else {
+            renderFlash('error', 'Failed to load class details.');
+          }
+        });
+    });
+
+    btn.dataset.bound = 'true';
+  });
+
+  // 🧩 Cancel button
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('editClassModal', false);
+      form.reset();
+      gradeLevelSelect.disabled = true;
+      sectionSelect.disabled = true;
+      schoolYearLabelDiv.textContent = '';
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  // 🧩 Grade level change triggers section reload (guarded)
+  if (!gradeLevelSelect.dataset.bound) {
+    gradeLevelSelect.addEventListener('change', () => {
+      const gradeLevelId = gradeLevelSelect.value;
+      sectionSelect.innerHTML = '<option value="">Select section</option>';
+      sectionSelect.disabled = true;
+
+      if (gradeLevelId) {
+        fetch(`/api/get-sections-dropdown.php?grade_level_id=${gradeLevelId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (Array.isArray(data.sections)) {
+              data.sections.forEach(section => {
+                const option = document.createElement('option');
+                option.value = section.id;
+                option.textContent = section.section_label;
+                sectionSelect.appendChild(option);
+              });
+              sectionSelect.disabled = false;
+            } else {
+              renderFlash('error', 'No sections found for this grade level.');
+            }
+          });
+      }
+    });
+
+    gradeLevelSelect.dataset.bound = 'true';
+  }
+
+  // 🧩 Submit handler
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      fetch('/controllers/admin/edit-class.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            renderFlash('success', 'Advisory class updated.');
+            toggleModal('editClassModal', false);
+            form.reset();
+
+            const adviserId = document.querySelector('input[name="user_id"]')?.value;
+            if (adviserId) refreshAdvisoryGrid(adviserId);
+          } else {
+            renderFlash('error', data.error || 'Failed to update advisory class.');
+          }
+        })
+        .catch(() => {
+          renderFlash('error', 'Error updating advisory class.');
+        });
+    });
+
+    form.dataset.bound = 'true';
+  }
 }
 
 // Grade Level Modal
@@ -1504,7 +1761,7 @@ export function initGradeLevelHandler() {
           renderFlash('success', 'Grade level added.');
           toggleModal('addGradeLevelModal', false);
           form.reset();
-          import('./grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+          import('./school-management/school-tools.js').then(({ refreshGradeLevels }) => {
             refreshGradeLevels(); // Optional: reload table
           });
         } else {
@@ -1553,7 +1810,7 @@ export function initGradeLevelEditHandler() {
           renderFlash('success', 'Grade level updated.');
           toggleModal('editGradeLevelModal', false);
           form.reset();
-          import('./grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+          import('./school-management/school-tools.js').then(({ refreshGradeLevels }) => {
             refreshGradeLevels();
           });
         } else {
@@ -1585,7 +1842,7 @@ function handleDeleteSubmit(e) {
         renderFlash('success', 'Grade level deleted.');
         toggleModal('confirmDeleteGradeLevelModal', false);
         form.reset();
-        import('./grade-level-and-section.js').then(({ refreshGradeLevels }) => {
+        import('./school-management/school-tools.js').then(({ refreshGradeLevels }) => {
           refreshGradeLevels();
         });
       } else {
@@ -1821,3 +2078,218 @@ export function initGradeSectionModal() {
     form.dataset.bound = 'true';
   }
 }
+
+// Add School Year Modal
+export function initSchoolYearModal() {
+  const form = document.getElementById('addSchoolYearForm');
+  const startInput = document.getElementById('addSchoolYearStart');
+  const endInput = document.getElementById('addSchoolYearEnd');
+  const labelInput = document.getElementById('addSchoolYearLabel');
+  const cancelBtn = document.getElementById('cancelAddSchoolYearBtn');
+  const triggerBtn = document.querySelector('[data-action="add-school-year"]');
+
+  function updateLabel() {
+    const start = new Date(startInput.value);
+    const end = new Date(endInput.value);
+    if (!isNaN(start) && !isNaN(end)) {
+      const syLabel = `SY${start.getFullYear()}-${end.getFullYear()}`;
+      labelInput.value = syLabel;
+    } else {
+      labelInput.value = '';
+    }
+  }
+
+  startInput.addEventListener('change', updateLabel);
+  endInput.addEventListener('change', updateLabel);
+
+  function handleAddSchoolYearSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    fetch('/controllers/admin/submit-school-year.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'School year added.');
+          toggleModal('addSchoolYearModal', false);
+          form.reset();
+          labelInput.value = '';
+          refreshSchoolYears();
+        } else {
+          renderFlash('error', data.error || 'Failed to add school year.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error adding school year.');
+      });
+  }
+
+  if (triggerBtn && !triggerBtn.dataset.bound) {
+    triggerBtn.addEventListener('click', () => {
+      toggleModal('addSchoolYearModal', true);
+    });
+    triggerBtn.dataset.bound = 'true';
+  }
+
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('addSchoolYearModal', false);
+      form.reset();
+      labelInput.value = '';
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', handleAddSchoolYearSubmit);
+    form.dataset.bound = 'true';
+  }
+}
+
+// Edit School Year Modal
+export function initSchoolYearEditHandler() {
+  const editButtons = document.querySelectorAll('.edit-school-year');
+  const modal = document.getElementById('editSchoolYearModal');
+  const form = document.getElementById('editSchoolYearForm');
+  const startInput = document.getElementById('editSchoolYearStart');
+  const endInput = document.getElementById('editSchoolYearEnd');
+  const labelInput = document.getElementById('editSchoolYearLabel');
+  const cancelBtn = document.getElementById('cancelEditSchoolYearBtn');
+
+  if (!modal || !form) return;
+
+  function updateLabel() {
+    const start = new Date(startInput.value);
+    const end = new Date(endInput.value);
+    if (!isNaN(start) && !isNaN(end)) {
+      labelInput.value = `SY${start.getFullYear()}-${end.getFullYear()}`;
+    } else {
+      labelInput.value = '';
+    }
+  }
+
+  startInput.addEventListener('change', updateLabel);
+  endInput.addEventListener('change', updateLabel);
+
+  editButtons.forEach(btn => {
+    if (btn.dataset.bound) return;
+
+    btn.addEventListener('click', () => {
+      const { id, label, start, end, active } = btn.dataset;
+
+      form.querySelector('#editSchoolYearId').value = id;
+      startInput.value = start;
+      endInput.value = end;
+      labelInput.value = label;
+      form.querySelector('#editSchoolYearStatus').checked = active === '1';
+
+      toggleModal('editSchoolYearModal', true);
+    });
+
+    btn.dataset.bound = 'true';
+  });
+
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('editSchoolYearModal', false);
+      form.reset();
+      labelInput.value = '';
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      fetch('/controllers/admin/update-school-year.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            renderFlash('success', 'School year updated.');
+            toggleModal('editSchoolYearModal', false);
+            form.reset();
+            labelInput.value = '';
+            refreshSchoolYears();
+          } else {
+            renderFlash('error', data.error || 'Failed to update school year.');
+          }
+        })
+        .catch(() => {
+          renderFlash('error', 'Error updating school year.');
+        });
+    });
+
+    form.dataset.bound = 'true';
+  }
+}
+
+// Delete School Year Modal
+export function initSchoolYearDeleteModal() {
+  const deleteButtons = document.querySelectorAll('.delete-school-year');
+  const modal = document.getElementById('deleteSchoolYearModal');
+  const form = document.getElementById('deleteSchoolYearForm');
+  const idInput = document.getElementById('deleteSchoolYearId');
+  const labelSpan = document.getElementById('deleteSchoolYearLabel');
+  const cancelBtn = document.getElementById('cancelDeleteSchoolYearBtn');
+
+  if (!modal || !form) return;
+
+  deleteButtons.forEach(btn => {
+    if (btn.dataset.bound) return;
+
+    btn.addEventListener('click', () => {
+      const { id, label } = btn.dataset;
+      idInput.value = id;
+      labelSpan.textContent = label;
+      toggleModal('deleteSchoolYearModal', true);
+    });
+
+    btn.dataset.bound = 'true';
+  });
+
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('deleteSchoolYearModal', false);
+      form.reset();
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      fetch('/controllers/admin/delete-school-year.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            renderFlash('success', 'School year deleted.');
+            toggleModal('deleteSchoolYearModal', false);
+            form.reset();
+            refreshSchoolYears();
+          } else {
+            renderFlash('error', data.error || 'Failed to delete school year.');
+          }
+        })
+        .catch(() => {
+          renderFlash('error', 'Error deleting school year.');
+        });
+    });
+
+    form.dataset.bound = 'true';
+  }
+}
+
+
