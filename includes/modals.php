@@ -393,8 +393,8 @@
 <!-- ✏️ Edit Advisory Class Modal -->
 <div id="editClassModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
   <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-blue-500">
-    <h2 class="text-xl sm:text-2xl mb-4 text-blue-600">Edit Advisory Class</h2>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4 text-emerald-600">Edit Advisory Class</h2>
     <form id="editClassForm">
       <!-- 🔒 Hidden Inputs -->
       <input type="hidden" name="id" id="editClassId">
@@ -422,8 +422,8 @@
 
       <!-- 🎯 Actions -->
       <div class="flex justify-end gap-2">
-        <button type="button" id="cancelEditClassBtn" class="px-3 py-1 text-blue-700 rounded hover:bg-blue-100 text-sm cursor-pointer">Cancel</button>
-        <button type="submit" class="px-3 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded text-sm cursor-pointer">Save</button>
+        <button type="button" id="cancelEditClassBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-emerald-600 hover:bg-emerald-700 rounded text-sm cursor-pointer">Save</button>
       </div>
     </form>
   </div>
