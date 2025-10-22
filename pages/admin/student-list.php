@@ -33,7 +33,7 @@ if (!$class) {
   exit('Class not found');
 }
 
-renderHead('Student List');
+renderHead('Admin');
 ?>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">

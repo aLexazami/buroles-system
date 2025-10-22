@@ -32,9 +32,21 @@ export function refreshStudentTable() {
           <!-- Gender -->
           <td class="px-4 py-2 capitalize">${student.gender}</td>
 
-          <!-- Actions -->
+       <!-- Actions -->
 <td class="px-4 py-2 h-[44px]">
   <div class="flex items-center gap-2 justify-start sm:justify-center h-full">
+    
+    <!-- View Icon -->
+    <div class="relative flex items-center">
+      <a href="/pages/admin/view-student.php?id=${student.id}"
+         class="peer rounded-full p-2 hover:bg-pink-100 hover:scale-110 transition-transform duration-200 cursor-pointer">
+        <img src="/assets/img/details.png" alt="View Details" class="w-5 h-5" />
+      </a>
+      <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-700 text-white text-xs rounded whitespace-nowrap opacity-0 peer-hover:opacity-100 transition duration-200 pointer-events-none z-10">
+        View Details
+      </div>
+    </div>
+
     <!-- Edit Icon -->
     <div class="relative flex items-center">
       <button type="button"
@@ -58,6 +70,7 @@ export function refreshStudentTable() {
         Delete
       </div>
     </div>
+
   </div>
 </td>
         `;
