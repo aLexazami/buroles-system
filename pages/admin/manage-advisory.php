@@ -108,22 +108,38 @@ renderHead('Admin');
       </div>
 
       <!-- 📅 School Year Filter -->
-      <form method="GET" class="mb-6">
+      <form method="GET" class="mb-6 flex items-center gap-2">
         <input type="hidden" name="user_id" value="<?= $adviser['id'] ?>">
-        <label for="schoolYearFilter" class="block text-sm font-medium text-gray-700 mb-1">Filter by School Year</label>
-        <select name="school_year_id" id="schoolYearFilter" class="w-full max-w-xs border rounded px-3 py-2 mb-2" onchange="this.form.submit()">
-          <?php foreach ($schoolYears as $sy): ?>
-            <option value="<?= $sy['id'] ?>" <?= ($selectedYearId == $sy['id']) ? 'selected' : '' ?>>
-              <?= htmlspecialchars($sy['label']) ?><?= !$sy['is_active'] ? ' (Inactive)' : '' ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
+
+        <!-- Filter Icon -->
+        <img src="/assets/img/calendar.png" alt="School Year Icon" class="w-5 h-5 object-contain" />
+
+        <!-- Dropdown -->
+        <div class="relative">
+          <select name="school_year_id" id="schoolYearFilter"
+            class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-150 ease-in-out"
+            onchange="this.form.submit()">
+            <?php foreach ($schoolYears as $sy): ?>
+              <option value="<?= $sy['id'] ?>" <?= ($selectedYearId == $sy['id']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($sy['label']) ?><?= !$sy['is_active'] ? ' (Inactive)' : '' ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+
+          <!-- Dropdown Arrow Icon -->
+          <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
       </form>
+
 
       <!-- 📂 Advisory Class Grid -->
       <div id="advisoryClassGrid" class="min-h-[100px]">
-  <!-- Grid will be injected by JS -->
-</div>
+        <!-- Grid will be injected by JS -->
+      </div>
     </section>
   </main>
 
