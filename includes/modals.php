@@ -428,3 +428,22 @@
     </form>
   </div>
 </div>
+
+<!-- 🗑️ Delete Student Modal -->
+<div id="deleteStudentModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-red-500">
+    <h2 class="text-xl sm:text-2xl mb-4 text-red-600">Delete Student</h2>
+    <form id="deleteStudentForm">
+      <input type="hidden" name="id" id="deleteStudentId">
+      <p class="text-sm text-gray-700 mb-6">
+        Are you sure you want to delete <strong id="deleteStudentLabel" class="text-red-600"></strong>?
+        This action cannot be undone.
+      </p>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelDeleteStudentBtn" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm cursor-pointer">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -8,6 +8,7 @@ import { initDropdownMenus, initNotificationActions, setupRecipientDropdown } fr
 import { initAddStudentHandler, initAddStudentModal, initAnnouncementModal, initAnnouncementTriggers, initAttendanceHandler, initAttendanceModal, initCreateAdvisoryHandler, initCreateAdvisoryModal, initCreateFolderModal, initFolderCreationHandler, initGradeLevelHandler, initGradeLevelModal, initGradeLevelSectionSync, initGradeSectionModal, initManageAccessButtons, initPasswordButtons, initShareHandler, initUnlockButtons, initUploadHandler, initUploadModal, setupDeleteCommentModal, setupDeleteModal, setupEmptyTrashModal, setupPermanentDeleteModal, setupRenameModalHandler, setupRestoreModal,initSchoolYearModal } from './modal.js';
 import { refreshGradeLevels, refreshGradeSections,refreshSchoolYears } from './school-management/school-tools.js';
 import { initAdvisoryGrid } from '/assets/js/school-management/create-advisory.js';
+import { initStudentTable } from '/assets/js/school-management/student-loader.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 
@@ -163,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGradeLevelSectionSync();
   initSchoolYearModal();
   initAdvisoryGrid();
+  initStudentTable();
 
   // Handler
   initFolderCreationHandler();

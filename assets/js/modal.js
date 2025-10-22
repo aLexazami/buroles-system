@@ -4,6 +4,7 @@ import { formatDate, getExtension, handleFileAction, isFolderNameValid, isValidF
 import { renderFlash } from './flash.js';
 import { refreshAdvisoryGrid } from './school-management/create-advisory.js';
 import { refreshGradeSections,refreshSchoolYears } from './school-management/school-tools.js';
+import { refreshStudentTable } from './school-management/student-loader.js';
 import { getItems, insertItemSorted } from './stores/fileStore.js';
 
 
@@ -2292,4 +2293,67 @@ export function initSchoolYearDeleteModal() {
   }
 }
 
+// Delete Student Modal
+export function initStudentDeleteModal() {
+  const deleteButtons = document.querySelectorAll('.delete-student');
+  const modal = document.getElementById('deleteStudentModal');
+  const form = document.getElementById('deleteStudentForm');
+  const idInput = document.getElementById('deleteStudentId');
+  const labelSpan = document.getElementById('deleteStudentLabel');
+  const cancelBtn = document.getElementById('cancelDeleteStudentBtn');
+
+  if (!modal || !form) return;
+
+  // ✅ Bind delete buttons to open modal
+  deleteButtons.forEach(btn => {
+    if (btn.dataset.bound) return;
+
+    btn.addEventListener('click', () => {
+      const { id, name } = btn.dataset;
+      idInput.value = id;
+      labelSpan.textContent = name;
+      toggleModal('deleteStudentModal', true);
+    });
+
+    btn.dataset.bound = 'true';
+  });
+
+  // ✅ Cancel button closes modal
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('deleteStudentModal', false);
+      form.reset();
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  // ✅ Submit deletion and refresh table
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      fetch('/controllers/admin/delete-student.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            renderFlash('success', 'Student deleted.');
+            toggleModal('deleteStudentModal', false);
+            form.reset();
+            refreshStudentTable();
+          } else {
+            renderFlash('error', data.error || 'Failed to delete student.');
+          }
+        })
+        .catch(() => {
+          renderFlash('error', 'Error deleting student.');
+        });
+    });
+
+    form.dataset.bound = 'true';
+  }
+}
 

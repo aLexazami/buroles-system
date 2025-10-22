@@ -2,7 +2,7 @@
 $currentPage = basename($_SERVER['PHP_SELF']);
 
 $navSections = [
-  ['label' => 'Back', 'href' => '/pages/admin/class-advisory.php', 'icon' => 'back.png']
+  ['label' => 'Back', 'href' => '/pages/admin/student.php', 'icon' => 'back.png']
 ];
 ?>
 

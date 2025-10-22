@@ -16,11 +16,11 @@ $navSections = [
     ['label' => 'Feedback Report', 'href' => '/pages/admin/feedback-report.php', 'icon' => 'feedback-report.png']
   ],
   'School Management' => [
-    ['label' => 'Grade Levels', 'href' => '/pages/admin/grade-level.php', 'icon' => 'grade-level.png'],
-    ['label' => 'Grade Sections', 'href' => '/pages/admin/grade-section.php', 'icon' => 'grade-section.png'],
     ['label' => 'School Years', 'href' => '/pages/admin/school-year.php', 'icon' => 'school-year.png'],
     ['label' => 'Class Advisory', 'href' => '/pages/admin/class-advisory.php', 'icon' => 'class-advisory.png'],
-
+    ['label' => 'Students', 'href' => '/pages/admin/student.php', 'icon' => 'student.png'],
+    ['label' => 'Grade Levels', 'href' => '/pages/admin/grade-level.php', 'icon' => 'grade-level.png'],
+    ['label' => 'Grade Sections', 'href' => '/pages/admin/grade-section.php', 'icon' => 'grade-section.png'],
   ]
 ];
 ?>

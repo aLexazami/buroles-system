@@ -3,7 +3,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
 $adviserId = $adviserId ?? ($_GET['user_id'] ?? null); // fallback if not passed
 $navSections = [
-  ['label' => 'Back', 'href' => '/pages/admin/manage-advisory.php?user_id=' . urlencode($adviserId), 'icon' => 'home.png']
+  ['label' => 'Back', 'href' => '/pages/admin/manage-advisory.php?user_id=' . urlencode($adviserId), 'icon' => 'back.png']
 ];
 ?>
 
