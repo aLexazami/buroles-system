@@ -1,5 +1,8 @@
 <?php
 // 🚦 Centralized input validation helpers
+function formatName(string $name): string {
+  return ucwords(strtolower(trim($name)));
+}
 
 function sanitize($value) {
   return trim(htmlspecialchars($value));

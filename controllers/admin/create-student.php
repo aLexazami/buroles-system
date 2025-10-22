@@ -92,6 +92,16 @@ try {
     exit;
   }
 
+  // ✨ Auto-format names and labels
+  $first_name = formatName($first_name);
+  $middle_name = $middle_name ? formatName($middle_name) : null;
+  $last_name = formatName($last_name);
+  $guardian_name = formatName($guardian_name);
+  $relationship = formatName($relationship);
+  $nationality = $nationality ? formatName($nationality) : null;
+  $barangay = $barangay ? formatName($barangay) : null;
+  $previous_school = $previous_school ? formatName($previous_school) : null;
+
   // ✅ Insert into students
   $stmt = $pdo->prepare("INSERT INTO students (
     lrn, first_name, middle_name, last_name, dob, gender,

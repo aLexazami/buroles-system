@@ -3,15 +3,24 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/head.php';
 require_once __DIR__ . '/../../helpers/flash.php';
+
 $errors = getFlash('form_errors') ?? [];
 $old = getFlash('form_data') ?? [];
 
-
-// Fetch dropdown data
-$schoolYears = $pdo->query("SELECT id, label FROM school_years ORDER BY start_year DESC")->fetchAll(PDO::FETCH_ASSOC);
+// 🧠 Fetch dropdown data
+$schoolYears = $pdo->query("SELECT id, label, is_active FROM school_years ORDER BY start_year DESC")->fetchAll(PDO::FETCH_ASSOC);
 $gradeLevels = $pdo->query("SELECT id, label FROM grade_levels ORDER BY level ASC")->fetchAll(PDO::FETCH_ASSOC);
 
-renderHead('Create Student');
+// ✅ Find the active school year safely
+$activeSchoolYear = null;
+foreach ($schoolYears as $sy) {
+  if (isset($sy['is_active']) && (int)$sy['is_active'] === 1) {
+    $activeSchoolYear = $sy;
+    break;
+  }
+}
+
+renderHead('Admin');
 ?>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">
@@ -255,18 +264,29 @@ renderHead('Create Student');
         <div>
           <h2 class="text-lg font-semibold mb-4 border-b pb-2">Enrollment Information</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <!-- School Year -->
+            <!-- School Year (Fixed to Active) -->
             <div class="relative">
-              <select name="school_year_id" class="peer w-full px-4 pt-6 pb-2 border border-gray-300 rounded-md focus:border-3  focus:border-emerald-500 focus:outline-none placeholder-transparent">
-                <option value="" disabled>Select School Year</option>
-                <?php foreach ($schoolYears as $sy): ?>
-                  <option value="<?= $sy['id'] ?>" <?= ($old['school_year_id'] ?? '') == $sy['id'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($sy['label']) ?>
+              <select name="school_year_id"
+                class="peer w-full px-4 pt-6 pb-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                readonly disabled>
+                <?php if ($activeSchoolYear): ?>
+                  <option value="<?= $activeSchoolYear['id'] ?>" selected>
+                    <?= htmlspecialchars($activeSchoolYear['label']) ?>
                   </option>
-                <?php endforeach; ?>
+                <?php else: ?>
+                  <option value="" disabled selected>No active school year</option>
+                <?php endif; ?>
               </select>
-              <label class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400">School Year</label>
+              <label class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400">
+                School Year
+              </label>
             </div>
+
+            <?php if ($activeSchoolYear): ?>
+              <!-- Hidden input to preserve value for submission -->
+              <input type="hidden" name="school_year_id" value="<?= $activeSchoolYear['id'] ?>">
+            <?php endif; ?>
+
 
             <!-- Grade Level -->
             <div class="relative">
@@ -363,66 +383,106 @@ renderHead('Create Student');
   <script src="/assets/js/auto-dismiss-alert.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
-  <script type="module">
-    // 🧠 Dynamic section loader
-    const gradeLevelSelect = document.getElementById('gradeLevelSelect');
-    const sectionSelect = document.getElementById('sectionSelect');
+<script type="module">
+  // 🧠 Dynamic section loader
+  const gradeLevelSelect = document.getElementById('gradeLevelSelect');
+  const sectionSelect = document.getElementById('sectionSelect');
 
-    function loadSections(gradeLevelId, restoreSectionId = null) {
-      sectionSelect.innerHTML = '<option value="" disabled>Select Section</option>';
-      sectionSelect.disabled = true;
+  function loadSections(gradeLevelId, restoreSectionId = null) {
+    sectionSelect.innerHTML = '<option value="" disabled>Select Section</option>';
+    sectionSelect.disabled = true;
 
-      if (!gradeLevelId) return;
+    if (!gradeLevelId) return;
 
-      fetch(`/api/get-sections-dropdown.php?grade_level_id=${gradeLevelId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data.sections)) {
-            data.sections.forEach(section => {
-              const option = document.createElement('option');
-              option.value = section.id;
-              option.textContent = section.section_label;
-              sectionSelect.appendChild(option);
-            });
-            sectionSelect.disabled = false;
+    fetch(`/api/get-sections-dropdown.php?grade_level_id=${gradeLevelId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data.sections)) {
+          data.sections.forEach(section => {
+            const option = document.createElement('option');
+            option.value = section.id;
+            option.textContent = section.section_label;
+            sectionSelect.appendChild(option);
+          });
+          sectionSelect.disabled = false;
 
-            // ✅ Restore previously selected section if available
-            if (restoreSectionId) {
-              sectionSelect.value = restoreSectionId;
-            }
+          // ✅ Restore previously selected section if available
+          if (restoreSectionId) {
+            sectionSelect.value = restoreSectionId;
           }
+        }
+      });
+  }
+
+  // 🔄 Trigger on grade level change
+  gradeLevelSelect?.addEventListener('change', () => {
+    const gradeLevelId = gradeLevelSelect.value;
+    loadSections(gradeLevelId);
+  });
+
+  // 🚀 Auto-load if grade level is preselected
+  if (gradeLevelSelect?.value) {
+    const oldSectionId = sectionSelect?.getAttribute('data-old');
+    loadSections(gradeLevelSelect.value, oldSectionId);
+  }
+
+  // 🖼️ Photo preview logic
+  const photoInput = document.getElementById('photoInput');
+  const photoPreview = document.getElementById('photoPreview');
+
+  photoPreview?.addEventListener('click', () => photoInput?.click());
+
+  photoInput?.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        photoPreview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // ✨ Auto-format name fields to Title Case
+  function toTitleCase(str) {
+    return str
+      .toLowerCase()
+      .replace(/\b\w/g, char => char.toUpperCase());
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const nameFields = [
+      'first_name',
+      'middle_name',
+      'last_name',
+      'guardian_name',
+      'relationship',
+      'nationality',
+      'barangay',
+      'previous_school'
+    ];
+
+    nameFields.forEach(id => {
+      const input = document.getElementById(id);
+      if (input) {
+        input.addEventListener('blur', () => {
+          input.value = toTitleCase(input.value);
         });
-    }
-
-    // 🔄 Trigger on grade level change
-    gradeLevelSelect?.addEventListener('change', () => {
-      const gradeLevelId = gradeLevelSelect.value;
-      loadSections(gradeLevelId);
-    });
-
-    // 🚀 Auto-load if grade level is preselected
-    if (gradeLevelSelect?.value) {
-      const oldSectionId = sectionSelect?.getAttribute('data-old');
-      loadSections(gradeLevelSelect.value, oldSectionId);
-    }
-
-    // 🖼️ Photo preview logic
-    const photoInput = document.getElementById('photoInput');
-    const photoPreview = document.getElementById('photoPreview');
-
-    photoPreview?.addEventListener('click', () => photoInput?.click());
-
-    photoInput?.addEventListener('change', () => {
-      const file = photoInput.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = e => {
-          photoPreview.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
       }
     });
-  </script>
+
+    // Optional: format before submission
+    const form = document.querySelector('form');
+    form?.addEventListener('submit', () => {
+      nameFields.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+          input.value = toTitleCase(input.value);
+        }
+      });
+    });
+  });
+</script>
 </body>
 
 </html>

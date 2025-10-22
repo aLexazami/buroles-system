@@ -5198,3 +5198,347 @@ Stack trace:
 [22-Oct-2025 20:54:00 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
 [22-Oct-2025 20:54:00 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
 [22-Oct-2025 20:54:00 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[22-Oct-2025 20:57:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[22-Oct-2025 21:19:19 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[22-Oct-2025 21:19:58 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 01:59:49 Asia/Manila] PHP Warning:  Undefined array key "SESSION_SECRET" in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[23-Oct-2025 01:59:49 Asia/Manila] PHP Deprecated:  hash(): Passing null to parameter #2 ($data) of type string is deprecated in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:00:05 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:00:07 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:09:26 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:09:35 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:10:31 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:13:51 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:14:43 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:16:10 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:20:25 Asia/Manila] PHP Warning:  Undefined variable $activeSchoolYear in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 263
+[23-Oct-2025 02:21:49 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:49 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:53 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:53 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:53 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:53 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:54 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:54 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:55 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:55 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:56 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:56 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:56 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:56 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:57 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:57 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:57 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:57 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:57 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:57 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:58 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:21:58 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:22:06 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:22:06 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 11
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:22:41 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:22:43 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:23:51 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:25:08 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:08 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:08 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:09 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:10 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:10 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:10 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:10 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:10 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:10 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:11 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:12 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:13 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:14 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:15 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:15 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:15 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:19 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:19 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:19 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:33 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:33 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:25:33 Asia/Manila] PHP Warning:  Undefined array key "is_active" in C:\buroles\workspace\buroles_system\pages\admin\create-student.php on line 16
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:29:06 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:29:17 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:29:38 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:29:45 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:41:49 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:42:44 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:45:42 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:46:27 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:46:56 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:48:33 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 46
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  Undefined variable $schoolYears in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 51
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 72
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 214
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 262
+[23-Oct-2025 02:48:59 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 262

@@ -6,15 +6,15 @@ header('Content-Type: application/json');
 
 try {
   $stmt = $pdo->query("
-    SELECT
-      id,
-      lrn,
-      CONCAT_WS(' ', first_name, middle_name, last_name) AS full_name,
-      gender,
-      photo_path
-    FROM students
-    ORDER BY last_name ASC, first_name ASC
-  ");
+  SELECT
+    id,
+    lrn,
+    CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name,
+    gender,
+    photo_path
+  FROM students
+  ORDER BY last_name ASC, first_name ASC
+");
 
   $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
