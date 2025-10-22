@@ -1,42 +1,3 @@
-<!-- ✅ Attendance Modal -->
-<div id="attendanceModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
-  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-green-500">
-    <h2 class="text-xl sm:text-2xl mb-4">Mark Attendance</h2>
-    <form id="attendanceForm">
-      <input type="hidden" name="student_id" id="attendanceStudentId">
-      <select name="status" required class="block w-full mb-4 border rounded px-3 py-2">
-        <option value="">Select status</option>
-        <option value="present">Present</option>
-        <option value="absent">Absent</option>
-        <option value="late">Late</option>
-        <option value="excused">Excused</option>
-      </select>
-      <div class="flex justify-end gap-2">
-        <button type="button" id="cancelAttendanceBtn" class="px-3 py-1 text-green-700 rounded hover:bg-green-100 text-sm cursor-pointer">Cancel</button>
-        <button type="submit" class="px-3 py-1 text-green-700 rounded hover:bg-green-100 text-sm cursor-pointer">Save</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- 👤 Add Student Modal -->
-<div id="addStudentModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
-  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
-    <h2 class="text-xl sm:text-2xl mb-4">Add Student</h2>
-    <form id="addStudentForm">
-      <input type="text" name="first_name" placeholder="First name" required class="block w-full mb-3 border rounded px-3 py-2">
-      <input type="text" name="last_name" placeholder="Last name" required class="block w-full mb-3 border rounded px-3 py-2">
-      <input type="date" name="birthdate" required class="block w-full mb-4 border rounded px-3 py-2">
-      <div class="flex justify-end gap-2">
-        <button type="button" id="cancelAddStudentBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
-        <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Add</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 <!-- 🏫 Create Advisory Class Modal -->
 <div id="createAdvisoryModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
   <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
@@ -47,13 +8,13 @@
 
       <!-- 📅 School Year (Fixed to Active) -->
       <?php
-        $activeSchoolYear = null;
-        foreach ($schoolYears as $sy) {
-          if ($sy['is_active']) {
-            $activeSchoolYear = $sy;
-            break;
-          }
+      $activeSchoolYear = null;
+      foreach ($schoolYears as $sy) {
+        if ($sy['is_active']) {
+          $activeSchoolYear = $sy;
+          break;
         }
+      }
       ?>
       <?php if ($activeSchoolYear): ?>
         <label class="block mb-2 text-sm font-medium">School Year</label>
@@ -443,6 +404,47 @@
       <div class="flex justify-end gap-2">
         <button type="button" id="cancelDeleteStudentBtn" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
         <button type="submit" class="px-3 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm cursor-pointer">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ➕ Add Existing Student Modal -->
+<div id="addStudentModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-xl border border-emerald-500">
+    <h2 class="text-xl sm:text-2xl mb-4">Add Student to Advisory</h2>
+    <div id="availableStudentList" class="space-y-3 max-h-[400px] overflow-y-auto">
+      <!-- Student rows will be injected by JS -->
+    </div>
+
+    <!-- 🔻 Fallback Message -->
+    <div id="noAvailableStudents" class="hidden text-sm text-gray-500 text-center mt-4">
+      No available students found for this advisory class.
+    </div>
+
+    <div class="flex justify-end gap-2 mt-4">
+      <button type="button" id="cancelAddStudentBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- 🗑️ Delete Student Advisory Modal -->
+<div id="deleteStudentClassModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+  <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm border border-red-500">
+    <h2 class="text-xl sm:text-2xl mb-4 text-red-700">Remove Student from Advisory</h2>
+    <form id="deleteStudentClassForm">
+      <input type="hidden" name="student_id" id="deleteStudentClassStudentId">
+      <input type="hidden" name="class_id" id="deleteStudentClassId" value="<?= $class['id'] ?>">
+
+      <p class="text-sm text-gray-700 mb-6">
+        Are you sure you want to remove <span id="deleteStudentName" class="font-semibold text-red-600"></span> from this advisory class?
+      </p>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelDeleteStudentClassBtn" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="submit" class="px-3 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm cursor-pointer">Remove</button>
       </div>
     </form>
   </div>

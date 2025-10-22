@@ -1,8 +1,11 @@
 <?php
 $currentPage = basename($_SERVER['PHP_SELF']);
 
+$classId = $_GET['class_id'] ?? null;
+$backUrl = $classId ? "/pages/admin/student-list.php?class_id=$classId" : "/pages/admin/student.php";
+
 $navSections = [
-  ['label' => 'Back', 'href' => '/pages/admin/student.php', 'icon' => 'back.png']
+  ['label' => 'Back', 'href' => $backUrl, 'icon' => 'back.png']
 ];
 ?>
 

@@ -3,8 +3,9 @@ import { fileRoutes } from './endpoints/fileRoutes.js';
 import { formatDate, getExtension, handleFileAction, isFolderNameValid, isValidFileName, normalizeFileNameInput, refreshCurrentFolder, removeItemFromUI, removeItemRow, renderItems, resolveItemSize } from './file-manager.js';
 import { renderFlash } from './flash.js';
 import { refreshAdvisoryGrid } from './school-management/create-advisory.js';
-import { refreshGradeSections,refreshSchoolYears } from './school-management/school-tools.js';
+import { refreshGradeSections, refreshSchoolYears } from './school-management/school-tools.js';
 import { refreshStudentTable } from './school-management/student-loader.js';
+import { refreshStudentList } from './school-management/student-list-advisory.js';
 import { getItems, insertItemSorted } from './stores/fileStore.js';
 
 
@@ -1281,110 +1282,6 @@ function renderAccessList(users = []) {
   updateSubmitButtonLabel();
 }
 
-// Attendance Modals in class-advisory.php
-export function initAttendanceModal() {
-  const cancelBtn = document.getElementById('cancelAttendanceBtn');
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', () => toggleModal('attendanceModal', false));
-  }
-
-  window.openAttendanceModal = function(studentId) {
-    const input = document.getElementById('attendanceStudentId');
-    if (input) {
-      input.value = studentId;
-      toggleModal('attendanceModal', true);
-    }
-  };
-}
-
-export function initAttendanceHandler() {
-  const form = document.getElementById('attendanceForm');
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const studentId = form.querySelector('[name="student_id"]')?.value;
-    const status = form.querySelector('[name="status"]')?.value;
-
-    if (!studentId || !status) {
-      renderFlash('error', 'Please select a valid attendance status.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('student_id', studentId);
-    formData.append('status', status);
-
-    fetch('/controllers/teacher/submit-attendance.php', {
-      method: 'POST',
-      body: formData
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          renderFlash('success', 'Attendance marked successfully.');
-          toggleModal('attendanceModal', false);
-          form.reset();
-        } else {
-          renderFlash('error', data.error || 'Failed to mark attendance.');
-        }
-      })
-      .catch(() => {
-        renderFlash('error', 'Error submitting attendance.');
-      });
-  });
-}
-
-// Add Student Modal in class-advisory.php
-export function initAddStudentModal() {
-  const cancelBtn = document.getElementById('cancelAddStudentBtn');
-  const openBtn = document.querySelector('[data-action="add-student"]');
-
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', () => toggleModal('addStudentModal', false));
-  }
-
-  if (openBtn) {
-    openBtn.addEventListener('click', () => {
-      toggleModal('addStudentModal', true);
-    });
-  }
-}
-
-export function initAddStudentHandler() {
-  const form = document.getElementById('addStudentForm');
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(form);
-
-    fetch('/controllers/teacher/submit-student.php', {
-      method: 'POST',
-      body: formData
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          renderFlash('success', 'Student added successfully.');
-          toggleModal('addStudentModal', false);
-          form.reset();
-          // Optionally reload advisory list
-          import('./teacher/class-advisory.js').then(({ initClassAdvisory }) => {
-            initClassAdvisory();
-          });
-        } else {
-          renderFlash('error', data.error || 'Failed to add student.');
-        }
-      })
-      .catch(() => {
-        renderFlash('error', 'Error adding student.');
-      });
-  });
-}
-
 // Add Class Advisory Modal in class-advisory.php
 export function initCreateAdvisoryModal() {
   const cancelBtn = document.getElementById('cancelCreateAdvisoryBtn');
@@ -2356,4 +2253,126 @@ export function initStudentDeleteModal() {
     form.dataset.bound = 'true';
   }
 }
+
+// Add Student in Class Advisory Modal
+export function initAddStudentModal() {
+  const triggerBtn = document.querySelector('[data-action="add-student"]');
+  const cancelBtn = document.getElementById('cancelAddStudentBtn');
+  const classId = document.getElementById('classId')?.value;
+  const container = document.getElementById('availableStudentList');
+
+  function loadAvailableStudents() {
+    const fallback = document.getElementById('noAvailableStudents');
+    fallback.classList.add('hidden'); // Reset fallback
+
+    fetch(`/ajax/get-available-students.php?class_id=${classId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success || !Array.isArray(data.students) || data.students.length === 0) {
+          container.innerHTML = '';
+          fallback.classList.remove('hidden'); // Show fallback
+          return;
+        }
+
+        fallback.classList.add('hidden'); // Hide fallback
+        container.innerHTML = data.students.map(student => `
+        <div class="flex items-center justify-between bg-gray-50 border rounded px-3 py-2 hover:bg-emerald-50 transition">
+          <div class="flex items-center gap-3">
+            <img src="${student.photo_path || '/assets/img/default-avatar.png'}" class="w-8 h-8 rounded-full border" alt="Photo">
+            <div>
+              <p class="font-medium text-sm">${student.full_name}</p>
+              <p class="text-xs text-gray-500">LRN: ${student.lrn}</p>
+            </div>
+          </div>
+          <button type="button" class="px-2 py-1 bg-emerald-600 text-white text-xs rounded hover:bg-emerald-700"
+                  data-id="${student.id}" data-action="enroll-student">Add</button>
+        </div>
+      `).join('');
+      });
+  }
+  
+  function handleEnrollClick(e) {
+    const btn = e.target.closest('[data-action="enroll-student"]');
+    if (!btn) return;
+
+    const studentId = btn.dataset.id;
+    fetch('/controllers/admin/enroll-student.php', {
+      method: 'POST',
+      body: new URLSearchParams({ class_id: classId, student_id: studentId })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Student enrolled.');
+          refreshStudentList(classId);
+          btn.closest('div').remove(); // Remove from modal list
+
+          // ✅ Re-check available students after removal
+          const remaining = container.querySelectorAll('[data-action="enroll-student"]');
+          if (remaining.length === 0) {
+            loadAvailableStudents(); // Re-fetch to trigger fallback
+          }
+        } else {
+          renderFlash('error', data.error || 'Failed to enroll student.');
+        }
+      });
+  }
+
+  if (triggerBtn && !triggerBtn.dataset.bound) {
+    triggerBtn.addEventListener('click', () => {
+      toggleModal('addStudentModal', true);
+      loadAvailableStudents();
+    });
+    triggerBtn.dataset.bound = 'true';
+  }
+
+  if (cancelBtn && !cancelBtn.dataset.bound) {
+    cancelBtn.addEventListener('click', () => {
+      toggleModal('addStudentModal', false);
+      container.innerHTML = '';
+    });
+    cancelBtn.dataset.bound = 'true';
+  }
+
+  container.addEventListener('click', handleEnrollClick);
+}
+
+// Delete Student in Class Advisory Modal
+export function initStudentClassAdvisoryDeleteModal() {
+  const form = document.getElementById('deleteStudentClassForm');
+  const cancelBtn = document.getElementById('cancelDeleteStudentClassBtn');
+  const classId = document.getElementById('classId')?.value;
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    fetch('/controllers/admin/delete-student-class.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderFlash('success', 'Student removed from advisory.');
+          toggleModal('deleteStudentClassModal', false);
+          refreshStudentList(classId);
+          form.reset();
+        } else {
+          renderFlash('error', data.error || 'Failed to remove student.');
+        }
+      })
+      .catch(() => {
+        renderFlash('error', 'Error removing student.');
+      });
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    toggleModal('deleteStudentClassModal', false);
+    form.reset();
+  });
+}
+
+
 

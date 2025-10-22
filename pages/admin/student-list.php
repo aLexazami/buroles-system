@@ -45,7 +45,7 @@ renderHead('Admin');
 
     <section class="p-4 sm:p-6 md:p-8">
       <!-- Advisory Class Header -->
-      <div class="flex items-center gap-4 mb-6 rounded p-5  bg-emerald-800 shadow text-white">
+      <div class="flex items-center gap-4 mb-6 rounded p-5 bg-emerald-800 shadow text-white">
         <img src="<?= $class['avatar_path'] ?? '/assets/img/default-avatar.png' ?>" class="w-16 h-16 rounded-full border-2 border-white" alt="Avatar">
         <div>
           <h1 class="font-semibold text-md sm:text-lg md:text-xl leading-tight">
@@ -65,21 +65,35 @@ renderHead('Admin');
         </button>
       </div>
 
-      <!-- Student List Placeholder -->
-      <div class="bg-white rounded shadow p-4">
-        <h2 class="text-lg font-semibold mb-3">Students</h2>
-        <p class="text-gray-500 text-sm">No students added yet.</p>
+      <!-- 🧾 Advisory Student Table -->
+      <input type="hidden" id="classId" value="<?= $class['id'] ?>">
+      <div class="w-full overflow-x-auto">
+        <table class="min-w-[640px] w-full table-auto bg-white rounded shadow overflow-hidden">
+          <thead class="bg-emerald-600 text-white text-left text-xs sm:text-sm">
+            <tr>
+              <th class="py-2 px-4">Student</th>
+              <th class="py-2 px-4">LRN</th>
+              <th class="py-2 px-4">Gender</th>
+              <th class="py-2 px-4">Grade & Section</th>
+              <th class="py-2 px-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentListTableBody" class="text-sm text-gray-800 text-left">
+            <!-- Rows will be injected by JS -->
+          </tbody>
+        </table>
       </div>
     </section>
   </main>
 
   <?php
   include('../../includes/footer.php');
-  include('../../includes/modals.php'); // You’ll add the Add Student modal here later
+  include('../../includes/modals.php');
   ?>
 
   <script src="/assets/js/auto-dismiss-alert.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
 </body>
+
 </html>
