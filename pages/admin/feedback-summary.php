@@ -5,6 +5,7 @@ require_once  __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../helpers/head.php';
 renderHead('Admin');
 ?>
+
 <body class="bg-gray-200 min-h-screen flex flex-col">
   <!-- Header Section -->
   <?php include('../../includes/header.php'); ?>
@@ -36,6 +37,12 @@ renderHead('Admin');
             <div class="grid grid-cols-2 py-2 hover:bg-gray-100">
               <span class="font-medium">Government:</span>
               <span id="count-government" class="text-red-400 font-bold text-right"><?= $counts['Government'] ?? 0 ?></span>
+            </div>
+            <div class="grid grid-cols-2 py-2 bg-emerald-50 rounded-b">
+              <span class="font-semibold text-emerald-800">Total Customers:</span>
+              <span id="count-total-customers" class="text-emerald-800 font-bold text-right">
+                <?= ($counts['Business'] ?? 0) + ($counts['Citizen'] ?? 0) + ($counts['Government'] ?? 0) ?>
+              </span>
             </div>
           </div>
         </div>
@@ -232,7 +239,66 @@ renderHead('Admin');
             </tbody>
           </table>
         </div>
+
+        <div class="bg-white rounded-lg p-4 shadow mt-6 ">
+          <h2 class="text-lg font-bold text-emerald-800 text-center">SQD Weighted Mean & Interpretation</h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full table-auto text-sm mt-4">
+              <thead class="bg-emerald-100 text-emerald-800">
+                <tr>
+                  <th class="px-4 py-2 text-left">SQD Item</th>
+                  <th class="px-4 py-2 text-center">Weighted Mean</th>
+                  <th class="px-4 py-2 text-center">Interpretation</th>
+                  <th class="px-4 py-2 text-center">Total Responses</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <?php foreach ($items as $index => $label): $i = $index + 1; ?>
+                  <tr id="sqd<?= $i ?>-row">
+                    <td class="px-4 py-2"><?= $label ?></td>
+                    <td id="sqd<?= $i ?>-mean" class="text-center font-bold text-emerald-700">—</td>
+                    <td id="sqd<?= $i ?>-interpretation" class="text-center text-gray-700 italic">—</td>
+                    <td id="sqd<?= $i ?>-total" class="text-center text-gray-800 font-semibold">0</td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+              <tfoot class="bg-gray-50">
+                <tr>
+                  <td class="px-4 py-2 font-semibold text-right" colspan="1">Overall Average</td>
+                  <td id="sqd-overall-mean" class="text-center font-bold text-emerald-700">—</td>
+                  <td id="sqd-overall-interpretation" class="text-center italic text-gray-700">—</td>
+                  <td id="sqd-overall-total" class="text-center text-gray-800 font-semibold">—</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="mt-4 text-sm text-gray-600 bg-gray-50 rounded-lg p-4">
+          <details>
+            <summary class="cursor-pointer font-semibold text-emerald-700">How Weighted Mean Is Calculated</summary>
+            <div class="mt-2">
+              <p>
+                For each SQD item, the weighted mean is computed using the formula:
+              </p>
+              <p class="font-mono bg-white p-2 rounded border mt-2">
+                Weighted Mean = (5×Strongly Agree + 4×Agree + 3×Neutral + 2×Disagree + 1×Strongly Disagree) ÷ Total Valid Responses
+              </p>
+              <p class="mt-2">
+                N/A responses are excluded from the calculation. The interpretation is based on the following scale:
+              </p>
+              <ul class="list-disc ml-6 mt-2">
+                <li>4.21 – 5.00: Very Satisfied</li>
+                <li>3.41 – 4.20: Satisfied</li>
+                <li>2.61 – 3.40: Neutral</li>
+                <li>1.81 – 2.60: Dissatisfied</li>
+                <li>1.00 – 1.80: Very Dissatisfied</li>
+              </ul>
+            </div>
+          </details>
+        </div>
       </div>
+
       <div class="col-span-3 p-4 shadow-lg bg-white rounded-lg mt-4">
         <h1 class="text-lg text-center text-emerald-800 font-bold">Service Availed</h1>
         <div class="mt-10 divide-y divide-gray-200">
