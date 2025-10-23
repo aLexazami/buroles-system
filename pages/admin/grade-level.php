@@ -5,6 +5,22 @@ require_once __DIR__ . '/../../helpers/head.php';
 
 $gradeLevels = $pdo->query("SELECT id, level, label FROM grade_levels ORDER BY level ASC")->fetchAll(PDO::FETCH_ASSOC);
 
+// 📅 Fetch all school years
+$schoolYears = $pdo->query("
+  SELECT id, label, is_active
+  FROM school_years
+  ORDER BY is_active DESC, start_year DESC
+")->fetchAll(PDO::FETCH_ASSOC);
+
+// 🎯 Determine current active school year for header
+$currentActiveSY = null;
+foreach ($schoolYears as $sy) {
+  if ($sy['is_active']) {
+    $currentActiveSY = $sy;
+    break;
+  }
+}
+
 renderHead('Grade Levels');
 ?>
 
@@ -19,6 +35,16 @@ renderHead('Grade Levels');
         <img src="/assets/img/grade-level.png" class="w-5 h-5 sm:w-6 sm:h-6">
         <h1 class="font-bold text-base sm:text-lg md:text-xl">Grade Levels Management</h1>
       </div>
+
+
+      <!-- 🏫 School Year Header (Always shows current active year) -->
+      <?php if ($currentActiveSY): ?>
+        <div class="flex justify-center [font-family:'Times_New_Roman',Times,serif] items-center gap-4 mb-6 rounded p-5 bg-gradient-to-r from-emerald-800 to-teal-500 shadow text-white">
+          <h1 class="font-semibold text-xl sm:text-2xl md:text-3xl leading-tight">
+            <?= htmlspecialchars($currentActiveSY['label']) ?>
+          </h1>
+        </div>
+      <?php endif; ?>
 
       <!-- Grade Level Table + Add/Edit Modal -->
       <div class="mb-8">

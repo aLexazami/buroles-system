@@ -126,6 +126,8 @@ export function refreshGradeSections() {
 export function refreshSchoolYears() {
   const container = document.getElementById('schoolYearTableBody');
   const fallback = document.getElementById('schoolYearFallback');
+  const header = document.getElementById('currentSchoolYearHeader');
+
   if (!container || !fallback) return;
 
   fetch('/api/get-school-years.php')
@@ -136,6 +138,7 @@ export function refreshSchoolYears() {
         return;
       }
 
+      // 🧹 Clear previous content
       container.innerHTML = '';
 
       if (data.schoolYears.length === 0) {
@@ -147,16 +150,28 @@ export function refreshSchoolYears() {
       fallback.classList.remove('flex');
       fallback.classList.add('hidden');
 
+      // 📅 Sort: active first, then by start date descending
       const sortedYears = [...data.schoolYears].sort((a, b) => {
-        if (a.is_active !== b.is_active) {
-          return b.is_active - a.is_active;
-        }
+        if (a.is_active !== b.is_active) return b.is_active - a.is_active;
         return new Date(b.start_date) - new Date(a.start_date);
       });
 
+      // 🏫 Update header with active school year
+      const activeYear = sortedYears.find(sy => sy.is_active);
+      if (header && activeYear) {
+        const label = activeYear.label;
+        const title = header.querySelector('h1');
+        if (title && title.textContent !== label) {
+          title.textContent = label;
+          header.classList.add('animate-pulse');
+          setTimeout(() => header.classList.remove('animate-pulse'), 600);
+        }
+      }
+
+      // 🧱 Render school year rows
       sortedYears.forEach(sy => {
         const row = document.createElement('tr');
-        row.classList.add('border-t', 'hover:bg-emerald-100' ,'transition-all', 'duration-300');
+        row.classList.add('border-t', 'hover:bg-emerald-100', 'transition-all', 'duration-300');
         if (sy.is_active) {
           row.classList.add('bg-emerald-100', 'ring-1', 'ring-green-300', 'font-semibold');
         }
@@ -173,7 +188,6 @@ export function refreshSchoolYears() {
             </button>
           </td>
           <td class="px-4 py-2 flex flex-wrap gap-2 justify-start sm:justify-center">
-            <!-- Edit Icon -->
             <div class="relative">
               <button type="button" class="peer edit-school-year rounded-full p-2 hover:bg-blue-100 hover:scale-110 transition-transform duration-200 cursor-pointer"
                 data-id="${sy.id}" data-label="${sy.label}" data-start="${sy.start_date}" data-end="${sy.end_date}" data-active="${sy.is_active}">
@@ -184,7 +198,6 @@ export function refreshSchoolYears() {
               </div>
             </div>
 
-            <!-- Delete Icon -->
             <div class="relative">
               <button type="button" class="peer delete-school-year rounded-full p-2 hover:bg-red-100 hover:scale-110 transition-transform duration-200 cursor-pointer"
                 data-id="${sy.id}" data-label="${sy.label}">
@@ -199,6 +212,7 @@ export function refreshSchoolYears() {
         container.appendChild(row);
       });
 
+      // 🧩 Initialize interactions
       initSchoolYearEditHandler();
       initSchoolYearDeleteModal();
       initSchoolYearStatusToggle(sortedYears);

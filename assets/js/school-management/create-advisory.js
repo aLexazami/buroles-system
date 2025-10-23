@@ -1,4 +1,5 @@
 import { initClassDeleteModal,initClassEditModal } from '../modal.js';
+import { renderFlash } from '../flash.js';
 
 export function refreshAdvisoryGrid(adviserId) {
   const schoolYearSelect = document.getElementById('schoolYearFilter');
@@ -28,7 +29,13 @@ export function refreshAdvisoryGrid(adviserId) {
           </div>
 
           <!-- 🛠️ Action Buttons -->
-          <div class="flex gap-3 text-xs shrink-0">
+          <div class="flex gap-3 text-xs shrink-0 items-center">
+            <!-- Status Toggle -->
+            <button class="toggle-class-status px-2 py-1 rounded font-semibold ${cls.is_active ? 'bg-emerald-300 text-green-800' : 'bg-gray-200 text-gray-600'}"
+                    data-id="${cls.id}" data-active="${cls.is_active}">
+              ${cls.is_active ? 'Active' : 'Inactive'}
+            </button>
+
             <!-- Edit Icon -->
             <div class="relative">
               <button type="button" data-action="edit-class" data-id="${cls.id}" class="peer rounded-full p-2 hover:bg-blue-100 hover:scale-110 transition-transform duration-200 cursor-pointer">
@@ -66,6 +73,33 @@ export function refreshAdvisoryGrid(adviserId) {
       // 🧩 Bind modals
       initClassDeleteModal();
       initClassEditModal();
+
+      // 🧩 Bind status toggles
+      document.querySelectorAll('.toggle-class-status').forEach(btn => {
+        if (btn.dataset.bound) return;
+
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const currentStatus = btn.dataset.active === '1';
+          const newStatus = currentStatus ? 0 : 1;
+
+          fetch('/controllers/admin/toggle-class-status.php', {
+            method: 'POST',
+            body: new URLSearchParams({ id, is_active: newStatus })
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                renderFlash('success', 'Class status updated.');
+                refreshAdvisoryGrid(adviserId);
+              } else {
+                renderFlash('error', data.error || 'Failed to update status.');
+              }
+            });
+
+          btn.dataset.bound = 'true';
+        });
+      });
     });
 }
 

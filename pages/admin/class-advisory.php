@@ -19,6 +19,23 @@ $staffUsers = $pdo->query("
   ORDER BY users.last_name ASC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
+// 📅 Fetch all school years
+$schoolYears = $pdo->query("
+  SELECT id, label, is_active
+  FROM school_years
+  ORDER BY is_active DESC, start_year DESC
+")->fetchAll(PDO::FETCH_ASSOC);
+
+// 🎯 Determine current active school year for header
+$currentActiveSY = null;
+foreach ($schoolYears as $sy) {
+  if ($sy['is_active']) {
+    $currentActiveSY = $sy;
+    break;
+  }
+}
+
+
 renderHead('Admin');
 ?>
 
@@ -34,9 +51,19 @@ renderHead('Admin');
         <h1 class="font-bold text-base sm:text-lg md:text-xl">Class Advisory Management</h1>
       </div>
 
+      <!-- 🏫 School Year Header (Always shows current active year) -->
+      <?php if ($currentActiveSY): ?>
+        <div class="flex justify-center [font-family:'Times_New_Roman',Times,serif] items-center gap-4 mb-6 rounded p-5 bg-gradient-to-r from-emerald-800 to-teal-500 shadow text-white">
+          <h1 class="font-semibold text-xl sm:text-2xl md:text-3xl leading-tight">
+            <?= htmlspecialchars($currentActiveSY['label']) ?>
+          </h1>
+        </div>
+      <?php endif; ?>
+
+
       <!-- Staff Adviser Table -->
       <div class="w-full overflow-x-auto">
-          <table class="min-w-[640px] w-full table-auto bg-white rounded shadow overflow-hidden">
+        <table class="min-w-[640px] w-full table-auto bg-white rounded shadow overflow-hidden">
           <thead class="bg-emerald-600 text-white text-left text-xs sm:text-sm">
             <tr>
               <th class="py-2 px-4">Name</th>

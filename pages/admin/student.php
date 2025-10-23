@@ -4,6 +4,22 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/head.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 
+// 📅 Fetch all school years
+$schoolYears = $pdo->query("
+  SELECT id, label, is_active
+  FROM school_years
+  ORDER BY is_active DESC, start_year DESC
+")->fetchAll(PDO::FETCH_ASSOC);
+
+// 🎯 Determine current active school year for header
+$currentActiveSY = null;
+foreach ($schoolYears as $sy) {
+  if ($sy['is_active']) {
+    $currentActiveSY = $sy;
+    break;
+  }
+}
+
 renderHead('Admin');
 ?>
 
@@ -20,6 +36,15 @@ renderHead('Admin');
         <img src="/assets/img/student.png" class="w-5 h-5 sm:w-6 sm:h-6" alt="Student Icon">
         <h1 class="font-bold text-base sm:text-lg md:text-xl">Student Management</h1>
       </div>
+
+      <!-- 🏫 School Year Header (Always shows current active year) -->
+      <?php if ($currentActiveSY): ?>
+        <div class="flex justify-center [font-family:'Times_New_Roman',Times,serif] items-center gap-4 mb-6 rounded p-5 bg-gradient-to-r from-emerald-800 to-teal-500 shadow text-white">
+          <h1 class="font-semibold text-xl sm:text-2xl md:text-3xl leading-tight">
+            <?= htmlspecialchars($currentActiveSY['label']) ?>
+          </h1>
+        </div>
+      <?php endif; ?>
 
       <!-- ➕ Add Student Button -->
       <div class="flex justify-start mb-4">

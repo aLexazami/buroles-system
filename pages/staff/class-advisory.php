@@ -11,32 +11,41 @@ if ($_SESSION['role_slug'] !== 'staff') {
 $userId = $_SESSION['user_id'];
 
 // 📅 Fetch all school years
-$schoolYears = $pdo->query("SELECT id, label, is_active FROM school_years ORDER BY is_active DESC, start_year DESC")->fetchAll(PDO::FETCH_ASSOC);
+$schoolYears = $pdo->query("
+  SELECT id, label, is_active
+  FROM school_years
+  ORDER BY is_active DESC, start_year DESC
+")->fetchAll(PDO::FETCH_ASSOC);
 
-// 📅 Determine selected school year
-$selectedYearId = $_GET['school_year_id'] ?? null;
-if (!$selectedYearId) {
-  foreach ($schoolYears as $sy) {
-    if ($sy['is_active']) {
-      $selectedYearId = $sy['id'];
-      break;
-    }
+// 🎯 Always fetch the current active school year for header
+$currentActiveSY = null;
+foreach ($schoolYears as $sy) {
+  if ($sy['is_active']) {
+    $currentActiveSY = $sy;
+    break;
   }
 }
 
-// 🔍 Fetch selected school year label
-$activeSY = null;
+// 📅 Determine selected school year for filtering
+$selectedYearId = $_GET['school_year_id'] ?? null;
+if (!ctype_digit((string)$selectedYearId)) {
+  // Fallback to active year
+  $selectedYearId = $currentActiveSY['id'] ?? null;
+}
+
+// 🔍 Fetch selected school year object
+$selectedSY = null;
 foreach ($schoolYears as $sy) {
-  if ($sy['id'] == $selectedYearId) {
-    $activeSY = $sy;
+  if ((int)$sy['id'] === (int)$selectedYearId) {
+    $selectedSY = $sy;
     break;
   }
 }
 
 // 🔍 Fetch advisory class for selected school year
 $class = null;
-if ($activeSY) {
-  $stmt = $pdo->prepare("
+if ($selectedSY) {
+  $query = "
     SELECT classes.id, classes.name, classes.school_year_id,
            users.first_name, users.middle_name, users.last_name, users.avatar_path,
            gl.label AS grade_label, gs.section_label
@@ -45,9 +54,17 @@ if ($activeSY) {
     JOIN grade_sections gs ON classes.grade_section_id = gs.id
     JOIN grade_levels gl ON gs.grade_level_id = gl.id
     WHERE classes.adviser_id = ? AND classes.school_year_id = ?
-    LIMIT 1
-  ");
-  $stmt->execute([$userId, $activeSY['id']]);
+  ";
+
+  // ✅ Enforce is_active only if selected year is active
+  if ($selectedSY['is_active']) {
+    $query .= " AND classes.is_active = 1";
+  }
+
+  $query .= " LIMIT 1";
+
+  $stmt = $pdo->prepare($query);
+  $stmt->execute([$userId, $selectedSY['id']]);
   $class = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
@@ -62,12 +79,13 @@ renderHead('Staff');
 
     <section class="p-4 sm:p-6 md:p-8">
 
-      <!-- 🏫 School Year Header -->
+      <!-- 🏫 School Year Header (Always shows current active year) -->
       <div class="flex justify-center [font-family:'Times_New_Roman',Times,serif] items-center gap-4 mb-6 rounded p-5 bg-gradient-to-r from-emerald-800 to-teal-500 shadow text-white">
         <h1 class="font-semibold text-xl sm:text-2xl md:text-3xl leading-tight">
-          <?= htmlspecialchars($activeSY['label'] ?? '—') ?>
+          <?= htmlspecialchars($currentActiveSY['label'] ?? '—') ?>
         </h1>
       </div>
+
 
 
       <!-- 📅 School Year Filter -->
@@ -91,7 +109,8 @@ renderHead('Staff');
         </div>
       </form>
 
-      <?php if (!$activeSY): ?>
+
+      <?php if (!$selectedSY): ?>
         <!-- 🚫 No Active School Year -->
         <div class="bg-white rounded shadow p-6 text-center text-gray-500">
           <img src="/assets/img/empty-school-year.png" alt="No active school year" class="w-16 h-16 mx-auto mb-4 opacity-50">
@@ -102,7 +121,7 @@ renderHead('Staff');
         <!-- 🚫 No Advisory Class -->
         <div class="bg-white rounded shadow p-6 text-center text-gray-500">
           <img src="/assets/img/empty-class.png" alt="No advisory" class="w-16 h-16 mx-auto mb-4 opacity-50">
-          <p class="text-sm sm:text-base">No advisory class assigned to you for <?= htmlspecialchars($activeSY['label']) ?>.</p>
+          <p class="text-sm sm:text-base">No advisory class assigned to you for <?= htmlspecialchars($selectedSY['label']) ?>.</p>
         </div>
 
       <?php else: ?>
