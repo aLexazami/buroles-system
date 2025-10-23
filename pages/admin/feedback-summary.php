@@ -88,7 +88,9 @@ renderHead('Admin');
         </div>
       </div>
       <div class="p-4 shadow-lg col-span-3 bg-white rounded-lg mt-4">
-        <h1 class="text-lg text-center text-emerald-800 font-bold">Citizen Charter Awareness Response</h1>
+        <h2 class="text-lg font-bold text-emerald-800 text-center mb-4">
+          Citizen Charter Awareness Response
+        </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
           <div class="divide-y divide-gray-200">
             <!-- CC1 Header with Toggle -->
@@ -197,7 +199,85 @@ renderHead('Admin');
             </div>
           </div>
         </div>
+
+        <div class="bg-white rounded-lg p-4 shadow mt-6">
+          <h2 class="text-lg font-bold text-emerald-800 text-center mb-4">
+            Citizen Charter Awareness Weighted Mean and Interpretation
+          </h2>
+
+          <!-- CC1 Nominal Summary -->
+          <div class="mb-6 text-sm text-gray-700 bg-gray-50 rounded-lg p-4">
+            <h3 class="text-center text-emerald-700 font-semibold mb-2">CC1 Awareness Summary</h3>
+            <ul class="list-disc ml-6">
+              <li><span id="cc1-awareness-pct">—%</span> of respondents are aware of the Citizen’s Charter (responses 1–3).</li>
+              <li><span id="cc1-fully-aware-pct">—%</span> are fully aware and have seen it (response 1).</li>
+              <li><span id="cc1-unaware-pct">—%</span> are not aware at all (response 4).</li>
+            </ul>
+          </div>
+
+          <!-- CC2 Visibility Table -->
+          <div class="mb-6 text-sm overflow-x-auto pb-5">
+            <h3 class="text-center text-emerald-700 font-semibold mb-2">CC2 Visibility Summary</h3>
+            <table class="min-w-full table-auto text-sm">
+              <thead class="bg-emerald-100 text-emerald-800">
+                <tr>
+                  <th class="px-4 py-2 text-left">Metric</th>
+                  <th class="px-4 py-2 text-center">Weighted Mean</th>
+                  <th class="px-4 py-2 text-center">Interpretation</th>
+                  <th class="px-4 py-2 text-center">Total Responses</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr id="cc2-row">
+                  <td class="px-4 py-2">CC2 – Visibility</td>
+                  <td id="cc2-mean" class="text-center font-bold text-emerald-700">—</td>
+                  <td class="text-center italic text-gray-700">
+                    <span id="cc2-interpretation" class="px-2 py-1 rounded font-semibold">—</span>
+                  </td>
+                  <td id="cc2-total" class="text-center text-gray-800 font-semibold">0</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Additional Response Breakdown -->
+            <p class="text-sm text-gray-600 mt-2 text-center">
+              <strong>Total responses:</strong> <span id="cc2-total-paragraph">0</span><br>
+              <strong>Valid responses (scored):</strong> <span id="cc2-valid-total">0</span>
+            </p>
+          </div>
+
+          <!-- CC3 Helpfulness Table -->
+          <div class="text-sm overflow-x-auto pb-5">
+            <h3 class="text-center text-emerald-700 font-semibold mb-2">CC3 Helpfulness Summary</h3>
+            <table class="min-w-full table-auto text-sm">
+              <thead class="bg-emerald-100 text-emerald-800">
+                <tr>
+                  <th class="px-4 py-2 text-left">Metric</th>
+                  <th class="px-4 py-2 text-center">Weighted Mean</th>
+                  <th class="px-4 py-2 text-center">Interpretation</th>
+                  <th class="px-4 py-2 text-center">Total Responses</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr id="cc3-row">
+                  <td class="px-4 py-2">CC3 – Helpfulness</td>
+                  <td id="cc3-mean" class="text-center font-bold text-emerald-700">—</td>
+                  <td class="text-center italic text-gray-700">
+                    <span id="cc3-interpretation" class="px-2 py-1 rounded font-semibold">—</span>
+                  </td>
+                  <td id="cc3-total" class="text-center text-gray-800 font-semibold">0</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class="text-sm text-gray-600 mt-2 text-center">
+              <strong>Total responses:</strong> <span id="cc3-total-paragraph">0</span><br>
+              <strong>Valid responses (scored):</strong> <span id="cc3-valid-total">0</span>
+            </p>
+          </div>
+        </div>
       </div>
+
       <div class="p-4 shadow-lg col-span-3 bg-white rounded-lg mt-4">
         <h1 class="text-lg text-center text-emerald-800 font-bold">Client Satisfaction Matrix</h1>
         <div class="overflow-x-auto bg-white rounded-lg shadow-lg p-4 mt-4">
@@ -459,6 +539,15 @@ renderHead('Admin');
   <script src="/assets/js/update-sumarry.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
+  <script>
+    function toggleLegend(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.toggle('hidden');
+      }
+    }
+  </script>
+
 </body>
 
 </html>

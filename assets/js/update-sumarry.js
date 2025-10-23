@@ -153,6 +153,101 @@ document.addEventListener('DOMContentLoaded', function () {
         safeUpdate('sqd-overall-interpretation', overallInterpretation);
         safeUpdate('sqd-overall-total', totalValidResponses);
 
+        // CC1 – Awareness Summary (Nominal)
+        const cc1_1 = data['cc1-1'] || 0;
+        const cc1_2 = data['cc1-2'] || 0;
+        const cc1_3 = data['cc1-3'] || 0;
+        const cc1_4 = data['cc1-4'] || 0;
+
+        const cc1Total = cc1_1 + cc1_2 + cc1_3 + cc1_4;
+        const cc1Aware = cc1_1 + cc1_2 + cc1_3;
+
+        const cc1AwarePct = cc1Total > 0 ? ((cc1Aware / cc1Total) * 100).toFixed(1) : '—';
+        const cc1FullyAwarePct = cc1Total > 0 ? ((cc1_1 / cc1Total) * 100).toFixed(1) : '—';
+        const cc1UnawarePct = cc1Total > 0 ? ((cc1_4 / cc1Total) * 100).toFixed(1) : '—';
+
+        safeUpdate('cc1-unaware-pct', `${cc1UnawarePct}%`);
+        safeUpdate('cc1-awareness-pct', `${cc1AwarePct}%`);
+        safeUpdate('cc1-fully-aware-pct', `${cc1FullyAwarePct}%`);
+
+        // CC2 – Visibility
+        const cc2Weights = { '1': 4, '2': 3, '3': 2, '4': 1 };
+        let cc2Total = 0;           // includes N/A
+        let cc2ValidTotal = 0;      // excludes N/A
+        let cc2Weighted = 0;
+
+        ['1', '2', '3', '4', 'na'].forEach(key => {
+          const count = data[`cc2-${key}`] || 0;
+          cc2Total += count;
+          if (key !== 'na') { // exclude N/A
+            cc2ValidTotal += count;
+            cc2Weighted += count * cc2Weights[key];
+          }
+        });
+
+        const cc2Mean = cc2ValidTotal > 0 ? (cc2Weighted / cc2ValidTotal).toFixed(2) : '—';
+        let cc2Interpretation = '—';
+        if (cc2ValidTotal > 0) {
+          const mean = parseFloat(cc2Mean);
+          if (mean >= 3.5) cc2Interpretation = 'Highly Visible';
+          else if (mean >= 2.5) cc2Interpretation = 'Moderately Visible';
+          else cc2Interpretation = 'Poorly Visible';
+        }
+
+        const cc2Row = document.getElementById('cc2-row');
+        if (cc2Row) {
+          cc2Row.classList.remove('bg-green-50', 'bg-yellow-50', 'bg-red-50');
+          if (cc2Interpretation === 'Highly Visible') cc2Row.classList.add('bg-green-50');
+          else if (cc2Interpretation === 'Moderately Visible') cc2Row.classList.add('bg-yellow-50');
+          else if (cc2Interpretation === 'Poorly Visible') cc2Row.classList.add('bg-red-50');
+        }
+
+        safeUpdate('cc2-mean', cc2Mean);
+        safeUpdate('cc2-interpretation', cc2Interpretation);
+        safeUpdate('cc2-total', cc2Total);
+        safeUpdate('cc2-total-paragraph', cc2Total);
+        safeUpdate('cc2-valid-total', cc2ValidTotal);
+
+        // CC3 – Helpfulness
+        const cc3Weights = { '1': 3, '2': 2, '3': 1 };
+        let cc3Total = 0;           // includes N/A
+        let cc3ValidTotal = 0;      // excludes N/A
+        let cc3Weighted = 0;
+
+        ['1', '2', '3', 'na'].forEach(key => {
+          const count = data[`cc3-${key}`] || 0;
+          cc3Total += count;
+          if (key !== 'na') {
+            cc3ValidTotal += count;
+            cc3Weighted += count * cc3Weights[key];
+          }
+        });
+
+        const cc3Mean = cc3ValidTotal > 0 ? (cc3Weighted / cc3ValidTotal).toFixed(2) : '—';
+        let cc3Interpretation = '—';
+        if (cc3ValidTotal > 0) {
+          const mean = parseFloat(cc3Mean);
+          if (mean >= 2.5) cc3Interpretation = 'Very Helpful';
+          else if (mean >= 1.5) cc3Interpretation = 'Somewhat Helpful';
+          else cc3Interpretation = 'Not Helpful';
+        }
+
+        // Apply row color
+        const cc3Row = document.getElementById('cc3-row');
+        if (cc3Row) {
+          cc3Row.classList.remove('bg-green-50', 'bg-yellow-50', 'bg-red-50');
+          if (cc3Interpretation === 'Very Helpful') cc3Row.classList.add('bg-green-50');
+          else if (cc3Interpretation === 'Somewhat Helpful') cc3Row.classList.add('bg-yellow-50');
+          else if (cc3Interpretation === 'Not Helpful') cc3Row.classList.add('bg-red-50');
+        }
+
+        // Push values to UI
+        safeUpdate('cc3-mean', cc3Mean);
+        safeUpdate('cc3-interpretation', cc3Interpretation);
+        safeUpdate('cc3-total', cc3Total);               // table cell
+        safeUpdate('cc3-total-paragraph', cc3Total);     // paragraph (if added)
+        safeUpdate('cc3-valid-total', cc3ValidTotal);    // paragraph (if added)
+
         // Service Availed
         for (let i = 1; i <= 18; i++) {
           safeUpdate(`service-${i}`, data[`service-${i}`] || 0);
