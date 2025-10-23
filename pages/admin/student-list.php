@@ -36,7 +36,7 @@ if (!$class) {
 renderHead('Admin');
 ?>
 
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-100 min-h-screen flex flex-col" data-role="<?= htmlspecialchars($_SESSION['role_slug']) ?>">
   <?php include('../../includes/header.php'); ?>
 
   <main class="grid grid-cols-1 md:grid-cols-[auto_1fr]">

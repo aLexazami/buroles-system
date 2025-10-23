@@ -1930,7 +1930,9 @@ export function initGradeSectionModal() {
   const cancelBtn = document.getElementById('cancelAddGradeSectionBtn');
   const triggerBtn = document.querySelector('[data-action="add-grade-section"]');
 
-  // ✅ Named submit handler to prevent stacking
+  // ✅ Prevent execution if modal elements are missing
+  if (!form || !cancelBtn || !triggerBtn) return;
+
   function handleAddSectionSubmit(e) {
     e.preventDefault();
     const formData = new FormData(form);
@@ -1945,7 +1947,7 @@ export function initGradeSectionModal() {
           renderFlash('success', 'Section added.');
           toggleModal('addGradeSectionModal', false);
           form.reset();
-          refreshGradeSections(); // ✅ Only one call per success
+          refreshGradeSections();
         } else {
           renderFlash('error', data.error || 'Failed to add section.');
         }
@@ -1955,15 +1957,14 @@ export function initGradeSectionModal() {
       });
   }
 
-  // ✅ Bind once only
-  if (triggerBtn && !triggerBtn.dataset.bound) {
+  if (!triggerBtn.dataset.bound) {
     triggerBtn.addEventListener('click', () => {
       toggleModal('addGradeSectionModal', true);
     });
     triggerBtn.dataset.bound = 'true';
   }
 
-  if (cancelBtn && !cancelBtn.dataset.bound) {
+  if (!cancelBtn.dataset.bound) {
     cancelBtn.addEventListener('click', () => {
       toggleModal('addGradeSectionModal', false);
       form.reset();
@@ -1985,6 +1986,9 @@ export function initSchoolYearModal() {
   const labelInput = document.getElementById('addSchoolYearLabel');
   const cancelBtn = document.getElementById('cancelAddSchoolYearBtn');
   const triggerBtn = document.querySelector('[data-action="add-school-year"]');
+
+  // ✅ Prevent execution if any required element is missing
+  if (!form || !startInput || !endInput || !labelInput || !cancelBtn || !triggerBtn) return;
 
   function updateLabel() {
     const start = new Date(startInput.value);
@@ -2025,14 +2029,14 @@ export function initSchoolYearModal() {
       });
   }
 
-  if (triggerBtn && !triggerBtn.dataset.bound) {
+  if (!triggerBtn.dataset.bound) {
     triggerBtn.addEventListener('click', () => {
       toggleModal('addSchoolYearModal', true);
     });
     triggerBtn.dataset.bound = 'true';
   }
 
-  if (cancelBtn && !cancelBtn.dataset.bound) {
+  if (!cancelBtn.dataset.bound) {
     cancelBtn.addEventListener('click', () => {
       toggleModal('addSchoolYearModal', false);
       form.reset();
@@ -2343,6 +2347,9 @@ export function initStudentClassAdvisoryDeleteModal() {
   const cancelBtn = document.getElementById('cancelDeleteStudentClassBtn');
   const classId = document.getElementById('classId')?.value;
 
+  // ✅ Prevent execution if modal elements are missing
+  if (!form || !cancelBtn) return;
+
   form.addEventListener('submit', e => {
     e.preventDefault();
 
@@ -2373,6 +2380,5 @@ export function initStudentClassAdvisoryDeleteModal() {
     form.reset();
   });
 }
-
 
 

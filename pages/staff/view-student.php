@@ -4,46 +4,66 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/head.php';
 require_once __DIR__ . '/../../helpers/flash.php';
 
-$id = $_GET['id'] ?? null;
-if (!$id) {
-  setFlash('error', 'Missing student ID.');
-  header('Location: /pages/admin/student.php');
+if ($_SESSION['role_slug'] !== 'staff') {
+  http_response_code(403);
+  exit('Access denied');
+}
+
+$staffId = $_SESSION['user_id'];
+$studentId = $_GET['id'] ?? null;
+$classId = $_GET['class_id'] ?? null;
+
+if (!$studentId || !$classId || !ctype_digit($studentId) || !ctype_digit($classId)) {
+  setFlash('error', 'Missing or invalid student or class ID.');
+  header('Location: /pages/staff/class-advisory.php');
   exit;
+}
+
+// 🔐 Validate that this class belongs to the logged-in staff
+$stmt = $pdo->prepare("SELECT id FROM classes WHERE id = ? AND adviser_id = ?");
+$stmt->execute([$classId, $staffId]);
+$validClass = $stmt->fetchColumn();
+
+if (!$validClass) {
+  http_response_code(403);
+  exit('You are not authorized to view this student.');
 }
 
 // 🧠 Fetch student details
-$stmt = $pdo->prepare("SELECT s.*, 
-  g.name AS guardian_name, 
-  g.relationship, 
-  g.contact_number AS guardian_contact, 
-  g.email AS guardian_email,
-  gl.label AS level_label, 
-  gs.section_label, 
-  e.school_year_id, 
-  e.enrollment_date, 
-  e.previous_school
+$stmt = $pdo->prepare("
+  SELECT s.*, 
+         g.name AS guardian_name, 
+         g.relationship, 
+         g.contact_number AS guardian_contact, 
+         g.email AS guardian_email,
+         gl.label AS level_label, 
+         gs.section_label, 
+         e.school_year_id, 
+         e.enrollment_date, 
+         e.previous_school
   FROM students s
   LEFT JOIN guardians g ON s.id = g.student_id
-  LEFT JOIN enrollments e ON s.id = e.student_id
+  LEFT JOIN enrollments e ON s.id = e.student_id AND e.class_id = ?
   LEFT JOIN grade_sections gs ON e.grade_section_id = gs.id
   LEFT JOIN grade_levels gl ON gs.grade_level_id = gl.id
-  WHERE s.id = ?");
-$stmt->execute([$id]);
+  WHERE s.id = ?
+");
+$stmt->execute([$classId, $studentId]);
 $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$student) {
-  setFlash('error', 'Student not found.');
-  header('Location: /pages/admin/student.php');
+  setFlash('error', 'Student not found or not enrolled in your advisory class.');
+  header('Location: /pages/staff/class-advisory.php');
   exit;
 }
 
-renderHead('Admin');
+renderHead('Staff');
 ?>
 
-<body class="bg-gray-100 min-h-screen flex flex-col" data-role="<?= htmlspecialchars($_SESSION['role_slug']) ?>">
+<body class="bg-gray-100 min-h-screen flex flex-col" data-role="staff">
   <?php include('../../includes/header.php'); ?>
   <main class="grid grid-cols-1 md:grid-cols-[auto_1fr]">
-    <?php include('../../includes/side-nav-admin3.php'); ?>
+    <?php include('../../includes/side-nav-staff1.php'); ?>
 
     <section class="p-4 sm:p-6 md:p-8">
       <!-- 🧑‍🎓 Header -->
@@ -99,13 +119,11 @@ renderHead('Admin');
           </div>
         </div>
       </div>
-
     </section>
   </main>
-  <?php include('../../includes/footer.php'); ?>
 
+  <?php include('../../includes/footer.php'); ?>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>
 </body>
-
 </html>

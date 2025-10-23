@@ -1,6 +1,6 @@
 import { toggleModal } from '../modal.js';
 
-export function refreshStudentList(classId) {
+export function refreshStudentList(classId, role = 'admin') {
   const tbody = document.getElementById('studentListTableBody');
   if (!tbody || !classId) return;
 
@@ -18,6 +18,38 @@ export function refreshStudentList(classId) {
         const row = document.createElement('tr');
         row.classList.add('border-t', 'hover:bg-emerald-100', 'transition-all', 'duration-300');
 
+        const viewLink = role === 'staff'
+          ? `/pages/staff/view-student.php?id=${student.id}&class_id=${classId}`
+          : `/pages/admin/view-student.php?id=${student.id}&class_id=${classId}`;
+
+        let actions = `
+          <div class="relative">
+            <a href="${viewLink}"
+               class="peer inline-flex items-center justify-center w-9 h-9 rounded-full bg-white hover:bg-pink-100 hover:scale-110 transition duration-200">
+              <img src="/assets/img/details.png" alt="View Details" class="w-5 h-5" />
+            </a>
+            <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition duration-200 pointer-events-none z-10">
+              View
+            </div>
+          </div>
+        `;
+
+        if (role === 'admin') {
+          actions += `
+            <div class="relative">
+              <button type="button"
+                      class="peer delete-student inline-flex items-center justify-center w-9 h-9 rounded-full bg-white hover:bg-red-100 hover:scale-110 transition duration-200 cursor-pointer"
+                      data-id="${student.id}"
+                      data-name="${student.full_name}">
+                <img src="/assets/img/delete-icon.png" alt="Delete" class="w-4 h-4" />
+              </button>
+              <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition duration-200 pointer-events-none z-10">
+                Delete
+              </div>
+            </div>
+          `;
+        }
+
         row.innerHTML = `
           <td class="px-4 py-2 whitespace-nowrap">
             <div class="flex items-center gap-3 min-w-0">
@@ -34,54 +66,36 @@ export function refreshStudentList(classId) {
           <td class="px-4 py-2">${student.grade_label} - ${student.section_label}</td>
           <td class="px-4 py-2 whitespace-nowrap align-middle">
             <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 justify-start sm:justify-center">
-              <div class="relative">
-                <a href="/pages/admin/view-student.php?id=${student.id}&class_id=${classId}"
-                   class="peer inline-flex items-center justify-center w-9 h-9 rounded-full bg-white hover:bg-pink-100 hover:scale-110 transition duration-200">
-                  <img src="/assets/img/details.png" alt="View Details" class="w-5 h-5" />
-                </a>
-                <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition duration-200 pointer-events-none z-10">
-                  View
-                </div>
-              </div>
-              <div class="relative">
-                <button type="button"
-                        class="peer delete-student inline-flex items-center justify-center w-9 h-9 rounded-full bg-white hover:bg-red-100 hover:scale-110 transition duration-200 cursor-pointer"
-                        data-id="${student.id}"
-                        data-name="${student.full_name}">
-                  <img src="/assets/img/delete-icon.png" alt="Delete" class="w-4 h-4" />
-                </button>
-                <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition duration-200 pointer-events-none z-10">
-                  Delete
-                </div>
-              </div>
+              ${actions}
             </div>
           </td>
         `;
 
         tbody.appendChild(row);
 
-        const deleteBtn = row.querySelector('.delete-student');
-        if (deleteBtn) {
-          deleteBtn.addEventListener('click', () => {
-            const form = document.getElementById('deleteStudentClassForm');
-            const nameSpan = document.getElementById('deleteStudentName');
-            const studentId = deleteBtn.dataset.id;
-            const studentName = deleteBtn.dataset.name;
+        if (role === 'admin') {
+          const deleteBtn = row.querySelector('.delete-student');
+          if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+              const form = document.getElementById('deleteStudentClassForm');
+              const nameSpan = document.getElementById('deleteStudentName');
+              const studentId = deleteBtn.dataset.id;
+              const studentName = deleteBtn.dataset.name;
 
-            // ✅ Replace input with unique ID
-            const oldInput = document.getElementById('deleteStudentClassStudentId');
-            if (oldInput) oldInput.remove();
+              const oldInput = document.getElementById('deleteStudentClassStudentId');
+              if (oldInput) oldInput.remove();
 
-            const newInput = document.createElement('input');
-            newInput.type = 'hidden';
-            newInput.name = 'student_id';
-            newInput.id = 'deleteStudentClassStudentId';
-            newInput.value = studentId;
-            form.prepend(newInput);
+              const newInput = document.createElement('input');
+              newInput.type = 'hidden';
+              newInput.name = 'student_id';
+              newInput.id = 'deleteStudentClassStudentId';
+              newInput.value = studentId;
+              form.prepend(newInput);
 
-            nameSpan.textContent = studentName;
-            toggleModal('deleteStudentClassModal', true);
-          });
+              nameSpan.textContent = studentName;
+              toggleModal('deleteStudentClassModal', true);
+            });
+          }
         }
       });
     })
@@ -90,7 +104,7 @@ export function refreshStudentList(classId) {
     });
 }
 
-export function initStudentList() {
+export function initStudentList(role = 'admin') {
   const classId = document.getElementById('classId')?.value;
-  if (classId) refreshStudentList(classId);
+  if (classId) refreshStudentList(classId, role);
 }

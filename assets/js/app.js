@@ -162,8 +162,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initGradeLevelSectionSync();
   initSchoolYearModal();
   initAdvisoryGrid();
-  initStudentList();
   initStudentClassAdvisoryDeleteModal();
+
+  if (document.getElementById('classId')) {
+  const roleSlug = document.body.dataset.role || 'admin'; // fallback to admin
+  import('/assets/js/school-management/student-list-advisory.js').then(({ initStudentList }) => {
+    initStudentList(roleSlug);
+  });
+}
 
 
   if (window.location.pathname.includes('/student.php')) {
