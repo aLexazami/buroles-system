@@ -27,3 +27,19 @@
 [24-Oct-2025 18:41:33 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
 [24-Oct-2025 18:41:39 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
 [24-Oct-2025 18:41:47 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:44:12 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:46:03 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:46:12 Asia/Manila] 📦 Calculated size for folder 0fc424fe-0715-49ab-9079-c036e7b34bfe: 55842
+[24-Oct-2025 18:46:15 Asia/Manila] Folder download: folder_id=0fc424fe-0715-49ab-9079-c036e7b34bfe, user_id=2, filename=New Folder.zip
+[24-Oct-2025 18:46:30 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:46:33 Asia/Manila] 📥 Raw input: {"file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe","updates":[{"user_id":"13","permission":"share","file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe"}]}
+[24-Oct-2025 18:46:33 Asia/Manila] 🔐 Session user_id: 2
+[24-Oct-2025 18:46:33 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:46:38 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:46:47 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:46:49 Asia/Manila] 📥 Raw input: {"file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe","updates":[{"user_id":"13","permission":"delete","file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe"}]}
+[24-Oct-2025 18:46:49 Asia/Manila] 🔐 Session user_id: 2
+[24-Oct-2025 18:46:49 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:46:56 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:48:00 Asia/Manila] 📦 Calculated size for folder 39779dd2-bc0c-4a9a-8f5a-c3e5b5559c0f: 0
+[24-Oct-2025 18:48:17 Asia/Manila] 📦 Calculated size for folder 39779dd2-bc0c-4a9a-8f5a-c3e5b5559c0f: 0

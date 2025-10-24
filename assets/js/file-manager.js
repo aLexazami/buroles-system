@@ -472,6 +472,10 @@ function positionDropdown(menuButton, menu, containerSelector = '#file-list') {
   }
 }
 
+function closeAllDropdowns() {
+  document.querySelectorAll('.file-list-menu').forEach(m => m.classList.add('hidden'));
+}
+
 const permissionMap = {
   create: ['write', 'owner'],
   read: ['read', 'write', 'delete', 'owner'],
@@ -589,19 +593,33 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
   };
 
   if (canPerform('manageAccess')) {
-    const manageBtn = createMenuItem('Manage Access', '/assets/img/lock-icon.png', 'cursor-pointer', () => openManageAccessModal(item.id));
+    const manageBtn = createMenuItem('Manage Access', '/assets/img/lock-icon.png', 'cursor-pointer', () => {
+      closeAllDropdowns();
+      openManageAccessModal(item.id);
+    });
     manageBtn.classList.add('manage-access-btn');
     manageBtn.dataset.fileId = item.id;
     menu.appendChild(manageBtn);
   }
 
   if (isTrashView) {
-    menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
+    menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => {
+  closeAllDropdowns();
+  openFileInfoModal(item);
+}));
     if (canPerform('restore')) {
-      menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => showRestoreModal(item.id)));
+      menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => {
+  closeAllDropdowns();
+  showRestoreModal(item);
+}
+));
     }
     if (canPerform('delete-permanent')) {
-      menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => showPermanentDeleteModal(item.id)));
+      menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => {
+  closeAllDropdowns();
+  showPermanentDeleteModal(item);
+}
+));
     }
   } else {
     if (canPerform('download')) {
@@ -612,21 +630,33 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
     }
 
     if (canPerform('rename')) {
-      menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => showRenameModal(item.id, item.name)));
+      menu.appendChild(createMenuItem('Rename', '/assets/img/edit-icon.png', 'cursor-pointer', () => {
+        closeAllDropdowns();
+        showRenameModal(item.id, item.name);
+      }));
     }
 
     if (canPerform('delete')) {
-      menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'cursor-pointer', () => showDeleteModal(item.id, item.name)));
+      menu.appendChild(createMenuItem('Move to Trash', '/assets/img/delete-icon.png', 'cursor-pointer', () => {
+        closeAllDropdowns();
+        showDeleteModal(item.id, item.name);
+      }));
     }
 
     if (canPerform('share')) {
-      const shareBtn = createMenuItem('Share', '/assets/img/share-icon.png', 'cursor-pointer', () => openShareModal(item.id));
+      const shareBtn = createMenuItem('Share', '/assets/img/share-icon.png', 'cursor-pointer', () => {
+        closeAllDropdowns();
+        openShareModal(item.id);
+      });
       shareBtn.classList.add('share-btn');
       shareBtn.dataset.fileId = item.id;
       menu.appendChild(shareBtn);
     }
 
-    menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
+    menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => {
+      closeAllDropdowns();
+      openFileInfoModal(item);
+    }));
   }
 
   menuButton.addEventListener('click', (e) => {
@@ -705,15 +735,15 @@ export function renderItems(items) {
   sortedItems.forEach(item => {
     let badge = '';
 
-if (isTrashView && item.is_deleted) {
-  if (item.deleted_by_user_id === currentUserId) {
-    badge = 'Deleted by you';
-  } else if (item.deleted_by_user_id && item.deleted_by_user_id !== item.owner_id) {
-    badge = 'Deleted by recipient';
-  } else {
-    badge = 'Deleted by owner';
-  }
-}
+    if (isTrashView && item.is_deleted) {
+      if (item.deleted_by_user_id === currentUserId) {
+        badge = 'Deleted by you';
+      } else if (item.deleted_by_user_id && item.deleted_by_user_id !== item.owner_id) {
+        badge = 'Deleted by recipient';
+      } else {
+        badge = 'Deleted by owner';
+      }
+    }
 
     const row = createFileRow(item, isTrashView, currentUserId, badge);
     container.appendChild(row);
