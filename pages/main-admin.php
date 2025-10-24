@@ -67,32 +67,32 @@ renderHead('Admin');
         <!-- 🗂️ Daily Feedback Container -->
         <div class="space-y-4 mt-6">
           <!-- 🔖 Header -->
-     <div class="bg-gray-300 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 py-3 px-4 rounded">
-  <h2 class="font-bold text-lg text-center sm:text-left">Today's Feedback</h2>
+          <div class="bg-gray-300 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 py-3 px-4 rounded">
+            <h2 class="font-bold text-lg text-center sm:text-left">Today's Feedback</h2>
 
-  <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 justify-center sm:justify-end">
-    <!-- Count Badge -->
-    <span class="bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-full text-center">
-      <?= count($todayFeedback) ?> entries
-    </span>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 justify-center sm:justify-end">
+              <!-- Count Badge -->
+              <span class="bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-full text-center">
+                <?= count($todayFeedback) ?> entries
+              </span>
 
-    <!-- View All Button -->
-    <a href="/pages/admin/feedback-respondents.php"
-       class="bg-white border border-emerald-600 text-emerald-700 text-xs font-semibold px-3 py-1 rounded hover:bg-emerald-50 transition text-center">
-      View All
-    </a>
-  </div>
-</div>
+              <!-- View All Button -->
+              <a href="/pages/admin/feedback-respondents.php"
+                class="bg-white border border-emerald-600 text-emerald-700 text-xs font-semibold px-3 py-1 rounded hover:bg-emerald-50 transition text-center">
+                View All
+              </a>
+            </div>
+          </div>
 
           <!-- 📋 Feedback List -->
-<div class="bg-white rounded-lg shadow-md p-4 space-y-3 min-h-[350px] max-h-[400px] overflow-y-auto sm:min-h-[300px] sm:max-h-[500px]">
+          <div class="bg-white rounded-lg p-4 space-y-3 min-h-[350px] max-h-[400px] overflow-y-auto sm:min-h-[300px] sm:max-h-[500px]">
             <?php if (empty($todayFeedback)): ?>
               <!-- 🧩 Fallback Message -->
               <div class="flex flex-col items-center justify-center text-center text-gray-500 py-12 px-4 sm:px-0">
-  <img src="/assets/img/feedback-empty.png" alt="No feedback" class="w-20 h-20 sm:w-24 sm:h-24 mb-4 opacity-80" />
-  <p class="text-base sm:text-lg font-semibold">No feedback submitted yet today</p>
-  <p class="text-sm text-gray-400">Once responses come in, they’ll appear here automatically.</p>
-</div>
+                <img src="/assets/img/feedback-empty.png" alt="No feedback" class="w-20 h-20 sm:w-24 sm:h-24 mb-4 opacity-80" />
+                <p class="text-base sm:text-lg font-semibold">No feedback submitted yet today</p>
+                <p class="text-sm text-gray-400">Once responses come in, they’ll appear here automatically.</p>
+              </div>
             <?php else: ?>
               <?php foreach ($todayFeedback as $entry):
                 $name = htmlspecialchars($entry['name'] ?? 'Anonymous');
@@ -102,11 +102,11 @@ renderHead('Admin');
                 $time = date('h:i A', strtotime($entry['submitted_at']));
                 $isUnread = !($entry['is_read'] ?? true); // highlight if unread
               ?>
-                <div class="border-b p-2 <?= $isUnread ? 'bg-emerald-50' : '' ?>">
-  <p class="font-semibold text-gray-700 text-sm sm:text-base"><?= $name ?></p>
-  <p class="text-xs sm:text-sm text-gray-500">Type: <?= $type ?> | Service: <?= $service ?> | Region: <?= $region ?></p>
-  <p class="text-xs text-gray-400">Submitted at <?= $time ?></p>
-</div>
+                <div class=" py-2 pl-5 shadow-md border-l-8 rounded-md border-emerald-700<?= $isUnread ? 'bg-emerald-50' : '' ?>">
+                  <p class="font-semibold text-gray-700 text-sm sm:text-base"><?= $name ?></p>
+                  <p class="text-xs sm:text-sm text-gray-500">Type: <?= $type ?> | Service: <?= $service ?> | Region: <?= $region ?></p>
+                  <p class="text-xs text-gray-400">Submitted at <?= $time ?></p>
+                </div>
               <?php endforeach; ?>
             <?php endif; ?>
           </div>
