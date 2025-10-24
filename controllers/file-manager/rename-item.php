@@ -2,9 +2,9 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/uuid.php';         // isValidUuid()
-require_once __DIR__ . '/../../helpers/file-utils.php';   // getFileById(), hasEditPermission()
+require_once __DIR__ . '/../../helpers/file-utils.php';   // getFileById(),
 require_once __DIR__ . '/../../helpers/log.php';          // logAction()
-
+require_once __DIR__ . '/../../helpers/access-utils.php'; // canPerformAction()
 header('Content-Type: application/json');
 
 // 🛡️ Auth check
@@ -33,7 +33,7 @@ if (!$file) {
 }
 
 // 🔐 Permission check
-$canRename = $file['owner_id'] == $userId || hasEditPermission($pdo, $fileId, $userId);
+$canRename = canPerformAction($pdo, $fileId, $userId, 'rename');
 if (!$canRename) {
   echo json_encode(['success' => false, 'error' => 'Permission denied']);
   exit;

@@ -2,3 +2,11 @@
 [24-Oct-2025 20:15:39 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
 [24-Oct-2025 20:15:53 Asia/Manila] 📦 Calculated size for folder 8a1bd853-4cb1-4385-a7f1-b09b4b39b902: 9228
 [24-Oct-2025 20:17:05 Asia/Manila] 📁 Deleting contents of folder: Folder C (1a8dcfa3-537d-483e-b036-750a7f7e4c66)
+[24-Oct-2025 20:37:14 Asia/Manila] 📦 Calculated size for folder 8a1bd853-4cb1-4385-a7f1-b09b4b39b902: 0
+[24-Oct-2025 20:37:17 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 20:37:24 Asia/Manila] 📥 Raw input: {"file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902","updates":[{"user_id":"13","permission":"share","file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902"}]}
+[24-Oct-2025 20:37:24 Asia/Manila] 🔐 Session user_id: 2
+[24-Oct-2025 20:37:24 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 20:37:28 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 20:37:44 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 20:37:48 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
