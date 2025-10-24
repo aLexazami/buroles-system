@@ -26,7 +26,7 @@ renderHead('Login', true);
       <nav id="menu-links" class="hidden md:flex flex-col md:flex-row gap-4 text-sm md:text-base bg-emerald-950 md:bg-transparent absolute md:static top-full left-0 w-full md:w-auto px-4 py-2 md:p-0">
         <ul class="flex flex-col md:flex-row gap-4">
           <li><a href="/index.php" class="menu-link text-white hover:text-emerald-400">Sign in</a></li>
-          <li><a href="/pages/feedback-form.php" class="menu-link text-white hover:text-emerald-400">Feedback</a></li>
+          <li><a href="/pages/feedback/terms-agreement.php" class="menu-link text-white hover:text-emerald-400">Feedback</a></li>
           <li><a href="/pages/faqs.php" class="menu-link text-white hover:text-emerald-400">FAQs</a></li>
         </ul>
       </nav>

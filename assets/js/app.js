@@ -5,12 +5,13 @@ import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
 import { initDropdownMenus, initNotificationActions, setupRecipientDropdown } from './dropdown.js';
-import { initAddStudentModal, initAnnouncementModal, initAnnouncementTriggers, initCreateAdvisoryHandler, initCreateAdvisoryModal, initCreateFolderModal, initFolderCreationHandler, initGradeLevelHandler, initGradeLevelModal, initGradeLevelSectionSync, initGradeSectionModal, initManageAccessButtons, initPasswordButtons, initShareHandler, initUnlockButtons, initUploadHandler, initUploadModal, setupDeleteCommentModal, setupDeleteModal, setupEmptyTrashModal, setupPermanentDeleteModal, setupRenameModalHandler, setupRestoreModal, initSchoolYearModal,initStudentClassAdvisoryDeleteModal  } from './modal.js';
-import { refreshGradeLevels, refreshGradeSections, refreshSchoolYears} from './school-management/school-tools.js';
+import { initAddStudentModal, initAnnouncementModal, initAnnouncementTriggers, initCreateAdvisoryHandler, initCreateAdvisoryModal, initCreateFolderModal, initFolderCreationHandler, initGradeLevelHandler, initGradeLevelModal, initGradeLevelSectionSync, initGradeSectionModal, initManageAccessButtons, initPasswordButtons, initShareHandler, initUnlockButtons, initUploadHandler, initUploadModal, setupDeleteCommentModal, setupDeleteModal, setupEmptyTrashModal, setupPermanentDeleteModal, setupRenameModalHandler, setupRestoreModal, initSchoolYearModal, initStudentClassAdvisoryDeleteModal } from './modal.js';
+import { refreshGradeLevels, refreshGradeSections, refreshSchoolYears } from './school-management/school-tools.js';
 import { initAdvisoryGrid } from '/assets/js/school-management/create-advisory.js';
 import { initStudentTable } from '/assets/js/school-management/student-loader.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
+import { updateServiceOptions } from '/assets/js/serviceAvailedOptions.js';
 
 // Search Filters (Unified)
 import { setupSearchFilter } from './search-filter.js';
@@ -118,6 +119,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initAddStudentModal();
   }
 
+  const customerTypeEl = document.getElementById("customer_type");
+  if (customerTypeEl) {
+    const savedCustomerType = sessionStorage.getItem("feedback_customer_type");
+    if (savedCustomerType) {
+      customerTypeEl.value = savedCustomerType;
+      updateServiceOptions(savedCustomerType);
+    }
+
+    customerTypeEl.addEventListener("change", () => {
+      updateServiceOptions(customerTypeEl.value);
+    });
+  }
+
   // 🧭 UI & Role Toggles
   setupRoleSwitcher();
   setupUserActions();
@@ -161,11 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initStudentClassAdvisoryDeleteModal();
 
   if (document.getElementById('classId')) {
-  const roleSlug = document.body.dataset.role || 'admin'; // fallback to admin
-  import('/assets/js/school-management/student-list-advisory.js').then(({ initStudentList }) => {
-    initStudentList(roleSlug);
-  });
-}
+    const roleSlug = document.body.dataset.role || 'admin'; // fallback to admin
+    import('/assets/js/school-management/student-list-advisory.js').then(({ initStudentList }) => {
+      initStudentList(roleSlug);
+    });
+  }
 
 
   if (window.location.pathname.includes('/student.php')) {

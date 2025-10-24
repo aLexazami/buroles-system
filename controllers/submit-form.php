@@ -16,7 +16,7 @@ if ((php_sapi_name() === 'cli' || $_SERVER["REQUEST_METHOD"] === "POST") && isse
     $region_id = $_POST['region'] ?? null;
 
     // Citizen Charter Awareness
-    $citizenCharterAwareness = $_POST['yes_no'] ?? null;
+    $citizenCharterAwareness = $_POST['citizen_charter_awareness'] ?? null;
     if ($citizenCharterAwareness !== null) {
       $citizenCharterAwareness = ucfirst(strtolower($citizenCharterAwareness));
     }
@@ -117,7 +117,7 @@ if ((php_sapi_name() === 'cli' || $_SERVER["REQUEST_METHOD"] === "POST") && isse
 
 
     // Redirect on success
-    header("Location: thank-you.php");
+    header("Location: /pages/feedback/thank-you.php");
     exit;
   } catch (PDOException $e) {
     error_log($e->getMessage());

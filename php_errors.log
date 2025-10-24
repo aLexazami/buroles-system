@@ -217,3 +217,180 @@ Stack trace:
 [24-Oct-2025 23:27:24 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
 [24-Oct-2025 23:27:25 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
 [24-Oct-2025 23:27:25 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 00:30:06 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 00:30:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 00:31:47 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 01:14:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_name" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 61
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "placeholder_name" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 62
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_date" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 67
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_age" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 73
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_age" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 75
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_under_19" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 76
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_20_34" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 77
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_35_49" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 78
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_50_64" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 79
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_65_up" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 80
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_sex" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 86
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_sex" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 88
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "sex_female" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 89
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "sex_male" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 90
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_customer_type" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 96
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_customer_type" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 98
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "type_business" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 99
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "type_citizen" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 100
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "type_government" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 101
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "customer_type_notes" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 103
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_service" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 108
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_service" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 110
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "service_enrollment" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 111
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "service_document" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 112
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "service_consultation" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 113
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_region" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 119
+[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_region" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 121
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_name" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 61
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "placeholder_name" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 62
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_date" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 67
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_age" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 73
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_age" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 75
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_under_19" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 76
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_20_34" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 77
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_35_49" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 78
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_50_64" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 79
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_65_up" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 80
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_sex" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 86
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_sex" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 88
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "sex_female" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 89
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "sex_male" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 90
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_customer_type" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 96
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_customer_type" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 98
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "type_business" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 99
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "type_citizen" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 100
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "type_government" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 101
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "customer_type_notes" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 103
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_service" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 108
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_service" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 110
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "service_enrollment" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 111
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "service_document" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 112
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "service_consultation" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 113
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_region" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 119
+[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_region" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 121
+[25-Oct-2025 01:33:53 Asia/Manila] PHP Warning:  Undefined array key "type_business" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 105
+[25-Oct-2025 01:33:53 Asia/Manila] PHP Warning:  Undefined array key "type_citizen" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 106
+[25-Oct-2025 01:33:53 Asia/Manila] PHP Warning:  Undefined array key "type_government" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 107
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "label_awareness_level" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 42
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "select_awareness_level" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 44
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "aware_very" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 45
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "aware_somewhat" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 46
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "aware_not" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 47
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "label_heard_about" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 53
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "select_heard_about" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 55
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "heard_announcement" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 56
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "heard_teacher" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 57
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "heard_social" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 58
+[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "heard_other" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 59
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "label_awareness_level" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 62
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "select_awareness_level" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 64
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "aware_very" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 65
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "aware_somewhat" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 66
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "aware_not" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 67
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "label_heard_about" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 73
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "select_heard_about" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 75
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "heard_announcement" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 76
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "heard_teacher" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 77
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "heard_social" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 78
+[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "heard_other" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 79
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:08:24 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:08:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:19:28 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:27:18 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
+[25-Oct-2025 02:36:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
+[25-Oct-2025 03:54:44 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
+[25-Oct-2025 03:54:54 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
+[25-Oct-2025 04:17:40 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
+[25-Oct-2025 04:17:47 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
+[25-Oct-2025 04:17:57 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
+[25-Oct-2025 04:18:07 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
+[25-Oct-2025 04:18:17 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
+[25-Oct-2025 04:18:27 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81

@@ -1,32 +1,28 @@
-function updateServiceOptions() {
-  const customerType = document.getElementById('customer_type').value;
-  const serviceAvailed = document.getElementById('service_availed');
+let currentFetchId = 0;
 
-  // Clear previous selection from sessionStorage
-  sessionStorage.removeItem('feedback_service_availed');
+export function updateServiceOptions(customerType) {
+  const serviceAvailed = document.getElementById("service_availed");
+  if (!serviceAvailed) return;
 
-  // Reset dropdown options
-  while (serviceAvailed.options.length > 0) {
-    serviceAvailed.remove(0);
-  }
+  // Clear previous selection
+  sessionStorage.removeItem("feedback_service_availed");
 
-  // Add default placeholder
-  const defaultOption = document.createElement('option');
-  defaultOption.value = '';
-  defaultOption.disabled = true;
-  defaultOption.selected = true;
-  defaultOption.textContent = 'Service Availed';
-  serviceAvailed.appendChild(defaultOption);
+  // Reset dropdown
+  serviceAvailed.innerHTML = '<option value="" disabled selected>Service Availed</option>';
 
-  // Fetch new service options
+  // Track fetch instance to prevent race conditions
+  const fetchId = ++currentFetchId;
+
   fetch(`/controllers/get-services.php?type=${encodeURIComponent(customerType)}`)
     .then(response => response.json())
     .then(data => {
-      console.log('Fetched services:', data);
+      if (fetchId !== currentFetchId) return; // Ignore outdated fetches
+
       if (Array.isArray(data)) {
-        const savedServiceId = sessionStorage.getItem('feedback_service_availed');
+        const savedServiceId = sessionStorage.getItem("feedback_service_availed");
+
         data.forEach(service => {
-          const option = document.createElement('option');
+          const option = document.createElement("option");
           option.value = service.id;
           option.textContent = service.name;
 
@@ -37,10 +33,10 @@ function updateServiceOptions() {
           serviceAvailed.appendChild(option);
         });
       } else {
-        console.warn('No services returned:', data);
+        console.warn("No services returned:", data);
       }
     })
     .catch(error => {
-      console.error('Failed to load services:', error);
+      console.error("Failed to load services:", error);
     });
 }
