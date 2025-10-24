@@ -116,7 +116,11 @@ export async function loadTrashView(folderId = null) {
     fetchTrashContents(normalizedFolderId),
     fetchTrashBreadcrumb(normalizedFolderId)
   ]);
+
+  // ✅ Refresh quota bar after DOM is updated
+  refreshStorageIndicator();
 }
+
 
 export async function loadSharedWithMe(folderId = null) {
   const normalizedFolderId = typeof folderId === 'string' ? folderId : '';
