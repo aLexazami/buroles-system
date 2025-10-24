@@ -156,3 +156,19 @@ Stack trace:
 [24-Oct-2025 23:04:45 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
 [24-Oct-2025 23:06:47 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
 [24-Oct-2025 23:06:47 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 23:13:30 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
+[24-Oct-2025 23:13:30 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 23:13:43 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
+[24-Oct-2025 23:13:43 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 23:13:53 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
+[24-Oct-2025 23:13:53 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 23:13:58 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
+[24-Oct-2025 23:13:58 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 23:14:08 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
+[24-Oct-2025 23:14:08 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 23:14:16 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
+[24-Oct-2025 23:14:16 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 23:15:10 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
+[24-Oct-2025 23:15:10 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 23:15:13 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
+[24-Oct-2025 23:15:13 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'

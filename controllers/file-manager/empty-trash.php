@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/log.php'; // logAction()
+require_once __DIR__ . '/../../helpers/storage-utils.php'; // recalculateStorageUsage() 
 
 header('Content-Type: application/json');
 
@@ -41,6 +42,9 @@ try {
     // 🧾 Log deletion
     logAction($pdo, $userId, $itemId, $itemName, 'emptyTrash', 'Item permanently deleted via Empty Trash');
   }
+
+  // 📉 Recalculate quota after cleanup
+  recalculateStorageUsage($pdo, $userId); // ✅ This keeps the quota bar accurate
 
   echo json_encode(['success' => true, 'message' => 'Trash emptied successfully']);
 } catch (Exception $e) {

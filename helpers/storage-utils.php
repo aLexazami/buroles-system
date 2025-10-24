@@ -111,3 +111,34 @@ function getBoxHighlight(float $percent): string {
   if ($percent >= 50) return 'bg-orange-50';
   return 'bg-emerald-50';
 }
+
+function getFolderSize(PDO $pdo, string $folderId): int {
+  $stmt = $pdo->prepare("
+    SELECT COALESCE(SUM(size), 0) AS total
+    FROM files
+    WHERE parent_folder_id = ?
+      AND is_deleted = 1
+  ");
+  $stmt->execute([$folderId]);
+  $row = $stmt->fetch(PDO::FETCH_ASSOC);
+  return (int) $row['total'];
+}
+
+function recalculateStorageUsage(PDO $pdo, string $userId): void {
+  $stmt = $pdo->prepare("
+    SELECT COALESCE(SUM(size), 0) AS total
+    FROM files
+    WHERE owner_id = ?
+      AND is_deleted = 0
+  ");
+  $stmt->execute([$userId]);
+  $row = $stmt->fetch(PDO::FETCH_ASSOC);
+  $totalBytes = (int) $row['total'];
+
+  $update = $pdo->prepare("
+    UPDATE user_storage
+    SET storage_used = ?
+    WHERE user_id = ?
+  ");
+  $update->execute([$totalBytes, $userId]);
+}

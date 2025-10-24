@@ -3,6 +3,7 @@ ob_start();
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../helpers/folder-utils.php'; // deleteFolderAndContents()
+require_once __DIR__ . '/../../helpers/storage-utils.php'; // getFolderSize()
 
 header('Content-Type: application/json');
 
@@ -20,7 +21,7 @@ if (!$userId || !$fileId) {
 try {
   // 🔍 Fetch file metadata with expanded permission logic
   $stmt = $pdo->prepare("
-    SELECT f.id, f.name, f.path, f.type
+    SELECT f.id, f.name, f.path, f.type, f.size
     FROM files f
     LEFT JOIN access_control ac ON f.id = ac.file_id AND ac.user_id = ?
     WHERE f.id = ?
@@ -55,9 +56,12 @@ try {
     'Item permanently deleted'
   ]);
 
+  $totalFreedBytes = 0;
+
   if ($file['type'] === 'folder') {
     // 🗂️ Recursively delete folder and contents
-    $success = deleteFolderAndContents($pdo, $userId, $fileId, false); // false = not root transaction
+    $totalFreedBytes = getFolderSize($pdo, $fileId);
+    $success = deleteFolderAndContents($pdo, $userId, $fileId, false);
     if (!$success) {
       throw new Exception("Folder deletion failed — see logs for details");
     }
@@ -75,7 +79,17 @@ try {
     // 🗑️ Delete file from DB
     $stmt = $pdo->prepare("DELETE FROM files WHERE id = ?");
     $stmt->execute([$fileId]);
+
+    $totalFreedBytes = (int) $file['size'];
   }
+
+  // 📉 Update user storage
+  $update = $pdo->prepare("
+    UPDATE user_storage
+    SET storage_used = GREATEST(storage_used - ?, 0)
+    WHERE user_id = ?
+  ");
+  $update->execute([$totalFreedBytes, $userId]);
 
   // ✅ Commit transaction
   $pdo->commit();

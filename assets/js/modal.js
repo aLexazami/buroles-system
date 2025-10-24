@@ -813,7 +813,9 @@ export function setupPermanentDeleteModal() {
       try {
         const result = await handleFileAction('deletePermanent', { id: itemId });
         renderFlash('success', result.message || 'Item permanently deleted');
-        refreshCurrentFolder();
+
+        refreshCurrentFolder();         // ✅ Refresh file list
+        refreshStorageIndicator();      // ✅ Refresh quota bar
       } catch (err) {
         console.error('Permanent delete failed:', err);
         renderFlash('error', err.message || 'Failed to delete item permanently');
@@ -821,6 +823,7 @@ export function setupPermanentDeleteModal() {
     });
   }
 }
+
 
 // Delete Comment in File Manager
 let commentToDeleteElement = null; // 🧠 Track the DOM element to remove
@@ -901,7 +904,9 @@ export function setupEmptyTrashModal() {
       try {
         const result = await handleFileAction('emptyTrash', { view: 'trash' });
         renderFlash('success', result.message || 'Trash emptied successfully');
-        refreshCurrentFolder();
+
+        refreshCurrentFolder();         // ✅ Refresh file list
+        refreshStorageIndicator();      // ✅ Refresh quota bar
       } catch (err) {
         console.error('Empty trash failed:', err);
         renderFlash('error', err.message || 'An error occurred while emptying the trash.');
@@ -909,6 +914,7 @@ export function setupEmptyTrashModal() {
     });
   }
 }
+
 
 // Rename Modal in File Manager
 export function showRenameModal(itemId, currentName = '') {
