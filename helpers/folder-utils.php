@@ -6,12 +6,14 @@ require_once __DIR__ . '/path.php'; // ensureVirtualPathExists(), resolveDiskPat
  * Permanently delete a folder from disk using its virtual path.
  * Automatically resolves the physical path and removes all contents.
  */
-function deleteFolderOnDisk(string $virtualPath): void {
+function deleteFolderOnDisk(string $virtualPath): void
+{
   $diskPath = resolveDiskPath($virtualPath);
   deleteDirectory($diskPath);
 }
 
-function getRecursiveFolderSize(PDO $pdo, string $folderId): int {
+function getRecursiveFolderSize(PDO $pdo, string $folderId): int
+{
   $totalSize = 0;
 
   // Count all direct files (regardless of owner)
@@ -39,7 +41,8 @@ function getRecursiveFolderSize(PDO $pdo, string $folderId): int {
   return $totalSize;
 }
 
-function getFolderMetadata(PDO $pdo, string $folderId, int $userId): ?array {
+function getFolderMetadata(PDO $pdo, string $folderId, int $userId): ?array
+{
   $stmt = $pdo->prepare("SELECT id, name, path FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
   $stmt->execute([$folderId, $userId]);
   $folder = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,7 +50,8 @@ function getFolderMetadata(PDO $pdo, string $folderId, int $userId): ?array {
   return $folder ?: null;
 }
 
-function deleteChildFiles(PDO $pdo, int $userId, string $folderId): void {
+function deleteChildFiles(PDO $pdo, int $userId, string $folderId): void
+{
   $stmt = $pdo->prepare("
     SELECT id, name, path, is_deleted, deleted_by_parent
     FROM files
@@ -73,7 +77,8 @@ function deleteChildFiles(PDO $pdo, int $userId, string $folderId): void {
   }
 }
 
-function deleteChildFolders(PDO $pdo, int $userId, string $folderId): void {
+function deleteChildFolders(PDO $pdo, int $userId, string $folderId): void
+{
   $stmt = $pdo->prepare("
     SELECT id, is_deleted, deleted_by_parent
     FROM files
@@ -94,7 +99,8 @@ function deleteChildFolders(PDO $pdo, int $userId, string $folderId): void {
   }
 }
 
-function logDeletion(PDO $pdo, string $fileId, string $fileName, int $userId, string $details): void {
+function logDeletion(PDO $pdo, string $fileId, string $fileName, int $userId, string $details): void
+{
   $log = $pdo->prepare("
     INSERT INTO logs (id, file_id, file_name, user_id, action, details, source)
     VALUES (UUID(), ?, ?, ?, 'delete-permanent', ?, 'dashboard')
@@ -102,7 +108,8 @@ function logDeletion(PDO $pdo, string $fileId, string $fileName, int $userId, st
   $log->execute([$fileId, $fileName, $userId, $details]);
 }
 
-function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bool $isRootCall = true): bool {
+function deleteFolderAndContents(PDO $pdo, int $userId, string $folderId, bool $isRootCall = true): bool
+{
   try {
     if ($isRootCall) {
       error_log("🟢 BEGIN transaction for folder $folderId");
@@ -258,11 +265,13 @@ function softDeleteFolderAndContents(
   }
 }
 
-function isValidFolderName(string $name): bool {
+function isValidFolderName(string $name): bool
+{
   return !preg_match('/[\\\\\\/:\*\?"<>|]/', $name);
 }
 
-function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void {
+function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void
+{
   // 🧠 Fetch folder metadata
   $stmt = $pdo->prepare("SELECT id, path, original_path, owner_id FROM files WHERE id = ?");
   $stmt->execute([$folderId]);
@@ -301,14 +310,15 @@ function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void
 
   // ✅ Update metadata
   $stmt = $pdo->prepare("
-    UPDATE files
-    SET is_deleted = 0,
-        path = original_path,
-        original_path = NULL,
-        deleted_by_parent = 0,
-        updated_at = NOW()
-    WHERE id = ?
-  ");
+  UPDATE files
+  SET is_deleted = 0,
+      path = original_path,
+      original_path = NULL,
+      deleted_by_parent = 0,
+      deleted_by_user_id = NULL,
+      updated_at = NOW()
+  WHERE id = ?
+");
   $stmt->execute([$folderId]);
 
   logRestore($pdo, $userId, $folderId, 'Folder restored from trash');
@@ -364,7 +374,8 @@ function restoreFolderAndContents(PDO $pdo, int $userId, string $folderId): void
   }
 }
 
-function ensureFolderHierarchyExists(PDO $pdo, string $folderId): void {
+function ensureFolderHierarchyExists(PDO $pdo, string $folderId): void
+{
   $currentId = $folderId;
   $paths = [];
 
@@ -384,5 +395,3 @@ function ensureFolderHierarchyExists(PDO $pdo, string $folderId): void {
     ensureVirtualPathExists($path);
   }
 }
-
-?>

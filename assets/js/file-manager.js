@@ -610,14 +610,14 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
     if (canPerform('restore')) {
       menu.appendChild(createMenuItem('Restore', '/assets/img/restore-icon.png', 'cursor-pointer', () => {
   closeAllDropdowns();
-  showRestoreModal(item);
+  showRestoreModal(item.id);
 }
 ));
     }
     if (canPerform('delete-permanent')) {
       menu.appendChild(createMenuItem('Delete Permanently', '/assets/img/delete-perma.png', 'text-red-700 cursor-pointer', () => {
   closeAllDropdowns();
-  showPermanentDeleteModal(item);
+  showPermanentDeleteModal(item.id);
 }
 ));
     }
@@ -1019,37 +1019,14 @@ export async function handleFileAction(action, payload = {}, retries = 1) {
   const endpoint = fileRoutes[action];
   if (!endpoint) throw new Error(`Unknown action: ${action}`);
 
-  // ✅ Optimistic UI update for delete and restore
-  if ((action === 'delete' || action === 'restore' || action === 'deletePermanent') && payload.id) {
-    const rollback = () => {
-      refreshCurrentFolder();
-      renderFlash('error', `${action === 'restore' ? 'Restore' : 'Delete'} failed. Item reloaded.`);
-    };
+  // ✅ Optimistic actions: delete, restore, deletePermanent
+  const isOptimistic = ['delete', 'restore', 'deletePermanent'].includes(action) && payload.id;
 
-    // 🧹 Remove item and its children from UI
-    removeItemFromUI(payload.id);
-    removeChildrenFromUI?.(payload.id); // ✅ optional helper if you have one
+  const rollback = () => {
+    refreshCurrentFolder();
+    renderFlash('error', `${action === 'restore' ? 'Restore' : 'Delete'} failed. Item reloaded.`);
+  };
 
-    for (let attempt = 0; attempt <= retries; attempt++) {
-      try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message || 'Action failed');
-
-        return { success: true, optimistic: true, rollback };
-      } catch (err) {
-        rollback();
-        throw err;
-      }
-    }
-  }
-
-  // Default fallback for non-optimistic actions
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const res = await fetch(endpoint, {
@@ -1060,8 +1037,19 @@ export async function handleFileAction(action, payload = {}, retries = 1) {
 
       const data = await res.json();
       if (!data.success) throw new Error(data.message || 'Action failed');
-      return { success: true };
+
+      // ✅ Close dropdown if open
+      document.querySelectorAll('.file-list-menu').forEach(m => m.classList.add('hidden'));
+
+      // ✅ Only remove from UI after backend confirms success
+      if (isOptimistic) {
+        removeItemFromUI(payload.id);
+        removeChildrenFromUI?.(payload.id);
+      }
+
+      return { success: true, optimistic: isOptimistic, rollback };
     } catch (err) {
+      if (isOptimistic) rollback();
       if (attempt === retries) throw err;
     }
   }
