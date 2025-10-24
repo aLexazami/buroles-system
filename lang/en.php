@@ -24,9 +24,6 @@ return [
 
   // --- Client Info Page ---
   'page_title_client_info' => 'Client Information',
-  'nav_signin' => 'Back to Sign in',
-  'nav_feedback' => 'Feedback',
-  'nav_faqs' => 'FAQs',
   'client_info_heading' => '109843 BUROL ELEMENTARY SCHOOL Client Satisfaction Measurement (CSM) (2025)',
   'client_info_section_title' => 'Client Information',
   'label_name' => 'Full Name',

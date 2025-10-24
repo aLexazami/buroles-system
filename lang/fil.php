@@ -23,9 +23,6 @@ return [
 
   // --- Client Info Page ---
   'page_title_client_info' => 'Impormasyon ng Kliyente',
-  'nav_signin' => 'Bumalik sa Pag-sign in',
-  'nav_feedback' => 'Feedback',
-  'nav_faqs' => 'FAQs',
   'client_info_heading' => '109843 BUROL ELEMENTARY SCHOOL Pagsukat ng Kasiyahan ng Kliyente (CSM) (2025)',
   'client_info_section_title' => 'Impormasyon ng Kliyente',
   'label_name' => 'Pangalan',

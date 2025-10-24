@@ -24,18 +24,23 @@ renderHead($labels['page_title_thank_you'] ?? 'Thank You', true);
   <!-- Header Section -->
   <header class="bg-emerald-950 shadow-md sticky top-0 z-10 p-2">
     <section class="max-w-6xl mx-auto flex items-center justify-between">
+      <!-- Logo + Title -->
       <div class="flex items-center gap-4">
         <img src="/assets/img/bes-logo1.png" alt="Burol Elementary School Logo" class="h-14 w-14 border rounded-full bg-white">
         <p class="text-xl md:text-3xl font-medium text-white">BESIMS</p>
       </div>
+
+      <!-- Mobile Menu Toggle -->
       <button id="menu-btn-mobile" class="md:hidden text-white focus:outline-none cursor-pointer">
         <img src="/assets/img/menu-icon.png" alt="Menu" class="h-6 w-6">
       </button>
+
+      <!-- Navigation Links -->
       <nav id="menu-links" class="hidden md:flex flex-col md:flex-row justify-between items-center w-full md:w-auto px-4 py-2 md:p-0 bg-emerald-950 md:bg-transparent absolute md:static top-full left-0">
         <ul class="flex flex-col md:flex-row gap-4">
-          <li><a href="/index.php" class="menu-link text-white hover:text-emerald-400"><?= $labels['nav_signin'] ?? 'Back to Sign in' ?></a></li>
-          <li><a href="/pages/feedback-form.php" class="menu-link text-white hover:text-emerald-400"><?= $labels['nav_feedback'] ?? 'Feedback' ?></a></li>
-          <li><a href="/pages/faqs.php" class="menu-link text-white hover:text-emerald-400"><?= $labels['nav_faqs'] ?? 'FAQs' ?></a></li>
+          <li><a href="/index.php" class="menu-link text-white hover:text-emerald-400">Back to Sign in</a></li>
+          <li><a href="/pages/feedback-form.php" class="menu-link text-white hover:text-emerald-400">Feedback</a></li>
+          <li><a href="/pages/faqs.php" class="menu-link text-white hover:text-emerald-400">FAQs</a></li>
           <li><a href="?lang=en" class="menu-link text-white hover:text-emerald-400 italic">🇺🇸 English</a></li>
           <li><a href="?lang=fil" class="menu-link text-white hover:text-emerald-400 italic">🇵🇭 Filipino</a></li>
         </ul>

@@ -36,18 +36,23 @@ renderHead($labels['page_title_client_info'] ?? 'Client Information', true);
   <!-- Header Section -->
   <header class="bg-emerald-950 shadow-md sticky top-0 z-10 p-2">
     <section class="max-w-6xl mx-auto flex items-center justify-between">
+      <!-- Logo + Title -->
       <div class="flex items-center gap-4">
         <img src="/assets/img/bes-logo1.png" alt="Burol Elementary School Logo" class="h-14 w-14 border rounded-full bg-white">
         <p class="text-xl md:text-3xl font-medium text-white">BESIMS</p>
       </div>
+
+      <!-- Mobile Menu Toggle -->
       <button id="menu-btn-mobile" class="md:hidden text-white focus:outline-none cursor-pointer">
         <img src="/assets/img/menu-icon.png" alt="Menu" class="h-6 w-6">
       </button>
+
+      <!-- Navigation Links -->
       <nav id="menu-links" class="hidden md:flex flex-col md:flex-row justify-between items-center w-full md:w-auto px-4 py-2 md:p-0 bg-emerald-950 md:bg-transparent absolute md:static top-full left-0">
         <ul class="flex flex-col md:flex-row gap-4">
-          <li><a href="/index.php" class="menu-link text-white hover:text-emerald-400"><?= $labels['nav_signin'] ?? 'Back to Sign in' ?></a></li>
-          <li><a href="/pages/feedback-form.php" class="menu-link text-white hover:text-emerald-400"><?= $labels['nav_feedback'] ?? 'Feedback' ?></a></li>
-          <li><a href="/pages/faqs.php" class="menu-link text-white hover:text-emerald-400"><?= $labels['nav_faqs'] ?? 'FAQs' ?></a></li>
+          <li><a href="/index.php" class="menu-link text-white hover:text-emerald-400">Back to Sign in</a></li>
+          <li><a href="/pages/feedback-form.php" class="menu-link text-white hover:text-emerald-400">Feedback</a></li>
+          <li><a href="/pages/faqs.php" class="menu-link text-white hover:text-emerald-400">FAQs</a></li>
           <li><a href="?lang=en" class="menu-link text-white hover:text-emerald-400 italic">🇺🇸 English</a></li>
           <li><a href="?lang=fil" class="menu-link text-white hover:text-emerald-400 italic">🇵🇭 Filipino</a></li>
         </ul>
@@ -100,7 +105,7 @@ renderHead($labels['page_title_client_info'] ?? 'Client Information', true);
           <!-- Uri ng Kliyente -->
           <div>
             <label for="customer_type" class="block font-medium text-sm"><?= $labels['label_customer_type'] ?></label>
-           <select id="customer_type" name="customer_type" class="w-full border-2 rounded-lg p-2">
+            <select id="customer_type" name="customer_type" class="w-full border-2 rounded-lg p-2">
               <option value="" disabled selected><?= $labels['select_customer_type'] ?></option>
               <option value="Business"><?= $labels['type_business'] ?></option>
               <option value="Citizen"><?= $labels['type_citizen'] ?></option>
@@ -136,7 +141,7 @@ renderHead($labels['page_title_client_info'] ?? 'Client Information', true);
 
           <!-- Next Button -->
           <div class="text-center">
-            <button type="submit" class="bg-emerald-800 text-white text-lg px-4 py-2 rounded-lg w-full sm:w-1/2 hover:bg-emerald-600 mt-4">
+            <button type="submit" class="bg-emerald-800 text-white text-lg px-4 py-2 rounded-lg w-full sm:w-1/2 hover:bg-emerald-600 mt-4 cursor-pointer">
               <?= $labels['continue_button'] ?>
             </button>
           </div>
@@ -146,9 +151,9 @@ renderHead($labels['page_title_client_info'] ?? 'Client Information', true);
   </main>
 
   <?php include '../../includes/footer.php'; ?>
-<script type="module" src="/assets/js/feedbackValidation-client-info.js"></script>
-<script type="module" src="/assets/js/serviceAvailedOptions.js"></script>
-<script type="module" src="/assets/js/app.js"></script>
+  <script type="module" src="/assets/js/feedbackValidation-client-info.js"></script>
+  <script type="module" src="/assets/js/serviceAvailedOptions.js"></script>
+  <script type="module" src="/assets/js/app.js"></script>
 </body>
 
 </html>
