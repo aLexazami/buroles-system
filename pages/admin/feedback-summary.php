@@ -206,7 +206,7 @@ renderHead('Admin');
           </h2>
 
           <!-- CC1 Nominal Summary -->
-          <div class="mb-6 text-sm text-gray-700 bg-gray-50 rounded-lg p-4">
+          <div class="mb-8 text-sm text-gray-700 bg-gray-50 rounded-lg p-4">
             <h3 class="text-center text-emerald-700 font-semibold mb-2">CC1 Awareness Summary</h3>
             <ul class="list-disc ml-6">
               <li><span id="cc1-awareness-pct">—%</span> of respondents are aware of the Citizen’s Charter (responses 1–3).</li>
@@ -215,8 +215,37 @@ renderHead('Admin');
             </ul>
           </div>
 
+          <!-- CC1 Awareness Interpretation Explanation -->
+          <div class="mt-4 text-sm text-gray-600 bg-gray-50 rounded-lg p-4">
+            <details>
+              <summary class="cursor-pointer font-semibold text-emerald-700">How CC1 Awareness Is Interpreted</summary>
+              <div class="mt-2">
+                <p>
+                  CC1 (Awareness) is a nominal metric based on four response categories:
+                </p>
+                <ul class="list-disc ml-6 mt-2">
+                  <li><strong>Response 1:</strong> Fully aware and have seen the Citizen’s Charter</li>
+                  <li><strong>Response 2:</strong> Aware but have not seen it</li>
+                  <li><strong>Response 3:</strong> Heard of it but unsure</li>
+                  <li><strong>Response 4:</strong> Not aware at all</li>
+                </ul>
+                <p class="mt-2">
+                  The following percentages are computed based on total responses:
+                </p>
+                <ul class="list-disc ml-6 mt-2">
+                  <li><strong>Awareness Rate:</strong> Responses 1–3 combined</li>
+                  <li><strong>Fully Aware:</strong> Response 1 only</li>
+                  <li><strong>Unaware:</strong> Response 4 only</li>
+                </ul>
+                <p class="mt-2">
+                  These percentages help identify how familiar respondents are with the Citizen’s Charter, but no weighted scoring is applied.
+                </p>
+              </div>
+            </details>
+          </div>
+
           <!-- CC2 Visibility Table -->
-          <div class="mb-6 text-sm overflow-x-auto pb-5">
+          <div class="mt-8 mb-6 text-sm overflow-x-auto pb-5">
             <h3 class="text-center text-emerald-700 font-semibold mb-2">CC2 Visibility Summary</h3>
             <table class="min-w-full table-auto text-sm">
               <thead class="bg-emerald-100 text-emerald-800">
@@ -246,8 +275,31 @@ renderHead('Admin');
             </p>
           </div>
 
+          <!-- CC2 Weighted Mean Explanation -->
+          <div class="mt-4 text-sm text-gray-600 bg-gray-50 rounded-lg p-4">
+            <details>
+              <summary class="cursor-pointer font-semibold text-emerald-700">How CC2 Weighted Mean Is Calculated</summary>
+              <div class="mt-2">
+                <p>
+                  For CC2 (Visibility), the weighted mean is computed using the formula:
+                </p>
+                <p class="font-mono bg-white p-2 rounded border mt-2">
+                  Weighted Mean = (4×Highly Visible + 3×Moderately Visible + 2×Slightly Visible + 1×Not Visible) ÷ Total Valid Responses
+                </p>
+                <p class="mt-2">
+                  N/A responses are excluded from the calculation. The interpretation is based on the following scale:
+                </p>
+                <ul class="list-disc ml-6 mt-2">
+                  <li>3.50 – 4.00: <strong>Highly Visible</strong></li>
+                  <li>2.50 – 3.49: <strong>Moderately Visible</strong></li>
+                  <li>1.00 – 2.49: <strong>Poorly Visible</strong></li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
           <!-- CC3 Helpfulness Table -->
-          <div class="text-sm overflow-x-auto pb-5">
+          <div class="mt-8 text-sm overflow-x-auto pb-5">
             <h3 class="text-center text-emerald-700 font-semibold mb-2">CC3 Helpfulness Summary</h3>
             <table class="min-w-full table-auto text-sm">
               <thead class="bg-emerald-100 text-emerald-800">
@@ -274,6 +326,29 @@ renderHead('Admin');
               <strong>Total responses:</strong> <span id="cc3-total-paragraph">0</span><br>
               <strong>Valid responses (scored):</strong> <span id="cc3-valid-total">0</span>
             </p>
+          </div>
+
+          <!-- CC3 Weighted Mean Explanation -->
+          <div class="mt-4 text-sm text-gray-600 bg-gray-50 rounded-lg p-4">
+            <details>
+              <summary class="cursor-pointer font-semibold text-emerald-700">How CC3 Weighted Mean Is Calculated</summary>
+              <div class="mt-2">
+                <p>
+                  For CC3 (Helpfulness), the weighted mean is computed using the formula:
+                </p>
+                <p class="font-mono bg-white p-2 rounded border mt-2">
+                  Weighted Mean = (3×Very Helpful + 2×Somewhat Helpful + 1×Not Helpful) ÷ Total Valid Responses
+                </p>
+                <p class="mt-2">
+                  N/A responses are excluded from the calculation. The interpretation is based on the following scale:
+                </p>
+                <ul class="list-disc ml-6 mt-2">
+                  <li>2.50 – 3.00: <strong>Very Helpful</strong></li>
+                  <li>1.50 – 2.49: <strong>Somewhat Helpful</strong></li>
+                  <li>1.00 – 1.49: <strong>Not Helpful</strong></li>
+                </ul>
+              </div>
+            </details>
           </div>
         </div>
       </div>
@@ -344,10 +419,18 @@ renderHead('Admin');
               </tbody>
               <tfoot class="bg-gray-50">
                 <tr>
-                  <td class="px-4 py-2 font-semibold text-right" colspan="1">Overall Average</td>
+                  <td class="px-4 py-5 font-semibold text-right" colspan="1">Overall Average</td>
                   <td id="sqd-overall-mean" class="text-center font-bold text-emerald-700">—</td>
                   <td id="sqd-overall-interpretation" class="text-center italic text-gray-700">—</td>
-                  <td id="sqd-overall-total" class="text-center text-gray-800 font-semibold">—</td>
+                  <td id="sqd-overall-average-total" class="text-center text-gray-800 font-semibold">—</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-5 font-semibold text-right" colspan="1">Overall Valid Responses</td>
+                  <td colspan="3" id="sqd-overall-valid-total" class="text-center text-gray-800 font-semibold">—</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-2 font-semibold text-right" colspan="1">Overall Total Responses (incl. N/A)</td>
+                  <td colspan="3" id="sqd-overall-total" class="text-center text-gray-800 font-semibold">—</td>
                 </tr>
               </tfoot>
             </table>

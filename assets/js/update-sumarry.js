@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           ['5', '4', '3', '2', '1', 'na'].forEach(score => {
             const key = `sqd${i}-${score}`;
-            const count = data[key] || 0;
+            const count = parseInt(data[key], 10) || 0;
             itemTotal += count;
             ratingTotals[score] += count;
             safeUpdate(key, count);
@@ -121,25 +121,29 @@ document.addEventListener('DOMContentLoaded', function () {
         // Compute overall weighted mean across all SQDs
         let totalWeightedSum = 0;
         let totalValidResponses = 0;
+        let totalResponsesIncludingNA = 0;
 
         for (let i = 1; i <= 8; i++) {
-          const counts = {
-            '5': data[`sqd${i}-5`] || 0,
-            '4': data[`sqd${i}-4`] || 0,
-            '3': data[`sqd${i}-3`] || 0,
-            '2': data[`sqd${i}-2`] || 0,
-            '1': data[`sqd${i}-1`] || 0
+          const validCounts = {
+            '5': parseInt(data[`sqd${i}-5`], 10) || 0,
+            '4': parseInt(data[`sqd${i}-4`], 10) || 0,
+            '3': parseInt(data[`sqd${i}-3`], 10) || 0,
+            '2': parseInt(data[`sqd${i}-2`], 10) || 0,
+            '1': parseInt(data[`sqd${i}-1`], 10) || 0
           };
-          const validTotal = Object.values(counts).reduce((sum, val) => sum + val, 0);
+          const naCount = parseInt(data[`sqd${i}-na`], 10) || 0;
+
+          const validTotal = Object.values(validCounts).reduce((sum, val) => sum + val, 0);
           const weightedSum =
-            (5 * counts['5']) +
-            (4 * counts['4']) +
-            (3 * counts['3']) +
-            (2 * counts['2']) +
-            (1 * counts['1']);
+            (5 * validCounts['5']) +
+            (4 * validCounts['4']) +
+            (3 * validCounts['3']) +
+            (2 * validCounts['2']) +
+            (1 * validCounts['1']);
 
           totalWeightedSum += weightedSum;
           totalValidResponses += validTotal;
+          totalResponsesIncludingNA += validTotal + naCount;
         }
 
         const overallMean = totalValidResponses > 0
@@ -151,7 +155,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         safeUpdate('sqd-overall-mean', overallMean);
         safeUpdate('sqd-overall-interpretation', overallInterpretation);
-        safeUpdate('sqd-overall-total', totalValidResponses);
+        safeUpdate('sqd-overall-valid-total', totalValidResponses);
+        safeUpdate('sqd-overall-total', totalResponsesIncludingNA);
+        safeUpdate('sqd-overall-average-total', totalResponsesIncludingNA);
 
         // CC1 – Awareness Summary (Nominal)
         const cc1_1 = data['cc1-1'] || 0;
@@ -172,20 +178,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // CC2 – Visibility
         const cc2Weights = { '1': 4, '2': 3, '3': 2, '4': 1 };
-        let cc2Total = 0;           // includes N/A
+        let cc2Total = 0;           // includes N/A (response 5)
         let cc2ValidTotal = 0;      // excludes N/A
         let cc2Weighted = 0;
 
-        ['1', '2', '3', '4', 'na'].forEach(key => {
-          const count = data[`cc2-${key}`] || 0;
+        // Loop through all response keys including N/A (stored as '5')
+        ['1', '2', '3', '4', '5'].forEach(key => {
+          const count = parseInt(data[`cc2-${key}`], 10) || 0;
           cc2Total += count;
-          if (key !== 'na') { // exclude N/A
+
+          // Only score responses 1–4
+          if (cc2Weights[key]) {
             cc2ValidTotal += count;
             cc2Weighted += count * cc2Weights[key];
           }
+
+          // Update breakdown UI
+          safeUpdate(`cc2-${key}`, count);
         });
 
+        // Compute weighted mean
         const cc2Mean = cc2ValidTotal > 0 ? (cc2Weighted / cc2ValidTotal).toFixed(2) : '—';
+
+        // Interpret result
         let cc2Interpretation = '—';
         if (cc2ValidTotal > 0) {
           const mean = parseFloat(cc2Mean);
@@ -194,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
           else cc2Interpretation = 'Poorly Visible';
         }
 
+        // Apply row color
         const cc2Row = document.getElementById('cc2-row');
         if (cc2Row) {
           cc2Row.classList.remove('bg-green-50', 'bg-yellow-50', 'bg-red-50');
@@ -202,28 +218,39 @@ document.addEventListener('DOMContentLoaded', function () {
           else if (cc2Interpretation === 'Poorly Visible') cc2Row.classList.add('bg-red-50');
         }
 
+        // Push values to UI
         safeUpdate('cc2-mean', cc2Mean);
         safeUpdate('cc2-interpretation', cc2Interpretation);
-        safeUpdate('cc2-total', cc2Total);
-        safeUpdate('cc2-total-paragraph', cc2Total);
-        safeUpdate('cc2-valid-total', cc2ValidTotal);
+        safeUpdate('cc2-total', cc2Total);               // table cell
+        safeUpdate('cc2-total-paragraph', cc2Total);     // paragraph
+        safeUpdate('cc2-valid-total', cc2ValidTotal);    // paragraph
+        safeUpdate('cc2-na-total', data['cc2-5'] || 0);  // optional: N/A count
 
         // CC3 – Helpfulness
         const cc3Weights = { '1': 3, '2': 2, '3': 1 };
-        let cc3Total = 0;           // includes N/A
+        let cc3Total = 0;           // includes N/A (response 4)
         let cc3ValidTotal = 0;      // excludes N/A
         let cc3Weighted = 0;
 
-        ['1', '2', '3', 'na'].forEach(key => {
-          const count = data[`cc3-${key}`] || 0;
+        // Loop through all response keys including N/A (stored as '4')
+        ['1', '2', '3', '4'].forEach(key => {
+          const count = parseInt(data[`cc3-${key}`], 10) || 0;
           cc3Total += count;
-          if (key !== 'na') {
+
+          // Only score responses 1–3
+          if (cc3Weights[key]) {
             cc3ValidTotal += count;
             cc3Weighted += count * cc3Weights[key];
           }
+
+          // Update breakdown UI
+          safeUpdate(`cc3-${key}`, count);
         });
 
+        // Compute weighted mean
         const cc3Mean = cc3ValidTotal > 0 ? (cc3Weighted / cc3ValidTotal).toFixed(2) : '—';
+
+        // Interpret result
         let cc3Interpretation = '—';
         if (cc3ValidTotal > 0) {
           const mean = parseFloat(cc3Mean);
@@ -245,8 +272,9 @@ document.addEventListener('DOMContentLoaded', function () {
         safeUpdate('cc3-mean', cc3Mean);
         safeUpdate('cc3-interpretation', cc3Interpretation);
         safeUpdate('cc3-total', cc3Total);               // table cell
-        safeUpdate('cc3-total-paragraph', cc3Total);     // paragraph (if added)
-        safeUpdate('cc3-valid-total', cc3ValidTotal);    // paragraph (if added)
+        safeUpdate('cc3-total-paragraph', cc3Total);     // paragraph
+        safeUpdate('cc3-valid-total', cc3ValidTotal);    // paragraph
+        safeUpdate('cc3-na-total', data['cc3-4'] || 0);  // optional: N/A count
 
         // Service Availed
         for (let i = 1; i <= 18; i++) {
