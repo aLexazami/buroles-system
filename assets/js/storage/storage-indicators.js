@@ -18,7 +18,7 @@ export function refreshStorageIndicator(retries = 3) {
       // 📦 Update label
       const label = container.querySelector('.storage-label');
       if (label) {
-        label.innerHTML = `📦 Storage Used: <strong>${data.usedDisplay}</strong> of <strong>${data.limitDisplay}</strong>`;
+        label.innerHTML = `Storage Used: <strong>${data.usedDisplay}</strong> of <strong>${data.limitDisplay}</strong>`;
       }
 
       // 📊 Update bar

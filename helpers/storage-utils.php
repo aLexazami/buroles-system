@@ -113,15 +113,33 @@ function getBoxHighlight(float $percent): string {
 }
 
 function getFolderSize(PDO $pdo, string $folderId): int {
+  $totalSize = 0;
+
+  // Include size of the folder itself
+  $stmtSelf = $pdo->prepare("SELECT size FROM files WHERE id = ? AND is_deleted = 1");
+  $stmtSelf->execute([$folderId]);
+  $rowSelf = $stmtSelf->fetch(PDO::FETCH_ASSOC);
+  $totalSize += (int) ($rowSelf['size'] ?? 0);
+
+  // Get all children of this folder
   $stmt = $pdo->prepare("
-    SELECT COALESCE(SUM(size), 0) AS total
+    SELECT id, type, size
     FROM files
-    WHERE parent_folder_id = ?
+    WHERE parent_id = ?
       AND is_deleted = 1
   ");
   $stmt->execute([$folderId]);
-  $row = $stmt->fetch(PDO::FETCH_ASSOC);
-  return (int) $row['total'];
+  $children = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  foreach ($children as $child) {
+    if ($child['type'] === 'folder') {
+      $totalSize += getFolderSize($pdo, $child['id']); // ✅ recurse
+    } else {
+      $totalSize += (int) $child['size'];
+    }
+  }
+
+  return $totalSize;
 }
 
 function recalculateStorageUsage(PDO $pdo, string $userId): void {

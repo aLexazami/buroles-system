@@ -17,6 +17,10 @@ $usedGB = $stats['used_gb'];
 $limitGB = $stats['limit_gb'];
 $percentUsed = $stats['percent_used'];
 
+$barColor = getBarColor($percentUsed);
+$boxHighlight = getBoxHighlight($percentUsed);
+
+
 $view = $_GET['view'] ?? 'my-files'; // 'shared-with-me', 'shared-by-me', 'my-files', 'trash'
 $folderId = $_GET['folder'] ?? null;
 
@@ -70,24 +74,24 @@ renderHead('Teacher');
         <?php endif; ?>
 
         <?php if (in_array($view, ['my-files', 'trash'])): ?>
-  <div id="storage-indicator" class="<?= $boxHighlight ?> border border-emerald-200 rounded-md px-4 py-3 text-sm sm:text-md text-gray-700 mb-4">
-    <div class="flex justify-between items-center">
-      <span class="storage-label">📦 Storage Used: <strong><?= $usedDisplay ?></strong> of <strong><?= $limitDisplay ?></strong></span>
-      <div class="w-full sm:w-1/2 h-2 bg-gray-300 rounded overflow-hidden ml-4">
-        <div class="storage-bar h-full <?= $barColor ?>" style="width: <?= min(100, $percentUsed) ?>%;"></div>
-      </div>
-    </div>
+          <div id="storage-indicator" class="<?= $boxHighlight ?> border border-emerald-200 rounded-md px-4 py-3 text-sm sm:text-md text-gray-700 mb-4">
+            <div class="flex justify-between items-center">
+              <span class="storage-label">Storage Used: <strong><?= $usedDisplay ?></strong> of <strong><?= $limitDisplay ?></strong></span>
+              <div class="w-full sm:w-1/2 h-2 bg-gray-300 rounded overflow-hidden ml-4">
+                <div class="storage-bar h-full <?= $barColor ?>" style="width: <?= min(100, $percentUsed) ?>%;"></div>
+              </div>
+            </div>
 
-    <!-- ✅ Warning block goes here -->
-    <div class="storage-warning <?= $percentUsed >= 90 ? '' : 'hidden' ?> text-red-600 text-sm font-semibold mt-2">
-      <?php if ($view === 'trash'): ?>
-        ⚠️ You're nearing your storage limit. Consider emptying your trash to free up space.
-      <?php else: ?>
-        ⚠️ You're nearing your storage limit. Consider deleting unused files.
-      <?php endif; ?>
-    </div>
-  </div>
-<?php endif; ?>
+            <!-- ✅ Warning block goes here -->
+            <div class="storage-warning <?= $percentUsed >= 90 ? '' : 'hidden' ?> text-red-600 text-sm font-semibold mt-2">
+              <?php if ($view === 'trash'): ?>
+                ⚠️ You're nearing your storage limit. Consider emptying your trash to free up space.
+              <?php else: ?>
+                ⚠️ You're nearing your storage limit. Consider deleting unused files.
+              <?php endif; ?>
+            </div>
+          </div>
+        <?php endif; ?>
 
 
         <!-- Toolbar -->
