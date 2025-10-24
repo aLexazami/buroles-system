@@ -18,14 +18,25 @@ if (!$userId || !$fileId) {
 }
 
 try {
-  // 🔍 Fetch file metadata
-  $stmt = $pdo->prepare("SELECT id, name, path, type FROM files WHERE id = ? AND owner_id = ?");
-  $stmt->execute([$fileId, $userId]);
+  // 🔍 Fetch file metadata with expanded permission logic
+  $stmt = $pdo->prepare("
+    SELECT f.id, f.name, f.path, f.type
+    FROM files f
+    LEFT JOIN access_control ac ON f.id = ac.file_id AND ac.user_id = ?
+    WHERE f.id = ?
+      AND f.is_deleted = 1
+      AND (
+        f.owner_id = ?
+        OR f.deleted_by_user_id = ?
+        OR (ac.permission = 'delete' AND ac.is_revoked = 0)
+      )
+  ");
+  $stmt->execute([$userId, $fileId, $userId, $userId]);
   $file = $stmt->fetch(PDO::FETCH_ASSOC);
 
   if (!$file) {
     http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'File or folder not found']);
+    echo json_encode(['success' => false, 'message' => 'File or folder not found or no permission to delete permanently']);
     exit;
   }
 
@@ -52,8 +63,8 @@ try {
     }
 
     // 🗑️ Delete folder itself
-    $stmt = $pdo->prepare("DELETE FROM files WHERE id = ? AND owner_id = ? AND type = 'folder'");
-    $stmt->execute([$fileId, $userId]);
+    $stmt = $pdo->prepare("DELETE FROM files WHERE id = ? AND type = 'folder'");
+    $stmt->execute([$fileId]);
   } else {
     // 🧹 Delete file from disk
     $fullPath = __DIR__ . "/../../" . ltrim($file['path'], '/');
