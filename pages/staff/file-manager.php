@@ -1,20 +1,53 @@
 <?php
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../helpers/flash.php'; // showFlash()
-require_once __DIR__ . '/../../helpers/head.php'; //renderHead()
-require_once __DIR__ . '/../../helpers/file-utils.php'; //getFilesForView()
+require_once __DIR__ . '/../../helpers/flash.php';         // showFlash()
+require_once __DIR__ . '/../../helpers/head.php';          // renderHead()
+require_once __DIR__ . '/../../helpers/file-utils.php';    // getFilesForView()
+require_once __DIR__ . '/../../helpers/storage-utils.php'; // ensureUserStorageRow(), formatStorageSize(), getStorageStats()
 
 $userId = $_SESSION['user_id'];
+
+// ✅ Get full storage stats
+$stats = getStorageStats($pdo, $userId);
+
+$usedDisplay = $stats['used_display'];
+$limitDisplay = $stats['limit_display'];
+$usedGB = $stats['used_gb'];
+$limitGB = $stats['limit_gb'];
+$percentUsed = $stats['percent_used'];
+
+
+// ✅ Dynamic bar color
+$barColor = 'bg-emerald-500'; // default
+if ($percentUsed >= 90) {
+  $barColor = 'bg-red-500';
+} elseif ($percentUsed >= 75) {
+  $barColor = 'bg-yellow-400';
+} elseif ($percentUsed >= 50) {
+  $barColor = 'bg-orange-400';
+}
+
+// ✅ Dynamic box highlight
+$boxHighlight = 'bg-emerald-50';
+if ($percentUsed >= 90) {
+  $boxHighlight = 'bg-red-50';
+} elseif ($percentUsed >= 75) {
+  $boxHighlight = 'bg-yellow-50';
+} elseif ($percentUsed >= 50) {
+  $boxHighlight = 'bg-orange-50';
+}
+
+
 $view = $_GET['view'] ?? 'my-files'; // 'shared-with-me', 'shared-by-me', 'my-files', 'trash'
 $folderId = $_GET['folder'] ?? null;
-
 
 renderHead('Teacher');
 ?>
 <script>
   const CURRENT_USER_ID = <?= json_encode($userId) ?>;
 </script>
+
 <body data-folder-id="<?= htmlspecialchars($folderId ?? '') ?>" data-view="<?= htmlspecialchars($view) ?>" data-user-id="<?= htmlspecialchars($userId) ?>"
   class="bg-gray-200 min-h-screen flex flex-col">
   <?php include('../../includes/header.php'); ?>
@@ -58,6 +91,23 @@ renderHead('Teacher');
           </div>
         <?php endif; ?>
 
+        <?php if ($view === 'my-files'): ?>
+          <div class="<?= $boxHighlight ?> border border-emerald-200 rounded-md px-4 py-3 text-sm sm:text-md text-gray-700 mb-4">
+            <div class="flex justify-between items-center">
+              <span>📦 Storage Used: <strong><?= $usedDisplay ?></strong> of <strong><?= $limitDisplay ?></strong></span>
+              <div class="w-full sm:w-1/2 h-2 bg-gray-300 rounded overflow-hidden ml-4">
+                <div class="h-full <?= $barColor ?>" style="width: <?= min(100, $percentUsed) ?>%;"></div>
+              </div>
+            </div>
+
+            <?php if ($usedGB >= $limitGB * 0.9): ?>
+              <div class="text-red-600 text-sm font-semibold mt-2">
+                ⚠️ You're nearing your storage limit. Consider deleting unused files.
+              </div>
+            <?php endif; ?>
+          </div>
+        <?php endif; ?>
+
 
         <!-- Toolbar -->
         <div class="flex flex-wrap items-center justify-between gap-4">
@@ -93,7 +143,7 @@ renderHead('Teacher');
             <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Comments</h2>
             -->
 
-            <!-- 🔀 Toggle Buttons
+        <!-- 🔀 Toggle Buttons
             <div class="flex gap-4 mb-6 text-sm sm:text-md">
               <button id="toggleMyComments" class="font-semibold text-emerald-700 hover:underline">
                 My Comments
@@ -104,7 +154,7 @@ renderHead('Teacher');
             </div>
             -->
 
-            <!-- 🗂️ Dynamic Comment List 
+        <!-- 🗂️ Dynamic Comment List 
             <div id="comment-list" class="space-y-4 text-sm text-gray-800 min-h-[350px]">
                JS will populate this 
             </div>
@@ -164,8 +214,8 @@ renderHead('Teacher');
       </div>
 
       <!-- 💻 Desktop Actions with Icons -->
-       <div class="hidden sm:flex space-x-2">
-         <!--💬 Comment Icon 
+      <div class="hidden sm:flex space-x-2">
+        <!--💬 Comment Icon 
         <div class="relative group">
           <button id="commentPreview" class="rounded-full p-2 hover:bg-[rgba(255,250,250,0.2)] duration-200 cursor-pointer hover:scale-110 transition-transform">
             <img src="/assets/img/comment-white.png" alt="Comment" class="w-7 h-7" />
@@ -483,20 +533,20 @@ renderHead('Teacher');
   </div>
 
   <!-- 💬 Delete Comment Modal -->
-<div id="deleteCommentModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
-  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
-  <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-red-500">
-    <h2 class="text-md sm:text-lg font-semibold mb-4 text-red-700">Delete Comment</h2>
-    <p class="text-sm text-gray-700 mb-6">
-      Are you sure you want to permanently delete this comment? This action cannot be undone.
-    </p>
-    <input type="hidden" id="delete-comment-id">
-    <div class="flex justify-end gap-2">
-      <button type="button" id="cancelCommentDelete" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
-      <button type="button" id="confirmCommentDeleteBtn" class="px-3 py-1 text-white bg-red-600 rounded hover:bg-red-700 text-sm cursor-pointer">Delete</button>
+  <div id="deleteCommentModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
+    <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+    <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-red-500">
+      <h2 class="text-md sm:text-lg font-semibold mb-4 text-red-700">Delete Comment</h2>
+      <p class="text-sm text-gray-700 mb-6">
+        Are you sure you want to permanently delete this comment? This action cannot be undone.
+      </p>
+      <input type="hidden" id="delete-comment-id">
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelCommentDelete" class="px-3 py-1 text-red-700 rounded hover:bg-red-100 text-sm cursor-pointer">Cancel</button>
+        <button type="button" id="confirmCommentDeleteBtn" class="px-3 py-1 text-white bg-red-600 rounded hover:bg-red-700 text-sm cursor-pointer">Delete</button>
+      </div>
     </div>
   </div>
-</div>
   <script src="/assets/js/auto-dismiss-alert.js"></script>
   <script type="module" src="/assets/js/app.js"></script>
   <script src="/assets/js/date-time.js"></script>

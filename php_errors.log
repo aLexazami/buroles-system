@@ -10,3 +10,61 @@
 [24-Oct-2025 20:37:28 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
 [24-Oct-2025 20:37:44 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
 [24-Oct-2025 20:37:48 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 20:40:39 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 20:40:48 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 20:40:53 Asia/Manila] 📥 Raw input: {"file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902","updates":[{"user_id":"13","permission":"revoke","file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902"},{"user_id":"34","permission":"revoke","file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902"}]}
+[24-Oct-2025 20:40:53 Asia/Manila] 🔐 Session user_id: 13
+[24-Oct-2025 20:40:53 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 20:40:53 Asia/Manila] 🔁 Access inherited from parent_id: b053ef98-8ff4-40ec-b09a-09f58cba27bb
+[24-Oct-2025 21:23:53 Asia/Manila] PHP Warning:  Trying to access array offset on false in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 13
+[24-Oct-2025 21:23:53 Asia/Manila] PHP Warning:  Trying to access array offset on false in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 14
+[24-Oct-2025 21:23:57 Asia/Manila] PHP Warning:  Trying to access array offset on false in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 13
+[24-Oct-2025 21:23:57 Asia/Manila] PHP Warning:  Trying to access array offset on false in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 14
+[24-Oct-2025 21:23:57 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 72
+[24-Oct-2025 21:42:14 Asia/Manila] 📁 Deleting contents of folder: Folder A (b053ef98-8ff4-40ec-b09a-09f58cba27bb)
+[24-Oct-2025 21:42:14 Asia/Manila] 🗑️ Deleting file: student1.jpg (0d073f98-0462-4467-8f2e-df5e9009448d)
+[24-Oct-2025 21:42:14 Asia/Manila] 🔁 Recursing into subfolder: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
+[24-Oct-2025 21:42:14 Asia/Manila] 📁 Deleting contents of folder: Folder Bibibiasd (8a1bd853-4cb1-4385-a7f1-b09b4b39b902)
+[24-Oct-2025 21:45:16 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 21:45:16 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
+[24-Oct-2025 21:45:16 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:45:16 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:45:16 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:45:55 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:45:55 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:45:55 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:45:59 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:45:59 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:45:59 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:10 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:10 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:11 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:16 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:16 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:16 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:18 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:18 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:46:18 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
+Stack trace:
+#0 {main}
+  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
+[24-Oct-2025 21:47:57 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 84
+[24-Oct-2025 21:47:57 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 84

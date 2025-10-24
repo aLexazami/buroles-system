@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/uuid.php';        // generateUuid(), isValidUuid()
 require_once __DIR__ . '/../../helpers/path.php';        // resolveFolderPath(), buildVirtualPath(), resolveDiskPath(), ensureDirectoryExists()
 require_once __DIR__ . '/../../helpers/file-utils.php';  // getUniqueFileName()
+require_once __DIR__ . '/../../helpers/storage-utils.php'; // ensureUserStorageRow(), canUploadFile()
 
 header('Content-Type: application/json');
 
@@ -31,6 +32,15 @@ $finalName = getUniqueFileName($pdo, $folderId, $originalName);
 $mime = mime_content_type($file['tmp_name']);
 $size = filesize($file['tmp_name']);
 
+// ✅ Quota check
+$quota = canUploadFile($pdo, $userId, $size);
+
+if (!$quota['allowed']) {
+  $usedGB = round($quota['used'] / (1024 ** 3), 2);
+  $limitGB = round($quota['limit'] / (1024 ** 3), 2);
+  returnError($quota['reason'] . " Used: {$usedGB} GB of {$limitGB} GB.");
+}
+
 // 🧠 Resolve paths
 $parentPath = resolveFolderPath($pdo, $folderId, $userId);
 $virtualPath = buildVirtualPath($parentPath, $userId, $uuid);
@@ -56,6 +66,10 @@ $stmt->execute([
   $size,
   $mime
 ]);
+
+// ✅ Update storage usage
+$update = $pdo->prepare("UPDATE user_storage SET storage_used = storage_used + ? WHERE user_id = ?");
+$update->execute([$size, $userId]);
 
 // ✅ Respond with file info
 echo json_encode([
