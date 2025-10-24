@@ -4,15 +4,17 @@
   <div class="relative z-10 bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md border border-emerald-500">
     <h2 class="text-xl sm:text-2xl mb-4">Create Advisory Class</h2>
     <form id="createAdvisoryForm">
-      <input type="hidden" name="adviser_id" value="<?= $adviser['id'] ?>">
+      <input type="hidden" name="adviser_id" value="<?= isset($adviser['id']) ? htmlspecialchars($adviser['id']) : '' ?>">
 
       <!-- 📅 School Year (Fixed to Active) -->
       <?php
       $activeSchoolYear = null;
-      foreach ($schoolYears as $sy) {
-        if ($sy['is_active']) {
-          $activeSchoolYear = $sy;
-          break;
+      if (!empty($schoolYears) && is_array($schoolYears)) {
+        foreach ($schoolYears as $sy) {
+          if (!empty($sy['is_active'])) {
+            $activeSchoolYear = $sy;
+            break;
+          }
         }
       }
       ?>
@@ -21,7 +23,7 @@
         <div class="mb-3 px-3 py-2 border rounded bg-gray-100 text-gray-700">
           <?= htmlspecialchars($activeSchoolYear['label']) ?>
         </div>
-        <input type="hidden" name="school_year_id" value="<?= $activeSchoolYear['id'] ?>">
+        <input type="hidden" name="school_year_id" value="<?= htmlspecialchars($activeSchoolYear['id']) ?>">
       <?php else: ?>
         <div class="mb-3 text-red-600 text-sm">No active school year found. Please activate one first.</div>
       <?php endif; ?>
@@ -30,9 +32,13 @@
       <label class="block mb-2 text-sm font-medium">Grade Level</label>
       <select name="grade_level" id="gradeLevelSelect" required class="block w-full mb-3 border rounded px-3 py-2">
         <option value="">Select grade level</option>
-        <?php foreach ($gradeLevels as $level): ?>
-          <option value="<?= $level['id'] ?>"><?= htmlspecialchars($level['label']) ?></option>
-        <?php endforeach; ?>
+        <?php if (!empty($gradeLevels) && is_array($gradeLevels)): ?>
+          <?php foreach ($gradeLevels as $level): ?>
+            <option value="<?= htmlspecialchars($level['id']) ?>"><?= htmlspecialchars($level['label']) ?></option>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <option disabled>No grade levels available</option>
+        <?php endif; ?>
       </select>
 
       <!-- 🧩 Section -->
@@ -172,9 +178,13 @@
       <div class="mb-4">
         <label for="editGradeSectionLevel" class="block text-sm text-gray-600 mb-1">Grade Level</label>
         <select name="grade_level_id" id="editGradeSectionLevel" required class="w-full border rounded px-3 py-2">
-          <?php foreach ($gradeLevels as $g): ?>
-            <option value="<?= $g['id'] ?>"><?= htmlspecialchars($g['label']) ?></option>
-          <?php endforeach; ?>
+          <?php if (!empty($gradeLevels) && is_array($gradeLevels)): ?>
+            <?php foreach ($gradeLevels as $g): ?>
+              <option value="<?= htmlspecialchars($g['id']) ?>"><?= htmlspecialchars($g['label']) ?></option>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <option disabled>No grade levels available</option>
+          <?php endif; ?>
         </select>
       </div>
 
@@ -220,9 +230,13 @@
       <div class="mb-4">
         <label for="addGradeSectionLevel" class="block text-sm text-gray-600 mb-1">Grade Level</label>
         <select name="grade_level_id" id="addGradeSectionLevel" required class="w-full border rounded px-3 py-2">
-          <?php foreach ($gradeLevels as $g): ?>
-            <option value="<?= $g['id'] ?>"><?= htmlspecialchars($g['label']) ?></option>
-          <?php endforeach; ?>
+          <?php if (!empty($gradeLevels) && is_array($gradeLevels)): ?>
+            <?php foreach ($gradeLevels as $g): ?>
+              <option value="<?= htmlspecialchars($g['id']) ?>"><?= htmlspecialchars($g['label']) ?></option>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <option disabled>No grade levels available</option>
+          <?php endif; ?>
         </select>
       </div>
 
@@ -436,7 +450,7 @@
     <h2 class="text-xl sm:text-2xl mb-4 text-red-700">Remove Student from Advisory</h2>
     <form id="deleteStudentClassForm">
       <input type="hidden" name="student_id" id="deleteStudentClassStudentId">
-      <input type="hidden" name="class_id" id="deleteStudentClassId" value="<?= $class['id'] ?>">
+      <input type="hidden" name="class_id" id="deleteStudentClassId" value="<?= isset($class['id']) ? htmlspecialchars($class['id']) : '' ?>">
 
       <p class="text-sm text-gray-700 mb-6">
         Are you sure you want to remove <span id="deleteStudentName" class="font-semibold text-red-600"></span> from this advisory class?
