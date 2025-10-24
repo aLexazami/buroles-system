@@ -23,6 +23,11 @@ if (file_exists($envFullPath)) {
     throw new RuntimeException("Missing $envFile file at $dotenvPath");
 }
 
+// 🔐 Validate critical env keys
+if (empty($_ENV['SESSION_SECRET'])) {
+    throw new RuntimeException('SESSION_SECRET is not defined.');
+}
+
 // ✅ Define global constants
 define('APP_ENV', $_ENV['APP_ENV'] ?? 'local');
 define('APP_NAME', $_ENV['APP_NAME'] ?? 'BurolES');

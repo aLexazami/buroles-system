@@ -1,2 +1,10 @@
-[24-Oct-2025 17:37:55 Asia/Manila] PHP Warning:  Undefined array key "SESSION_SECRET" in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
-[24-Oct-2025 17:37:55 Asia/Manila] PHP Deprecated:  hash(): Passing null to parameter #2 ($data) of type string is deprecated in C:\buroles\workspace\buroles_system\controllers\login.php on line 62
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  Undefined variable $adviser in C:\buroles\workspace\buroles_system\includes\modals.php on line 7
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 7
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 33
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 33
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 175
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 175
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  Undefined variable $gradeLevels in C:\buroles\workspace\buroles_system\includes\modals.php on line 223
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  foreach() argument must be of type array|object, null given in C:\buroles\workspace\buroles_system\includes\modals.php on line 223
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  Undefined variable $class in C:\buroles\workspace\buroles_system\includes\modals.php on line 439
+[24-Oct-2025 17:45:12 Asia/Manila] PHP Warning:  Trying to access array offset on null in C:\buroles\workspace\buroles_system\includes\modals.php on line 439
