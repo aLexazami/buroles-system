@@ -378,7 +378,7 @@ renderHead('Teacher');
           <input type="file" id="uploadInput" name="file" required class="hidden">
           <div id="previewContainer" class="mt-2"></div>
         </div>
-        <input type="hidden" name="folder_id" value="<?= htmlspecialchars($folderId) ?>">
+        <input type="hidden" name="folder_id" value="<?= htmlspecialchars($folderId ?? '') ?>">
         <div class="flex justify-end gap-2">
           <button type="button" id="cancelUploadBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
           <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Upload</button>
@@ -394,7 +394,7 @@ renderHead('Teacher');
       <h2 class="text-xl sm:text-2xl mb-4">Create New Folder</h2>
       <form id="createFolderForm" action="/controllers/file-manager/create-folder.php" method="POST">
         <input type="text" name="folder_name" placeholder="Folder name" required class="block w-full mb-4 border rounded px-3 py-2">
-        <input type="hidden" name="parent_id" value="<?= htmlspecialchars($folderId) ?>">
+        <input type="hidden" name="parent_id" value="<?= htmlspecialchars($folderId ?? '') ?>">
         <div class="flex justify-end gap-2">
           <button type="button" id="cancelCreateFolderBtn" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Cancel</button>
           <button type="submit" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Create</button>
