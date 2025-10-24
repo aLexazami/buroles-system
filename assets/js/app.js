@@ -9,7 +9,6 @@ import { initAddStudentModal, initAnnouncementModal, initAnnouncementTriggers, i
 import { refreshGradeLevels, refreshGradeSections, refreshSchoolYears} from './school-management/school-tools.js';
 import { initAdvisoryGrid } from '/assets/js/school-management/create-advisory.js';
 import { initStudentTable } from '/assets/js/school-management/student-loader.js';
-import {  initStudentList} from '/assets/js/school-management/student-list-advisory.js';
 import { initUploadActions } from './upload.js';
 import { initExportDropdown } from '/assets/js/export-button.js';
 
@@ -118,9 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.location.pathname.includes('/student-list.php')) {
     initAddStudentModal();
   }
-
-
-
 
   // 🧭 UI & Role Toggles
   setupRoleSwitcher();

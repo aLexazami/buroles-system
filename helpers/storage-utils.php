@@ -97,3 +97,17 @@ function getStorageStats(PDO $pdo, int $userId): array {
     'warning' => $percent >= 90
   ];
 }
+
+function getBarColor(float $percent): string {
+  if ($percent >= 90) return 'bg-red-500';
+  if ($percent >= 75) return 'bg-yellow-400';
+  if ($percent >= 50) return 'bg-orange-400';
+  return 'bg-emerald-500';
+}
+
+function getBoxHighlight(float $percent): string {
+  if ($percent >= 90) return 'bg-red-50';
+  if ($percent >= 75) return 'bg-yellow-50';
+  if ($percent >= 50) return 'bg-orange-50';
+  return 'bg-emerald-50';
+}

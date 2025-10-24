@@ -7,6 +7,8 @@ import { refreshGradeSections, refreshSchoolYears } from './school-management/sc
 import { refreshStudentTable } from './school-management/student-loader.js';
 import { refreshStudentList } from './school-management/student-list-advisory.js';
 import { getItems, insertItemSorted } from './stores/fileStore.js';
+import { refreshStorageIndicator } from '/assets/js/storage/storage-indicators.js';
+
 
 
 // Modal Helpers
@@ -586,8 +588,6 @@ export function initUploadHandler() {
     e.preventDefault();
 
     const formData = new FormData(form);
-
-    // 📁 Inject current folderId as folder_id
     const currentFolderId = document.body.dataset.folderId || '';
     formData.set('folder_id', currentFolderId);
 
@@ -605,12 +605,17 @@ export function initUploadHandler() {
       }
 
       if (data.item) {
-        insertItemSorted(data.item);         // ✅ Update store
-        renderItems(getItems());             // ✅ Re-render UI
+        insertItemSorted(data.item);
+        renderItems(getItems());
         toggleModal('uploadModal', false);
         form.reset();
         if (fileNameDisplay) fileNameDisplay.textContent = 'No file chosen';
         renderFlash('success', 'File uploaded successfully');
+
+        // ✅ Refresh quota bar after upload
+        setTimeout(() => {
+          refreshStorageIndicator();
+        }, 300); // slight delay to ensure DB update
       }
     } catch (err) {
       console.error('Upload error:', err);
@@ -618,6 +623,7 @@ export function initUploadHandler() {
     }
   });
 }
+
 
 // Create Folder Modal in File Manager
 export function initCreateFolderModal() {

@@ -17,28 +17,6 @@ $usedGB = $stats['used_gb'];
 $limitGB = $stats['limit_gb'];
 $percentUsed = $stats['percent_used'];
 
-
-// ✅ Dynamic bar color
-$barColor = 'bg-emerald-500'; // default
-if ($percentUsed >= 90) {
-  $barColor = 'bg-red-500';
-} elseif ($percentUsed >= 75) {
-  $barColor = 'bg-yellow-400';
-} elseif ($percentUsed >= 50) {
-  $barColor = 'bg-orange-400';
-}
-
-// ✅ Dynamic box highlight
-$boxHighlight = 'bg-emerald-50';
-if ($percentUsed >= 90) {
-  $boxHighlight = 'bg-red-50';
-} elseif ($percentUsed >= 75) {
-  $boxHighlight = 'bg-yellow-50';
-} elseif ($percentUsed >= 50) {
-  $boxHighlight = 'bg-orange-50';
-}
-
-
 $view = $_GET['view'] ?? 'my-files'; // 'shared-with-me', 'shared-by-me', 'my-files', 'trash'
 $folderId = $_GET['folder'] ?? null;
 
@@ -92,19 +70,17 @@ renderHead('Teacher');
         <?php endif; ?>
 
         <?php if ($view === 'my-files'): ?>
-          <div class="<?= $boxHighlight ?> border border-emerald-200 rounded-md px-4 py-3 text-sm sm:text-md text-gray-700 mb-4">
+          <div id="storage-indicator" class="<?= $boxHighlight ?> border border-emerald-200 rounded-md px-4 py-3 text-sm sm:text-md text-gray-700 mb-4">
             <div class="flex justify-between items-center">
-              <span>📦 Storage Used: <strong><?= $usedDisplay ?></strong> of <strong><?= $limitDisplay ?></strong></span>
+              <span class="storage-label">📦 Storage Used: <strong><?= $usedDisplay ?></strong> of <strong><?= $limitDisplay ?></strong></span>
               <div class="w-full sm:w-1/2 h-2 bg-gray-300 rounded overflow-hidden ml-4">
-                <div class="h-full <?= $barColor ?>" style="width: <?= min(100, $percentUsed) ?>%;"></div>
+                <div class="storage-bar h-full <?= $barColor ?>" style="width: <?= min(100, $percentUsed) ?>%;"></div>
               </div>
             </div>
 
-            <?php if ($usedGB >= $limitGB * 0.9): ?>
-              <div class="text-red-600 text-sm font-semibold mt-2">
-                ⚠️ You're nearing your storage limit. Consider deleting unused files.
-              </div>
-            <?php endif; ?>
+            <div class="storage-warning <?= $percentUsed >= 90 ? '' : 'hidden' ?> text-red-600 text-sm font-semibold mt-2">
+              ⚠️ You're nearing your storage limit. Consider deleting unused files.
+            </div>
           </div>
         <?php endif; ?>
 

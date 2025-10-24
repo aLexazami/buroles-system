@@ -4,6 +4,8 @@ import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
 import { renderFlash } from './flash.js';
+import { refreshStorageIndicator } from '/assets/js/storage/storage-indicators.js';
+
 
 export function refreshCurrentFolder() {
   const currentView = document.body.dataset.view || 'my-files';
@@ -74,7 +76,7 @@ export async function loadFolder(folderId = null) {
   // 🧠 Sync folder state to <body>
   document.body.dataset.folderId = normalizedFolderId;
 
-  // 🌐 Update browser URL for deep linking (preserve current pathname)
+  // 🌐 Update browser URL for deep linking
   const basePath = window.location.pathname;
   const queryParams = new URLSearchParams();
   queryParams.set('view', currentView);
@@ -90,6 +92,9 @@ export async function loadFolder(folderId = null) {
     fetchContents(currentView, normalizedFolderId),
     fetchBreadcrumb(normalizedFolderId)
   ]);
+
+  // ✅ Refresh quota bar after DOM is updated
+  refreshStorageIndicator();
 }
 
 export async function loadTrashView(folderId = null) {
