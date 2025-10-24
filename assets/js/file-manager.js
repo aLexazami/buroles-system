@@ -1,5 +1,5 @@
 // file-manager.js
-import { initCommentButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal, openCommentModal, openShareModal, initShareHandler, openManageAccessModal, showDeleteCommentModal } from './modal.js';
+import { initCommentButtons, openFileInfoModal, showDeleteModal, showRestoreModal, showPermanentDeleteModal, setupEmptyTrashModal, showRenameModal, openShareModal, initShareHandler, openManageAccessModal, showDeleteCommentModal } from './modal.js';
 import { openFilePreview } from './carousel-preview.js';
 import { fileRoutes } from './endpoints/fileRoutes.js';
 import { setItems, getItems, insertItemSorted } from './stores/fileStore.js';
@@ -441,21 +441,34 @@ function animateRowInsertion(row) {
 
 function positionDropdown(menuButton, menu, containerSelector = '#file-list') {
   const buttonRect = menuButton.getBoundingClientRect();
+  const menuWidth = menu.offsetWidth || 160;
   const menuHeight = menu.offsetHeight || 160;
+
   const container = document.querySelector(containerSelector);
   const containerRect = container?.getBoundingClientRect();
-
   if (!containerRect) return;
 
+  const spaceRight = containerRect.right - buttonRect.right;
+  const spaceLeft = buttonRect.left - containerRect.left;
   const spaceBelow = containerRect.bottom - buttonRect.bottom;
   const spaceAbove = buttonRect.top - containerRect.top;
 
-  menu.classList.remove('top-full', 'mt-2', 'bottom-full', 'mb-2');
+  // Reset directional classes
+  menu.classList.remove('top-full', 'mt-2', 'bottom-full', 'mb-2', 'left-full', 'ml-2', 'right-full', 'mr-2');
 
+  // Default vertical position: below or above
   if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
-    menu.classList.add('bottom-full', 'mb-2');
+    menu.style.top = `${buttonRect.top + window.scrollY - menuHeight}px`;
   } else {
-    menu.classList.add('top-full', 'mt-2');
+    menu.style.top = `${buttonRect.bottom + window.scrollY}px`;
+  }
+
+  // Horizontal position: shift left if enough space
+  if (spaceLeft > menuWidth) {
+    menu.style.left = `${buttonRect.left + window.scrollX - menuWidth}px`;
+  } else {
+    // fallback to right alignment
+    menu.style.left = `${buttonRect.right + window.scrollX}px`;
   }
 }
 
@@ -504,7 +517,6 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
 
   row.addEventListener('click', (e) => {
     if (e.target.closest('[data-stop-click="true"]')) return;
-
     if (item.type === 'folder') {
       currentView === 'trash' ? loadTrashView(item.id) : loadFolder(item.id);
     } else {
@@ -533,7 +545,7 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
   labelWrapper.appendChild(labelStack);
 
   const menuWrapper = document.createElement('div');
-  menuWrapper.className = 'relative flex-shrink-0 ml-2 z-10';
+  menuWrapper.className = 'relative flex items-center flex-shrink-0 ml-2';
 
   const menuButton = document.createElement('button');
   const menuIcon = document.createElement('img');
@@ -545,29 +557,17 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
   menuButton.setAttribute('aria-haspopup', 'true');
   menuButton.setAttribute('type', 'button');
   menuButton.setAttribute('data-stop-click', 'true');
-  menuButton.className = 'hover:bg-emerald-100 rounded-full px-2 py-2 cursor-pointer';
+  menuButton.className = 'hover:bg-emerald-100 rounded-full px-2 py-2 cursor-pointer z-20 relative';
 
   const menu = document.createElement('div');
-  menu.className = 'file-list-menu absolute right-0  mt-1 bg-white rounded shadow-lg hidden text-sm w-40 sm:w-48 transition ease-out duration-150 font-semibold z-50';
+  menu.className = `
+    file-list-menu
+    absolute
+    mt-1 bg-white rounded shadow-lg hidden
+    text-sm w-40 sm:w-48
+    transition ease-out duration-150 font-semibold z-[9999]
+  `.trim();
   menu.setAttribute('role', 'menu');
-
-  menuButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isHidden = menu.classList.contains('hidden');
-    document.querySelectorAll('.file-list-menu').forEach(m => m.classList.add('hidden'));
-    if (isHidden) {
-      positionDropdown(menuButton, menu);
-      menu.classList.remove('hidden');
-    } else {
-      menu.classList.add('hidden');
-    }
-  });
-
-  menu.addEventListener('click', (e) => e.stopPropagation());
-  document.addEventListener('click', (e) => {
-    const isClickInside = menu.contains(e.target) || menuButton.contains(e.target);
-    if (!isClickInside) menu.classList.add('hidden');
-  });
 
   const createMenuItem = (labelText, iconPath, colorClass, onClick, isLink = false, href = '') => {
     const wrapper = isLink ? document.createElement('a') : document.createElement('button');
@@ -629,8 +629,29 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
     menu.appendChild(createMenuItem('Info', '/assets/img/info-icon.png', 'cursor-pointer', () => openFileInfoModal(item)));
   }
 
+  menuButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isHidden = menu.classList.contains('hidden');
+    document.querySelectorAll('.file-list-menu').forEach(m => m.classList.add('hidden'));
+    if (isHidden) {
+      positionDropdown(menuButton, menu, '#file-list');
+      menu.classList.remove('hidden');
+    } else {
+      menu.classList.add('hidden');
+    }
+  });
+
+  menu.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', (e) => {
+    const isClickInside = menu.contains(e.target) || menuButton.contains(e.target);
+    if (!isClickInside) menu.classList.add('hidden');
+  });
+
+  // Inject menu into global dropdown root
+  const dropdownRoot = document.getElementById('dropdown-root');
+  dropdownRoot.appendChild(menu);
+
   menuWrapper.appendChild(menuButton);
-  menuWrapper.appendChild(menu);
   row.appendChild(labelWrapper);
   row.appendChild(menuWrapper);
 

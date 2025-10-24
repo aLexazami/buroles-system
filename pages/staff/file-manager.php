@@ -135,6 +135,8 @@ renderHead('Teacher');
     </section>
   </main>
 
+  <div id="dropdown-root" class="absolute z-[9999]"></div>
+
   <?php include('../../includes/footer.php'); ?>
 
   <!-- 📁 File Preview Modal -->

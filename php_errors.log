@@ -1,0 +1,29 @@
+[24-Oct-2025 17:58:23 Asia/Manila] 📦 Calculated size for folder b090d691-c47d-43d0-817f-060fb66d0712: 0
+[24-Oct-2025 18:36:56 Asia/Manila] 📁 Deleting contents of folder: New Folder (1) (939fde8d-ba5f-43d0-a869-7a46a1482d14)
+[24-Oct-2025 18:37:35 Asia/Manila] 📁 Deleting contents of folder: New Folder (b090d691-c47d-43d0-817f-060fb66d0712)
+[24-Oct-2025 18:37:35 Asia/Manila] 🗑️ Deleting file: E-Management-20251024T091144Z-1-001.zip (264bb30d-8aa5-4e2d-9cae-e48c98c8c653)
+[24-Oct-2025 18:38:09 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:38:31 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:38:42 Asia/Manila] 📥 Raw input: {"file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe","updates":[{"user_id":"13","permission":"write","file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe"}]}
+[24-Oct-2025 18:38:42 Asia/Manila] 🔐 Session user_id: 2
+[24-Oct-2025 18:38:42 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:38:44 Asia/Manila] 📦 Calculated size for folder 0fc424fe-0715-49ab-9079-c036e7b34bfe: 55842
+[24-Oct-2025 18:38:49 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:38:57 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:39:01 Asia/Manila] 📥 Raw input: {"file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe","updates":[{"user_id":"13","permission":"read","file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe"}]}
+[24-Oct-2025 18:39:01 Asia/Manila] 🔐 Session user_id: 2
+[24-Oct-2025 18:39:01 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:39:55 Asia/Manila] 📦 Calculated size for folder 0fc424fe-0715-49ab-9079-c036e7b34bfe: 55842
+[24-Oct-2025 18:39:59 Asia/Manila] Preview accessed: file_id=8ff0a8d4-de20-4b6f-bbec-ff81b9559c6c, user_id=13, view=shared-with-me, folder=0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:40:01 Asia/Manila] Preview accessed: file_id=8ff0a8d4-de20-4b6f-bbec-ff81b9559c6c, user_id=13, view=shared-with-me, folder=0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:40:05 Asia/Manila] Preview accessed: file_id=7ddf1668-dded-4fde-8618-3733515564b5, user_id=13, view=shared-with-me, folder=39779dd2-bc0c-4a9a-8f5a-c3e5b5559c0f
+[24-Oct-2025 18:40:14 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:40:17 Asia/Manila] 📥 Raw input: {"file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe","updates":[{"user_id":"13","permission":"write","file_id":"0fc424fe-0715-49ab-9079-c036e7b34bfe"}]}
+[24-Oct-2025 18:40:17 Asia/Manila] 🔐 Session user_id: 2
+[24-Oct-2025 18:40:17 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:40:23 Asia/Manila] 📦 Calculated size for folder 0fc424fe-0715-49ab-9079-c036e7b34bfe: 55842
+[24-Oct-2025 18:40:46 Asia/Manila] 📦 Calculated size for folder 0fc424fe-0715-49ab-9079-c036e7b34bfe: 0
+[24-Oct-2025 18:41:05 Asia/Manila] 📦 Calculated size for folder 0fc424fe-0715-49ab-9079-c036e7b34bfe: 0
+[24-Oct-2025 18:41:33 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:41:39 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
+[24-Oct-2025 18:41:47 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 0fc424fe-0715-49ab-9079-c036e7b34bfe
