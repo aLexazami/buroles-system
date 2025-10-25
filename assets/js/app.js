@@ -206,6 +206,12 @@ document.addEventListener('DOMContentLoaded', () => {
   startBadgePolling();
   initFileSearch();
 
+  setupSearchFilter({
+    inputId: 'userSearch',        // matches your <input id="userSearch">
+    clearId: 'clearSearch',       // matches your <button id="clearSearch">
+    selector: 'tbody tr',         // targets each user row in the table
+    scope: 'textContent'          // searches visible text inside each row
+  });
 
   setupSearchFilter({
     inputId: 'staffSearch',
