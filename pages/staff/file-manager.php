@@ -412,8 +412,30 @@ renderHead('Teacher');
             <span class="font-medium bg-emerald-800 py-2 px-2 text-white">Browse</span>
             <span id="fileName" class="text-gray-500 pl-2">No file chosen</span>
           </label>
+          <div id="fileSize" class="text-sm text-gray-500 mt-1 hidden">Size: —</div>
           <input type="file" id="uploadInput" name="file" required class="hidden">
           <div id="previewContainer" class="mt-2"></div>
+          <div class="text-sm text-gray-500 mt-1">
+            Maximum file size: <span id="uploadMaxSize" class="font-medium text-emerald-700">—</span><br>
+            Total storage available: <span id="uploadQuota" class="font-medium text-emerald-700">—</span><br>
+            Storage used: <span id="uploadUsed" class="font-medium text-emerald-700">—</span><br>
+            Remaining: <span id="uploadRemaining" class="font-medium text-emerald-700">—</span>
+          </div>
+          <!-- Spinner (hidden by default) -->
+          <div id="uploadSpinner" class="hidden flex items-center gap-2 text-sm text-gray-500 mt-2">
+            <svg class="animate-spin h-4 w-4 text-emerald-600" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
+            <span>Preparing upload…</span>
+          </div>
+
+          <!-- Progress UI -->
+          <div id="uploadProgressContainer" class="hidden opacity-0 transition-opacity duration-300">
+            <progress id="uploadProgress" value="0" max="100" class="w-full h-2 mt-2 bg-gray-200 rounded"></progress>
+            <div id="uploadStatus" class="text-sm text-gray-600 mt-1">Waiting to upload…</div>
+            <div id="uploadSpeed" class="text-sm text-gray-500 mt-1">Speed: —</div>
+          </div>
         </div>
         <input type="hidden" name="folder_id" value="<?= htmlspecialchars($folderId ?? '') ?>">
         <div class="flex justify-end gap-2">

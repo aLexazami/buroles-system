@@ -552,28 +552,98 @@ function renderInfoContent(item, view = 'my-files') {
 }
 
 // Upload Modal in File Manager
+let activeUploadRequest = null;
+
 export function initUploadModal() {
   const cancelBtn = document.getElementById('cancelUploadBtn');
   const openBtn = document.getElementById('openUploadBtn');
   const uploadInput = document.getElementById('uploadInput');
   const fileNameDisplay = document.getElementById('fileName');
+  const fileSizeDisplay = document.getElementById('fileSize');
+  const progressBar = document.getElementById('uploadProgress');
+  const statusText = document.getElementById('uploadStatus');
+  const speedText = document.getElementById('uploadSpeed');
+  const progressContainer = document.getElementById('uploadProgressContainer');
+  const maxSizeDisplay = document.getElementById('uploadMaxSize');
+  const quotaDisplay = document.getElementById('uploadQuota');
+  const usedDisplay = document.getElementById('uploadUsed');
+  const remainingDisplay = document.getElementById('uploadRemaining');
 
   if (cancelBtn) {
     cancelBtn.addEventListener('click', () => {
       toggleModal('uploadModal', false);
+
+      if (activeUploadRequest) {
+        activeUploadRequest.abort();
+        activeUploadRequest = null;
+      }
+
       if (uploadInput) uploadInput.value = '';
       if (fileNameDisplay) fileNameDisplay.textContent = 'No file chosen';
+      if (fileSizeDisplay) {
+        fileSizeDisplay.textContent = 'Size: —';
+        fileSizeDisplay.classList.add('hidden');
+      }
+      if (progressBar) progressBar.value = 0;
+      if (statusText) statusText.textContent = 'Upload cancelled.';
+      if (speedText) speedText.textContent = 'Speed: —';
+      if (progressContainer) {
+        progressContainer.classList.add('opacity-0');
+        setTimeout(() => progressContainer.classList.add('hidden'), 300);
+      }
+
+      [maxSizeDisplay, quotaDisplay, usedDisplay, remainingDisplay].forEach(el => {
+        if (el) el.textContent = '—';
+      });
     });
   }
 
   if (openBtn) {
-    openBtn.addEventListener('click', () => toggleModal('uploadModal', true));
+    openBtn.addEventListener('click', () => {
+      toggleModal('uploadModal', true);
+
+      fetch('/controllers/file-manager/get-user-limit.php')
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) return;
+
+          const formatGB = (bytes) => (bytes / (1024 ** 3)).toFixed(2) + ' GB';
+          const formatMB = (bytes) => (bytes / (1024 ** 2)).toFixed(2) + ' MB';
+
+          const maxGB = formatGB(data.max_file_size);
+          const quotaGB = formatGB(data.storage_limit);
+          const usedMB = formatMB(data.storage_used);
+          const remainingBytes = data.storage_limit - data.storage_used;
+          const remainingGB = formatGB(remainingBytes);
+
+          if (maxSizeDisplay) maxSizeDisplay.textContent = maxGB;
+          if (quotaDisplay) quotaDisplay.textContent = quotaGB;
+          if (usedDisplay) usedDisplay.textContent = usedMB;
+          if (remainingDisplay) remainingDisplay.textContent = remainingGB;
+        })
+        .catch(() => {
+          [maxSizeDisplay, quotaDisplay, usedDisplay, remainingDisplay].forEach(el => {
+            if (el) el.textContent = 'Unavailable';
+          });
+        });
+    });
   }
 
   if (uploadInput && fileNameDisplay) {
     uploadInput.addEventListener('change', () => {
       const file = uploadInput.files[0];
       fileNameDisplay.textContent = file ? file.name : 'No file chosen';
+
+      if (fileSizeDisplay) {
+        if (!file) {
+          fileSizeDisplay.textContent = 'Size: —';
+          fileSizeDisplay.classList.add('hidden');
+        } else {
+          const sizeMB = file.size / (1024 ** 2);
+          fileSizeDisplay.textContent = `Size: ${sizeMB.toFixed(2)} MB`;
+          fileSizeDisplay.classList.remove('hidden');
+        }
+      }
     });
   }
 }
@@ -581,49 +651,140 @@ export function initUploadModal() {
 export function initUploadHandler() {
   const form = document.getElementById('uploadForm');
   const fileNameDisplay = document.getElementById('fileName');
+  const progressBar = document.getElementById('uploadProgress');
+  const statusText = document.getElementById('uploadStatus');
+  const speedText = document.getElementById('uploadSpeed');
+  const uploadInput = document.getElementById('uploadInput');
+  const progressContainer = document.getElementById('uploadProgressContainer');
+  const spinner = document.getElementById('uploadSpinner');
 
   if (!form) return;
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    const file = uploadInput?.files?.[0];
+    const maxSize = 1073741824;
+
+    if (!file) {
+      renderFlash('error', 'No file selected.');
+      return;
+    }
+    if (file.size > maxSize) {
+      renderFlash('error', 'File exceeds the 1GB upload limit.');
+      return;
+    }
 
     const formData = new FormData(form);
     const currentFolderId = document.body.dataset.folderId || '';
     formData.set('folder_id', currentFolderId);
 
-    try {
-      const response = await fetch('/controllers/file-manager/upload.php', {
-        method: 'POST',
-        body: formData
-      });
+    const xhr = new XMLHttpRequest();
+    activeUploadRequest = xhr;
 
-      const data = await response.json();
+    xhr.open('POST', '/controllers/file-manager/upload.php');
 
-      if (!response.ok || !data.success) {
-        renderFlash('error', data.error || 'Upload failed');
-        return;
+    const startTime = Date.now();
+    let lastLoaded = 0;
+    let lastTime = startTime;
+
+    if (spinner) spinner.classList.remove('hidden');
+
+    setTimeout(() => {
+      if (spinner) spinner.classList.add('hidden');
+      if (progressContainer) {
+        progressContainer.classList.remove('hidden');
+        setTimeout(() => progressContainer.classList.remove('opacity-0'), 10);
       }
+    }, 500);
 
-      if (data.item) {
-        insertItemSorted(data.item);
-        renderItems(getItems());
-        toggleModal('uploadModal', false);
-        form.reset();
-        if (fileNameDisplay) fileNameDisplay.textContent = 'No file chosen';
-        renderFlash('success', 'File uploaded successfully');
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        progressBar.value = percent;
 
-        // ✅ Refresh quota bar after upload
-        setTimeout(() => {
-          refreshStorageIndicator();
-        }, 300); // slight delay to ensure DB update
+        const now = Date.now();
+        const elapsed = (now - startTime) / 1000;
+        const estimatedTotal = (elapsed / percent) * 100;
+        const remaining = Math.max(0, estimatedTotal - elapsed);
+
+        const deltaBytes = event.loaded - lastLoaded;
+        const deltaTime = (now - lastTime) / 1000;
+        const speed = deltaBytes / deltaTime;
+
+        lastLoaded = event.loaded;
+        lastTime = now;
+
+        const speedDisplay = speed > 1024 * 1024
+          ? `${(speed / (1024 * 1024)).toFixed(2)} MB/s`
+          : `${(speed / 1024).toFixed(1)} KB/s`;
+
+        if (statusText) statusText.textContent = `Uploading… ${percent}% (${remaining.toFixed(1)}s remaining)`;
+        if (speedText) speedText.textContent = `Speed: ${speedDisplay}`;
       }
-    } catch (err) {
-      console.error('Upload error:', err);
-      renderFlash('error', 'Error uploading file');
-    }
+    };
+
+    const hideProgressUI = () => {
+      if (progressContainer) {
+        progressContainer.classList.add('opacity-0');
+        setTimeout(() => progressContainer.classList.add('hidden'), 300);
+      }
+    };
+
+    xhr.onload = () => {
+      activeUploadRequest = null;
+
+      try {
+        const data = JSON.parse(xhr.responseText);
+
+        if (!xhr.status || !data.success) {
+          renderFlash('error', data.error || 'Upload failed');
+          if (statusText) statusText.textContent = 'Upload failed.';
+          if (speedText) speedText.textContent = 'Speed: —';
+          progressBar.value = 0;
+          hideProgressUI();
+          return;
+        }
+
+        if (data.item) {
+          insertItemSorted(data.item);
+          renderItems(getItems());
+          toggleModal('uploadModal', false);
+          form.reset();
+          progressBar.value = 0;
+          if (fileNameDisplay) fileNameDisplay.textContent = 'No file chosen';
+          if (statusText) statusText.textContent = 'Upload complete!';
+          if (speedText) speedText.textContent = 'Speed: —';
+          renderFlash('success', 'File uploaded successfully');
+          hideProgressUI();
+
+          setTimeout(() => {
+            refreshStorageIndicator();
+          }, 300);
+        }
+      } catch (err) {
+        console.error('Upload parse error:', err);
+        renderFlash('error', 'Error uploading file');
+        if (statusText) statusText.textContent = 'Upload error.';
+        if (speedText) speedText.textContent = 'Speed: —';
+        progressBar.value = 0;
+        hideProgressUI();
+      }
+    };
+
+    xhr.onerror = () => {
+      activeUploadRequest = null;
+
+      renderFlash('error', 'Network error during upload');
+      if (statusText) statusText.textContent = 'Network error.';
+      if (speedText) speedText.textContent = 'Speed: —';
+      progressBar.value = 0;
+      hideProgressUI();
+    };
+
+    xhr.send(formData);
   });
 }
-
 
 // Create Folder Modal in File Manager
 export function initCreateFolderModal() {

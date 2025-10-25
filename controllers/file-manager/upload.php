@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../helpers/uuid.php';        // generateUuid(), isValidUuid()
-require_once __DIR__ . '/../../helpers/path.php';        // resolveFolderPath(), buildVirtualPath(), resolveDiskPath(), ensureDirectoryExists()
-require_once __DIR__ . '/../../helpers/file-utils.php';  // getUniqueFileName()
-require_once __DIR__ . '/../../helpers/storage-utils.php'; // ensureUserStorageRow(), canUploadFile()
+require_once __DIR__ . '/../../helpers/uuid.php';         // generateUuid(), isValidUuid()
+require_once __DIR__ . '/../../helpers/path.php';         // resolveFolderPath(), buildVirtualPath(), resolveDiskPath(), ensureDirectoryExists()
+require_once __DIR__ . '/../../helpers/file-utils.php';   // getUniqueFileName()
+require_once __DIR__ . '/../../helpers/storage-utils.php';// ensureUserStorageRow(), canUploadFile()
 
 header('Content-Type: application/json');
 
@@ -32,9 +32,14 @@ $finalName = getUniqueFileName($pdo, $folderId, $originalName);
 $mime = mime_content_type($file['tmp_name']);
 $size = filesize($file['tmp_name']);
 
+// ✅ Enforce 1GB max file size
+$maxSize = 1073741824; // 1GB in bytes
+if ($size > $maxSize) {
+  returnError('File exceeds the 1GB upload limit.');
+}
+
 // ✅ Quota check
 $quota = canUploadFile($pdo, $userId, $size);
-
 if (!$quota['allowed']) {
   $usedGB = round($quota['used'] / (1024 ** 3), 2);
   $limitGB = round($quota['limit'] / (1024 ** 3), 2);
