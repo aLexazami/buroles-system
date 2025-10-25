@@ -413,3 +413,22 @@ Stack trace:
 [25-Oct-2025 19:30:38 Asia/Manila] 📦 Calculated size for folder 93059275-a204-4769-9751-847e590e65ed: 0
 [25-Oct-2025 19:30:45 Asia/Manila] 📦 Calculated size for folder ca3baeb2-6ba1-4adb-aea2-430fcc1cd92b: 0
 [25-Oct-2025 19:31:43 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
+[25-Oct-2025 19:36:35 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
+[25-Oct-2025 19:37:13 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1
+[25-Oct-2025 19:57:01 Asia/Manila] Access granted: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2
+[25-Oct-2025 19:58:50 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
+[25-Oct-2025 19:59:09 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
+[25-Oct-2025 20:09:00 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
+[25-Oct-2025 20:09:03 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
+[25-Oct-2025 20:09:57 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
+[25-Oct-2025 20:15:14 Asia/Manila] 📦 Calculated size for folder 8664b3f3-f0e2-4248-9874-03afa5431e3d: 0
+[25-Oct-2025 20:17:02 Asia/Manila] 📦 Calculated size for folder 8664b3f3-f0e2-4248-9874-03afa5431e3d: 0
+[25-Oct-2025 20:19:03 Asia/Manila] 📦 Calculated size for folder 8664b3f3-f0e2-4248-9874-03afa5431e3d: 0
+[25-Oct-2025 20:21:31 Asia/Manila] 📦 Calculated size for folder 8664b3f3-f0e2-4248-9874-03afa5431e3d: 0
+[25-Oct-2025 20:21:46 Asia/Manila] 📦 Calculated size for folder 790f2270-0114-416a-a02e-3ff4a8dab752: 0
+[25-Oct-2025 20:24:48 Asia/Manila] 📦 Calculated size for folder 790f2270-0114-416a-a02e-3ff4a8dab752: 0
+[25-Oct-2025 20:25:27 Asia/Manila] 📦 Calculated size for folder 023a46c7-d01e-4cb5-a1ea-57f22e3945a8: 0
+[25-Oct-2025 20:28:48 Asia/Manila] 📦 Calculated size for folder 023a46c7-d01e-4cb5-a1ea-57f22e3945a8: 0
+[25-Oct-2025 20:29:50 Asia/Manila] 📦 Calculated size for folder fc3fce6d-1d2f-479f-9f0b-0cee23d6f46c: 0
+[25-Oct-2025 20:29:57 Asia/Manila] 📦 Calculated size for folder fc3fce6d-1d2f-479f-9f0b-0cee23d6f46c: 0
+[25-Oct-2025 20:34:01 Asia/Manila] 📦 Calculated size for folder 023a46c7-d01e-4cb5-a1ea-57f22e3945a8: 0

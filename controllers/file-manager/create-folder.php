@@ -50,6 +50,11 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$uuid, $folderName, $virtualPath, $parentId, $userId]);
 
+// ✅ Fetch created_at timestamp
+$folderStmt = $pdo->prepare("SELECT created_at FROM files WHERE id = ?");
+$folderStmt->execute([$uuid]);
+$createdAt = $folderStmt->fetchColumn();
+
 // ✅ Respond with folder info
 echo json_encode([
   'success' => true,
@@ -60,7 +65,8 @@ echo json_encode([
     'permissions' => ['delete', 'share', 'comment'],
     'owner_id' => $userId,
     'parent_id' => $parentId,
-    'path' => $virtualPath
+    'path' => $virtualPath,
+    'created_at' => $createdAt
   ]
 ]);
 exit;

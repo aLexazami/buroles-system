@@ -546,7 +546,12 @@ export function createFileRow(item, isTrashView = false, currentUserId = null, d
   const label = document.createElement('span');
   label.textContent = item.name;
   label.title = item.name;
-  label.className = 'text-gray-800 font-medium truncate block w-full';
+  label.className = `
+  text-gray-800 font-medium
+  whitespace-nowrap overflow-hidden text-ellipsis
+  block max-w-[12rem] sm:max-w-[16rem]
+`.trim();
+
 
   const labelStack = document.createElement('div');
   labelStack.className = 'flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0';

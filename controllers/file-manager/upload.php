@@ -72,6 +72,11 @@ $stmt->execute([
   $mime
 ]);
 
+// ✅ Fetch created_at timestamp
+$metaStmt = $pdo->prepare("SELECT created_at FROM files WHERE id = ?");
+$metaStmt->execute([$uuid]);
+$createdAt = $metaStmt->fetchColumn();
+
 // ✅ Update storage usage
 $update = $pdo->prepare("UPDATE user_storage SET storage_used = storage_used + ? WHERE user_id = ?");
 $update->execute([$size, $userId]);
@@ -88,6 +93,7 @@ echo json_encode([
     'owner_id' => $userId,
     'size' => $size,
     'mime_type' => $mime,
+    'created_at' => $createdAt,
     'permissions' => ['delete', 'share', 'comment']
   ]
 ]);

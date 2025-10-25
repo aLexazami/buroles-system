@@ -1,6 +1,6 @@
 
 import { fileRoutes } from './endpoints/fileRoutes.js';
-import { formatDate, getExtension, handleFileAction, isFolderNameValid, isValidFileName, normalizeFileNameInput, refreshCurrentFolder, removeItemFromUI, removeItemRow, renderItems, resolveItemSize } from './file-manager.js';
+import { getExtension, handleFileAction, isFolderNameValid, isValidFileName, normalizeFileNameInput, refreshCurrentFolder, removeItemFromUI, removeItemRow, renderItems, resolveItemSize } from './file-manager.js';
 import { renderFlash } from './flash.js';
 import { refreshAdvisoryGrid } from './school-management/create-advisory.js';
 import { refreshGradeSections, refreshSchoolYears } from './school-management/school-tools.js';
@@ -475,12 +475,9 @@ export async function openFileInfoModal(item) {
   title.textContent = item.name || 'File Info';
 
   const sizeText = await resolveItemSize(item);
-
-  // ✅ Get current view from body dataset
   const view = document.body.dataset.view || 'my-files';
 
-  // ✅ Pass view into renderInfoContent
-  content.innerHTML = renderInfoContent({ ...item, sizeText }, view);
+  content.innerHTML = renderInfoContent({ ...item, sizeText, created_at: item.created_at }, view);
 
   toggleModal('file-info-modal', true);
   closeBtn.onclick = () => toggleModal('file-info-modal', false);
@@ -492,6 +489,7 @@ function renderInfoContent(item, view = 'my-files') {
     type,
     sizeText,
     updated_at,
+    created_at,
     owner_first_name,
     owner_last_name,
     recipient_first_name,
@@ -509,17 +507,27 @@ function renderInfoContent(item, view = 'my-files') {
     inherited_from
   } = item;
 
+  const formatDateSafe = (date) => {
+    const d = new Date(date);
+    return isNaN(d.getTime()) ? '—' : d.toLocaleString();
+  };
+
   const accessText = permissions?.length
     ? `${permissions.join(', ')} (${source_type === 'inherited' ? 'Inherited' : 'Direct'})`
     : '—';
 
   const originText = parent_name
     ? `${parent_name}${inherited_from ? ` (via ${inherited_from})` : ''}`
-    : '—';
+    : view === 'my-files'
+      ? 'Top-level (no parent)'
+      : '—';
 
-  const sharedByText = owner_first_name && owner_last_name
-    ? `${owner_first_name} ${owner_last_name}`
-    : '—';
+  const sharedByText =
+    owner_first_name && owner_last_name
+      ? `${owner_first_name} ${owner_last_name}`
+      : view === 'my-files'
+        ? 'You'
+        : '—';
 
   const sharedToText = recipient_first_name && recipient_last_name
     ? `${recipient_first_name} ${recipient_last_name}`
@@ -534,16 +542,22 @@ function renderInfoContent(item, view = 'my-files') {
   const showSharedTo = view === 'shared-by-me' || view === 'trash';
   const showDeletedBy = view === 'trash';
 
+  const dateLabel = updated_at ? 'Updated' : 'Created';
+  const dateValue = updated_at ? formatDateSafe(updated_at) : formatDateSafe(created_at);
+
   return `
     <div class="text-sm text-gray-700 space-y-2">
-      <div><strong>Name:</strong> ${name}</div>
+      <div class="flex gap-1 items-center">
+        <strong>Name:</strong>
+        <span class="break-words block max-w-full sm:max-w-[20rem] text-gray-800">${name}</span>
+      </div>
       <div><strong>Type:</strong> ${type}</div>
       <div><strong>Size:</strong> ${sizeText}</div>
-      <div><strong>Updated:</strong> ${formatDate(updated_at)}</div>
+      <div><strong>${dateLabel}:</strong> ${dateValue}</div>
       <div><strong>Owner:</strong> ${sharedByText}</div>
       ${showSharedTo && sharedToText !== '—' ? `<div><strong>Shared To:</strong> ${sharedToText}</div>` : ''}
       ${showDeletedBy && deletedByText !== '—' ? `<div><strong>Deleted By:</strong> ${deletedByText}</div>` : ''}
-      <div><strong>MIME Type:</strong> ${mime_type || '—'}</div>
+      ${type === 'file' ? `<div><strong>MIME Type:</strong> ${mime_type || '—'}</div>` : ''}
       <div><strong>Path:</strong> ${path}</div>
       <div><strong>Origin Location:</strong> ${originText}</div>
       <div><strong>Access:</strong> ${accessText}</div>
@@ -2467,7 +2481,7 @@ export function initAddStudentModal() {
       `).join('');
       });
   }
-  
+
   function handleEnrollClick(e) {
     const btn = e.target.closest('[data-action="enroll-student"]');
     if (!btn) return;

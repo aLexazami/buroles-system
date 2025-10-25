@@ -294,7 +294,10 @@ renderHead('Teacher');
   <div id="file-info-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 sm:px-0 opacity-0 transition-opacity duration-200">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
-      <h2 class="info-title text-md sm:text-lg font-semibold mb-4 text-emerald-700">File Info</h2>
+      <h2
+        class="info-title text-md sm:text-lg font-semibold mb-4 text-emerald-700 break-words block max-w-full sm:max-w-[20rem]">
+        File Info
+      </h2>
       <div class="info-content mb-4"></div>
       <div class="flex justify-end">
         <button id="closeInfo" class="px-3 py-1 text-emerald-700 rounded hover:bg-emerald-100 text-sm cursor-pointer">Close</button>
@@ -410,7 +413,12 @@ renderHead('Teacher');
           <!-- Unified clickable area -->
           <label for="uploadInput" class="flex items-center border rounded bg-white cursor-pointer text-sm hover:bg-emerald-100 text-emerald-700">
             <span class="font-medium bg-emerald-800 py-2 px-2 text-white">Browse</span>
-            <span id="fileName" class="text-gray-500 pl-2">No file chosen</span>
+            <span
+              id="fileName"
+              class="text-gray-500 pl-2 block truncate whitespace-nowrap overflow-hidden max-w-[12rem] sm:max-w-[16rem]"
+              title="No file chosen">
+              No file chosen
+            </span>
           </label>
           <div id="fileSize" class="text-sm text-gray-500 mt-1 hidden">Size: —</div>
           <input type="file" id="uploadInput" name="file" required class="hidden">
@@ -468,7 +476,11 @@ renderHead('Teacher');
     <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
       <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Rename Item</h2>
       <p class="text-sm text-gray-700 mb-4">
-        Renaming <span class="font-semibold text-gray-800" id="rename-item-name">this item</span>.
+        Renaming <span
+          id="rename-item-name"
+          class="font-semibold text-gray-800 break-words block max-w-full sm:max-w-[20rem]">
+          this item
+        </span>
       </p>
       <input type="hidden" id="rename-item-id">
       <input type="text" id="rename-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-6" placeholder="Enter new name">
@@ -485,7 +497,11 @@ renderHead('Teacher');
     <div class="relative bg-white p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-sm sm:max-w-md z-10 border border-emerald-500">
       <h2 class="text-md sm:text-lg font-semibold mb-4 text-emerald-700">Confirm Move to Trash</h2>
       <p class="text-sm text-gray-700 mb-6">
-        <span class="font-semibold text-gray-800" id="delete-item-name">This item</span>
+        <span
+          id="delete-item-name"
+          class="font-semibold text-gray-800 break-words block max-w-full sm:max-w-[20rem]">
+          This item
+        </span>
         will be deleted forever and can't be restored after 30 days.
       </p>
       <input type="hidden" id="delete-item-id">
