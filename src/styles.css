@@ -840,9 +840,6 @@
   .max-w-\[12rem\] {
     max-width: 12rem;
   }
-  .max-w-\[14rem\] {
-    max-width: 14rem;
-  }
   .max-w-\[95vw\] {
     max-width: 95vw;
   }
@@ -1322,12 +1319,6 @@
   }
   .bg-black {
     background-color: var(--color-black);
-  }
-  .bg-black\/50 {
-    background-color: color-mix(in srgb, #000 50%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-black) 50%, transparent);
-    }
   }
   .bg-blue-500 {
     background-color: var(--color-blue-500);

@@ -11,14 +11,15 @@ require_once __DIR__ . '/../helpers/table-utils.php';
   <!-- Search Bar -->
   <?php include('../../components/search-bar.php'); ?>
 
-  <?php $isSuperAdmin = ($_SESSION['role_id'] ?? 0) === 2; ?> 
+  <?php $isSuperAdmin = ($_SESSION['role_id'] ?? 0) === 2; ?>
+  <?php $counter = 1; ?>
 
   <!-- User Table -->
   <div class="overflow-auto rounded-lg shadow-sm min-h-[500px]">
     <table class="min-w-full table-auto border-transparent">
       <thead class="bg-emerald-600 text-white">
         <tr>
-          <th class="px-4 py-2 text-left text-xs sm:text-sm"><?= sortLink('ID', 'id') ?></th>
+          <th class="px-4 py-2 text-left text-xs sm:text-sm">NO</th>
           <th class="px-4 py-2 text-left text-xs sm:text-sm"><?= sortLink('Full Name', 'last_name') ?></th>
           <th class="px-4 py-2 text-left text-xs sm:text-sm"><?= sortLink('Username', 'username') ?></th>
           <th class="px-4 py-2 text-left text-xs sm:text-sm"><?= sortLink('Email', 'email') ?></th>
@@ -30,7 +31,7 @@ require_once __DIR__ . '/../helpers/table-utils.php';
       <tbody>
         <?php foreach ($users as $user): ?>
           <tr class="border-y border-gray-300 hover:bg-emerald-50">
-            <td class="px-4 py-2 text-red-500 font-medium text-xs sm:text-sm"><?= htmlspecialchars($user['id']) ?></td>
+            <td class="px-4 py-2 text-red-500 font-medium text-xs sm:text-sm"><?= $counter++ ?></td>
             <td class="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
               <?= htmlspecialchars(trim($user['last_name'] . ', ' . $user['first_name'] . ' ' . ($user['middle_name'] ?? ''))) ?>
             </td>
@@ -38,7 +39,7 @@ require_once __DIR__ . '/../helpers/table-utils.php';
             <td class="px-4 py-2 text-xs sm:text-sm"><?= htmlspecialchars($user['email']) ?></td>
             <td class="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
               <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-xs sm:text-sm">
-                <?= htmlspecialchars($user['role_name']) ?>
+                <?= htmlspecialchars($user['role_name'] === 'Staff' ? 'Teacher' : $user['role_name']) ?>
               </span>
             </td>
             <td class="px-4 py-2 text-xs sm:text-sm space-x-1 whitespace-nowrap">
@@ -66,7 +67,7 @@ require_once __DIR__ . '/../helpers/table-utils.php';
                   </button>
 
                   <div id="menu-<?= $user['id'] ?>" class="dropdown-menu hidden absolute top-full right-12 w-45 sm:w-52 z-10 bg-white rounded shadow-md">
-                    <ul class=" text-gray-700 font-semibold divide-y divide-gray-100 text-xs sm:text-sm">
+                    <ul class="text-gray-700 font-semibold divide-y divide-gray-100 text-xs sm:text-sm">
                       <?php if (!empty($user['is_archived'])): ?>
                         <li>
                           <a href="#" data-restore-user="<?= $user['id'] ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-emerald-100">

@@ -29,7 +29,7 @@ function fieldAutofocus($name, $formErrors)
     <img src="/assets/img/role.png" class="h-5 w-5">
     <select name="role_id" id="role_id" class="flex-1 h-12 p-2 border-l-2 font-bold focus:outline-none sm:text-base md:text-lg cursor-pointer" required <?= fieldAutofocus('role_id', $formErrors) ?>>
       <option value="" disabled hidden>Select Role</option>
-      <option value="1" <?= ($formData['role_id'] ?? '') == '1' ? 'selected' : '' ?>>Staff</option>
+      <option value="1" <?= ($formData['role_id'] ?? '') == '1' ? 'selected' : '' ?>>Teacher</option>
       <option value="2" <?= ($formData['role_id'] ?? '') == '2' ? 'selected' : '' ?>>Admin</option>
     </select>
   </div>
