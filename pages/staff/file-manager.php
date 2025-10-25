@@ -194,7 +194,12 @@ renderHead('Teacher');
         <!-- Title with Icon -->
         <div class="preview-title text-white text-lg font-semibold truncate flex items-center space-x-2">
           <img id="fileTypeIcon" src="/assets/img/file-icons/file-icon.png" alt="File Type" class="w-4 h-4 sm:w-5 sm:h-5" />
-          <span id="fileTitle" class="text-sm sm:text-md">Preview Title</span>
+          <span
+            id="fileTitle"
+            class="text-sm sm:text-md truncate block whitespace-nowrap overflow-hidden max-w-[10rem] sm:max-w-[16rem]"
+            title="Preview Title">
+            Preview Title
+          </span>
         </div>
       </div>
 
