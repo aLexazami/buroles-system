@@ -100,7 +100,7 @@ $hideSidebarButtonPages = ['feedback-details.php'];
           ?>
           <div class="relative">
             <a href="<?= $item['link'] ?>"
-              class="menu-link flex items-center justify-between p-2 text-sm rounded-sm text-emerald-800 <?= $isActive ? 'bg-emerald-50 font-bold' : 'hover:bg-emerald-100' ?>"
+              class="group flex items-center p-2 text-sm rounded-sm <?= $isActive ? 'bg-emerald-700 text-white font-bold' : 'text-emerald-800 hover:bg-emerald-600' ?>"
               <?= $isLogout ? 'data-action="logout"' : '' ?>>
               <div class="relative">
                 <img src="/assets/img/<?= $item['icon'] ?>" alt="<?= $item['label'] ?>" class="h-5 w-5 invert">
@@ -184,22 +184,3 @@ $hideSidebarButtonPages = ['feedback-details.php'];
   <?php include __DIR__ . '/../includes/role-welcome.php' ?>
   <?php include __DIR__ . '/../includes/modals.php' ?>
 </div>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const logoutLinks = document.querySelectorAll('[data-action="logout"]');
-    const modal = document.getElementById('logout-modal');
-    const cancelBtn = document.getElementById('cancel-logout');
-    const confirmBtn = document.getElementById('confirm-logout');
-
-    logoutLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        modal.classList.remove('hidden');
-      });
-    });
-
-    cancelBtn.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-  });
-</script>
