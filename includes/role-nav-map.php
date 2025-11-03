@@ -35,9 +35,10 @@ foreach ($sharedNav as $label => $data) {
   }
 
   $navItems[] = [
-    'label' => $label,
-    'icon'  => $data['icon'],
-    'link'  => $data['link'],
-    'count' => $count,
+    'label'    => $label,
+    'icon'     => $data['icon'],
+    'link'     => $data['link'],
+    'count'    => $count,
+    'isLogout' => $data['isLogout'] ?? false
   ];
 }

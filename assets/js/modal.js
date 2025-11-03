@@ -2568,4 +2568,26 @@ export function initStudentClassAdvisoryDeleteModal() {
   });
 }
 
+// Logout confirmation Modal
+export function initLogoutModal() {
+  const logoutLinks = document.querySelectorAll('[data-action="logout"]');
+  const modal = document.getElementById('logoutConfirmModal');
+  const cancelBtn = document.getElementById('cancelLogoutBtn');
 
+  if (!modal || !cancelBtn) return;
+
+  logoutLinks.forEach(link => {
+    if (link.dataset.bound) return;
+
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      toggleModal('logoutConfirmModal', true);
+    });
+
+    link.dataset.bound = 'true';
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    toggleModal('logoutConfirmModal', false);
+  });
+}

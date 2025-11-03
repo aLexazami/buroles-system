@@ -5,7 +5,7 @@ import { setupUserActions } from './user-actions.js';
 
 // File Manager Actions
 import { initDropdownMenus, initNotificationActions, setupRecipientDropdown } from './dropdown.js';
-import { initAddStudentModal, initAnnouncementModal, initAnnouncementTriggers, initCreateAdvisoryHandler, initCreateAdvisoryModal, initCreateFolderModal, initFolderCreationHandler, initGradeLevelHandler, initGradeLevelModal, initGradeLevelSectionSync, initGradeSectionModal, initManageAccessButtons, initPasswordButtons, initShareHandler, initUnlockButtons, initUploadHandler, initUploadModal, setupDeleteCommentModal, setupDeleteModal, setupEmptyTrashModal, setupPermanentDeleteModal, setupRenameModalHandler, setupRestoreModal, initSchoolYearModal, initStudentClassAdvisoryDeleteModal } from './modal.js';
+import { initAddStudentModal, initAnnouncementModal, initAnnouncementTriggers, initCreateAdvisoryHandler, initCreateAdvisoryModal, initCreateFolderModal, initFolderCreationHandler, initGradeLevelHandler, initGradeLevelModal, initGradeLevelSectionSync, initGradeSectionModal, initManageAccessButtons, initPasswordButtons, initShareHandler, initUnlockButtons, initUploadHandler, initUploadModal, setupDeleteCommentModal, setupDeleteModal, setupEmptyTrashModal, setupPermanentDeleteModal, setupRenameModalHandler, setupRestoreModal, initSchoolYearModal, initStudentClassAdvisoryDeleteModal,initLogoutModal } from './modal.js';
 import { refreshGradeLevels, refreshGradeSections, refreshSchoolYears } from './school-management/school-tools.js';
 import { initAdvisoryGrid } from '/assets/js/school-management/create-advisory.js';
 import { initStudentTable } from '/assets/js/school-management/student-loader.js';
@@ -173,6 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initSchoolYearModal();
   initAdvisoryGrid();
   initStudentClassAdvisoryDeleteModal();
+  initLogoutModal();
+
 
   if (document.getElementById('classId')) {
     const roleSlug = document.body.dataset.role || 'admin'; // fallback to admin
