@@ -1,438 +1,168 @@
-[24-Oct-2025 20:15:15 Asia/Manila] 📁 Deleting contents of folder: New Folder2 (de445610-b115-438d-9cd3-5a8d4a4af861)
-[24-Oct-2025 20:15:39 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:15:53 Asia/Manila] 📦 Calculated size for folder 8a1bd853-4cb1-4385-a7f1-b09b4b39b902: 9228
-[24-Oct-2025 20:17:05 Asia/Manila] 📁 Deleting contents of folder: Folder C (1a8dcfa3-537d-483e-b036-750a7f7e4c66)
-[24-Oct-2025 20:37:14 Asia/Manila] 📦 Calculated size for folder 8a1bd853-4cb1-4385-a7f1-b09b4b39b902: 0
-[24-Oct-2025 20:37:17 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:37:24 Asia/Manila] 📥 Raw input: {"file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902","updates":[{"user_id":"13","permission":"share","file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902"}]}
-[24-Oct-2025 20:37:24 Asia/Manila] 🔐 Session user_id: 2
-[24-Oct-2025 20:37:24 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:37:28 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:37:44 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:37:48 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:40:39 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:40:48 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:40:53 Asia/Manila] 📥 Raw input: {"file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902","updates":[{"user_id":"13","permission":"revoke","file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902"},{"user_id":"34","permission":"revoke","file_id":"8a1bd853-4cb1-4385-a7f1-b09b4b39b902"}]}
-[24-Oct-2025 20:40:53 Asia/Manila] 🔐 Session user_id: 13
-[24-Oct-2025 20:40:53 Asia/Manila] 👤 Access list requested by user_id: 13 for file_id: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 20:40:53 Asia/Manila] 🔁 Access inherited from parent_id: b053ef98-8ff4-40ec-b09a-09f58cba27bb
-[24-Oct-2025 21:23:53 Asia/Manila] PHP Warning:  Trying to access array offset on false in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 13
-[24-Oct-2025 21:23:53 Asia/Manila] PHP Warning:  Trying to access array offset on false in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 14
-[24-Oct-2025 21:23:57 Asia/Manila] PHP Warning:  Trying to access array offset on false in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 13
-[24-Oct-2025 21:23:57 Asia/Manila] PHP Warning:  Trying to access array offset on false in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 14
-[24-Oct-2025 21:23:57 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:72
-Stack trace:
-#0 {main}
-  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 72
-[24-Oct-2025 21:42:14 Asia/Manila] 📁 Deleting contents of folder: Folder A (b053ef98-8ff4-40ec-b09a-09f58cba27bb)
-[24-Oct-2025 21:42:14 Asia/Manila] 🗑️ Deleting file: student1.jpg (0d073f98-0462-4467-8f2e-df5e9009448d)
-[24-Oct-2025 21:42:14 Asia/Manila] 🔁 Recursing into subfolder: 8a1bd853-4cb1-4385-a7f1-b09b4b39b902
-[24-Oct-2025 21:42:14 Asia/Manila] 📁 Deleting contents of folder: Folder Bibibiasd (8a1bd853-4cb1-4385-a7f1-b09b4b39b902)
-[24-Oct-2025 21:45:16 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 21:45:16 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 21:45:16 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:45:16 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:45:16 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
-Stack trace:
-#0 {main}
-  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:45:55 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:45:55 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:45:55 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
-Stack trace:
-#0 {main}
-  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:45:59 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:45:59 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:45:59 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
-Stack trace:
-#0 {main}
-  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:10 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:10 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:11 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
-Stack trace:
-#0 {main}
-  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:16 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:16 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:16 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
-Stack trace:
-#0 {main}
-  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:18 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:18 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:46:18 Asia/Manila] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php:79
-Stack trace:
-#0 {main}
-  thrown in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 79
-[24-Oct-2025 21:47:57 Asia/Manila] PHP Warning:  Undefined variable $limitGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 84
-[24-Oct-2025 21:47:57 Asia/Manila] PHP Warning:  Undefined variable $usedGB in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 84
-[24-Oct-2025 22:51:10 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:10 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:12 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:12 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:15 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:15 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:16 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:16 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:16 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:16 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:17 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:17 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:17 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:17 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:17 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:17 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:18 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:18 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:18 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:18 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:19 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:19 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:19 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:19 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:40 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:40 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:51:43 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:51:43 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:54:27 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:54:27 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:57:14 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:57:14 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:57:16 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:57:16 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:57:17 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:57:17 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:57:18 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:57:18 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:57:20 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:57:20 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:57:22 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:57:22 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:57:26 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:57:26 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:57:33 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:57:33 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:58:19 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:58:19 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 22:58:21 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 22:58:21 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:25 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:25 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:26 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:26 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:26 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:26 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:27 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:27 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:27 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:27 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:27 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:27 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:28 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:28 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:28 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:28 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:29 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:29 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:29 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:29 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:01:31 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:01:31 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:04:22 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:04:22 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:04:26 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:04:26 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:04:32 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:04:32 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:04:33 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:04:33 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:04:34 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:04:34 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:04:38 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:04:38 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:04:45 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:04:45 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:06:47 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:06:47 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:13:30 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:13:30 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:13:43 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:13:43 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:13:53 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:13:53 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:13:58 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:13:58 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:14:08 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:14:08 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:14:16 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:14:16 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:15:10 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:15:10 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:15:13 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
-[24-Oct-2025 23:15:13 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
-[24-Oct-2025 23:17:47 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:17:47 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:17:50 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
-[24-Oct-2025 23:17:51 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
-[24-Oct-2025 23:20:12 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:20:12 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:20:14 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
-[24-Oct-2025 23:20:14 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
-[24-Oct-2025 23:20:18 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:20:18 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:20:27 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
-[24-Oct-2025 23:20:27 Asia/Manila] ❌ Permanent delete failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_folder_id' in 'where clause'
-[24-Oct-2025 23:21:23 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:21:23 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:21:26 Asia/Manila] 📁 Deleting contents of folder: New Folder2 (7c2e79a2-ea50-4743-9654-afa007980aea)
-[24-Oct-2025 23:21:26 Asia/Manila] 🗑️ Deleting file: Folder A_adada.pdf (65cdedea-84db-4fc1-89aa-d498733386bb)
-[24-Oct-2025 23:21:39 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:21:39 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:25:10 Asia/Manila] 📦 Calculated size for folder db825b41-f7aa-41dc-85bc-d99d7106d832: 563616
-[24-Oct-2025 23:25:21 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:25:21 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:26:17 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:26:17 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:26:50 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:26:50 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:17 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:17 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:20 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:20 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:21 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:21 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:22 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:22 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:22 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:22 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:23 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:23 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:23 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:23 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:23 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:23 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:24 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:24 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[24-Oct-2025 23:27:25 Asia/Manila] PHP Warning:  Undefined variable $boxHighlight in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 73
-[24-Oct-2025 23:27:25 Asia/Manila] PHP Warning:  Undefined variable $barColor in C:\buroles\workspace\buroles_system\pages\staff\file-manager.php on line 77
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 00:30:06 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 00:30:26 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 00:31:47 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 01:14:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_name" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 61
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "placeholder_name" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 62
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_date" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 67
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_age" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 73
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_age" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 75
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_under_19" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 76
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_20_34" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 77
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_35_49" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 78
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_50_64" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 79
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "age_65_up" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 80
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_sex" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 86
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_sex" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 88
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "sex_female" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 89
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "sex_male" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 90
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_customer_type" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 96
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_customer_type" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 98
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "type_business" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 99
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "type_citizen" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 100
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "type_government" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 101
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "customer_type_notes" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 103
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_service" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 108
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_service" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 110
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "service_enrollment" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 111
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "service_document" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 112
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "service_consultation" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 113
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "label_region" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 119
-[25-Oct-2025 01:16:33 Asia/Manila] PHP Warning:  Undefined array key "select_region" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 121
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_name" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 61
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "placeholder_name" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 62
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_date" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 67
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_age" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 73
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_age" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 75
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_under_19" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 76
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_20_34" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 77
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_35_49" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 78
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_50_64" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 79
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "age_65_up" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 80
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_sex" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 86
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_sex" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 88
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "sex_female" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 89
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "sex_male" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 90
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_customer_type" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 96
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_customer_type" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 98
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "type_business" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 99
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "type_citizen" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 100
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "type_government" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 101
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "customer_type_notes" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 103
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_service" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 108
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_service" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 110
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "service_enrollment" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 111
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "service_document" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 112
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "service_consultation" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 113
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "label_region" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 119
-[25-Oct-2025 01:16:35 Asia/Manila] PHP Warning:  Undefined array key "select_region" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 121
-[25-Oct-2025 01:33:53 Asia/Manila] PHP Warning:  Undefined array key "type_business" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 105
-[25-Oct-2025 01:33:53 Asia/Manila] PHP Warning:  Undefined array key "type_citizen" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 106
-[25-Oct-2025 01:33:53 Asia/Manila] PHP Warning:  Undefined array key "type_government" in C:\buroles\workspace\buroles_system\pages\feedback\client-info.php on line 107
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "label_awareness_level" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 42
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "select_awareness_level" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 44
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "aware_very" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 45
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "aware_somewhat" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 46
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "aware_not" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 47
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "label_heard_about" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 53
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "select_heard_about" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 55
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "heard_announcement" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 56
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "heard_teacher" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 57
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "heard_social" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 58
-[25-Oct-2025 01:36:14 Asia/Manila] PHP Warning:  Undefined array key "heard_other" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 59
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "label_awareness_level" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 62
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "select_awareness_level" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 64
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "aware_very" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 65
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "aware_somewhat" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 66
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "aware_not" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 67
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "label_heard_about" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 73
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "select_heard_about" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 75
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "heard_announcement" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 76
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "heard_teacher" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 77
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "heard_social" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 78
-[25-Oct-2025 01:37:06 Asia/Manila] PHP Warning:  Undefined array key "heard_other" in C:\buroles\workspace\buroles_system\pages\feedback\citizen-awareness.php on line 79
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:08:24 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:08:32 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:19:28 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:27:18 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "role_id" in C:\buroles\workspace\buroles_system\includes\role-nav-map.php on line 26
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 2
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "active_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "default_role_id" in C:\buroles\workspace\buroles_system\includes\role-badge.php on line 10
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "firstName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "lastName" in C:\buroles\workspace\buroles_system\includes\header.php on line 75
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Warning:  Undefined array key "role_name" in C:\buroles\workspace\buroles_system\includes\header.php on line 77
-[25-Oct-2025 02:36:38 Asia/Manila] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\header.php on line 79
-[25-Oct-2025 03:54:44 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 03:54:54 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 04:17:40 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 04:17:47 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 04:17:57 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 04:18:07 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 04:18:17 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 04:18:27 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:25:43 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:25:53 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:25:55 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:26:05 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:26:15 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:26:25 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:26:35 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:26:45 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:26:55 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:27:05 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:27:15 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:27:25 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:27:35 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:27:45 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 05:27:55 Asia/Manila] PHP Deprecated:  strtolower(): Passing null to parameter #1 ($string) of type string is deprecated in C:\buroles\workspace\buroles_system\includes\functions.php on line 81
-[25-Oct-2025 19:05:58 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 19:30:38 Asia/Manila] 📦 Calculated size for folder 93059275-a204-4769-9751-847e590e65ed: 0
-[25-Oct-2025 19:30:45 Asia/Manila] 📦 Calculated size for folder ca3baeb2-6ba1-4adb-aea2-430fcc1cd92b: 0
-[25-Oct-2025 19:31:43 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 19:36:35 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 19:37:13 Asia/Manila] 👤 Access list requested by user_id: 2 for file_id: 2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1
-[25-Oct-2025 19:57:01 Asia/Manila] Access granted: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2
-[25-Oct-2025 19:58:50 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 19:59:09 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 20:09:00 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 20:09:03 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 20:09:57 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 20:15:14 Asia/Manila] 📦 Calculated size for folder 8664b3f3-f0e2-4248-9874-03afa5431e3d: 0
-[25-Oct-2025 20:17:02 Asia/Manila] 📦 Calculated size for folder 8664b3f3-f0e2-4248-9874-03afa5431e3d: 0
-[25-Oct-2025 20:19:03 Asia/Manila] 📦 Calculated size for folder 8664b3f3-f0e2-4248-9874-03afa5431e3d: 0
-[25-Oct-2025 20:21:31 Asia/Manila] 📦 Calculated size for folder 8664b3f3-f0e2-4248-9874-03afa5431e3d: 0
-[25-Oct-2025 20:21:46 Asia/Manila] 📦 Calculated size for folder 790f2270-0114-416a-a02e-3ff4a8dab752: 0
-[25-Oct-2025 20:24:48 Asia/Manila] 📦 Calculated size for folder 790f2270-0114-416a-a02e-3ff4a8dab752: 0
-[25-Oct-2025 20:25:27 Asia/Manila] 📦 Calculated size for folder 023a46c7-d01e-4cb5-a1ea-57f22e3945a8: 0
-[25-Oct-2025 20:28:48 Asia/Manila] 📦 Calculated size for folder 023a46c7-d01e-4cb5-a1ea-57f22e3945a8: 0
-[25-Oct-2025 20:29:50 Asia/Manila] 📦 Calculated size for folder fc3fce6d-1d2f-479f-9f0b-0cee23d6f46c: 0
-[25-Oct-2025 20:29:57 Asia/Manila] 📦 Calculated size for folder fc3fce6d-1d2f-479f-9f0b-0cee23d6f46c: 0
-[25-Oct-2025 20:34:01 Asia/Manila] 📦 Calculated size for folder 023a46c7-d01e-4cb5-a1ea-57f22e3945a8: 0
-[25-Oct-2025 20:34:40 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 20:36:19 Asia/Manila] Preview accessed: file_id=2c7a3629-0f5a-47b7-87a6-fd51cd9eccb1, user_id=2, view=my-files, folder=
-[25-Oct-2025 20:36:28 Asia/Manila] Preview accessed: file_id=bf5e7147-6ca1-4e33-acb8-826da3b05f50, user_id=2, view=my-files, folder=
-[25-Oct-2025 20:36:30 Asia/Manila] Preview accessed: file_id=01ab4004-fe0b-4ba5-ad09-44704e0f90e1, user_id=2, view=my-files, folder=
+[31-Oct-2025 22:37:59 Asia/Manila] 🟡 Incoming parameters:
+[31-Oct-2025 22:37:59 Asia/Manila] service_id: '5'
+[31-Oct-2025 22:37:59 Asia/Manila] from: '2025-01-01'
+[31-Oct-2025 22:37:59 Asia/Manila] to: '2025-12-31'
+[31-Oct-2025 22:37:59 Asia/Manila] 🟢 Resolved service name: 'Acceptance of Employment Application for Teacher I Position (Online)'
+[31-Oct-2025 22:37:59 Asia/Manila] 🟢 Report data retrieved:
+[31-Oct-2025 22:37:59 Asia/Manila] Array
+(
+    [respondents] => 1
+    [male] => 1
+    [female] => 0
+    [sqd] => Array
+        (
+            [0] => 5
+            [1] => 5
+            [2] => 4
+            [3] => 3
+            [4] => 2
+            [5] => 1
+            [6] => 1
+            [7] => 5
+        )
+
+    [age] => Array
+        (
+            [19_or_lower] => 0
+            [20_34] => 1
+            [35_49] => 0
+            [50_64] => 0
+            [65_or_higher] => 0
+        )
+
+    [customer_types] => Array
+        (
+            [Citizen] => 1
+            [Business] => 0
+            [Government] => 0
+        )
+
+    [charter] => Array
+        (
+            [cc1] => Array
+                (
+                    [1] => 1
+                    [2] => 0
+                    [3] => 0
+                    [4] => 0
+                )
+
+            [cc2] => Array
+                (
+                    [1] => 0
+                    [2] => 1
+                    [3] => 0
+                    [4] => 0
+                    [5] => 0
+                )
+
+            [cc3] => Array
+                (
+                    [1] => 0
+                    [2] => 0
+                    [3] => 1
+                    [4] => 0
+                )
+
+        )
+
+    [sqd_breakdowns] => Array
+        (
+            [sqd1] => Array
+                (
+                    [1] => 0
+                    [2] => 0
+                    [3] => 0
+                    [4] => 0
+                    [5] => 1
+                    [na] => 0
+                )
+
+            [sqd2] => Array
+                (
+                    [1] => 0
+                    [2] => 0
+                    [3] => 0
+                    [4] => 0
+                    [5] => 1
+                    [na] => 0
+                )
+
+            [sqd3] => Array
+                (
+                    [1] => 0
+                    [2] => 0
+                    [3] => 0
+                    [4] => 1
+                    [5] => 0
+                    [na] => 0
+                )
+
+            [sqd4] => Array
+                (
+                    [1] => 0
+                    [2] => 0
+                    [3] => 1
+                    [4] => 0
+                    [5] => 0
+                    [na] => 0
+                )
+
+            [sqd5] => Array
+                (
+                    [1] => 0
+                    [2] => 1
+                    [3] => 0
+                    [4] => 0
+                    [5] => 0
+                    [na] => 0
+                )
+
+            [sqd6] => Array
+                (
+                    [1] => 1
+                    [2] => 0
+                    [3] => 0
+                    [4] => 0
+                    [5] => 0
+                    [na] => 0
+                )
+
+            [sqd7] => Array
+                (
+                    [1] => 1
+                    [2] => 0
+                    [3] => 0
+                    [4] => 0
+                    [5] => 0
+                    [na] => 0
+                )
+
+            [sqd8] => Array
+                (
+                    [1] => 0
+                    [2] => 0
+                    [3] => 0
+                    [4] => 0
+                    [5] => 1
+                    [na] => 0
+                )
+
+        )
+
+)
+
+[31-Oct-2025 22:37:59 Asia/Manila] 📁 Node script path: 'C:\\buroles\\workspace\\buroles_system\\puppeteer-export\\export-report.js'
+[31-Oct-2025 22:37:59 Asia/Manila] 📁 Export directory: 'C:\\buroles\\workspace\\buroles_system\\exports'
+[31-Oct-2025 22:37:59 Asia/Manila] 📁 PDF output path: 'C:\\buroles\\workspace\\buroles_system\\exports\\feedback-report-5-2025-01-01-2025-12-31.pdf'
+[31-Oct-2025 22:37:59 Asia/Manila] 📄 Temp JSON path: 'C:\\Users\\Maryjane Vedano\\AppData\\Local\\Temp\\rep625.tmp.json'
+[31-Oct-2025 22:37:59 Asia/Manila] 📄 JSON contents written to temp file
+[31-Oct-2025 22:37:59 Asia/Manila] 🚀 Executing Node command:
+[31-Oct-2025 22:37:59 Asia/Manila] node C:\buroles\workspace\buroles_system\puppeteer-export\export-report.js "Acceptance of Employment Application for Teacher I Position (Online)" "2025-01-01" "2025-12-31" "feedback-report-5-2025-01-01-2025-12-31.pdf" "C:\Users\Maryjane Vedano\AppData\Local\Temp\rep625.tmp.json"
+[31-Oct-2025 22:37:59 Asia/Manila] 📦 Node script output:
+[31-Oct-2025 22:37:59 Asia/Manila] Array
+(
+)
+
+[31-Oct-2025 22:37:59 Asia/Manila] 📦 Exit status: 1
+[31-Oct-2025 22:37:59 Asia/Manila] ✅ PDF generated successfully: C:\buroles\workspace\buroles_system\exports\feedback-report-5-2025-01-01-2025-12-31.pdf

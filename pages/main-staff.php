@@ -30,15 +30,15 @@ renderHead('Teacher');
 
         <!-- Role Summary -->
         <div class="bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded shadow text-left">
-          <h2 class="text-lg font-semibold text-emerald-700">Your Role: Staff</h2>
+          <h2 class="text-lg font-semibold text-emerald-700">Your Role: Teacher</h2>
           <p class="text-sm text-gray-700 mt-1">
-            As a Staff member, you help manage announcements, assist with classroom coordination, and support day-to-day operations. Your contributions ensure smooth communication and timely updates across the school.
+            As a Teacher member, you help manage announcements, assist with classroom coordination, and support day-to-day operations. Your contributions ensure smooth communication and timely updates across the school.
           </p>
         </div>
 
         <!-- Welcome Message -->
         <div class="text-center">
-          <h1 class="text-2xl sm:text-3xl font-bold text-emerald-700">Welcome, Staff!</h1>
+          <h1 class="text-2xl sm:text-3xl font-bold text-emerald-700">Welcome, Teacher!</h1>
           <p class="text-gray-700 text-sm sm:text-base leading-relaxed mt-2">
             Use the sidebar to access your tools, view announcements, and stay connected with your team.
           </p>

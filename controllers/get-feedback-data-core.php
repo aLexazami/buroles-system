@@ -1,18 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
-header('Content-Type: application/json');
 
-$service_id = $_GET['service_id'] ?? null;
-$from = $_GET['from'] ?? null;
-$to = $_GET['to'] ?? null;
-
-if (!$service_id || !is_numeric($service_id) || !$from || !$to) {
-  http_response_code(400);
-  echo json_encode(['error' => 'Missing or invalid parameters']);
-  exit;
-}
-
-// 🔧 Modularized Functions
 function getRespondentCount($pdo, $service_id, $from, $to) {
   $stmt = $pdo->prepare("
     SELECT COUNT(*) FROM feedback_respondents
@@ -181,22 +168,15 @@ function getSQDBreakdowns($pdo, $service_id, $from, $to) {
   return $breakdowns;
 }
 
-// 🔧 Execute and Respond
-$respondents = getRespondentCount($pdo, $service_id, $from, $to);
-$demographics = getDemographics($pdo, $service_id, $from, $to);
-$sqd = getSQDAverages($pdo, $service_id, $from, $to);
-$ageGroups = getAgeGroups($pdo, $service_id, $from, $to);
-$customerTypes = getCustomerTypes($pdo, $service_id, $from, $to);
-$charterResponses = getCitizenCharterResponses($pdo, $service_id, $from, $to);
-$sqdBreakdowns = getSQDBreakdowns($pdo, $service_id, $from, $to);
-
-echo json_encode([
-  'respondents' => $respondents,
-  'male' => $demographics['male'],
-  'female' => $demographics['female'],
-  'sqd' => $sqd,
-  'age' => $ageGroups,
-  'customer_types' => $customerTypes,
-  'charter' => $charterResponses,
-  'sqd_breakdowns' => $sqdBreakdowns
-]);
+function getFeedbackData($pdo, $service_id, $from, $to) {
+  return [
+    'respondents' => getRespondentCount($pdo, $service_id, $from, $to),
+    'male' => getDemographics($pdo, $service_id, $from, $to)['male'],
+    'female' => getDemographics($pdo, $service_id, $from, $to)['female'],
+    'sqd' => getSQDAverages($pdo, $service_id, $from, $to),
+    'age' => getAgeGroups($pdo, $service_id, $from, $to),
+    'customer_types' => getCustomerTypes($pdo, $service_id, $from, $to),
+    'charter' => getCitizenCharterResponses($pdo, $service_id, $from, $to),
+    'sqd_breakdowns' => getSQDBreakdowns($pdo, $service_id, $from, $to)
+  ];
+}
