@@ -1,16 +1,17 @@
 {
   "name": "puppeteer-export",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "PDF export service using Puppeteer",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Alex",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "express": "^4.18.2",
     "puppeteer": "^24.26.1"
   }
 }
